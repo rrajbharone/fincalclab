@@ -1,0 +1,1021 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Salary Increase Calculator"
+  description="Calculate your pay raises, measure salary increases against inflation to see your real purchasing power change, and perform side-by-side job offer comparisons."
+  category="Salary"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="salary-increase-calc">
+    <!-- Sub-calculator tab selection -->
+    <div class="calculator-mode-selector">
+      <label for="salary-calc-type" class="sr-only">Choose Calculator Mode</label>
+      <select id="salary-calc-type" class="currency-select" aria-label="Select Calculator Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-4);">
+        <option value="basic" selected>Salary Hike & Inflation-Adjusted Raise</option>
+        <option value="compare">Job Offer Comparison (Total Compensation)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="salary-currency-select">Currency</label>
+        <select id="salary-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="CNY">CNY (¥) - Chinese Yuan</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PANEL 1: Basic Pay Hike & Inflation -->
+    <div id="panel-basic" class="calc-panel">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="basic-salary">Current Salary / Rate</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="basic-salary" min="1" max="10000000" value="65000" aria-label="Current Salary" />
+          </div>
+        </div>
+        <input type="range" id="basic-salary-slider" min="10000" max="250000" step="1000" value="65000" class="slider-range" aria-label="Current Salary Slider" />
+        <div class="slider-ticks">
+          <span>10k</span>
+          <span>130k</span>
+          <span>250k</span>
+        </div>
+      </div>
+
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-frequency">Pay Frequency</label>
+            <select id="salary-frequency" class="currency-select" style="max-width: 100%;" aria-label="Pay Frequency">
+              <option value="annual" selected>Annually (Salary)</option>
+              <option value="monthly">Monthly</option>
+              <option value="biweekly">Bi-Weekly (26x / yr)</option>
+              <option value="weekly">Weekly</option>
+              <option value="hourly">Hourly</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group hidden" id="group-hours-worked">
+          <div class="input-label-row">
+            <label for="salary-hours-weekly">Hours per Week</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="salary-hours-weekly" min="1" max="168" value="40" aria-label="Hours worked per week" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-raise-type">Raise Type</label>
+            <select id="salary-raise-type" class="currency-select" style="max-width: 100%;" aria-label="Raise Input Type">
+              <option value="percent" selected>Percentage (%)</option>
+              <option value="amount">Flat Increase Amount</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-raise-val" id="raise-val-label">Raise Percent</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="salary-raise-val" min="0" max="1000000" step="0.1" value="5" aria-label="Raise Value" />
+              <span id="raise-val-symbol" class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-inflation">Annual Inflation Rate</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="salary-inflation" min="0" max="100" step="0.1" value="3.5" aria-label="Annual Inflation Rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-tax-rate">Est. Total Tax Rate</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="salary-tax-rate" min="0" max="90" step="0.5" value="25" aria-label="Estimated Tax Rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Job Offer Comparison -->
+    <div id="panel-compare" class="calc-panel hidden">
+      <div class="comparison-tabs-header" style="margin-bottom: var(--space-4); display: flex; gap: var(--space-2);">
+        <button id="compare-btn-jobA" class="toggle-tab-btn active" style="flex: 1; padding: var(--space-2); border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem;" type="button">Job A (Current)</button>
+        <button id="compare-btn-jobB" class="toggle-tab-btn" style="flex: 1; padding: var(--space-2); border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem;" type="button">Job B (Offer)</button>
+      </div>
+
+      <!-- Job A Inputs Panel -->
+      <div id="compare-panel-jobA" class="job-subpanel">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="jobA-base">Base Salary (Annual)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="jobA-base" min="0" value="65000" aria-label="Job A Base Salary" />
+            </div>
+          </div>
+        </div>
+        <div class="input-row-grid">
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobA-bonus">Annual Bonuses</label>
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="jobA-bonus" min="0" value="5000" aria-label="Job A Annual Bonuses" />
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobA-match">Retirement Match (%)</label>
+              <div class="input-symbol-wrapper percent-wrapper">
+                <input type="number" id="jobA-match" min="0" max="100" value="3" aria-label="Job A Retirement Match Percentage" />
+                <span class="percent-symbol">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-row-grid">
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobA-benefits">Health Premium (Annual)</label>
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="jobA-benefits" min="0" value="1200" aria-label="Job A Health Insurance Premium" />
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobA-commute">Commute Cost (Annual)</label>
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="jobA-commute" min="0" value="800" aria-label="Job A Commute Costs" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="jobA-hours">Hours worked per Week</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="jobA-hours" min="1" max="168" value="40" aria-label="Job A Hours worked per week" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job B Inputs Panel -->
+      <div id="compare-panel-jobB" class="job-subpanel hidden">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="jobB-base">Base Salary (Annual)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="jobB-base" min="0" value="75000" aria-label="Job B Base Salary" />
+            </div>
+          </div>
+        </div>
+        <div class="input-row-grid">
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobB-bonus">Annual Bonuses</label>
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="jobB-bonus" min="0" value="7000" aria-label="Job B Annual Bonuses" />
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobB-match">Retirement Match (%)</label>
+              <div class="input-symbol-wrapper percent-wrapper">
+                <input type="number" id="jobB-match" min="0" max="100" value="4" aria-label="Job B Retirement Match Percentage" />
+                <span class="percent-symbol">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-row-grid">
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobB-benefits">Health Premium (Annual)</label>
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="jobB-benefits" min="0" value="2400" aria-label="Job B Health Insurance Premium" />
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="jobB-commute">Commute Cost (Annual)</label>
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="jobB-commute" min="0" value="1500" aria-label="Job B Commute Costs" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="jobB-hours">Hours worked per Week</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="jobB-hours" min="1" max="168" value="45" aria-label="Job B Hours worked per week" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="salary-increase-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <!-- PANEL 1 RESULTS: Basic Hike & Inflation -->
+    <div id="results-panel-basic">
+      <h3 class="results-heading">Salary Increase Breakdown</h3>
+
+      <div class="results-hero-grid" style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" style="padding: var(--space-4) var(--space-5); background: var(--color-bg-base); border-left: 4px solid var(--color-primary);">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">New Salary Rate</span>
+          <div id="res-basic-new-salary" style="font-size: 2.25rem; font-weight: 800; color: var(--color-text-base); line-height: 1.2; margin-top: 2px;">$68,250</div>
+          <span id="res-basic-new-frequency" style="font-size: 0.85rem; color: var(--color-text-muted);">/ year</span>
+        </Card>
+      </div>
+
+      <div class="comparison-cards-grid" style="margin-bottom: var(--space-6);">
+        <div class="comparison-card" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+          <span class="metric-label" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Nominal Annual Raise</span>
+          <div class="metric-val text-success" id="res-basic-gross-raise" style="font-size: 1.5rem; font-weight: 800; margin-top: 2px;">+$3,250</div>
+          <div class="metric-label" id="res-basic-percent-calc" style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px;">(5.0% increase)</div>
+        </div>
+
+        <div class="comparison-card" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+          <span class="metric-label" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Net After-Tax Hike</span>
+          <div class="metric-val text-primary" id="res-basic-net-raise" style="font-size: 1.5rem; font-weight: 800; margin-top: 2px;">+$2,438</div>
+          <div class="metric-label" id="res-basic-tax-deduction" style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px;">(25% tax rate)</div>
+        </div>
+      </div>
+
+      <!-- Real Purchasing Power Alert Box -->
+      <div id="inflation-alert-container" style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" id="inflation-alert-card" style="padding: var(--space-4) var(--space-5);">
+          <h4 id="inflation-alert-title" style="margin: 0 0 6px 0; font-size: 1rem; font-weight: 700;">Real Salary Adjustment</h4>
+          <p id="inflation-alert-desc" style="margin: 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);"></p>
+        </Card>
+      </div>
+
+      <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3);">Periodic Pay Matrix</h4>
+      <div class="table-container" style="margin-bottom: var(--space-4); overflow-x: auto;">
+        <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+              <th style="padding: var(--space-2) var(--space-3);">Period</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right;">Current Pay</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-success);">Raise Amount</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right;">New Pay</th>
+            </tr>
+          </thead>
+          <tbody id="pay-matrix-body">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 2 RESULTS: Job Offer Comparison -->
+    <div id="results-panel-compare" class="hidden">
+      <h3 class="results-heading">Job Offer Comparison</h3>
+
+      <div class="comparison-cards-grid" style="margin-bottom: var(--space-6);">
+        <!-- Job A Result Card -->
+        <div class="comparison-card" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); position: relative;">
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--color-primary); position: absolute; top: var(--space-4); right: var(--space-4);"></div>
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Job A (Current)</span>
+          <h4 style="margin: var(--space-1) 0; font-size: 1.15rem; font-weight: 700;">True Annual value</h4>
+          <div class="metric-val text-primary" id="res-compare-jobA-val" style="font-size: 1.75rem; font-weight: 800;">$67,950</div>
+          <div class="metric-label" id="res-compare-jobA-hourly" style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: var(--space-2);">Effective Rate: $32.67 / hr</div>
+        </div>
+
+        <!-- Job B Result Card -->
+        <div class="comparison-card" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); position: relative;">
+          <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--color-accent); position: absolute; top: var(--space-4); right: var(--space-4);"></div>
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Job B (New Offer)</span>
+          <h4 style="margin: var(--space-1) 0; font-size: 1.15rem; font-weight: 700;">True Annual value</h4>
+          <div class="metric-val text-accent" id="res-compare-jobB-val" style="font-size: 1.75rem; font-weight: 800;">$73,500</div>
+          <div class="metric-label" id="res-compare-jobB-hourly" style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: var(--space-2);">Effective Rate: $31.41 / hr</div>
+        </div>
+      </div>
+
+      <!-- Dynamic Verdict Banner -->
+      <div id="verdict-banner" style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" style="border-left: 4px solid var(--color-accent); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+          <h4 style="margin: 0 0 4px 0; font-weight: 700; font-size: 1rem; color: var(--color-text-base);">Which Offer Wins?</h4>
+          <p id="verdict-text" style="margin: 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);"></p>
+        </Card>
+      </div>
+
+      <!-- Comparison Chart -->
+      <div class="chart-container" style="margin-top: var(--space-6);">
+        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-4); text-align: center;">Total Compensation Comparison</h4>
+        <div style="display: flex; justify-content: center; align-items: flex-end; height: 200px; gap: 40px; border-bottom: 2px solid var(--color-border); padding-bottom: 10px; margin-bottom: 25px;">
+          <!-- Bar Job A -->
+          <div style="display: flex; flex-direction: column; align-items: center; width: 80px;">
+            <div id="chart-bar-jobA" style="width: 100%; background: var(--color-primary); border-radius: var(--radius-sm) var(--radius-sm) 0 0; transition: height 0.3s ease; height: 100px;"></div>
+            <span style="font-size: 0.8rem; font-weight: 700; margin-top: 8px;">Job A</span>
+          </div>
+          <!-- Bar Job B -->
+          <div style="display: flex; flex-direction: column; align-items: center; width: 80px;">
+            <div id="chart-bar-jobB" style="width: 100%; background: var(--color-accent); border-radius: var(--radius-sm) var(--radius-sm) 0 0; transition: height 0.3s ease; height: 120px;"></div>
+            <span style="font-size: 0.8rem; font-weight: 700; margin-top: 8px;">Job B</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSalaryCalculator() {
+    // Mode toggling
+    const modeSelect = document.getElementById('salary-calc-type') as HTMLSelectElement;
+    const panelBasic = document.getElementById('panel-basic');
+    const panelCompare = document.getElementById('panel-compare');
+    const resPanelBasic = document.getElementById('results-panel-basic');
+    const resPanelCompare = document.getElementById('results-panel-compare');
+
+    if (!modeSelect || !panelBasic || !panelCompare || !resPanelBasic || !resPanelCompare) return;
+
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      if (mode === 'basic') {
+        panelBasic.classList.remove('hidden');
+        panelCompare.classList.add('hidden');
+        resPanelBasic.classList.remove('hidden');
+        resPanelCompare.classList.add('hidden');
+      } else {
+        panelBasic.classList.add('hidden');
+        panelCompare.classList.remove('hidden');
+        resPanelBasic.classList.add('hidden');
+        resPanelCompare.classList.remove('hidden');
+      }
+      calculateAll();
+    });
+
+    // Panel 1 inputs
+    const basicSalaryInput = document.getElementById('basic-salary') as HTMLInputElement;
+    const basicSalarySlider = document.getElementById('basic-salary-slider') as HTMLInputElement;
+    const salaryFrequency = document.getElementById('salary-frequency') as HTMLSelectElement;
+    const hoursGroup = document.getElementById('group-hours-worked') as HTMLDivElement;
+    const hoursInput = document.getElementById('salary-hours-weekly') as HTMLInputElement;
+    const raiseType = document.getElementById('salary-raise-type') as HTMLSelectElement;
+    const raiseValLabel = document.getElementById('raise-val-label') as HTMLLabelElement;
+    const raiseValSymbol = document.getElementById('raise-val-symbol') as HTMLSpanElement;
+    const raiseValInput = document.getElementById('salary-raise-val') as HTMLInputElement;
+    const inflationInput = document.getElementById('salary-inflation') as HTMLInputElement;
+    const taxInput = document.getElementById('salary-tax-rate') as HTMLInputElement;
+
+    // Panel 1 sliders sync
+    if (basicSalaryInput && basicSalarySlider) {
+      basicSalaryInput.addEventListener('input', () => {
+        basicSalarySlider.value = basicSalaryInput.value;
+        calculateAll();
+      });
+      basicSalarySlider.addEventListener('input', () => {
+        basicSalaryInput.value = basicSalarySlider.value;
+        calculateAll();
+      });
+    }
+
+    // Toggle hours visibility
+    salaryFrequency.addEventListener('change', () => {
+      if (salaryFrequency.value === 'hourly') {
+        hoursGroup.classList.remove('hidden');
+      } else {
+        hoursGroup.classList.add('hidden');
+      }
+      calculateAll();
+    });
+
+    // Toggle raise labels
+    raiseType.addEventListener('change', () => {
+      if (raiseType.value === 'percent') {
+        raiseValLabel.textContent = 'Raise Percent';
+        raiseValSymbol.textContent = '%';
+        raiseValInput.value = '5';
+      } else {
+        raiseValLabel.textContent = 'Raise Amount';
+        raiseValSymbol.textContent = '$';
+        raiseValInput.value = '3000';
+      }
+      calculateAll();
+    });
+
+    // Event listener array for recalculating
+    const recalculateInputs = [
+      basicSalaryInput, salaryFrequency, hoursInput, raiseType, 
+      raiseValInput, inflationInput, taxInput
+    ];
+    recalculateInputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Panel 2 Job offer comparison
+    const tabBtnJobA = document.getElementById('compare-btn-jobA') as HTMLButtonElement;
+    const tabBtnJobB = document.getElementById('compare-btn-jobB') as HTMLButtonElement;
+    const panelJobA = document.getElementById('compare-panel-jobA') as HTMLDivElement;
+    const panelJobB = document.getElementById('compare-panel-jobB') as HTMLDivElement;
+
+    if (tabBtnJobA && tabBtnJobB && panelJobA && panelJobB) {
+      tabBtnJobA.addEventListener('click', () => {
+        tabBtnJobA.classList.add('active');
+        tabBtnJobB.classList.remove('active');
+        panelJobA.classList.remove('hidden');
+        panelJobB.classList.add('hidden');
+      });
+      tabBtnJobB.addEventListener('click', () => {
+        tabBtnJobB.classList.add('active');
+        tabBtnJobA.classList.remove('active');
+        panelJobB.classList.remove('hidden');
+        panelJobA.classList.add('hidden');
+      });
+    }
+
+    // Panel 2 inputs
+    const jobABase = document.getElementById('jobA-base') as HTMLInputElement;
+    const jobABonus = document.getElementById('jobA-bonus') as HTMLInputElement;
+    const jobAMatch = document.getElementById('jobA-match') as HTMLInputElement;
+    const jobABenefits = document.getElementById('jobA-benefits') as HTMLInputElement;
+    const jobACommute = document.getElementById('jobA-commute') as HTMLInputElement;
+    const jobAHours = document.getElementById('jobA-hours') as HTMLInputElement;
+
+    const jobBBase = document.getElementById('jobB-base') as HTMLInputElement;
+    const jobBBonus = document.getElementById('jobB-bonus') as HTMLInputElement;
+    const jobBMatch = document.getElementById('jobB-match') as HTMLInputElement;
+    const jobBBenefits = document.getElementById('jobB-benefits') as HTMLInputElement;
+    const jobBCommute = document.getElementById('jobB-commute') as HTMLInputElement;
+    const jobBHours = document.getElementById('jobB-hours') as HTMLInputElement;
+
+    const compareInputs = [
+      jobABase, jobABonus, jobAMatch, jobABenefits, jobACommute, jobAHours,
+      jobBBase, jobBBonus, jobBMatch, jobBBenefits, jobBCommute, jobBHours
+    ];
+    compareInputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('salary-increase-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        // Reset basic panel
+        basicSalaryInput.value = '65000';
+        basicSalarySlider.value = '65000';
+        salaryFrequency.value = 'annual';
+        hoursGroup.classList.add('hidden');
+        hoursInput.value = '40';
+        raiseType.value = 'percent';
+        raiseValLabel.textContent = 'Raise Percent';
+        raiseValSymbol.textContent = '%';
+        raiseValInput.value = '5';
+        inflationInput.value = '3.5';
+        taxInput.value = '25';
+
+        // Reset compare panel
+        jobABase.value = '65000';
+        jobABonus.value = '5000';
+        jobAMatch.value = '3';
+        jobABenefits.value = '1200';
+        jobACommute.value = '800';
+        jobAHours.value = '40';
+
+        jobBBase.value = '75000';
+        jobBBonus.value = '7000';
+        jobBMatch.value = '4';
+        jobBBenefits.value = '2400';
+        jobBCommute.value = '1500';
+        jobBHours.value = '45';
+
+        tabBtnJobA.classList.add('active');
+        tabBtnJobB.classList.remove('active');
+        panelJobA.classList.remove('hidden');
+        panelJobB.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    // Currency symbol updating
+    const currencySelect = document.getElementById('salary-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'CNY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function formatPreciseCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      if (mode === 'basic') {
+        calculateBasic();
+      } else {
+        calculateCompare();
+      }
+    }
+
+    function calculateBasic() {
+      const salary = parseFloat(basicSalaryInput.value) || 0;
+      const freq = salaryFrequency.value;
+      const hours = parseFloat(hoursInput.value) || 40;
+      const rType = raiseType.value;
+      const rVal = parseFloat(raiseValInput.value) || 0;
+      const inflation = parseFloat(inflationInput.value) || 0;
+      const tax = parseFloat(taxInput.value) || 0;
+
+      // Factors to annualize
+      let factor = 1;
+      if (freq === 'monthly') factor = 12;
+      else if (freq === 'biweekly') factor = 26;
+      else if (freq === 'weekly') factor = 52;
+      else if (freq === 'hourly') factor = hours * 52;
+
+      const annualCurrent = salary * factor;
+      let annualRaise = 0;
+      let actualPercent = 0;
+
+      if (rType === 'percent') {
+        annualRaise = annualCurrent * (rVal / 100);
+        actualPercent = rVal;
+      } else {
+        annualRaise = rVal * factor;
+        actualPercent = annualCurrent > 0 ? (annualRaise / annualCurrent) * 100 : 0;
+      }
+
+      const annualNew = annualCurrent + annualRaise;
+      const netAnnualRaise = annualRaise * (1 - tax / 100);
+      
+      // Inflation adjustments (Real vs Nominal)
+      // Real New Salary in base year dollars: New Salary / (1 + inflation / 100)
+      const realNewSalary = annualNew / (1 + inflation / 100);
+      const realIncrease = realNewSalary - annualCurrent;
+      const realPercentChange = annualCurrent > 0 ? (realIncrease / annualCurrent) * 100 : 0;
+
+      // Update basic result fields
+      const newSalaryFreq = document.getElementById('res-basic-new-salary');
+      const newSalaryLabel = document.getElementById('res-basic-new-frequency');
+      const grossRaiseEl = document.getElementById('res-basic-gross-raise');
+      const percentCalcEl = document.getElementById('res-basic-percent-calc');
+      const netRaiseEl = document.getElementById('res-basic-net-raise');
+      const taxDeductionEl = document.getElementById('res-basic-tax-deduction');
+
+      if (newSalaryFreq) newSalaryFreq.textContent = formatCurrency(freq === 'hourly' ? salary + (rType === 'percent' ? salary * (rVal / 100) : rVal) : annualNew / factor);
+      if (newSalaryLabel) newSalaryLabel.textContent = `/ ${freq}`;
+      if (grossRaiseEl) grossRaiseEl.textContent = `+${formatCurrency(annualRaise)}`;
+      if (percentCalcEl) percentCalcEl.textContent = `(${actualPercent.toFixed(1)}% nominal increase)`;
+      if (netRaiseEl) netRaiseEl.textContent = `+${formatCurrency(netAnnualRaise)}`;
+      if (taxDeductionEl) taxDeductionEl.textContent = `(${tax}% tax rate: +${formatCurrency(netAnnualRaise / factor)}/${freq})`;
+
+      // Update inflation card
+      const alertCard = document.getElementById('inflation-alert-card');
+      const alertTitle = document.getElementById('inflation-alert-title');
+      const alertDesc = document.getElementById('inflation-alert-desc');
+
+      if (alertCard && alertTitle && alertDesc) {
+        if (realIncrease > 0) {
+          alertCard.style.borderLeft = '4px solid var(--color-success)';
+          alertCard.style.background = 'var(--color-bg-base)';
+          alertTitle.textContent = 'Beat Inflation! \u2705';
+          alertTitle.style.color = 'var(--color-success)';
+          alertDesc.textContent = `Your purchasing power will grow by ${formatCurrency(realIncrease)} annually (+${realPercentChange.toFixed(1)}% real raise) after adjusting for a ${inflation}% inflation rate.`;
+        } else if (realIncrease < 0) {
+          alertCard.style.borderLeft = '4px solid var(--color-danger, #ef4444)';
+          alertCard.style.background = 'var(--color-bg-base)';
+          alertTitle.textContent = 'Purchasing Power Loss! \u26A0';
+          alertTitle.style.color = 'var(--color-danger, #ef4444)';
+          alertDesc.textContent = `With ${inflation}% inflation, your real purchasing power actually shrinks by ${formatCurrency(Math.abs(realIncrease))} annually (${realPercentChange.toFixed(1)}% real decrease) despite the pay raise.`;
+        } else {
+          alertCard.style.borderLeft = '4px solid var(--color-border)';
+          alertTitle.textContent = 'Breakeven';
+          alertTitle.style.color = 'var(--color-text-base)';
+          alertDesc.textContent = `Your salary increase matches inflation exactly. Your net purchasing power remains unchanged.`;
+        }
+      }
+
+      // Populate periodic matrix
+      const matrixBody = document.getElementById('pay-matrix-body');
+      if (matrixBody) {
+        const rows = [
+          { name: 'Annually', div: 1 },
+          { name: 'Monthly', div: 12 },
+          { name: 'Bi-Weekly', div: 26 },
+          { name: 'Weekly', div: 52 },
+          { name: 'Hourly', div: hours * 52 }
+        ];
+
+        matrixBody.innerHTML = '';
+        rows.forEach(r => {
+          const cur = annualCurrent / r.div;
+          const rse = annualRaise / r.div;
+          const nxt = annualNew / r.div;
+
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid var(--color-border)';
+          tr.innerHTML = `
+            <td style="padding: var(--space-3) var(--space-3); font-weight:600;">${r.name}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right;">${formatPreciseCurrency(cur)}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; color: var(--color-success); font-weight:500;">+${formatPreciseCurrency(rse)}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; font-weight:600;">${formatPreciseCurrency(nxt)}</td>
+          `;
+          matrixBody.appendChild(tr);
+        });
+      }
+    }
+
+    function calculateCompare() {
+      // Job A Values
+      const jABase = parseFloat(jobABase.value) || 0;
+      const jABonus = parseFloat(jobABonus.value) || 0;
+      const jAMatch = parseFloat(jobAMatch.value) || 0;
+      const jABenefits = parseFloat(jobABenefits.value) || 0;
+      const jACommute = parseFloat(jobACommute.value) || 0;
+      const jAHours = parseFloat(jobAHours.value) || 40;
+
+      // Job B Values
+      const jBBase = parseFloat(jobBBase.value) || 0;
+      const jBBonus = parseFloat(jobBBonus.value) || 0;
+      const jBMatch = parseFloat(jobBMatch.value) || 0;
+      const jBBenefits = parseFloat(jobBBenefits.value) || 0;
+      const jBCommute = parseFloat(jobBCommute.value) || 0;
+      const jBHours = parseFloat(jobBHours.value) || 40;
+
+      // True Annual Calculations
+      const valA = jABase + jABonus + (jABase * jAMatch / 100) - jABenefits - jACommute;
+      const valB = jBBase + jBBonus + (jBBase * jBMatch / 100) - jBBenefits - jBCommute;
+
+      const hourlyA = valA / (jAHours * 52);
+      const hourlyB = valB / (jBHours * 52);
+
+      // Update UI elements
+      const resValA = document.getElementById('res-compare-jobA-val');
+      const resValB = document.getElementById('res-compare-jobB-val');
+      const resHourlyA = document.getElementById('res-compare-jobA-hourly');
+      const resHourlyB = document.getElementById('res-compare-jobB-hourly');
+
+      if (resValA) resValA.textContent = formatCurrency(valA);
+      if (resValB) resValB.textContent = formatCurrency(valB);
+      if (resHourlyA) resHourlyA.textContent = `Effective Rate: ${formatPreciseCurrency(hourlyA)} / hr`;
+      if (resHourlyB) resHourlyB.textContent = `Effective Rate: ${formatPreciseCurrency(hourlyB)} / hr`;
+
+      // Update Verdict Banner
+      const verdictBanner = document.getElementById('verdict-text');
+      if (verdictBanner) {
+        const diffVal = Math.abs(valA - valB);
+        const percentDiff = valA > 0 ? (diffVal / valA) * 100 : 0;
+        
+        if (valB > valA) {
+          const hourlyWinner = hourlyB > hourlyA ? 'higher' : 'lower';
+          verdictBanner.textContent = `Job B offers a higher true annual compensation by ${formatCurrency(diffVal)} (+${percentDiff.toFixed(1)}%). Note: Job B's effective hourly rate is ${formatPreciseCurrency(hourlyB)} vs Job A's ${formatPreciseCurrency(hourlyA)} (${hourlyWinner} hourly pay due to weekly hours differences).`;
+        } else if (valA > valB) {
+          const hourlyWinner = hourlyA > hourlyB ? 'higher' : 'lower';
+          verdictBanner.textContent = `Job A remains the financially superior choice by ${formatCurrency(diffVal)} annually. Job B's effective hourly rate is ${formatPreciseCurrency(hourlyB)} compared to Job A's ${formatPreciseCurrency(hourlyA)}.`;
+        } else {
+          verdictBanner.textContent = `Both job packages offer identical total compensation of ${formatCurrency(valA)} annually.`;
+        }
+      }
+
+      // Update SVG Bar heights
+      const barA = document.getElementById('chart-bar-jobA');
+      const barB = document.getElementById('chart-bar-jobB');
+      if (barA && barB) {
+        const maxVal = Math.max(valA, valB, 10000);
+        const heightA = (valA / maxVal) * 160; // Max height is 160px
+        const heightB = (valB / maxVal) * 160;
+        barA.style.height = `${heightA}px`;
+        barB.style.height = `${heightB}px`;
+      }
+    }
+
+    // Listen to clipboard event from layout
+    window.addEventListener('copy-calculator-results', () => {
+      const mode = modeSelect.value;
+      let text = '';
+      if (mode === 'basic') {
+        text = `Salary Increase Calculator Projections:\n` +
+               `Current Pay Rate: ${basicSalaryInput.value} (${salaryFrequency.value})\n` +
+               `Raise Amount: ${document.getElementById('res-basic-gross-raise')?.textContent}\n` +
+               `New Salary: ${document.getElementById('res-basic-new-salary')?.textContent} / ${salaryFrequency.value}\n` +
+               `Real purchasing power: ${document.getElementById('res-basic-net-raise')?.textContent} after tax/inflation.`;
+      } else {
+        text = `Job Offer Comparison:\n` +
+               `Job A (Current) Total Annual Value: ${document.getElementById('res-compare-jobA-val')?.textContent} (Hourly: ${document.getElementById('res-compare-jobA-hourly')?.textContent})\n` +
+               `Job B (Offer) Total Annual Value: ${document.getElementById('res-compare-jobB-val')?.textContent} (Hourly: ${document.getElementById('res-compare-jobB-hourly')?.textContent})\n` +
+               `Verdict: ${document.getElementById('verdict-text')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Run initial calculations
+    calculateAll();
+  }
+
+  // Bind lifecycle listeners
+  document.addEventListener('DOMContentLoaded', initSalaryCalculator);
+  document.addEventListener('astro:after-swap', initSalaryCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .small-wrapper {
+    width: 100px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    padding: 0 4px;
+  }
+
+  /* Layout grids */
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .calc-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .toggle-tab-btn {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .toggle-tab-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .job-subpanel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

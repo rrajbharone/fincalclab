@@ -1,0 +1,795 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+---
+
+<CalculatorLayout
+  title="Inflation Impact Calculator"
+  description="Calculate the compounding decay of purchasing power over time, understand the impact of inflation on your cash savings, and project the future sum needed to maintain your buying power."
+  category="Salary & Tax"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="inflation-calc">
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="inflation-currency-select">Currency</label>
+        <select id="inflation-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="NZD">NZD (NZ$) - New Zealand Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Savings / Capital Amount -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="inflation-principal">Starting Savings / Capital</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="inflation-principal" min="100" max="10000000" value="10000" aria-label="Starting Savings" />
+        </div>
+      </div>
+      <input type="range" id="inflation-principal-slider" min="1000" max="250000" step="5000" value="10000" class="slider-range" aria-label="Starting Savings Slider" />
+      <div class="slider-ticks">
+        <span>1k</span>
+        <span>125k</span>
+        <span>250k</span>
+      </div>
+    </div>
+
+    <!-- Expected Inflation Rate -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="inflation-rate">Expected Annual Inflation Rate</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="inflation-rate" min="0.1" max="50" step="0.1" value="3.5" aria-label="Annual Inflation Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="inflation-rate-slider" min="0.5" max="15" step="0.1" value="3.5" class="slider-range" aria-label="Inflation Rate Slider" />
+      <div class="slider-ticks">
+        <span>0.5%</span>
+        <span>7.8%</span>
+        <span>15%</span>
+      </div>
+    </div>
+
+    <!-- Inflation Presets -->
+    <div class="input-group">
+      <label class="preset-label" style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted);">Inflation Rate Presets</label>
+      <div class="presets-btn-row">
+        <button type="button" class="preset-toggle-btn active" data-preset="custom">Custom</button>
+        <button type="button" class="preset-toggle-btn" data-preset="us-historic" data-value="3.2">US Historic (3.2%)</button>
+        <button type="button" class="preset-toggle-btn" data-preset="eu-historic" data-value="2.1">Eurozone (2.1%)</button>
+        <button type="button" class="preset-toggle-btn" data-preset="high-inflation" data-value="8.0">High Era (8.0%)</button>
+      </div>
+    </div>
+
+    <!-- Time Horizon -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="inflation-years">Time Horizon (Years)</label>
+        <div class="input-symbol-wrapper small-wrapper">
+          <input type="number" id="inflation-years" min="1" max="100" value="15" aria-label="Years" />
+        </div>
+      </div>
+      <input type="range" id="inflation-years-slider" min="1" max="50" step="1" value="15" class="slider-range" aria-label="Years Slider" />
+      <div class="slider-ticks">
+        <span>1 yr</span>
+        <span>25 yrs</span>
+        <span>50 yrs</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="inputs-actions">
+      <Button id="inflation-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Inflation Breakdown</h3>
+
+    <div class="inflation-takehome-hero">
+      <div class="hero-takehome-item">
+        <span class="hero-label">Future Purchasing Power</span>
+        <h2 class="hero-val text-danger" id="inflation-future-power">$0.00</h2>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-takehome-item">
+        <span class="hero-label">Total Value Lost</span>
+        <h3 class="hero-val" id="inflation-total-loss" style="margin-top: 0; font-size: 1.5rem; font-weight: 800; color: var(--color-text-base);">$0.00</h3>
+      </div>
+    </div>
+
+    <!-- Line Chart wrapper -->
+    <div class="chart-wrapper" style="margin-top: var(--space-4);">
+      <h4 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-3);">Purchasing Power Over Time</h4>
+      <div class="chart-container" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+        <svg id="inflation-decay-svg" viewBox="0 0 500 280" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <!-- Gridlines and ticks -->
+          <g id="decay-gridlines"></g>
+          <!-- Chart Paths -->
+          <path id="decay-path-curve" fill="none" stroke="var(--color-error)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Trace statistics metrics -->
+    <div class="tax-steps-accordion" style="margin-top: var(--space-4);">
+      <h4 class="sub-section-title">Key Inflation Metrics</h4>
+      <div class="tax-steps-table">
+        <div class="table-row">
+          <span>Initial Cash Value</span>
+          <span class="font-semibold" id="step-initial-cash">$0</span>
+        </div>
+        <div class="table-row">
+          <span>Cumulative Inflation Rate</span>
+          <span class="font-semibold text-danger" id="step-cumulative-rate">0.0%</span>
+        </div>
+        <div class="table-row">
+          <span>Required Future Sum</span>
+          <span class="font-semibold text-primary" id="step-required-sum">$0</span>
+        </div>
+        <div class="table-row divider">
+          <span>Buying Power Loss %</span>
+          <span class="font-semibold text-danger" id="step-loss-percent">0.0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Year-by-year Breakdown -->
+    <div class="chart-container" style="margin-top: var(--space-6);">
+      <h4 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-3);">Year-by-Year Depreciation Table</h4>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Purchasing Power</th>
+              <th>Total Value Lost</th>
+              <th>Cumulative Inflation</th>
+            </tr>
+          </thead>
+          <tbody id="inflation-breakdown-body">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initInflationCalculator() {
+    const root = document.getElementById('inflation-calc');
+    if (!root) return;
+
+    // Currency config
+    const CURRENCIES: Record<string, { symbol: string; locale: string }> = {
+      USD: { symbol: '$', locale: 'en-US' },
+      EUR: { symbol: '€', locale: 'de-DE' },
+      GBP: { symbol: '£', locale: 'en-GB' },
+      INR: { symbol: '₹', locale: 'en-IN' },
+      CAD: { symbol: 'C$', locale: 'en-CA' },
+      AUD: { symbol: 'A$', locale: 'en-AU' },
+      JPY: { symbol: '¥', locale: 'ja-JP' },
+      SGD: { symbol: 'S$', locale: 'en-SG' },
+      CHF: { symbol: 'CHF', locale: 'de-CH' },
+      NZD: { symbol: 'NZ$', locale: 'en-NZ' }
+    };
+
+    const currencySelect = document.getElementById('inflation-currency-select') as HTMLSelectElement;
+
+    // Inputs
+    const principalInput = document.getElementById('inflation-principal') as HTMLInputElement;
+    const principalSlider = document.getElementById('inflation-principal-slider') as HTMLInputElement;
+    const rateInput = document.getElementById('inflation-rate') as HTMLInputElement;
+    const rateSlider = document.getElementById('inflation-rate-slider') as HTMLInputElement;
+    const yearsInput = document.getElementById('inflation-years') as HTMLInputElement;
+    const yearsSlider = document.getElementById('inflation-years-slider') as HTMLInputElement;
+
+    // Reset & Preset elements
+    const resetBtn = document.getElementById('inflation-reset');
+    const presetButtons = root.querySelectorAll('.preset-toggle-btn');
+
+    const getSelectedCurrency = () => currencySelect ? currencySelect.value : 'USD';
+
+    const formatCurrency = (val: number) => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      return new Intl.NumberFormat(config.locale, {
+        style: 'currency',
+        currency: curr,
+        maximumFractionDigits: 0
+      }).format(val);
+    };
+
+    const updateCurrencyLabels = () => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      document.querySelectorAll('.currency-symbol').forEach((el) => {
+        el.textContent = config.symbol;
+      });
+    };
+
+    const drawLineChart = (points: { x: number; y: number }[], years: number, initialVal: number) => {
+      const chartSvg = document.getElementById('inflation-decay-svg') as unknown as SVGSVGElement;
+      if (!chartSvg) return;
+
+      const width = 500;
+      const height = 280;
+      const paddingLeft = 60;
+      const paddingRight = 20;
+      const paddingTop = 20;
+      const paddingBottom = 40;
+
+      const chartWidth = width - paddingLeft - paddingRight;
+      const chartHeight = height - paddingTop - paddingBottom;
+
+      const getX = (yr: number) => paddingLeft + (yr / years) * chartWidth;
+      const getY = (val: number) => paddingTop + chartHeight - (val / initialVal) * chartHeight;
+
+      // Draw Path
+      let pathD = `M ${getX(0)} ${getY(points[0].y)}`;
+      for (let i = 1; i < points.length; i++) {
+        pathD += ` L ${getX(points[i].x)} ${getY(points[i].y)}`;
+      }
+
+      const decayPath = document.getElementById('decay-path-curve');
+      if (decayPath) decayPath.setAttribute('d', pathD);
+
+      // Gridlines and labels
+      const gridlinesContainer = document.getElementById('decay-gridlines');
+      if (gridlinesContainer) {
+        let gridHtml = '';
+        const yAxisTicks = 4;
+
+        // Y-axis gridlines and labels
+        for (let i = 0; i <= yAxisTicks; i++) {
+          const val = (initialVal / yAxisTicks) * i;
+          const y = getY(val);
+          
+          const curr = getSelectedCurrency();
+          const config = CURRENCIES[curr] || CURRENCIES.USD;
+          let label = '';
+          if (val >= 1000000) {
+            label = `${config.symbol}${(val / 1000000).toFixed(1)}M`;
+          } else if (val >= 1000) {
+            label = `${config.symbol}${(val / 1000).toFixed(0)}k`;
+          } else {
+            label = `${config.symbol}${val.toFixed(0)}`;
+          }
+
+          gridHtml += `
+            <line x1="${paddingLeft}" y1="${y}" x2="${width - paddingRight}" y2="${y}" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="4,4" />
+            <text x="${paddingLeft - 10}" y="${y + 4}" font-size="10" font-family="var(--font-sans)" font-weight="500" fill="var(--color-text-light)" text-anchor="end">${label}</text>
+          `;
+        }
+
+        // X-axis gridlines and labels
+        const xAxisTicks = Math.min(years, 5);
+        for (let i = 0; i <= xAxisTicks; i++) {
+          const tickYr = Math.round((years / xAxisTicks) * i);
+          const x = getX(tickYr);
+          gridHtml += `
+            <line x1="${x}" y1="${paddingTop}" x2="${x}" y2="${height - paddingBottom}" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="4,4" />
+            <text x="${x}" y="${height - paddingBottom + 18}" font-size="10" font-family="var(--font-sans)" font-weight="500" fill="var(--color-text-light)" text-anchor="middle">Yr ${tickYr}</text>
+          `;
+        }
+
+        gridlinesContainer.innerHTML = gridHtml;
+      }
+    };
+
+    const calculateResults = () => {
+      const principal = Math.max(100, parseFloat(principalInput.value) || 0);
+      const inflationRate = Math.max(0.1, parseFloat(rateInput.value) || 0);
+      const years = Math.min(100, Math.max(1, parseFloat(yearsInput.value) || 0));
+
+      const rDecimal = inflationRate / 100;
+
+      // 1. Calculations
+      const futurePurchasingPower = principal * Math.pow(1 + rDecimal, -years);
+      const totalLoss = principal - futurePurchasingPower;
+      const lossPercentage = (1 - Math.pow(1 + rDecimal, -years)) * 100;
+      const requiredFutureSum = principal * Math.pow(1 + rDecimal, years);
+      const cumulativeInflation = (Math.pow(1 + rDecimal, years) - 1) * 100;
+
+      // 2. Update Hero values
+      const powerEl = document.getElementById('inflation-future-power');
+      const lossEl = document.getElementById('inflation-total-loss');
+      if (powerEl) powerEl.textContent = formatCurrency(futurePurchasingPower);
+      if (lossEl) lossEl.textContent = formatCurrency(totalLoss) + ` (${lossPercentage.toFixed(1)}%)`;
+
+      // 3. Key Metrics
+      const stepInitialEl = document.getElementById('step-initial-cash');
+      const stepCumulativeEl = document.getElementById('step-cumulative-rate');
+      const stepRequiredEl = document.getElementById('step-required-sum');
+      const stepLossEl = document.getElementById('step-loss-percent');
+
+      if (stepInitialEl) stepInitialEl.textContent = formatCurrency(principal);
+      if (stepCumulativeEl) stepCumulativeEl.textContent = cumulativeInflation.toFixed(1) + '%';
+      if (stepRequiredEl) stepRequiredEl.textContent = formatCurrency(requiredFutureSum);
+      if (stepLossEl) stepLossEl.textContent = lossPercentage.toFixed(1) + '%';
+
+      // 4. Build chart points and breakdown table
+      const points: { x: number; y: number }[] = [];
+      const tableBody = document.getElementById('inflation-breakdown-body');
+      if (tableBody) tableBody.innerHTML = '';
+
+      for (let yr = 0; yr <= years; yr++) {
+        const power = principal * Math.pow(1 + rDecimal, -yr);
+        points.push({ x: yr, y: power });
+
+        if (tableBody && (yr <= 10 || yr === years || yr % 5 === 0 || years <= 15)) {
+          const yrLoss = principal - power;
+          const cumInfl = (Math.pow(1 + rDecimal, yr) - 1) * 100;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>Year ${yr}</strong></td>
+            <td><strong>${formatCurrency(power)}</strong></td>
+            <td>${formatCurrency(yrLoss)}</td>
+            <td>${cumInfl.toFixed(1)}%</td>
+          `;
+          tableBody.appendChild(tr);
+        }
+      }
+
+      drawLineChart(points, years, principal);
+    };
+
+    // Preset selection logic
+    presetButtons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLButtonElement;
+        presetButtons.forEach((b) => b.classList.remove('active'));
+        target.classList.add('active');
+
+        const preset = target.getAttribute('data-preset');
+        if (preset !== 'custom') {
+          const val = target.getAttribute('data-value') || '3.5';
+          rateInput.value = val;
+          rateSlider.value = val;
+        }
+        calculateResults();
+      });
+    });
+
+    // Synchronize inputs & sliders
+    const setupSync = (input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) => {
+      const updateFromInput = () => {
+        let val = parseFloat(input.value);
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+        
+        if (isNaN(val)) val = min;
+        if (val < min) val = min;
+        if (val > max) val = max;
+
+        slider.value = String(val);
+        // Switch preset back to custom
+        const customBtn = root.querySelector('[data-preset="custom"]') as HTMLButtonElement;
+        if (customBtn) {
+          presetButtons.forEach((b) => b.classList.remove('active'));
+          customBtn.classList.add('active');
+        }
+
+        callback();
+      };
+
+      const updateFromSlider = () => {
+        input.value = slider.value;
+        // Switch preset back to custom
+        const customBtn = root.querySelector('[data-preset="custom"]') as HTMLButtonElement;
+        if (customBtn) {
+          presetButtons.forEach((b) => b.classList.remove('active'));
+          customBtn.classList.add('active');
+        }
+
+        callback();
+      };
+
+      input.addEventListener('change', updateFromInput);
+      slider.addEventListener('input', updateFromSlider);
+    };
+
+    setupSync(principalInput, principalSlider, calculateResults);
+    setupSync(rateInput, rateSlider, calculateResults);
+    setupSync(yearsInput, yearsSlider, calculateResults);
+
+    currencySelect.addEventListener('change', () => {
+      updateCurrencyLabels();
+      calculateResults();
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      principalInput.value = '10000';
+      principalSlider.value = '10000';
+      rateInput.value = '3.5';
+      rateSlider.value = '3.5';
+      yearsInput.value = '15';
+      yearsSlider.value = '15';
+      
+      presetButtons.forEach((b) => b.classList.remove('active'));
+      const customBtn = root.querySelector('[data-preset="custom"]') as HTMLButtonElement;
+      if (customBtn) customBtn.classList.add('active');
+
+      calculateResults();
+    });
+
+    // Copy event emitter
+    window.addEventListener('copy-calculator-results', () => {
+      const principal = parseFloat(principalInput.value) || 0;
+      const rate = parseFloat(rateInput.value) || 0;
+      const years = parseFloat(yearsInput.value) || 0;
+
+      const rDecimal = rate / 100;
+      const futurePurchasingPower = principal * Math.pow(1 + rDecimal, -years);
+      const totalLoss = principal - futurePurchasingPower;
+      const lossPercentage = (1 - Math.pow(1 + rDecimal, -years)) * 100;
+      const requiredFutureSum = principal * Math.pow(1 + rDecimal, years);
+      const cumulativeInflation = (Math.pow(1 + rDecimal, years) - 1) * 100;
+
+      const resultsText = `
+FinCalcLab.com - Inflation Impact Calculator Results
+---------------------------------------------------
+Selected Currency: ${getSelectedCurrency()}
+Initial Savings / Capital: ${formatCurrency(principal)}
+Expected Annual Inflation Rate: ${rate}%
+Time Horizon: ${years} years
+---------------------------------------------------
+Future Purchasing Power: ${formatCurrency(futurePurchasingPower)}
+Total Value Lost to Inflation: ${formatCurrency(totalLoss)} (${lossPercentage.toFixed(1)}%)
+Required Future Sum (to maintain value): ${formatCurrency(requiredFutureSum)}
+Cumulative Inflation Rate: ${cumulativeInflation.toFixed(1)}%
+      `;
+
+      navigator.clipboard.writeText(resultsText.trim()).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Initial run
+    updateCurrencyLabels();
+    calculateResults();
+  }
+
+  document.addEventListener('DOMContentLoaded', initInflationCalculator);
+  document.addEventListener('astro:after-swap', initInflationCalculator);
+</script>
+
+<style>
+  /* Local styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .small-wrapper {
+    width: 100px;
+  }
+
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    padding: 0 4px;
+  }
+
+  /* Preset buttons styling */
+  .presets-btn-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .preset-toggle-btn {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-1);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    text-align: center;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .preset-toggle-btn:hover {
+    border-color: var(--color-border-hover);
+    color: var(--color-text-base);
+  }
+
+  .preset-toggle-btn.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  /* Results styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .inflation-takehome-hero {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    gap: var(--space-5);
+    align-items: center;
+  }
+
+  .hero-takehome-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hero-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .hero-val {
+    font-size: 1.75rem;
+    font-weight: 850;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 50px;
+    background-color: var(--color-border);
+  }
+
+  /* Decaying Chart line */
+  #decay-path-curve {
+    stroke: var(--color-error);
+    filter: drop-shadow(0 4px 6px rgba(239, 68, 68, 0.15));
+  }
+
+  /* Table styling */
+  .tax-steps-table {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--color-bg-base);
+  }
+
+  .table-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .table-row:last-child {
+    border-bottom: none;
+  }
+
+  .table-row.divider {
+    border-top: 2px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+
+  .table-row.divider span {
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .data-table th, .data-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .data-table th {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Mobile responsive overrides */
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .presets-btn-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2);
+    }
+
+    .data-table {
+      min-width: 480px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .inflation-takehome-hero {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+    .hero-divider {
+      width: 100%;
+      height: 1px;
+    }
+  }
+</style>

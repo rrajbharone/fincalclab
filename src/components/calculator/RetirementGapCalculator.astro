@@ -1,0 +1,984 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Retirement Gap Calculator"
+  description="Determine the gap between your projected retirement savings and the nest egg required to maintain your lifestyle. Factor in inflation, pensions, and monthly savings."
+  category="Retirement"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="retirement-gap-calc">
+    
+    <!-- Tab Section: Toggle between Goals and Settings -->
+    <div class="calculator-mode-selector">
+      <label for="ret-calc-tab-select" class="sr-only">Choose Inputs Panel</label>
+      <select id="ret-calc-tab-select" class="currency-select" aria-label="Select Inputs Tab" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="goals" selected>1. Retirement Goals & Income</option>
+        <option value="savings">2. Savings & Investments</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="ret-currency-select">Currency</label>
+        <select id="ret-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PANEL 1: Goals & Income -->
+    <div id="panel-goals" class="calc-panel">
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="ret-current-age">Current Age</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="ret-current-age" min="1" max="100" value="30" aria-label="Current Age" />
+              <span class="percent-symbol">Yr</span>
+            </div>
+          </div>
+          <input type="range" id="ret-current-age-slider" min="15" max="80" step="1" value="30" class="slider-range" aria-label="Current Age Slider" />
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="ret-target-age">Retirement Age</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="ret-target-age" min="30" max="100" value="65" aria-label="Retirement Age" />
+              <span class="percent-symbol">Yr</span>
+            </div>
+          </div>
+          <input type="range" id="ret-target-age-slider" min="40" max="85" step="1" value="65" class="slider-range" aria-label="Retirement Age Slider" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ret-expectancy">Life Expectancy</label>
+          <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+            <input type="number" id="ret-expectancy" min="50" max="110" value="90" aria-label="Life Expectancy" />
+            <span class="percent-symbol">Yr</span>
+          </div>
+        </div>
+        <input type="range" id="ret-expectancy-slider" min="70" max="105" step="1" value="90" class="slider-range" aria-label="Life Expectancy Slider" />
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ret-desired-income">Desired Monthly Income <span style="font-size: 0.75rem; font-weight:normal; color:var(--color-text-light);">(Today's Value)</span></label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="ret-desired-income" min="0" value="5000" aria-label="Desired Monthly Income" />
+          </div>
+        </div>
+        <input type="range" id="ret-desired-income-slider" min="1000" max="25000" step="250" value="5000" class="slider-range" aria-label="Desired Monthly Income Slider" />
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ret-other-income">Other Monthly Income <span style="font-size: 0.75rem; font-weight:normal; color:var(--color-text-light);">(Pensions, Social Security)</span></label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="ret-other-income" min="0" value="1500" aria-label="Other Monthly Income" />
+          </div>
+        </div>
+        <input type="range" id="ret-other-income-slider" min="0" max="10000" step="100" value="1500" class="slider-range" aria-label="Other Monthly Income Slider" />
+      </div>
+    </div>
+
+    <!-- PANEL 2: Savings & Investments -->
+    <div id="panel-savings" class="calc-panel hidden">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ret-current-savings">Current Savings Balance</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="ret-current-savings" min="0" value="50000" aria-label="Current Savings Balance" />
+          </div>
+        </div>
+        <input type="range" id="ret-current-savings-slider" min="0" max="500000" step="5000" value="50000" class="slider-range" aria-label="Current Savings Slider" />
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ret-monthly-savings">Monthly Savings Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="ret-monthly-savings" min="0" value="50000" aria-label="Monthly Savings" style="display:none;" /> <!-- placeholder -->
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="ret-savings-value" min="0" value="500" aria-label="Monthly Savings Input" />
+            </div>
+          </div>
+        </div>
+        <input type="range" id="ret-monthly-savings-slider" min="0" max="5000" step="50" value="500" class="slider-range" aria-label="Monthly Savings Slider" />
+      </div>
+
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="ret-stepup">Annual Step-up</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="ret-stepup" min="0" max="30" step="0.5" value="3" aria-label="Annual Step-up Percentage" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="ret-inflation">Expected Inflation</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="ret-inflation" min="0" max="25" step="0.1" value="2.8" aria-label="Expected Inflation Rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="ret-return-pre">Return Pre-Retirement</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="ret-return-pre" min="1" max="25" step="0.1" value="7.5" aria-label="Pre-Retirement Annual Return" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="ret-return-post">Return Post-Retirement</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="ret-return-post" min="1" max="25" step="0.1" value="5.0" aria-label="Post-Retirement Annual Return" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="retirement-gap-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Retirement Gap Projections</h3>
+
+    <!-- Core Deficit/Surplus Block -->
+    <div id="results-banner-container" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="results-banner-card" style="padding: var(--space-4) var(--space-5);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Calculated Retirement Gap</span>
+        <div id="res-gap-value" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px;">$0</div>
+        <p id="res-gap-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);"></p>
+      </Card>
+    </div>
+
+    <div class="comparison-cards-grid" style="margin-bottom: var(--space-6);">
+      <div class="comparison-card" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="metric-label" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Nest Egg Needed</span>
+        <div class="metric-val text-primary" id="res-egg-needed" style="font-size: 1.5rem; font-weight: 800; margin-top: 2px;">$1,200,000</div>
+        <div class="metric-label" id="res-monthly-inflated" style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px;">($9,250 inflated monthly need)</div>
+      </div>
+
+      <div class="comparison-card" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="metric-label" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Nest Egg Projected</span>
+        <div class="metric-val text-success" id="res-egg-projected" style="font-size: 1.5rem; font-weight: 800; margin-top: 2px;">$850,000</div>
+        <div class="metric-label" id="res-runout-age" style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px;">(Run out of money at age 74)</div>
+      </div>
+    </div>
+
+    <!-- Actionable Remedies / Strategies Card -->
+    <div id="remedies-card-container" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <h4 style="margin: 0 0 6px 0; font-weight: 700; font-size: 1rem; color: var(--color-text-base);">Action Plan to Close Your Gap</h4>
+        <ul id="remedies-list" style="margin: 0; padding-left: var(--space-5); font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);">
+          <!-- Populated via JS -->
+        </ul>
+      </Card>
+    </div>
+
+    <!-- Interactive SVG Depletion Chart -->
+    <div class="chart-container" style="margin-top: var(--space-4); margin-bottom: var(--space-6);">
+      <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Retirement Balance Trajectory</h4>
+      <div id="svg-chart-wrapper" style="width: 100%; height: 200px; position: relative;">
+        <!-- Injected via JS -->
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-2); padding: 0 6px;">
+        <span id="chart-start-label">Age 30</span>
+        <span id="chart-retire-label">Age 65 (Retire)</span>
+        <span id="chart-end-label">Age 90</span>
+      </div>
+    </div>
+
+    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3);">Yearly Projection Schedule</h4>
+    <div class="table-container" style="margin-bottom: var(--space-4); overflow-x: auto;">
+      <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+            <th style="padding: var(--space-2) var(--space-3);">Age</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Savings Balance</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-success);">Annual Contribution</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-primary);">Withdrawals</th>
+          </tr>
+        </thead>
+        <tbody id="projection-matrix-body">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initRetirementCalculator() {
+    const tabSelect = document.getElementById('ret-calc-tab-select') as HTMLSelectElement;
+    const panelGoals = document.getElementById('panel-goals') as HTMLDivElement;
+    const panelSavings = document.getElementById('panel-savings') as HTMLDivElement;
+
+    if (!tabSelect || !panelGoals || !panelSavings) return;
+
+    tabSelect.addEventListener('change', () => {
+      if (tabSelect.value === 'goals') {
+        panelGoals.classList.remove('hidden');
+        panelSavings.classList.add('hidden');
+      } else {
+        panelGoals.classList.add('hidden');
+        panelSavings.classList.remove('hidden');
+      }
+    });
+
+    // Panel 1 inputs
+    const curAgeInput = document.getElementById('ret-current-age') as HTMLInputElement;
+    const curAgeSlider = document.getElementById('ret-current-age-slider') as HTMLInputElement;
+    const retAgeInput = document.getElementById('ret-target-age') as HTMLInputElement;
+    const retAgeSlider = document.getElementById('ret-target-age-slider') as HTMLInputElement;
+    const expectancyInput = document.getElementById('ret-expectancy') as HTMLInputElement;
+    const expectancySlider = document.getElementById('ret-expectancy-slider') as HTMLInputElement;
+    const desiredIncomeInput = document.getElementById('ret-desired-income') as HTMLInputElement;
+    const desiredIncomeSlider = document.getElementById('ret-desired-income-slider') as HTMLInputElement;
+    const otherIncomeInput = document.getElementById('ret-other-income') as HTMLInputElement;
+    const otherIncomeSlider = document.getElementById('ret-other-income-slider') as HTMLInputElement;
+
+    // Panel 2 inputs
+    const curSavingsInput = document.getElementById('ret-current-savings') as HTMLInputElement;
+    const curSavingsSlider = document.getElementById('ret-current-savings-slider') as HTMLInputElement;
+    const monthlySavingsInput = document.getElementById('ret-savings-value') as HTMLInputElement;
+    const monthlySavingsSlider = document.getElementById('ret-monthly-savings-slider') as HTMLInputElement;
+    const stepupInput = document.getElementById('ret-stepup') as HTMLInputElement;
+    const inflationInput = document.getElementById('ret-inflation') as HTMLInputElement;
+    const returnPreInput = document.getElementById('ret-return-pre') as HTMLInputElement;
+    const returnPostInput = document.getElementById('ret-return-post') as HTMLInputElement;
+
+    // Double slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(curAgeInput, curAgeSlider);
+    bindSlider(retAgeInput, retAgeSlider);
+    bindSlider(expectancyInput, expectancySlider);
+    bindSlider(desiredIncomeInput, desiredIncomeSlider);
+    bindSlider(otherIncomeInput, otherIncomeSlider);
+    bindSlider(curSavingsInput, curSavingsSlider);
+    bindSlider(monthlySavingsInput, monthlySavingsSlider);
+
+    // Event listener array for recalculating
+    const recalculateInputs = [
+      curAgeInput, retAgeInput, expectancyInput, desiredIncomeInput, otherIncomeInput,
+      curSavingsInput, monthlySavingsInput, stepupInput, inflationInput, returnPreInput, returnPostInput
+    ];
+    recalculateInputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('retirement-gap-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        curAgeInput.value = '30';
+        curAgeSlider.value = '30';
+        retAgeInput.value = '65';
+        retAgeSlider.value = '65';
+        expectancyInput.value = '90';
+        expectancySlider.value = '90';
+        desiredIncomeInput.value = '5000';
+        desiredIncomeSlider.value = '5000';
+        otherIncomeInput.value = '1500';
+        otherIncomeSlider.value = '1500';
+        curSavingsInput.value = '50000';
+        curSavingsSlider.value = '50000';
+        monthlySavingsInput.value = '500';
+        monthlySavingsSlider.value = '500';
+        stepupInput.value = '3';
+        inflationInput.value = '2.8';
+        returnPreInput.value = '7.5';
+        returnPostInput.value = '5.0';
+
+        tabSelect.value = 'goals';
+        panelGoals.classList.remove('hidden');
+        panelSavings.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    // Currency selector
+    const currencySelect = document.getElementById('ret-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function calculateAll() {
+      // Inputs destructuring
+      const curAge = Math.max(15, parseInt(curAgeInput.value) || 0);
+      const retAge = Math.max(curAge + 1, parseInt(retAgeInput.value) || 0);
+      const expectancy = Math.max(retAge + 1, parseInt(expectancyInput.value) || 0);
+      const desiredIncome = parseFloat(desiredIncomeInput.value) || 0;
+      const otherIncome = parseFloat(otherIncomeInput.value) || 0;
+
+      const curSavings = parseFloat(curSavingsInput.value) || 0;
+      const monthlySavings = parseFloat(monthlySavingsInput.value) || 0;
+      const stepup = parseFloat(stepupInput.value) || 0;
+      const inflation = parseFloat(inflationInput.value) || 0;
+      const returnPre = parseFloat(returnPreInput.value) || 0;
+      const returnPost = parseFloat(returnPostInput.value) || 0;
+
+      const yearsToRetire = retAge - curAge;
+      const yearsInRetirement = expectancy - retAge;
+      const totalMonthsToRetire = yearsToRetire * 12;
+      const totalMonthsInRetirement = yearsInRetirement * 12;
+
+      // 1. Calculate Target Nest Egg Needed at Retirement Age
+      // INITIAL INFLATED MONTHLY INCOME NEED AT DAY OF RETIREMENT
+      const netMonthlyIncomeNeedToday = Math.max(0, desiredIncome - otherIncome);
+      const monthlyInflation = inflation / 1200;
+      const monthlyReturnPost = returnPost / 1200;
+
+      const inflatedInitialMonthlyNeed = netMonthlyIncomeNeedToday * Math.pow(1 + monthlyInflation, totalMonthsToRetire);
+
+      // Present value of a growing annuity (with post-retirement return rate and inflation growth)
+      let targetEgg = 0;
+      if (monthlyReturnPost === monthlyInflation) {
+        targetEgg = inflatedInitialMonthlyNeed * totalMonthsInRetirement;
+      } else {
+        const growingFactor = (1 + monthlyInflation) / (1 + monthlyReturnPost);
+        targetEgg = inflatedInitialMonthlyNeed * ((1 - Math.pow(growingFactor, totalMonthsInRetirement)) / (monthlyReturnPost - monthlyInflation));
+      }
+
+      // 2. Project Savings Balance Month-by-Month pre-retirement
+      let projectedEgg = curSavings;
+      const monthlyReturnPre = returnPre / 1200;
+
+      // Let's run a monthly simulation to support annual Step-ups accurately
+      const monthlyPoints: { month: number; balance: number; contribution: number; age: number }[] = [];
+      monthlyPoints.push({ month: 0, balance: curSavings, contribution: 0, age: curAge });
+
+      for (let m = 1; m <= totalMonthsToRetire; m++) {
+        // Compound existing balance
+        projectedEgg = projectedEgg * (1 + monthlyReturnPre);
+        
+        // Annual step-up check
+        const yearsElapsed = Math.floor((m - 1) / 12);
+        const currentMonthlyContrib = monthlySavings * Math.pow(1 + stepup / 100, yearsElapsed);
+        
+        projectedEgg += currentMonthlyContrib;
+        
+        if (m % 12 === 0 || m === totalMonthsToRetire) {
+          monthlyPoints.push({
+            month: m,
+            balance: projectedEgg,
+            contribution: currentMonthlyContrib * 12,
+            age: curAge + Math.ceil(m / 12)
+          });
+        }
+      }
+
+      // 3. Project Savings Decaying Month-by-Month post-retirement
+      let runningRetirementBalance = projectedEgg;
+      const retirementPoints: { month: number; balance: number; withdrawal: number; age: number }[] = [];
+      let runoutAge = expectancy;
+      let ranOut = false;
+
+      for (let m = 1; m <= totalMonthsInRetirement; m++) {
+        const totalMonthsElapsed = totalMonthsToRetire + m;
+        // Inflate the monthly expense based on total months elapsed from today
+        const inflatedExpense = netMonthlyIncomeNeedToday * Math.pow(1 + monthlyInflation, totalMonthsElapsed);
+
+        if (runningRetirementBalance > 0) {
+          runningRetirementBalance = runningRetirementBalance * (1 + monthlyReturnPost);
+          runningRetirementBalance -= inflatedExpense;
+          if (runningRetirementBalance <= 0) {
+            runningRetirementBalance = 0;
+            if (!ranOut) {
+              runoutAge = retAge + Math.floor(m / 12);
+              ranOut = true;
+            }
+          }
+        } else {
+          runningRetirementBalance = 0;
+          if (!ranOut) {
+            runoutAge = retAge + Math.floor(m / 12);
+            ranOut = true;
+          }
+        }
+
+        if (m % 12 === 0 || m === totalMonthsInRetirement) {
+          retirementPoints.push({
+            month: totalMonthsToRetire + m,
+            balance: runningRetirementBalance,
+            withdrawal: inflatedExpense * 12,
+            age: retAge + Math.ceil(m / 12)
+          });
+        }
+      }
+
+      // 4. Calculate the Gap
+      const gap = Math.max(0, targetEgg - projectedEgg);
+      const isOnTrack = projectedEgg >= targetEgg;
+
+      // Update basic result layout text
+      const gapValEl = document.getElementById('res-gap-value');
+      const gapVerdictEl = document.getElementById('res-gap-verdict');
+      const eggNeededEl = document.getElementById('res-egg-needed');
+      const eggProjectedEl = document.getElementById('res-egg-projected');
+      const monthlyInflatedEl = document.getElementById('res-monthly-inflated');
+      const runoutAgeEl = document.getElementById('res-runout-age');
+      const bannerCard = document.getElementById('results-banner-card');
+
+      if (gapValEl) gapValEl.textContent = formatCurrency(gap);
+      if (eggNeededEl) eggEggNeededLabel(eggNeededEl, targetEgg);
+      if (eggProjectedEl) eggProjectedEl.textContent = formatCurrency(projectedEgg);
+      if (monthlyInflatedEl) monthlyInflatedEl.textContent = `(${formatCurrency(inflatedInitialMonthlyNeed)} inflated monthly need)`;
+
+      // Style result banner card
+      if (bannerCard && gapVerdictEl) {
+        if (isOnTrack) {
+          bannerCard.style.borderLeft = '4px solid var(--color-success)';
+          bannerCard.style.background = 'var(--color-bg-base)';
+          if (gapValEl) gapValEl.className = 'text-success';
+          gapVerdictEl.textContent = `Congratulations! You are on track. Your projected nest egg exceeds your target needs by ${formatCurrency(projectedEgg - targetEgg)}.`;
+          if (runoutAgeEl) {
+            runoutAgeEl.textContent = `(Savings last beyond age ${expectancy})`;
+            runoutAgeEl.className = 'metric-label text-success';
+          }
+        } else {
+          bannerCard.style.borderLeft = '4px solid var(--color-danger, #ef4444)';
+          bannerCard.style.background = 'var(--color-bg-base)';
+          if (gapValEl) gapValEl.className = 'text-danger';
+          gapVerdictEl.textContent = `You have a retirement gap of ${formatCurrency(gap)}. Your projected savings will not meet your desired withdrawal needs.`;
+          if (runoutAgeEl) {
+            runoutAgeEl.textContent = `(Savings run out at age ${runoutAge})`;
+            runoutAgeEl.className = 'metric-label text-danger';
+          }
+        }
+      }
+
+      function eggEggNeededLabel(el: HTMLElement, val: number) {
+        el.textContent = formatCurrency(val);
+      }
+
+      // 5. Populate Remedies Action Plan list
+      const remediesList = document.getElementById('remedies-list');
+      if (remediesList) {
+        remediesList.innerHTML = '';
+        if (isOnTrack) {
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>You are fully funded!</strong> Keep maintaining your current monthly contribution rate of <strong>${formatCurrency(monthlySavings)}</strong>. Any annual step-ups will act as a buffer against market downturns.`;
+          remediesList.appendChild(li);
+        } else {
+          // Remedy A: Extra monthly savings needed to hit targetEgg
+          // Target balance to close gap = targetEgg
+          // Projected balance from current savings alone = curSavings * (1 + monthlyReturnPre)^totalMonths
+          const fvCurrentSavings = curSavings * Math.pow(1 + monthlyReturnPre, totalMonthsToRetire);
+          const gapToFill = Math.max(0, targetEgg - fvCurrentSavings);
+          
+          // Monthly savings needed to accumulate gapToFill factoring in returnPre and stepup
+          // We can estimate the extra monthly savings using a simple loop or factor since savings compounds linearly with the initial payment
+          let projectedFvWithOneDollar = 0;
+          for (let m = 1; m <= totalMonthsToRetire; m++) {
+            projectedFvWithOneDollar = projectedFvWithOneDollar * (1 + monthlyReturnPre);
+            const yearsElapsed = Math.floor((m - 1) / 12);
+            projectedFvWithOneDollar += 1 * Math.pow(1 + stepup / 100, yearsElapsed);
+          }
+          const totalMonthlySavingsNeeded = projectedFvWithOneDollar > 0 ? gapToFill / projectedFvWithOneDollar : 0;
+          const additionalMonthlySavings = Math.max(0, totalMonthlySavingsNeeded - monthlySavings);
+
+          // Remedy B: Extra years to work to close the gap
+          // Let's iterate pre-retirement months to find when projected balance >= required egg
+          let simulatedAge = retAge;
+          let tempSavings = projectedEgg;
+          let extraYears = 0;
+          let loopLimit = 100 - retAge; // work max to 100
+          while (extraYears < loopLimit) {
+            // Check if gap is met
+            // Note: target egg also changes because years to retirement increases (which reduces retirement years, which reduces required nest egg!)
+            const yearsToRetNew = simulatedAge - curAge;
+            const yearsInRetNew = expectancy - simulatedAge;
+            const monthsInRetNew = yearsInRetNew * 12;
+            const inflatedNeedNew = netMonthlyIncomeNeedToday * Math.pow(1 + monthlyInflation, yearsToRetNew * 12);
+            
+            let targetEggNew = 0;
+            if (monthlyReturnPost === monthlyInflation) {
+              targetEggNew = inflatedNeedNew * monthsInRetNew;
+            } else {
+              const growingFactor = (1 + monthlyInflation) / (1 + monthlyReturnPost);
+              targetEggNew = inflatedNeedNew * ((1 - Math.pow(growingFactor, monthsInRetNew)) / (monthlyReturnPost - monthlyInflation));
+            }
+
+            if (tempSavings >= targetEggNew) {
+              break;
+            }
+
+            // Simulate 12 more months of working
+            for (let monthIdx = 1; monthIdx <= 12; monthIdx++) {
+              tempSavings = tempSavings * (1 + monthlyReturnPre);
+              const yearsElapsed = Math.floor((yearsToRetNew * 12 + monthIdx - 1) / 12);
+              tempSavings += monthlySavings * Math.pow(1 + stepup / 100, yearsElapsed);
+            }
+            simulatedAge += 1;
+            extraYears += 1;
+          }
+
+          const li1 = document.createElement('li');
+          li1.innerHTML = `<strong>Increase Savings:</strong> Save an additional <strong>${formatCurrency(additionalMonthlySavings)}</strong> per month (starting at <strong>${formatCurrency(totalMonthlySavingsNeeded)}/mo</strong> total) to hit your nest egg target on time.`;
+          
+          const li2 = document.createElement('li');
+          li2.innerHTML = `<strong>Delay Retirement:</strong> Work for <strong>${extraYears}</strong> more years, retiring at age <strong>${retAge + extraYears}</strong>. This gives your portfolio more time to compound and reduces the years you need to fund in retirement.`;
+          
+          const li3 = document.createElement('li');
+          li3.innerHTML = `<strong>Step-up Contributions:</strong> Increase your annual savings step-up rate from <strong>${stepup}%</strong> to <strong>${(stepup + 3).toFixed(1)}%</strong> to leverage back-loaded compounding.`;
+
+          remediesList.appendChild(li1);
+          remediesList.appendChild(li2);
+          remediesList.appendChild(li3);
+        }
+      }
+
+      // 6. Draw SVG Trajectory Area Chart
+      const chartWrapper = document.getElementById('svg-chart-wrapper');
+      const startLabel = document.getElementById('chart-start-label');
+      const retireLabel = document.getElementById('chart-retire-label');
+      const endLabel = document.getElementById('chart-end-label');
+
+      if (startLabel) startLabel.textContent = `Age ${curAge}`;
+      if (retireLabel) retireLabel.textContent = `Age ${retAge} (Retire)`;
+      if (endLabel) endLabel.textContent = `Age ${expectancy}`;
+
+      if (chartWrapper) {
+        // Collect points for drawing
+        const prePoints = monthlyPoints.filter((_, idx) => idx % 2 === 0 || idx === monthlyPoints.length - 1);
+        const postPoints = retirementPoints;
+        const allPoints = [...prePoints, ...postPoints];
+
+        const maxBalance = Math.max(...allPoints.map(p => p.balance), 100000);
+        const wrapperWidth = chartWrapper.clientWidth || 360;
+        const wrapperHeight = 200;
+
+        // Compute SVG path coordinates
+        // X maps to age (curAge to expectancy)
+        // Y maps to balance (0 to maxBalance)
+        const totalAges = expectancy - curAge;
+        const pointsSvgStr = allPoints.map((p, idx) => {
+          const x = ((p.age - curAge) / totalAges) * wrapperWidth;
+          const y = wrapperHeight - (p.balance / maxBalance) * (wrapperHeight - 20) - 10;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+
+        // Draw vertical retirement line
+        const retireX = ((retAge - curAge) / totalAges) * wrapperWidth;
+
+        // HTML injection
+        chartWrapper.innerHTML = `
+          <svg width="100%" height="100%" viewBox="0 0 ${wrapperWidth} ${wrapperHeight}" preserveAspectRatio="none" style="overflow: visible;">
+            <!-- Gradients -->
+            <defs>
+              <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Grid Lines -->
+            <line x1="0" y1="${wrapperHeight - 10}" x2="${wrapperWidth}" y2="${wrapperHeight - 10}" stroke="var(--color-border)" stroke-width="1" />
+            <line x1="${retireX.toFixed(1)}" y1="10" x2="${retireX.toFixed(1)}" y2="${wrapperHeight - 10}" stroke="var(--color-border)" stroke-dasharray="4" stroke-width="1.5" />
+
+            <!-- Path Area -->
+            <path d="M 0,${wrapperHeight - 10} L ${pointsSvgStr} L ${wrapperWidth},${wrapperHeight - 10} Z" fill="url(#area-grad)" />
+
+            <!-- Path Line -->
+            <polyline points="${pointsSvgStr}" fill="none" stroke="var(--color-primary)" stroke-width="3" stroke-linecap="round" />
+
+            <!-- Highlight Dot at retirement age -->
+            <circle cx="${retireX.toFixed(1)}" cy="${(wrapperHeight - (projectedEgg / maxBalance) * (wrapperHeight - 20) - 10).toFixed(1)}" r="6" fill="var(--color-accent)" stroke="white" stroke-width="2" />
+          </svg>
+        `;
+      }
+
+      // 7. Populate Yearly Projection Schedule Table
+      const tableBody = document.getElementById('projection-matrix-body');
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        
+        // Let's list points at intervals (every 2-5 years depending on time horizon to prevent list bloat)
+        const filterInterval = Math.max(1, Math.ceil((expectancy - curAge) / 12));
+        
+        // Build rows from prePoints & postPoints
+        // Filter rows
+        const rowsToDisplay: { age: number; balance: number; contrib: number; withdrawal: number }[] = [];
+        
+        // Year 0
+        rowsToDisplay.push({
+          age: curAge,
+          balance: curSavings,
+          contrib: monthlySavings * 12,
+          withdrawal: 0
+        });
+
+        // Pre-retirement years
+        monthlyPoints.forEach((p, idx) => {
+          if (idx > 0 && (p.age - curAge) % filterInterval === 0 && p.age < retAge) {
+            rowsToDisplay.push({
+              age: p.age,
+              balance: p.balance,
+              contrib: p.contribution,
+              withdrawal: 0
+            });
+          }
+        });
+
+        // Day of retirement
+        rowsToDisplay.push({
+          age: retAge,
+          balance: projectedEgg,
+          contrib: 0,
+          withdrawal: 0
+        });
+
+        // Post-retirement years
+        retirementPoints.forEach(p => {
+          if ((p.age - retAge) % filterInterval === 0 || p.age === expectancy) {
+            rowsToDisplay.push({
+              age: p.age,
+              balance: p.balance,
+              contrib: 0,
+              withdrawal: p.withdrawal
+            });
+          }
+        });
+
+        // Filter duplicates
+        const uniqueAges = new Set<number>();
+        const cleanRows = rowsToDisplay.filter(r => {
+          if (uniqueAges.has(r.age)) return false;
+          uniqueAges.add(r.age);
+          return true;
+        }).sort((a, b) => a.age - b.age);
+
+        cleanRows.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid var(--color-border)';
+          if (r.age === retAge) {
+            tr.style.backgroundColor = 'var(--color-bg-surface-hover)';
+            tr.style.fontWeight = '700';
+          }
+          
+          tr.innerHTML = `
+            <td style="padding: var(--space-3) var(--space-3); font-weight:600;">
+              Age ${r.age} ${r.age === retAge ? '<span style="font-size:0.7rem; font-weight:700; color:var(--color-accent); margin-left:4px;">RETIRE</span>' : ''}
+            </td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right;">${formatCurrency(r.balance)}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; color: var(--color-success); font-weight:500;">
+              ${r.contrib > 0 ? `+${formatCurrency(r.contrib)}` : '--'}
+            </td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; color: var(--color-primary); font-weight:500;">
+              ${r.withdrawal > 0 ? `-${formatCurrency(r.withdrawal)}` : '--'}
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+    }
+
+    // Listen to clipboard event from layout
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Retirement Gap Calculator Projections:\n` +
+                   `Target Nest Egg Needed: ${document.getElementById('res-egg-needed')?.textContent}\n` +
+                   `Projected Nest Egg Accumulated: ${document.getElementById('res-egg-projected')?.textContent}\n` +
+                   `Retirement Gap: ${document.getElementById('res-gap-value')?.textContent}\n` +
+                   `Verdict: ${document.getElementById('res-gap-verdict')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Run initial calculations
+    calculateAll();
+  }
+
+  // Bind lifecycle listeners
+  document.addEventListener('DOMContentLoaded', initRetirementCalculator);
+  document.addEventListener('astro:after-swap', initRetirementCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .small-wrapper {
+    width: 100px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    padding: 0 4px;
+  }
+
+  /* Layout grids */
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .calc-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

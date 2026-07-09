@@ -1,0 +1,438 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+---
+
+<Layout
+  title="All Financial Calculators - FinCalcLab"
+  description="Explore our suite of free, interactive financial calculators. Calculate SIP returns, compare lumpsum investments, compound pocket money, and estimate take-home salaries."
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Calculators', item: '/all-calculators' }
+  ]}
+>
+  <div class="calculators-directory-page">
+    <div class="container">
+      <!-- Header Banner -->
+      <div class="directory-header text-center">
+        <Badge variant="primary">Financial Suite</Badge>
+        <h1 class="directory-title">All Financial Calculators</h1>
+        <p class="directory-subtitle">Select any tool below to calculate returns, compound savings, estimate taxes, and plan your wealth creation journey.</p>
+        
+        <!-- Live Search Box -->
+        <div class="search-box-wrapper">
+          <div class="search-icon-inside">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <input 
+            type="text" 
+            id="dir-search-input" 
+            placeholder="Type to search calculators (e.g., SIP, salary, compound)..." 
+            aria-label="Search financial calculators" 
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+      </div>
+
+      <!-- Calculators Cards List Grid -->
+      <div class="calculators-grid" id="dir-calculators-grid">
+        <!-- SIP vs Lumpsum -->
+        <div class="calc-card-item" data-keywords="sip lumpsum mutual funds investing compounding returns yield calculator comparison">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-primary">Investments</span>
+              <h3 class="calc-card-title">SIP vs Lumpsum</h3>
+            </div>
+            <p class="calc-card-desc">Compare dynamic side-by-side growth of mutual fund systematic monthly deposits (SIP) versus a single lumpsum principal over time.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/lumpsum-vs-sip-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Kids allowance compounder -->
+        <div class="calc-card-item" data-keywords="kids pocket money allowance savings compound compounder family parenting raise">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-accent">Savings</span>
+              <h3 class="calc-card-title">Kids Pocket Money Compounder</h3>
+            </div>
+            <p class="calc-card-desc">See the magic of compound interest in action! Model pocket money allowances with weekly or monthly payouts and annual step-up raises.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/kids-pocket-money-compounder-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Salary Take-home -->
+        <div class="calc-card-item" data-keywords="salary net in hand income tax slabs budget 2025 India new regime gross ctc HRA deductions pt pf flat rate takehome">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-success">Salary & Tax</span>
+              <h3 class="calc-card-title">In-Hand Salary Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate your monthly take-home salary, estimate tax liabilities under the Budget 2025 slabs or custom rates, and analyze deductions.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/in-hand-salary-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Pay Raise Calculator -->
+        <div class="calc-card-item" data-keywords="pay raise calculator percent how to calculate pay raise percentage annual pay raise increase back pay federal employee GS locality rating performance merit salary">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-success">Salary & Tax</span>
+              <h3 class="calc-card-title">Pay Raise Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate pay raise percentage, new annual salary, back pay owed, or performance ratings based on a 5-star review scale.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/pay-raise-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Salary Increase Calculator -->
+        <div class="calc-card-item" data-keywords="salary increase calculator percentage hike increment nominal real raise inflation adjustment job offer comparison total compensation benefits packages base pay">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-success">Salary & Tax</span>
+              <h3 class="calc-card-title">Salary Increase Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate nominal pay raises, determine real purchasing power changes against inflation, and run side-by-side total compensation comparisons.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/salary-increase-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Sales Commission Calculator -->
+        <div class="calc-card-item" data-keywords="sales commission calculator tiered graduated draw recoverable nonrecoverable pay mix base salary volume bonus AE SDR AEs target earnings OTE">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-success">Salary & Tax</span>
+              <h3 class="calc-card-title">Sales Commission Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate flat-rate commission, tiered commission (cumulative or flat-rate shift), or draw advances (recoverable or non-recoverable).</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/sales-commission-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Freelance Hourly Rate Calculator -->
+        <div class="calc-card-item" data-keywords="freelance hourly rate calculator consulting contractor salary overhead utilization tax billing self-employment FICA">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-success">Salary & Tax</span>
+              <h3 class="calc-card-title">Freelance Hourly Rate Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate your required hourly billing rate based on target net income, monthly business overhead, taxes, PTO, and billable utilization.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/freelance-hourly-rate-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Inflation Impact Calculator -->
+        <div class="calc-card-item" data-keywords="inflation impact calculator purchasing power savings compound decay loss CPI future value">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-success">Salary & Tax</span>
+              <h3 class="calc-card-title">Inflation Impact Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate the compounding decay of purchasing power over time, understand the impact of inflation on cash savings, and project future value adjustments.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/inflation-impact-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Retirement Gap Calculator -->
+        <div class="calc-card-item" data-keywords="retirement gap calculator savings shortfall pension social security nest egg future planning deficit surplus annuity inflation compounding">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-accent">Retirement</span>
+              <h3 class="calc-card-title">Retirement Gap Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate your target retirement nest egg, project your accumulation trajectory, offset with pensions, and identify your savings gap.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/retirement-gap-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Markup Calculator -->
+        <div class="calc-card-item" data-keywords="markup calculator margin gross profit cost selling price retail wholesale business cogs pricing tiers conversion percentage">
+          <Card hoverable elevation="md" class="calc-card">
+            <div class="calc-card-header">
+              <span class="calc-card-badge text-success">Salary & Tax</span>
+              <h3 class="calc-card-title">Markup Calculator</h3>
+            </div>
+            <p class="calc-card-desc">Calculate retail selling price from wholesale cost, convert markup to gross margin percentage, and evaluate wholesale pricing tiers.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/markup-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Empty State UI -->
+      <div id="dir-empty-state" class="empty-state-container hidden">
+        <div class="empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+        </div>
+        <h4>No calculators found matching your search</h4>
+        <p>Try searching for other terms like "SIP", "salary", or "compound".</p>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  function initDirectorySearch() {
+    const searchInput = document.getElementById('dir-search-input') as HTMLInputElement;
+    const cards = document.querySelectorAll('.calc-card-item');
+    const emptyState = document.getElementById('dir-empty-state');
+
+    if (!searchInput || cards.length === 0) return;
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const keywords = card.getAttribute('data-keywords') || '';
+        if (query === '' || keywords.includes(query)) {
+          (card as HTMLElement).classList.remove('hidden');
+          visibleCount++;
+        } else {
+          (card as HTMLElement).classList.add('hidden');
+        }
+      });
+
+      if (visibleCount === 0) {
+        emptyState?.classList.remove('hidden');
+      } else {
+        emptyState?.classList.add('hidden');
+      }
+    });
+  }
+
+  // Bind events
+  document.addEventListener('DOMContentLoaded', initDirectorySearch);
+  document.addEventListener('astro:after-swap', initDirectorySearch);
+</script>
+
+<style>
+  .calculators-directory-page {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+  }
+
+  .directory-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .directory-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .directory-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    max-width: 650px;
+    margin: 0 auto var(--space-8) auto;
+  }
+
+  /* Live Search Box styling */
+  .search-box-wrapper {
+    position: relative;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .search-icon-inside {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-light);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-box-wrapper input {
+    width: 100%;
+    height: 50px;
+    padding-left: 48px;
+    padding-right: 20px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    outline: none;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-md);
+  }
+
+  .search-box-wrapper input:focus {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Grid layout */
+  .calculators-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+  }
+
+  .calc-card-item.hidden {
+    display: none !important;
+  }
+
+  .calc-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-6);
+  }
+
+  .calc-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .calc-card-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    align-self: flex-start;
+  }
+
+  .calc-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-text-base);
+  }
+
+  .calc-card-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-6);
+    flex-grow: 1;
+  }
+
+  .calc-card-action {
+    width: 100%;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .full-link-btn {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0;
+  }
+
+  /* Empty state */
+  .empty-state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-16) 0;
+    color: var(--color-text-light);
+  }
+
+  .empty-state-container.hidden {
+    display: none;
+  }
+
+  .empty-icon {
+    color: var(--color-text-light);
+    margin-bottom: var(--space-4);
+  }
+
+  .empty-state-container h4 {
+    color: var(--color-text-base);
+    font-size: 1.25rem;
+    margin-bottom: var(--space-1);
+    font-weight: 700;
+  }
+
+  .empty-state-container p {
+    font-size: 0.95rem;
+    max-width: 320px;
+  }
+
+  .text-primary { color: var(--color-primary) !important; }
+  .text-accent { color: var(--color-accent) !important; }
+  .text-success { color: var(--color-success) !important; }
+
+  /* Responsive breakpoints */
+  @media (max-width: 1024px) {
+    .calculators-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .directory-title {
+      font-size: 2.25rem;
+    }
+    .calculators-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

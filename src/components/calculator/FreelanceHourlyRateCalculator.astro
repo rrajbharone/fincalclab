@@ -1,0 +1,873 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+---
+
+<CalculatorLayout
+  title="Freelance Hourly Rate Calculator"
+  description="Calculate your required hourly billing rate based on target take-home income, business overhead expenses, taxes, time off, and billable utilization."
+  category="Business"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="freelance-calc">
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="freelance-currency-select">Currency</label>
+        <select id="freelance-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="NZD">NZD (NZ$) - New Zealand Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Target Net Income -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="freelance-net-income">Target Net Annual Income</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="freelance-net-income" min="1000" max="10000000" value="80000" aria-label="Target Net Annual Income" />
+        </div>
+      </div>
+      <input type="range" id="freelance-net-income-slider" min="10000" max="300000" step="5000" value="80000" class="slider-range" aria-label="Target Net Income Slider" />
+      <div class="slider-ticks">
+        <span>10k</span>
+        <span>150k</span>
+        <span>300k</span>
+      </div>
+    </div>
+
+    <!-- Monthly Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="freelance-monthly-expenses">Monthly Business Expenses</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="freelance-monthly-expenses" min="0" max="100000" value="1000" aria-label="Monthly Business Expenses" />
+        </div>
+      </div>
+      <input type="range" id="freelance-monthly-expenses-slider" min="0" max="10000" step="250" value="1000" class="slider-range" aria-label="Monthly Expenses Slider" />
+      <div class="slider-ticks">
+        <span>0</span>
+        <span>5k</span>
+        <span>10k</span>
+      </div>
+    </div>
+
+    <!-- Estimated Tax Rate -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="freelance-tax-rate">Estimated Tax Rate</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="freelance-tax-rate" min="0" max="90" value="25" aria-label="Estimated Tax Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="freelance-tax-rate-slider" min="0" max="50" step="1" value="25" class="slider-range" aria-label="Tax Rate Slider" />
+      <div class="slider-ticks">
+        <span>0%</span>
+        <span>25%</span>
+        <span>50%</span>
+      </div>
+    </div>
+
+    <!-- Time Off and Hours Group (Grid) -->
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="freelance-vacation-weeks">Vacation Weeks</label>
+          <div class="input-symbol-wrapper small-wrapper">
+            <input type="number" id="freelance-vacation-weeks" min="0" max="52" value="4" aria-label="Vacation Weeks per Year" />
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="freelance-sick-weeks">Sick / Holiday Weeks</label>
+          <div class="input-symbol-wrapper small-wrapper">
+            <input type="number" id="freelance-sick-weeks" min="0" max="52" value="2" aria-label="Sick/Holiday Weeks per Year" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="freelance-weekly-hours">Hours per Week</label>
+          <div class="input-symbol-wrapper small-wrapper">
+            <input type="number" id="freelance-weekly-hours" min="1" max="168" value="40" aria-label="Working Hours per Week" />
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="freelance-utilization">Billable Utilization</label>
+          <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+            <input type="number" id="freelance-utilization" min="5" max="100" value="70" aria-label="Billable Utilization Rate" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="freelance-utilization-slider" min="10" max="100" step="5" value="70" class="slider-range" aria-label="Utilization Slider" />
+        <div class="slider-ticks">
+          <span>10%</span>
+          <span>55%</span>
+          <span>100%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="inputs-actions">
+      <Button id="freelance-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Required Billing Rates</h3>
+
+    <div class="freelance-takehome-hero">
+      <div class="hero-takehome-item">
+        <span class="hero-label">Required Hourly Rate</span>
+        <h2 class="hero-val text-success" id="freelance-hourly-rate">$0.00</h2>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-takehome-item">
+        <span class="hero-label">Equivalent Salaried Rate</span>
+        <h3 class="hero-val" id="salaried-equivalent-rate" style="margin-top: 0; font-size: 1.5rem; font-weight: 800; color: var(--color-text-base);">$0.00</h3>
+      </div>
+    </div>
+
+    <div class="results-pie-grid">
+      <!-- Donut Chart -->
+      <div class="chart-box">
+        <div class="donut-chart-container">
+          <svg class="donut-svg" viewBox="0 0 160 160">
+            <!-- Background circle -->
+            <circle class="donut-bg" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-bg-base)" stroke-width="20" />
+            <!-- Segment circles -->
+            <circle id="donut-segment-net" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-success)" stroke-width="20" stroke-dasharray="376.99" stroke-dashoffset="0" transform="rotate(-90 80 80)" />
+            <circle id="donut-segment-expenses" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-primary)" stroke-width="20" stroke-dasharray="376.99" stroke-dashoffset="376.99" transform="rotate(-90 80 80)" />
+            <circle id="donut-segment-taxes" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-error)" stroke-width="20" stroke-dasharray="376.99" stroke-dashoffset="376.99" transform="rotate(-90 80 80)" />
+          </svg>
+          <div class="donut-center-label">
+            <span class="center-percent" id="freelance-net-percentage">0%</span>
+            <span class="center-text">Take-Home</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deductions table -->
+      <div class="deductions-breakdown-details">
+        <div class="breakdown-row">
+          <div class="row-label"><span class="legend-dot" style="background-color: var(--color-success);"></span> Target Net Income</div>
+          <div class="row-val" id="row-val-net">$0</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="row-label"><span class="legend-dot" style="background-color: var(--color-primary);"></span> Business Overhead</div>
+          <div class="row-val" id="row-val-expenses">$0</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="row-label"><span class="legend-dot" style="background-color: var(--color-error);"></span> Est. Income Taxes</div>
+          <div class="row-val" id="row-val-taxes">$0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trace statistics metrics -->
+    <div class="tax-steps-accordion" style="margin-top: var(--space-4);">
+      <h4 class="sub-section-title">Annual Income & Hour Breakdown</h4>
+      <div class="tax-steps-table">
+        <div class="table-row">
+          <span>Gross Annual Billing Target</span>
+          <span class="font-semibold" id="step-gross-billing">$0</span>
+        </div>
+        <div class="table-row">
+          <span>Monthly Billing Target</span>
+          <span class="font-semibold" id="step-monthly-billing">$0</span>
+        </div>
+        <div class="table-row">
+          <span>Total Working Weeks / Year</span>
+          <span class="font-semibold" id="step-working-weeks">0 wks</span>
+        </div>
+        <div class="table-row">
+          <span>Total Billable Hours / Year</span>
+          <span class="font-semibold text-primary" id="step-billable-hours">0 hrs</span>
+        </div>
+        <div class="table-row divider">
+          <span>Estimated Daily Rate (8h)</span>
+          <span class="font-semibold text-success" id="step-daily-rate">$0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Utilization Comparison Matrix -->
+    <div class="chart-container" style="margin-top: var(--space-6);">
+      <h4 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-3);">Hourly Rate vs. Utilization</h4>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Utilization Rate</th>
+              <th>Billable Hrs/Wk</th>
+              <th>Required Hourly Rate</th>
+              <th>Required Daily Rate</th>
+            </tr>
+          </thead>
+          <tbody id="utilization-matrix-body">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initFreelanceCalculator() {
+    const root = document.getElementById('freelance-calc');
+    if (!root) return;
+
+    // Currency config
+    const CURRENCIES: Record<string, { symbol: string; locale: string }> = {
+      USD: { symbol: '$', locale: 'en-US' },
+      EUR: { symbol: '€', locale: 'de-DE' },
+      GBP: { symbol: '£', locale: 'en-GB' },
+      INR: { symbol: '₹', locale: 'en-IN' },
+      CAD: { symbol: 'C$', locale: 'en-CA' },
+      AUD: { symbol: 'A$', locale: 'en-AU' },
+      JPY: { symbol: '¥', locale: 'ja-JP' },
+      SGD: { symbol: 'S$', locale: 'en-SG' },
+      CHF: { symbol: 'CHF', locale: 'de-CH' },
+      NZD: { symbol: 'NZ$', locale: 'en-NZ' }
+    };
+
+    const currencySelect = document.getElementById('freelance-currency-select') as HTMLSelectElement;
+
+    // Inputs
+    const netInput = document.getElementById('freelance-net-income') as HTMLInputElement;
+    const netSlider = document.getElementById('freelance-net-income-slider') as HTMLInputElement;
+    const expensesInput = document.getElementById('freelance-monthly-expenses') as HTMLInputElement;
+    const expensesSlider = document.getElementById('freelance-monthly-expenses-slider') as HTMLInputElement;
+    const taxInput = document.getElementById('freelance-tax-rate') as HTMLInputElement;
+    const taxSlider = document.getElementById('freelance-tax-rate-slider') as HTMLInputElement;
+    const vacationInput = document.getElementById('freelance-vacation-weeks') as HTMLInputElement;
+    const sickInput = document.getElementById('freelance-sick-weeks') as HTMLInputElement;
+    const hoursInput = document.getElementById('freelance-weekly-hours') as HTMLInputElement;
+    const utilInput = document.getElementById('freelance-utilization') as HTMLInputElement;
+    const utilSlider = document.getElementById('freelance-utilization-slider') as HTMLInputElement;
+
+    // Reset button
+    const resetBtn = document.getElementById('freelance-reset');
+
+    const getSelectedCurrency = () => currencySelect ? currencySelect.value : 'USD';
+
+    const formatCurrency = (val: number) => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      return new Intl.NumberFormat(config.locale, {
+        style: 'currency',
+        currency: curr,
+        maximumFractionDigits: 0
+      }).format(val);
+    };
+
+    const updateCurrencyLabels = () => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      document.querySelectorAll('.currency-symbol').forEach((el) => {
+        el.textContent = config.symbol;
+      });
+    };
+
+    const drawDonutChart = (net: number, expenses: number, taxes: number, total: number) => {
+      const segNet = document.getElementById('donut-segment-net');
+      const segExpenses = document.getElementById('donut-segment-expenses');
+      const segTaxes = document.getElementById('donut-segment-taxes');
+
+      if (!segNet || !segExpenses || !segTaxes || total === 0) return;
+
+      const circumference = 2 * Math.PI * 60; // 376.991
+
+      const pNet = net / total;
+      const pExpenses = expenses / total;
+      const pTaxes = taxes / total;
+
+      const strokeNet = circumference * pNet;
+      const strokeExpenses = circumference * pExpenses;
+      const strokeTaxes = circumference * pTaxes;
+
+      segNet.setAttribute('stroke-dasharray', `${strokeNet} ${circumference}`);
+      segNet.setAttribute('stroke-dashoffset', '0');
+
+      segExpenses.setAttribute('stroke-dasharray', `${strokeExpenses} ${circumference}`);
+      segExpenses.setAttribute('stroke-dashoffset', String(-strokeNet));
+
+      segTaxes.setAttribute('stroke-dasharray', `${strokeTaxes} ${circumference}`);
+      segTaxes.setAttribute('stroke-dashoffset', String(-(strokeNet + strokeExpenses)));
+    };
+
+    const calculateResults = () => {
+      const netIncome = Math.max(1000, parseFloat(netInput.value) || 0);
+      const monthlyExpenses = Math.max(0, parseFloat(expensesInput.value) || 0);
+      const taxRate = Math.min(90, Math.max(0, parseFloat(taxInput.value) || 0));
+      const vacationWeeks = Math.min(52, Math.max(0, parseFloat(vacationInput.value) || 0));
+      const sickWeeks = Math.min(52, Math.max(0, parseFloat(sickInput.value) || 0));
+      const weeklyHours = Math.min(168, Math.max(1, parseFloat(hoursInput.value) || 0));
+      const utilizationRate = Math.min(100, Math.max(5, parseFloat(utilInput.value) || 0));
+
+      // 1. Gross Annual Income Needed
+      const annualExpenses = monthlyExpenses * 12;
+      const grossIncomeBeforeExpenses = netIncome / (1 - taxRate / 100);
+      const grossBillingTarget = grossIncomeBeforeExpenses + annualExpenses;
+      const estTaxes = grossIncomeBeforeExpenses - netIncome;
+
+      // 2. Working Time
+      const workingWeeks = Math.max(0, 52 - vacationWeeks - sickWeeks);
+      const totalWorkingHours = workingWeeks * weeklyHours;
+      const billableHours = totalWorkingHours * (utilizationRate / 100);
+
+      // 3. Hourly Rates
+      const requiredRate = billableHours > 0 ? (grossBillingTarget / billableHours) : 0;
+      // Equivalent salaried rate assumes 2080 working hours (40 hrs/wk * 52 wks) with paid time off and zero business expenses
+      const salariedRate = netIncome / 2080;
+
+      // Update heroes
+      const hourlyRateEl = document.getElementById('freelance-hourly-rate');
+      const salariedRateEl = document.getElementById('salaried-equivalent-rate');
+      if (hourlyRateEl) hourlyRateEl.textContent = formatCurrency(requiredRate) + '/hr';
+      if (salariedRateEl) salariedRateEl.textContent = formatCurrency(salariedRate) + '/hr';
+
+      // Update table breakdown rows
+      const rowNet = document.getElementById('row-val-net');
+      const rowExpenses = document.getElementById('row-val-expenses');
+      const rowTaxes = document.getElementById('row-val-taxes');
+      if (rowNet) rowNet.textContent = formatCurrency(netIncome);
+      if (rowExpenses) rowExpenses.textContent = formatCurrency(annualExpenses);
+      if (rowTaxes) rowTaxes.textContent = formatCurrency(estTaxes);
+
+      // Update donut percent
+      const percentEl = document.getElementById('freelance-net-percentage');
+      if (percentEl) percentEl.textContent = Math.round((netIncome / grossBillingTarget) * 100) + '%';
+
+      drawDonutChart(netIncome, annualExpenses, estTaxes, grossBillingTarget);
+
+      // Update trace list values
+      const grossBillingEl = document.getElementById('step-gross-billing');
+      const monthlyBillingEl = document.getElementById('step-monthly-billing');
+      const workingWeeksEl = document.getElementById('step-working-weeks');
+      const billableHoursEl = document.getElementById('step-billable-hours');
+      const dailyRateEl = document.getElementById('step-daily-rate');
+
+      if (grossBillingEl) grossBillingEl.textContent = formatCurrency(grossBillingTarget);
+      if (monthlyBillingEl) monthlyBillingEl.textContent = formatCurrency(grossBillingTarget / 12);
+      if (workingWeeksEl) workingWeeksEl.textContent = `${workingWeeks} wks`;
+      if (billableHoursEl) billableHoursEl.textContent = `${Math.round(billableHours)} hrs`;
+      if (dailyRateEl) dailyRateEl.textContent = formatCurrency(requiredRate * 8) + '/day';
+
+      // Build comparison matrix
+      const matrixBody = document.getElementById('utilization-matrix-body');
+      if (matrixBody) {
+        matrixBody.innerHTML = '';
+        const brackets = [0.5, 0.6, 0.7, 0.8, 0.9];
+        brackets.forEach((bracket) => {
+          const bracketBillableHours = totalWorkingHours * bracket;
+          const bracketRate = bracketBillableHours > 0 ? (grossBillingTarget / bracketBillableHours) : 0;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${Math.round(bracket * 100)}%</strong></td>
+            <td>${Math.round(weeklyHours * bracket)} hrs/wk</td>
+            <td><strong>${formatCurrency(bracketRate)}/hr</strong></td>
+            <td>${formatCurrency(bracketRate * 8)}/day</td>
+          `;
+          matrixBody.appendChild(tr);
+        });
+      }
+    };
+
+    // Synchronize inputs & sliders
+    const setupSync = (input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) => {
+      const updateFromInput = () => {
+        let val = parseFloat(input.value);
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+        
+        if (isNaN(val)) val = min;
+        if (val < min) val = min;
+        if (val > max) val = max;
+
+        slider.value = String(val);
+        callback();
+      };
+
+      const updateFromSlider = () => {
+        input.value = slider.value;
+        callback();
+      };
+
+      input.addEventListener('change', updateFromInput);
+      slider.addEventListener('input', updateFromSlider);
+    };
+
+    setupSync(netInput, netSlider, calculateResults);
+    setupSync(expensesInput, expensesSlider, calculateResults);
+    setupSync(taxInput, taxSlider, calculateResults);
+    setupSync(utilInput, utilSlider, calculateResults);
+
+    vacationInput.addEventListener('change', calculateResults);
+    sickInput.addEventListener('change', calculateResults);
+    hoursInput.addEventListener('change', calculateResults);
+    currencySelect.addEventListener('change', () => {
+      updateCurrencyLabels();
+      calculateResults();
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      netInput.value = '80000';
+      netSlider.value = '80000';
+      expensesInput.value = '1000';
+      expensesSlider.value = '1000';
+      taxInput.value = '25';
+      taxSlider.value = '25';
+      vacationInput.value = '4';
+      sickInput.value = '2';
+      hoursInput.value = '40';
+      utilInput.value = '70';
+      utilSlider.value = '70';
+      calculateResults();
+    });
+
+    // Copy event emitter
+    window.addEventListener('copy-calculator-results', () => {
+      const netVal = parseFloat(netInput.value) || 0;
+      const expVal = parseFloat(expensesInput.value) || 0;
+      const taxVal = parseFloat(taxInput.value) || 0;
+      const utilVal = parseFloat(utilInput.value) || 0;
+      const vacationVal = parseFloat(vacationInput.value) || 0;
+      const sickVal = parseFloat(sickInput.value) || 0;
+      const hoursVal = parseFloat(hoursInput.value) || 0;
+
+      const workingWeeks = Math.max(0, 52 - vacationVal - sickVal);
+      const billableHours = (workingWeeks * hoursVal) * (utilVal / 100);
+      const grossTarget = (netVal / (1 - taxVal / 100)) + (expVal * 12);
+      const requiredRate = billableHours > 0 ? (grossTarget / billableHours) : 0;
+
+      const resultsText = `
+FinCalcLab.com - Freelance Hourly Rate Calculator Results
+---------------------------------------------------------
+Selected Currency: ${getSelectedCurrency()}
+Target Net Annual Income: ${formatCurrency(netVal)}
+Monthly Business Expenses: ${formatCurrency(expVal)} (Annual: ${formatCurrency(expVal * 12)})
+Estimated Tax Rate: ${taxVal}%
+Desired Vacation Weeks: ${vacationVal} weeks
+Desired Sick/Holiday Weeks: ${sickVal} weeks
+Work Hours Per Week: ${hoursVal} hours
+Billable Utilization: ${utilVal}% (Billable: ${Math.round(hoursVal * (utilVal / 100))} hrs/wk)
+---------------------------------------------------------
+Gross Annual Billing Target: ${formatCurrency(grossTarget)}
+Total Billable Hours / Year: ${Math.round(billableHours)} hours
+Required Hourly Rate: ${formatCurrency(requiredRate)}/hr
+Required Daily Rate (8h): ${formatCurrency(requiredRate * 8)}/day
+Equivalent Salaried Hourly Rate: ${formatCurrency(netVal / 2080)}/hr
+      `;
+
+      navigator.clipboard.writeText(resultsText.trim()).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Initial run
+    updateCurrencyLabels();
+    calculateResults();
+  }
+
+  document.addEventListener('DOMContentLoaded', initFreelanceCalculator);
+  document.addEventListener('astro:after-swap', initFreelanceCalculator);
+</script>
+
+<style>
+  /* Local styles for Freelance calculator inputs */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .small-wrapper {
+    width: 100px;
+  }
+
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    padding: 0 4px;
+  }
+
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  /* Results layout styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .freelance-takehome-hero {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    gap: var(--space-5);
+    align-items: center;
+  }
+
+  .hero-takehome-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hero-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .hero-val {
+    font-size: 1.75rem;
+    font-weight: 850;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 50px;
+    background-color: var(--color-border);
+  }
+
+  .results-pie-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .donut-chart-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+  }
+
+  .donut-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .donut-bg {
+    stroke: var(--color-border);
+  }
+
+  .donut-center-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+  }
+
+  .center-percent {
+    font-size: 1.15rem;
+    font-weight: 850;
+    color: var(--color-text-base);
+    line-height: 1.1;
+  }
+
+  .center-text {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.03em;
+  }
+
+  .deductions-breakdown-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .row-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .row-val {
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .tax-steps-table {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--color-bg-base);
+  }
+
+  .table-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .table-row:last-child {
+    border-bottom: none;
+  }
+
+  .table-row.divider {
+    border-top: 2px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+
+  .table-row.divider span {
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  /* Table styling */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .data-table th, .data-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .data-table th {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Mobile responsive overrides */
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .data-table {
+      min-width: 480px;
+    }
+
+    .results-pie-grid {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+    .freelance-takehome-hero {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+    .hero-divider {
+      width: 100%;
+      height: 1px;
+    }
+  }
+</style>

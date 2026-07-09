@@ -1,0 +1,1109 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Tabs from '../ui/Tabs.astro';
+---
+
+<CalculatorLayout
+  title="Pay Raise & Salary Increase Calculator"
+  description="Accurately project your new salary, merit-based raises on a 5-star performance rating, backdated pay, or federal employee adjustments."
+  category="Salary"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="raise-calc">
+    <!-- Sub-calculator tab selection -->
+    <div class="raise-tabs-wrapper">
+      <label for="raise-calc-type" class="sr-only">Choose Calculator Mode</label>
+      <select id="raise-calc-type" class="currency-select" aria-label="Select Calculator Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-4);">
+        <option value="basic" selected>Basic & Annual Raise Calculator</option>
+        <option value="merit">Merit & 5-Star Rating Raise</option>
+        <option value="backpay">Back Pay Owed Calculator</option>
+        <option value="federal">Federal Employee Locality Pay Adjustment</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="raise-currency-select">Currency</label>
+        <select id="raise-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="CNY">CNY (¥) - Chinese Yuan</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PANEL 1: Basic Pay Raise -->
+    <div id="panel-basic" class="calc-panel">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="basic-current-pay">Current Pay Rate</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="basic-current-pay" min="1" max="10000000" value="65000" aria-label="Current Pay Rate" />
+          </div>
+        </div>
+        <input type="range" id="basic-current-pay-slider" min="10000" max="250000" step="1000" value="65000" class="slider-range" aria-label="Current Salary Slider" />
+        <div class="slider-ticks">
+          <span>10k</span>
+          <span>130k</span>
+          <span>250k</span>
+        </div>
+      </div>
+
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="basic-pay-frequency">Current Pay Period</label>
+            <select id="basic-pay-frequency" class="currency-select" style="max-width: 100%;" aria-label="Pay Frequency">
+              <option value="annual" selected>Annually (Salary)</option>
+              <option value="monthly">Monthly</option>
+              <option value="semi-monthly">Semi-Monthly (24x / yr)</option>
+              <option value="biweekly">Bi-Weekly (26x / yr)</option>
+              <option value="weekly">Weekly</option>
+              <option value="hourly">Hourly</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group" id="group-hours-weekly">
+          <div class="input-label-row">
+            <label for="basic-hours-weekly">Hours per Week</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="basic-hours-weekly" min="1" max="168" value="40" aria-label="Hours worked per week" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="basic-raise-type">Raise Input Type</label>
+            <select id="basic-raise-type" class="currency-select" style="max-width: 100%;" aria-label="Raise Input Type">
+              <option value="percent" selected>Percentage (%)</option>
+              <option value="amount">Flat Increase Amount</option>
+              <option value="newsalary">New Target Salary</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="basic-raise-val" id="label-raise-val">Raise Percentage</label>
+            <div class="input-symbol-wrapper" id="wrapper-raise-val">
+              <input type="number" id="basic-raise-val" min="0" max="1000000" step="0.1" value="4.5" aria-label="Raise value" />
+              <span class="percent-symbol" id="symbol-raise-val">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Merit 5-Star rating -->
+    <div id="panel-merit" class="calc-panel hidden">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="merit-current-pay">Current Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="merit-current-pay" min="1" max="10000000" value="70000" aria-label="Current Salary for Merit" />
+          </div>
+        </div>
+        <input type="range" id="merit-current-pay-slider" min="10000" max="250000" step="1000" value="70000" class="slider-range" aria-label="Current Salary Slider" />
+      </div>
+
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="merit-rating">Performance Rating</label>
+            <select id="merit-rating" class="currency-select" style="max-width: 100%;" aria-label="Performance Review Rating">
+              <option value="5">5 Stars (Outstanding - 7% to 10%)</option>
+              <option value="4">4 Stars (Exceeds Expectations - 5% to 6.5%)</option>
+              <option value="3" selected>3 Stars (Meets Expectations - 3% to 4.5%)</option>
+              <option value="2">2 Stars (Needs Improvement - 1% to 2.5%)</option>
+              <option value="1">1 Star (Unsatisfactory - 0%)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="merit-compa">Market Position (Compa-Ratio)</label>
+            <select id="merit-compa" class="currency-select" style="max-width: 100%;" aria-label="Salary vs Market Midpoint">
+              <option value="low">Below Midpoint (+0.5% Merit Boost)</option>
+              <option value="mid" selected>At Midpoint (Standard Raise)</option>
+              <option value="high">Above Midpoint (-0.5% Merit Cap)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 3: Back Pay Calculator -->
+    <div id="panel-backpay" class="calc-panel hidden">
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="backpay-rate-type">Pay Rate Type</label>
+            <select id="backpay-rate-type" class="currency-select" style="max-width: 100%;" aria-label="Back Pay Rate Type">
+              <option value="hourly" selected>Hourly Rate</option>
+              <option value="annual">Annual Salary</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="backpay-weekly-hours">Hours per Week</label>
+            <input type="number" id="backpay-weekly-hours" min="1" max="168" value="40" class="currency-select" style="max-width: 100%;" aria-label="Weekly hours for back pay" />
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="backpay-old-rate">Old Pay Rate</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="backpay-old-rate" min="0" max="1000000" step="0.01" value="25.00" aria-label="Old Pay Rate" />
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="backpay-new-rate">New Pay Rate</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="backpay-new-rate" min="0" max="1000000" step="0.01" value="27.50" aria-label="New Pay Rate" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="backpay-duration-type">Backdated Duration</label>
+            <select id="backpay-duration-type" class="currency-select" style="max-width: 100%;" aria-label="Backdated duration unit">
+              <option value="weeks" selected>Weeks</option>
+              <option value="months">Months</option>
+              <option value="hours">Hours</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="backpay-duration-val">Duration Value</label>
+            <input type="number" id="backpay-duration-val" min="1" max="10000" value="8" class="currency-select" style="max-width: 100%;" aria-label="Duration value" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 4: Federal General Schedule (GS) Employee Locality -->
+    <div id="panel-federal" class="calc-panel hidden">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="fed-base-pay">Federal Base Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="fed-base-pay" min="10000" max="500000" value="58000" aria-label="Base federal GS salary" />
+          </div>
+        </div>
+        <input type="range" id="fed-base-pay-slider" min="15000" max="150000" step="1000" value="58000" class="slider-range" aria-label="Federal Base pay Slider" />
+      </div>
+
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="fed-standard-raise">Standard GS Base Raise</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="fed-standard-raise" min="0" max="15" step="0.01" value="4.7" aria-label="Standard Base pay raise percentage" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="fed-locality-rate">Locality Pay Adjustment</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="fed-locality-rate" min="0" max="100" step="0.01" value="23.5" aria-label="Federal locality pay percentage" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Button -->
+    <div style="margin-top: var(--space-6); display: flex; justify-content: flex-end;">
+      <Button id="raise-reset" variant="outline" size="sm" class="reset-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><polyline points="16 3 21 8 16 13"></polyline><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><polyline points="8 21 3 16 8 11"></polyline></svg>
+        Reset Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <div class="results-inner-card">
+      <div class="result-highlight-box">
+        <span class="highlight-label" id="result-label-primary">New Annual Salary</span>
+        <span class="highlight-value" id="result-val-primary">$0</span>
+      </div>
+
+      <div class="results-grid" style="margin-top: var(--space-6);">
+        <div class="result-tile">
+          <span class="tile-label" id="result-label-secondary">Annual Pay Raise</span>
+          <span class="tile-value" id="result-val-secondary">$0</span>
+        </div>
+        <div class="result-tile">
+          <span class="tile-label" id="result-label-tertiary">Percentage Increase</span>
+          <span class="tile-value text-accent" id="result-val-tertiary">0%</span>
+        </div>
+      </div>
+
+      <div class="chart-container" style="margin-top: var(--space-6);">
+        <h4 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-3);" id="breakdown-table-title">Pay Raise Comparison Matrix</h4>
+        <div class="table-responsive">
+          <table class="data-table" id="raise-breakdown-table">
+            <thead>
+              <tr>
+                <th>Pay Period</th>
+                <th>Old Pay Rate</th>
+                <th>New Pay Rate</th>
+                <th>Difference (Raise)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injected dynamically by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initRaiseCalculator() {
+    const root = document.getElementById('raise-calc');
+    if (!root) return;
+
+    // Mode Selector
+    const modeSelect = root.querySelector('#raise-calc-type') as HTMLSelectElement;
+    const currencySelect = root.querySelector('#raise-currency-select') as HTMLSelectElement;
+    const resetBtn = root.querySelector('#raise-reset') as HTMLButtonElement;
+
+    // Panels
+    const panelBasic = root.querySelector('#panel-basic') as HTMLElement;
+    const panelMerit = root.querySelector('#panel-merit') as HTMLElement;
+    const panelBackpay = root.querySelector('#panel-backpay') as HTMLElement;
+    const panelFederal = root.querySelector('#panel-federal') as HTMLElement;
+
+    // Panel Inputs - Basic
+    const basicCurrentPay = root.querySelector('#basic-current-pay') as HTMLInputElement;
+    const basicCurrentPaySlider = root.querySelector('#basic-current-pay-slider') as HTMLInputElement;
+    const basicPayFreq = root.querySelector('#basic-pay-frequency') as HTMLSelectElement;
+    const basicHoursWeekly = root.querySelector('#basic-hours-weekly') as HTMLInputElement;
+    const basicRaiseType = root.querySelector('#basic-raise-type') as HTMLSelectElement;
+    const basicRaiseVal = root.querySelector('#basic-raise-val') as HTMLInputElement;
+    const labelRaiseVal = root.querySelector('#label-raise-val') as HTMLElement;
+    const symbolRaiseVal = root.querySelector('#symbol-raise-val') as HTMLElement;
+
+    // Panel Inputs - Merit
+    const meritCurrentPay = root.querySelector('#merit-current-pay') as HTMLInputElement;
+    const meritCurrentPaySlider = root.querySelector('#merit-current-pay-slider') as HTMLInputElement;
+    const meritRating = root.querySelector('#merit-rating') as HTMLSelectElement;
+    const meritCompa = root.querySelector('#merit-compa') as HTMLSelectElement;
+
+    // Panel Inputs - Back Pay
+    const backpayRateType = root.querySelector('#backpay-rate-type') as HTMLSelectElement;
+    const backpayWeeklyHours = root.querySelector('#backpay-weekly-hours') as HTMLInputElement;
+    const backpayOldRate = root.querySelector('#backpay-old-rate') as HTMLInputElement;
+    const backpayNewRate = root.querySelector('#backpay-new-rate') as HTMLInputElement;
+    const backpayDurationType = root.querySelector('#backpay-duration-type') as HTMLSelectElement;
+    const backpayDurationVal = root.querySelector('#backpay-duration-val') as HTMLInputElement;
+
+    // Panel Inputs - Federal
+    const fedBasePay = root.querySelector('#fed-base-pay') as HTMLInputElement;
+    const fedBasePaySlider = root.querySelector('#fed-base-pay-slider') as HTMLInputElement;
+    const fedStdRaise = root.querySelector('#fed-standard-raise') as HTMLInputElement;
+    const fedLocality = root.querySelector('#fed-locality-rate') as HTMLInputElement;
+
+    // Result Labels
+    const resultLabelPrimary = document.getElementById('result-label-primary');
+    const resultValPrimary = document.getElementById('result-val-primary');
+    const resultLabelSecondary = document.getElementById('result-label-secondary');
+    const resultValSecondary = document.getElementById('result-val-secondary');
+    const resultLabelTertiary = document.getElementById('result-label-tertiary');
+    const resultValTertiary = document.getElementById('result-val-tertiary');
+
+    // Table
+    const breakdownTableTitle = document.getElementById('breakdown-table-title');
+    const breakdownTableBody = document.querySelector('#raise-breakdown-table tbody');
+
+    if (!modeSelect || !currencySelect || !resetBtn) return;
+
+    const CURRENCIES: Record<string, { symbol: string; locale: string }> = {
+      USD: { symbol: '$', locale: 'en-US' },
+      EUR: { symbol: '€', locale: 'de-DE' },
+      GBP: { symbol: '£', locale: 'en-GB' },
+      INR: { symbol: '₹', locale: 'en-IN' },
+      JPY: { symbol: '¥', locale: 'ja-JP' },
+      AUD: { symbol: 'A$', locale: 'en-AU' },
+      CAD: { symbol: 'C$', locale: 'en-CA' },
+      CHF: { symbol: 'CHF', locale: 'de-CH' },
+      CNY: { symbol: '¥', locale: 'zh-CN' },
+      SGD: { symbol: 'S$', locale: 'en-SG' }
+    };
+
+    const getSelectedCurrency = () => currencySelect.value || 'USD';
+
+    const formatCurrency = (val: number) => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      return new Intl.NumberFormat(config.locale, {
+        style: 'currency',
+        currency: curr,
+        maximumFractionDigits: 2
+      }).format(val);
+    };
+
+    const updateCurrencyLabels = () => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      root.querySelectorAll('.currency-symbol').forEach((el) => {
+        el.textContent = config.symbol;
+      });
+    };
+
+    // Toggle panels depending on selected Mode
+    const handleModeSwitch = () => {
+      const mode = modeSelect.value;
+      
+      panelBasic.classList.add('hidden');
+      panelMerit.classList.add('hidden');
+      panelBackpay.classList.add('hidden');
+      panelFederal.classList.add('hidden');
+
+      if (mode === 'basic') panelBasic.classList.remove('hidden');
+      if (mode === 'merit') panelMerit.classList.remove('hidden');
+      if (mode === 'backpay') panelBackpay.classList.remove('hidden');
+      if (mode === 'federal') panelFederal.classList.remove('hidden');
+
+      calculateResults();
+    };
+
+    // Sync input sliders
+    const setupSync = (input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) => {
+      const syncInput = () => {
+        let val = parseFloat(input.value);
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+        if (isNaN(val)) val = min;
+        if (val < min) val = min;
+        if (val > max) val = max;
+        slider.value = String(val);
+        callback();
+      };
+      const syncSlider = () => {
+        input.value = slider.value;
+        callback();
+      };
+      input.addEventListener('change', syncInput);
+      slider.addEventListener('input', syncSlider);
+    };
+
+    setupSync(basicCurrentPay, basicCurrentPaySlider, calculateResults);
+    setupSync(meritCurrentPay, meritCurrentPaySlider, calculateResults);
+    setupSync(fedBasePay, fedBasePaySlider, calculateResults);
+
+    // Dynamic label changes in Basic tab
+    const handleBasicInputToggle = () => {
+      const raiseType = basicRaiseType.value;
+      const config = CURRENCIES[getSelectedCurrency()] || CURRENCIES.USD;
+      const hoursGroup = document.getElementById('group-hours-weekly');
+
+      if (basicPayFreq.value === 'hourly') {
+        hoursGroup?.classList.remove('hidden');
+      } else {
+        hoursGroup?.classList.add('hidden');
+      }
+
+      if (raiseType === 'percent') {
+        labelRaiseVal.textContent = 'Raise Percentage';
+        symbolRaiseVal.textContent = '%';
+        symbolRaiseVal.className = 'percent-symbol';
+      } else if (raiseType === 'amount') {
+        labelRaiseVal.textContent = 'Flat Increase';
+        symbolRaiseVal.textContent = config.symbol;
+        symbolRaiseVal.className = 'currency-symbol-custom';
+      } else {
+        labelRaiseVal.textContent = 'New Target Rate';
+        symbolRaiseVal.textContent = config.symbol;
+        symbolRaiseVal.className = 'currency-symbol-custom';
+      }
+
+      calculateResults();
+    };
+
+    // Table injection helper
+    const renderMatrixTable = (oldAnnual: number, newAnnual: number, weeklyHours: number) => {
+      if (!breakdownTableBody) return;
+      
+      const hourlyOld = oldAnnual / (52 * weeklyHours);
+      const hourlyNew = newAnnual / (52 * weeklyHours);
+
+      const rows = [
+        { name: 'Annually', old: oldAnnual, new: newAnnual },
+        { name: 'Monthly', old: oldAnnual / 12, new: newAnnual / 12 },
+        { name: 'Semi-Monthly (24x/yr)', old: oldAnnual / 24, new: newAnnual / 24 },
+        { name: 'Bi-Weekly (26x/yr)', old: oldAnnual / 26, new: newAnnual / 26 },
+        { name: 'Weekly', old: oldAnnual / 52, new: newAnnual / 52 },
+        { name: 'Hourly', old: hourlyOld, new: hourlyNew }
+      ];
+
+      breakdownTableBody.innerHTML = rows.map((r) => {
+        const diff = r.new - r.old;
+        return `
+          <tr>
+            <td><strong>${r.name}</strong></td>
+            <td>${formatCurrency(r.old)}</td>
+            <td>${formatCurrency(r.new)}</td>
+            <td class="text-success">+${formatCurrency(diff)}</td>
+          </tr>
+        `;
+      }).join('');
+    };
+
+    // Calculate core metrics
+    function calculateResults() {
+      const mode = modeSelect.value;
+      const currency = getSelectedCurrency();
+
+      // Show table breakdown wrapper by default
+      const tableWrapper = document.querySelector('.chart-container') as HTMLElement;
+      if (tableWrapper) tableWrapper.style.display = 'block';
+
+      if (mode === 'basic') {
+        const currentPay = parseFloat(basicCurrentPay.value) || 0;
+        const freq = basicPayFreq.value;
+        const hours = parseFloat(basicHoursWeekly.value) || 40;
+        const raiseType = basicRaiseType.value;
+        const raiseVal = parseFloat(basicRaiseVal.value) || 0;
+
+        // Calculate old annual pay
+        let oldAnnual = 0;
+        if (freq === 'annual') oldAnnual = currentPay;
+        else if (freq === 'monthly') oldAnnual = currentPay * 12;
+        else if (freq === 'semi-monthly') oldAnnual = currentPay * 24;
+        else if (freq === 'biweekly') oldAnnual = currentPay * 26;
+        else if (freq === 'weekly') oldAnnual = currentPay * 52;
+        else if (freq === 'hourly') oldAnnual = currentPay * hours * 52;
+
+        let raisePercentage = 0;
+        let raiseAmount = 0;
+        let newAnnual = 0;
+
+        if (raiseType === 'percent') {
+          raisePercentage = raiseVal;
+          raiseAmount = oldAnnual * (raisePercentage / 100);
+          newAnnual = oldAnnual + raiseAmount;
+        } else if (raiseType === 'amount') {
+          // Flat amount can be periodic or annual. We evaluate it relative to selected frequency
+          let flatAnnualRaise = 0;
+          if (freq === 'annual') flatAnnualRaise = raiseVal;
+          else if (freq === 'monthly') flatAnnualRaise = raiseVal * 12;
+          else if (freq === 'semi-monthly') flatAnnualRaise = raiseVal * 24;
+          else if (freq === 'biweekly') flatAnnualRaise = raiseVal * 26;
+          else if (freq === 'weekly') flatAnnualRaise = raiseVal * 52;
+          else if (freq === 'hourly') flatAnnualRaise = raiseVal * hours * 52;
+
+          raiseAmount = flatAnnualRaise;
+          newAnnual = oldAnnual + raiseAmount;
+          raisePercentage = oldAnnual > 0 ? (raiseAmount / oldAnnual) * 100 : 0;
+        } else {
+          // New target salary
+          let newAnnualTarget = 0;
+          if (freq === 'annual') newAnnualTarget = raiseVal;
+          else if (freq === 'monthly') newAnnualTarget = raiseVal * 12;
+          else if (freq === 'semi-monthly') newAnnualTarget = raiseVal * 24;
+          else if (freq === 'biweekly') newAnnualTarget = raiseVal * 26;
+          else if (freq === 'weekly') newAnnualTarget = raiseVal * 52;
+          else if (freq === 'hourly') newAnnualTarget = raiseVal * hours * 52;
+
+          newAnnual = newAnnualTarget;
+          raiseAmount = Math.max(0, newAnnual - oldAnnual);
+          raisePercentage = oldAnnual > 0 ? (raiseAmount / oldAnnual) * 100 : 0;
+        }
+
+        // Display results
+        if (resultLabelPrimary) resultLabelPrimary.textContent = 'New Annual Salary';
+        if (resultValPrimary) resultValPrimary.textContent = formatCurrency(newAnnual);
+        if (resultLabelSecondary) resultLabelSecondary.textContent = 'Annual Pay Raise';
+        if (resultValSecondary) resultValSecondary.textContent = `+${formatCurrency(raiseAmount)}`;
+        if (resultLabelTertiary) resultLabelTertiary.textContent = 'Percentage Increase';
+        if (resultValTertiary) resultValTertiary.textContent = `${raisePercentage.toFixed(2)}%`;
+
+        if (breakdownTableTitle) breakdownTableTitle.textContent = 'Pay Raise Comparison Matrix';
+        renderMatrixTable(oldAnnual, newAnnual, hours);
+
+      } else if (mode === 'merit') {
+        const currentSalary = parseFloat(meritCurrentPay.value) || 0;
+        const rating = parseInt(meritRating.value) || 3;
+        const compa = meritCompa.value;
+
+        // Base raise mappings based on 5-Star scale
+        let baseRaise = 3.5;
+        if (rating === 5) baseRaise = 8.5;
+        else if (rating === 4) baseRaise = 5.8;
+        else if (rating === 3) baseRaise = 3.8;
+        else if (rating === 2) baseRaise = 1.8;
+        else if (rating === 1) baseRaise = 0.0;
+
+        // Compa-ratio adjustment modifier
+        let modifier = 0;
+        if (compa === 'low') modifier = 0.5; // low salary gets raise boost to catch up
+        if (compa === 'high') modifier = -0.5; // high salary raise is capped
+
+        const finalPercentage = Math.max(0, baseRaise + modifier);
+        const annualRaise = currentSalary * (finalPercentage / 100);
+        const newSalary = currentSalary + annualRaise;
+
+        if (resultLabelPrimary) resultLabelPrimary.textContent = 'Projected Annual Salary';
+        if (resultValPrimary) resultValPrimary.textContent = formatCurrency(newSalary);
+        if (resultLabelSecondary) resultLabelSecondary.textContent = 'Projected Merit Raise';
+        if (resultValSecondary) resultValSecondary.textContent = `+${formatCurrency(annualRaise)}`;
+        if (resultLabelTertiary) resultLabelTertiary.textContent = 'Final Raise Rate';
+        if (resultValTertiary) resultValTertiary.textContent = `${finalPercentage.toFixed(2)}%`;
+
+        if (breakdownTableTitle) breakdownTableTitle.textContent = 'Merit Raise Matrix';
+        renderMatrixTable(currentSalary, newSalary, 40);
+
+      } else if (mode === 'backpay') {
+        const rateType = backpayRateType.value;
+        const weeklyHours = parseFloat(backpayWeeklyHours.value) || 40;
+        const oldRate = parseFloat(backpayOldRate.value) || 0;
+        const newRate = parseFloat(backpayNewRate.value) || 0;
+        const durType = backpayDurationType.value;
+        const durVal = parseFloat(backpayDurationVal.value) || 0;
+
+        const delta = Math.max(0, newRate - oldRate);
+        let backPayOwed = 0;
+
+        if (rateType === 'hourly') {
+          // Old Rate and New Rate are hourly
+          let totalHoursBackdated = 0;
+          if (durType === 'hours') totalHoursBackdated = durVal;
+          else if (durType === 'weeks') totalHoursBackdated = durVal * weeklyHours;
+          else if (durType === 'months') totalHoursBackdated = durVal * 4.333 * weeklyHours;
+
+          backPayOwed = delta * totalHoursBackdated;
+        } else {
+          // Old Rate and New Rate are annual salary
+          const annualDelta = delta;
+          const weeklyDelta = annualDelta / 52;
+          const hourlyDelta = weeklyDelta / weeklyHours;
+
+          if (durType === 'hours') backPayOwed = hourlyDelta * durVal;
+          else if (durType === 'weeks') backPayOwed = weeklyDelta * durVal;
+          else if (durType === 'months') backPayOwed = (annualDelta / 12) * durVal;
+        }
+
+        if (resultLabelPrimary) resultLabelPrimary.textContent = 'Total Back Pay Owed';
+        if (resultValPrimary) resultValPrimary.textContent = formatCurrency(backPayOwed);
+        if (resultLabelSecondary) resultLabelSecondary.textContent = 'Rate Difference';
+        if (resultValSecondary) {
+          resultValSecondary.textContent = rateType === 'hourly' 
+            ? `+${formatCurrency(delta)} / hr` 
+            : `+${formatCurrency(delta)} / yr`;
+        }
+        if (resultLabelTertiary) resultLabelTertiary.textContent = 'Percentage Raise';
+        const pct = oldRate > 0 ? (delta / oldRate) * 100 : 0;
+        if (resultValTertiary) resultValTertiary.textContent = `${pct.toFixed(2)}%`;
+
+        // Hide table for backpay as it does not require grid projections
+        if (tableWrapper) tableWrapper.style.display = 'none';
+
+      } else if (mode === 'federal') {
+        const basePay = parseFloat(fedBasePay.value) || 0;
+        const raisePercent = parseFloat(fedStdRaise.value) || 0;
+        const localityPercent = parseFloat(fedLocality.value) || 0;
+
+        const newBasePay = basePay * (1 + raisePercent / 100);
+        const oldLocalityPay = basePay * (1 + localityPercent / 100);
+        const newLocalityPay = newBasePay * (1 + localityPercent / 100);
+
+        const totalRaise = newLocalityPay - oldLocalityPay;
+        const overallIncreasePct = oldLocalityPay > 0 ? (totalRaise / oldLocalityPay) * 100 : 0;
+
+        if (resultLabelPrimary) resultLabelPrimary.textContent = 'New Adjusted Federal Salary';
+        if (resultValPrimary) resultValPrimary.textContent = formatCurrency(newLocalityPay);
+        if (resultLabelSecondary) resultLabelSecondary.textContent = 'Locality Pay Adjustment';
+        if (resultValSecondary) resultValSecondary.textContent = formatCurrency(newLocalityPay - newBasePay);
+        if (resultLabelTertiary) resultLabelTertiary.textContent = 'Net Raise Percentage';
+        if (resultValTertiary) resultValTertiary.textContent = `${overallIncreasePct.toFixed(2)}%`;
+
+        if (breakdownTableTitle) breakdownTableTitle.textContent = 'Locality-Adjusted GS Breakdown';
+        renderMatrixTable(oldLocalityPay, newLocalityPay, 40);
+      }
+    }
+
+    const handleFrequencyChange = () => {
+      const freq = basicPayFreq.value;
+      let min = 10000;
+      let max = 250000;
+      let step = 1000;
+      let val = 65000;
+
+      if (freq === 'hourly') {
+        min = 10;
+        max = 150;
+        step = 0.5;
+        val = 30;
+      } else if (freq === 'weekly') {
+        min = 200;
+        max = 5000;
+        step = 50;
+        val = 1200;
+      } else if (freq === 'biweekly') {
+        min = 400;
+        max = 10000;
+        step = 100;
+        val = 2500;
+      } else if (freq === 'semi-monthly') {
+        min = 400;
+        max = 10000;
+        step = 100;
+        val = 2700;
+      } else if (freq === 'monthly') {
+        min = 800;
+        max = 20000;
+        step = 200;
+        val = 5400;
+      }
+
+      basicCurrentPay.min = String(min);
+      basicCurrentPay.max = String(max);
+      basicCurrentPay.value = String(val);
+
+      basicCurrentPaySlider.min = String(min);
+      basicCurrentPaySlider.max = String(max);
+      basicCurrentPaySlider.step = String(step);
+      basicCurrentPaySlider.value = String(val);
+
+      // Update basic ticks
+      const ticks = root.querySelector('#panel-basic .slider-ticks') as HTMLElement;
+      if (ticks) {
+        const config = CURRENCIES[getSelectedCurrency()] || CURRENCIES.USD;
+        if (freq === 'hourly') {
+          ticks.innerHTML = `<span>${config.symbol}10</span><span>${config.symbol}80</span><span>${config.symbol}150</span>`;
+        } else if (freq === 'annual') {
+          ticks.innerHTML = `<span>10k</span><span>130k</span><span>250k</span>`;
+        } else if (freq === 'monthly') {
+          ticks.innerHTML = `<span>800</span><span>10k</span><span>20k</span>`;
+        } else if (freq === 'weekly') {
+          ticks.innerHTML = `<span>200</span><span>2.5k</span><span>5k</span>`;
+        } else {
+          ticks.innerHTML = `<span>400</span><span>5k</span><span>10k</span>`;
+        }
+      }
+
+      handleBasicInputToggle();
+    };
+
+    // Set event listeners
+    modeSelect.addEventListener('change', handleModeSwitch);
+    currencySelect.addEventListener('change', () => {
+      updateCurrencyLabels();
+      handleFrequencyChange();
+    });
+
+    basicPayFreq.addEventListener('change', handleFrequencyChange);
+    basicRaiseType.addEventListener('change', handleBasicInputToggle);
+    basicHoursWeekly.addEventListener('input', calculateResults);
+    basicRaiseVal.addEventListener('input', calculateResults);
+
+    meritRating.addEventListener('change', calculateResults);
+    meritCompa.addEventListener('change', calculateResults);
+
+    backpayRateType.addEventListener('change', calculateResults);
+    backpayWeeklyHours.addEventListener('input', calculateResults);
+    backpayOldRate.addEventListener('input', calculateResults);
+    backpayNewRate.addEventListener('input', calculateResults);
+    backpayDurationType.addEventListener('change', calculateResults);
+    backpayDurationVal.addEventListener('input', calculateResults);
+
+    fedStdRaise.addEventListener('input', calculateResults);
+    fedLocality.addEventListener('input', calculateResults);
+
+    // Reset Button Event
+    resetBtn.addEventListener('click', () => {
+      // Basic Reset
+      basicCurrentPay.value = '65000';
+      basicCurrentPaySlider.value = '65000';
+      basicPayFreq.value = 'annual';
+      basicHoursWeekly.value = '40';
+      basicRaiseType.value = 'percent';
+      basicRaiseVal.value = '4.5';
+
+      // Merit Reset
+      meritCurrentPay.value = '70000';
+      meritCurrentPaySlider.value = '70000';
+      meritRating.value = '3';
+      meritCompa.value = 'mid';
+
+      // Backpay Reset
+      backpayRateType.value = 'hourly';
+      backpayWeeklyHours.value = '40';
+      backpayOldRate.value = '25.00';
+      backpayNewRate.value = '27.50';
+      backpayDurationType.value = 'weeks';
+      backpayDurationVal.value = '8';
+
+      // Federal Reset
+      fedBasePay.value = '58000';
+      fedBasePaySlider.value = '58000';
+      fedStdRaise.value = '4.7';
+      fedLocality.value = '23.5';
+
+      handleFrequencyChange();
+      calculateResults();
+    });
+
+    // Handle Results Copy Event
+    window.addEventListener('copy-calculator-results', () => {
+      const resultsText = `
+FinCalcLab.com - Pay Raise Calculator Results:
+----------------------------------------------
+Mode: ${modeSelect.value.toUpperCase()}
+New Rate: ${resultValPrimary?.textContent || ''}
+Pay Raise Increase: ${resultValSecondary?.textContent || ''}
+Percentage Increase: ${resultValTertiary?.textContent || ''}
+----------------------------------------------
+Calculate more at https://fincalclab.com
+      `.trim();
+
+      navigator.clipboard.writeText(resultsText).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Initial setup
+    updateCurrencyLabels();
+    handleFrequencyChange();
+    handleModeSwitch();
+  }
+
+  // Load hooks
+  document.addEventListener('DOMContentLoaded', initRaiseCalculator);
+  document.addEventListener('astro:after-swap', initRaiseCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .raise-tabs-wrapper {
+    width: 100%;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .small-wrapper {
+    width: 100px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    padding: 0 4px;
+  }
+
+  /* Layout grids */
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .calc-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .calc-panel.hidden {
+    display: none !important;
+  }
+
+  /* Results styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .results-inner-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .result-highlight-box {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .highlight-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .highlight-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .tile-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .reset-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  /* Table styling */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .data-table th, .data-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .data-table th {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Mobile responsive overrides */
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .data-table {
+      min-width: 480px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

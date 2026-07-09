@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
+import Button from '../components/ui/Button.astro';
+import Badge from '../components/ui/Badge.astro';
+---
+
+<Layout
+  title="Internal Server Error (500) - FinCalcLab"
+  description="An unexpected error occurred. Please try reloading the page or return to the homepage."
+>
+  <div class="error-page-wrapper">
+    <div class="container" style="max-width: 600px;">
+      
+      <!-- Styled Error Card -->
+      <Card elevation="md" style="padding: var(--space-8) var(--space-6); text-align: center; border-top: 4px solid var(--color-danger, #ef4444); background-color: var(--color-bg-surface);">
+        <Badge variant="outline" style="color: var(--color-text-muted);">Error 500</Badge>
+        
+        <h1 class="error-title" style="font-size: 3rem; font-weight: 800; letter-spacing: -0.05em; margin-top: var(--space-3); margin-bottom: var(--space-2); color: var(--color-text-base);">
+          Calculation Timeout
+        </h1>
+        
+        <p style="font-size: 1.1rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: var(--space-6); max-width: 480px; margin-left: auto; margin-right: auto;">
+          An unexpected error occurred while processing this request. Try reloading the page or head back home.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+          <Button id="reload-page-btn" variant="primary">
+            Reload Page
+          </Button>
+          <Button href="/" variant="outline">
+            Go to Homepage
+          </Button>
+        </div>
+      </Card>
+
+    </div>
+  </div>
+</Layout>
+
+<script>
+  function setupReloadButton() {
+    const reloadBtn = document.getElementById('reload-page-btn');
+    if (reloadBtn) {
+      reloadBtn.addEventListener('click', () => {
+        window.location.reload();
+      });
+    }
+  }
+
+  // Bind lifecycle listeners
+  document.addEventListener('DOMContentLoaded', setupReloadButton);
+  document.addEventListener('astro:after-swap', setupReloadButton);
+</script>
+
+<style>
+  .error-page-wrapper {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+</style>

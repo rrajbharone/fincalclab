@@ -1,0 +1,200 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MarkupCalculator from '../../components/calculator/MarkupCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Markup Calculator', path: '/calculator/markup-calculator' }
+];
+---
+
+<Layout
+  title="Markup Calculator - Calculate Selling Price, Profit, & Margin"
+  description="Free online markup calculator. Convert markup to margin, estimate retail selling prices from wholesale cost, and build profit matrices."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <MarkupCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Pricing Guide</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Confusing Markup and Margin? Here is How It Kills Profit</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read our real-life case study on how a retail boutique lost thousands of dollars by mixing up markup with margin percentages, and learn the step-by-step math to correct it.
+            </p>
+            <a href="/blog/how-to-calculate-markup" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Markup Percentage & Avoid Costly Pricing Errors
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Markup?</h2>
+        <p>
+          Markup is the difference between the selling price of a product or service and its cost of production or acquisition, expressed as a percentage of the <strong>cost</strong>. In simple terms, markup tells you how much money you add to the wholesale cost of an item to establish its retail selling price. 
+        </p>
+        <p>
+          For example, if you purchase an item for $50 (cost) and sell it for $75 (selling price), your markup is $25. Expressed as a percentage of the cost, your markup percentage is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Markup \\%} = \\frac{\\text{Selling Price} - \\text{Cost}}{\\text{Cost}} \\times 100 = \\frac{75 - 50}{50} \\times 100 = 50\\%\\)"}
+        </p>
+        <p>
+          Markup is a critical metric for businesses, manufacturers, and wholesalers because it directly relates to cost pricing structures, ensuring that every item sold covers its acquisition expenses and generates profit.
+        </p>
+
+        <h2>Markup vs. Margin: The Critical Difference</h2>
+        <p>
+          The terms "markup" and "margin" are often used interchangeably, which is a major financial mistake. Confusing the two can lead to pricing products too low and accidentally operating at a loss. Here is the distinction:
+        </p>
+        <ul>
+          <li>
+            <strong>Markup</strong> is the gross profit divided by the <strong>cost</strong> of the item. It indicates how much you mark up the product from its buying price.
+          </li>
+          <li>
+            <strong>Margin</strong> (specifically Gross Profit Margin) is the gross profit divided by the <strong>selling price</strong> of the item. It indicates how much of your total revenue is kept as profit.
+          </li>
+        </ul>
+        <p>
+          Using the same example of buying at $50 and selling at $75:
+        </p>
+        <ul>
+          <li>Your **Markup** is 50% (because $25 is 50% of the $50 cost).</li>
+          <li>Your **Margin** is 33.3% (because $25 is 33.3% of the $75 selling price).</li>
+        </ul>
+        <p>
+          Because selling price is always higher than cost, your markup percentage will always be higher than your profit margin percentage. 
+        </p>
+
+        <h2>Conversion Formulas: Converting Markup to Margin</h2>
+        <p>
+          If you know your desired gross profit margin but want to know what markup to apply to your wholesale cost, you can convert between them using these formulas:
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin: var(--space-6) 0;">
+          <Card elevation="sm" style="padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h4 style="margin: 0 0 var(--space-2) 0;">Convert Margin to Markup</h4>
+            <div style="font-size: 1.1rem; font-weight: 700; text-align: center; color: var(--color-primary); margin: var(--space-3) 0;">
+              {"\\(\\text{Markup} = \\frac{\\text{Margin}}{1 - \\text{Margin}}\\)"}
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0;">
+              Example: For a 20% margin, markup = 0.20 / (1 - 0.20) = 0.25 (or 25% markup).
+            </p>
+          </Card>
+
+          <Card elevation="sm" style="padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h4 style="margin: 0 0 var(--space-2) 0;">Convert Markup to Margin</h4>
+            <div style="font-size: 1.1rem; font-weight: 700; text-align: center; color: var(--color-accent); margin: var(--space-3) 0;">
+              {"\\(/\\text{Margin} = \\frac{\\text{Markup}}{1 + \\text{Markup}}\\)"}
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0;">
+              Example: For a 50% markup, margin = 0.50 / (1 + 0.50) = 0.333 (or 33.3% margin).
+            </p>
+          </Card>
+        </div>
+
+        <h2>Step-by-Step: How to Calculate Markup and Pricing</h2>
+        <p>
+          To establish professional pricing tiers for your products, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Determine Your Total Cost of Goods Sold (COGS):</strong> Calculate everything that goes into making the product. This includes raw materials, packaging, labor, shipping, and storage. Enter this into the calculator as "Product Cost".
+          </li>
+          <li>
+            <strong>Select Your Pricing Strategy:</strong> Choose whether you want to target a markup percentage from cost or a target profit margin percentage.
+          </li>
+          <li>
+            <strong>Apply the Formula:</strong> 
+            <ul>
+              <li>If targeting a 40% markup: \(Price = Cost \times 1.40\).</li>
+              <li>If targeting a 40% margin: \(Price = Cost / (1 - 0.40)\).</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Analyze the Profit:</strong> Look at your resulting Gross Profit and ensure it covers your business overhead (rent, utilities, software, marketing) and yields a net profit.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Markup Calculator Frequently Asked Questions</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why is markup percentage always higher than margin percentage?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Markup divides profit by **Cost**, while Margin divides profit by the **Selling Price**. Since your Selling Price is the sum of Cost + Profit, it is mathematically larger than Cost. Dividing the same profit amount by a smaller number (Cost) results in a larger percentage (Markup) compared to dividing it by a larger number (Selling Price/Margin).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a standard retail markup?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Standard retail markup varies by industry. A classic retail standard is a "keystone markup", which is a **100% markup** (doubling the wholesale cost). This gives you a 50% gross profit margin. High-volume industries like grocery stores might operate on small markups (10% to 15%), while luxury goods or apparel might utilize markups of 200% to 300%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Does markup calculate net profit?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              No. Markup only calculates **gross profit** (the difference between selling price and the direct cost of the product). It does not factor in your operating expenses (overhead) such as marketing, salaries, insurance, rent, or taxes. To find your net profit, you must subtract these indirect operating costs from your total gross profit.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do discounts affect my margin?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Discounts lower your selling price while your product cost remains constant. This shrinks your gross profit, which disproportionately collapses your gross profit margin. For example, if you sell an item for $100 with a $50 cost (50% margin), offering a 20% discount reduces the price to $80. Your profit drops to $30, shrinking your margin to 37.5%.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,378 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/ui/Card.astro';
+import Badge from '../../components/ui/Badge.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Fetch related posts (same category, excluding current post)
+const allPosts = await getCollection('blog');
+const relatedPosts = allPosts
+  .filter((p) => p.id !== post.id && p.data.category === post.data.category)
+  .slice(0, 2);
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Blog', item: '/blog' },
+    { name: post.data.title, item: `/blog/${post.id}` }
+  ]}
+>
+  <article class="blog-post-page">
+    <div class="container article-container">
+      <!-- Breadcrumb Nav -->
+      <nav class="article-breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></li>
+          <li class="active" aria-current="page">Article</li>
+        </ol>
+      </nav>
+
+      <!-- Post Header -->
+      <header class="post-header">
+        <Badge variant={post.data.category === 'Investing' ? 'primary' : post.data.category === 'Tax' ? 'success' : 'accent'}>
+          {post.data.category}
+        </Badge>
+        <h1 class="post-title">{post.data.title}</h1>
+        <div class="post-meta">
+          <span class="meta-author">By {post.data.author}</span>
+          <span class="meta-separator">&bull;</span>
+          <span class="meta-date">
+            {post.data.pubDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </span>
+        </div>
+      </header>
+
+      <div class="post-grid-layout">
+        <!-- Post Main Content -->
+        <div class="post-main-content">
+          <Card elevation="sm" class="post-card-content">
+            <div class="markdown-body">
+              <Content />
+            </div>
+          </Card>
+        </div>
+
+        <!-- Sidebar (Related articles or tools) -->
+        <aside class="post-sidebar">
+          <!-- Quick Calculators Link Card -->
+          <Card elevation="md" class="sidebar-widget-card cta-widget">
+            <h4 class="widget-title">Interactive Financial Tools</h4>
+            <p class="widget-desc">Test different financial projections using our premium free calculators.</p>
+            <div class="widget-links">
+              <a href="/calculator/lumpsum-vs-sip-calculator" class="widget-link">
+                <span>SIP vs Lumpsum Calculator</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </a>
+              <a href="/calculator/kids-pocket-money-compounder-calculator" class="widget-link">
+                <span>Kids Allowance Compounder</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </a>
+              <a href="/calculator/in-hand-salary-calculator" class="widget-link">
+                <span>In-Hand Salary Calculator</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </a>
+            </div>
+          </Card>
+
+          <!-- Related Posts widget -->
+          {relatedPosts.length > 0 && (
+            <div class="sidebar-widget-posts">
+              <h4 class="sidebar-heading">Related Articles</h4>
+              <div class="related-posts-stack">
+                {relatedPosts.map((rp) => (
+                  <Card hoverable elevation="sm" class="related-post-card">
+                    <a href={`/blog/${rp.id}`} class="rp-card-link">
+                      <span class="rp-date">
+                        {rp.data.pubDate.toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </span>
+                      <h5 class="rp-title">{rp.data.title}</h5>
+                    </a>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .blog-post-page {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-16);
+  }
+
+  .article-container {
+    max-width: 1040px;
+  }
+
+  /* Breadcrumbs */
+  .article-breadcrumbs ol {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin-bottom: var(--space-6);
+  }
+
+  .article-breadcrumbs a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-light);
+  }
+
+  .article-breadcrumbs svg {
+    color: var(--color-text-light);
+  }
+
+  .article-breadcrumbs li.active {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-base);
+  }
+
+  /* Header */
+  .post-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .post-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    font-weight: 600;
+  }
+
+  /* Post Grid */
+  .post-grid-layout {
+    display: grid;
+    grid-template-columns: 2.25fr 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .post-card-content {
+    background-color: var(--color-bg-surface);
+    border-color: var(--color-border);
+  }
+
+  /* Sidebar */
+  .post-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .sidebar-widget-card {
+    border-color: var(--color-border);
+  }
+
+  .cta-widget {
+    background-color: var(--color-bg-surface);
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .widget-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+  }
+
+  .widget-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+    line-height: 1.5;
+  }
+
+  .widget-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .widget-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+  }
+
+  .widget-link:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-surface-hover);
+  }
+
+  .sidebar-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-3);
+  }
+
+  .related-posts-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .related-post-card {
+    padding: var(--space-4);
+  }
+
+  .rp-card-link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .rp-date {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-bottom: 4px;
+  }
+
+  .rp-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0;
+    color: var(--color-text-base);
+    transition: color var(--transition-fast);
+  }
+
+  .related-post-card:hover .rp-title {
+    color: var(--color-primary);
+  }
+
+  /* Markdown body style overrides */
+  .markdown-body :global(p) {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-6);
+    color: var(--color-text-muted);
+  }
+
+  .markdown-body :global(h2) {
+    font-size: 1.5rem;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+  }
+
+  .markdown-body :global(h3) {
+    font-size: 1.25rem;
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+
+  .markdown-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--space-6);
+    font-size: 0.95rem;
+  }
+
+  .markdown-body :global(th), .markdown-body :global(td) {
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+
+  .markdown-body :global(th) {
+    background-color: var(--color-bg-base);
+    font-weight: 700;
+  }
+
+  .markdown-body :global(ul), .markdown-body :global(ol) {
+    margin-bottom: var(--space-6);
+    padding-left: var(--space-6);
+  }
+
+  .markdown-body :global(li) {
+    margin-bottom: var(--space-2);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .markdown-body :global(blockquote) {
+    border-left: 4px solid var(--color-primary);
+    background-color: var(--color-bg-base);
+    padding: var(--space-4) var(--space-6);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin-bottom: var(--space-6);
+  }
+
+  .markdown-body :global(blockquote p) {
+    margin-bottom: 0;
+    font-style: italic;
+    color: var(--color-text-base);
+  }
+
+  @media (max-width: 820px) {
+    .post-grid-layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .post-title {
+      font-size: 1.85rem;
+    }
+  }
+</style>

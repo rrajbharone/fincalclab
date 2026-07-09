@@ -1,0 +1,746 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const latestPosts = posts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<Layout
+  title="Smart Financial Calculators for Better Money Decisions"
+  description="FinCalcLab provides free, premium, and lightning-fast financial calculators for SIP vs lumpsum investment plans, pocket money compounders, take-home salary calculations, and tax estimation."
+>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Smart Financial Calculators for <span class="text-gradient">Better Money Decisions</span>
+        </h1>
+        <p class="hero-subtitle">
+          Calculate your investments, compound savings, estimate salary packages, and project taxes in real-time. Fast, responsive, and privacy-friendly.
+        </p>
+        <div class="hero-ctas">
+          <Button href="/all-calculators" variant="primary" size="lg">Explore Calculators</Button>
+          <Button href="/blog" variant="outline" size="lg">Read Financial Guides</Button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num">Instant</span>
+            <span class="stat-lbl">Real-Time Projections</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">100% Free</span>
+            <span class="stat-lbl">No Hidden Costs</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">Private</span>
+            <span class="stat-lbl">No Sign-up Required</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual Decoration (Premium SaaS mockup styling) -->
+      <div class="hero-visual">
+        <div class="mockup-window">
+          <div class="mockup-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <div class="mockup-address">fincalclab.com/dashboard</div>
+          </div>
+          <div class="mockup-body">
+            <!-- Simulated premium dashboard chart UI -->
+            <div class="mockup-chart-header">
+              <span class="mockup-chart-title">Compound Growth Projections</span>
+              <span class="mockup-chart-val text-success">$1,234,567</span>
+            </div>
+            <div class="mockup-chart-svg-wrap">
+              <svg viewBox="0 0 400 150" fill="none" class="mockup-svg">
+                <!-- Gridlines -->
+                <line x1="0" y1="30" x2="400" y2="30" stroke="var(--color-border)" stroke-width="0.5" stroke-dasharray="2,2"/>
+                <line x1="0" y1="70" x2="400" y2="70" stroke="var(--color-border)" stroke-width="0.5" stroke-dasharray="2,2"/>
+                <line x1="0" y1="110" x2="400" y2="110" stroke="var(--color-border)" stroke-width="0.5" stroke-dasharray="2,2"/>
+                
+                <!-- Curves -->
+                <path d="M 0 140 Q 100 120 200 70 T 400 10" stroke="var(--color-primary)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 0 140 Q 120 135 240 105 T 400 45" stroke="var(--color-accent)" stroke-width="2.5" stroke-dasharray="3,3" stroke-linecap="round"/>
+                
+                <!-- Highlights -->
+                <circle cx="200" cy="70" r="5" fill="var(--color-primary)" stroke="var(--color-bg-surface)" stroke-width="2"/>
+                <circle cx="240" cy="105" r="4" fill="var(--color-accent)" stroke="var(--color-bg-surface)" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="mockup-legend">
+              <span class="leg-item"><span class="leg-dot lumpsum"></span> Compounded Savings</span>
+              <span class="leg-item"><span class="leg-dot sip"></span> Principle Only</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Calculators Grid -->
+  <section class="calculators-section" id="calculators">
+    <div class="container">
+      <div class="section-header text-center">
+        <Badge variant="primary">Financial Calculators</Badge>
+        <h2 class="section-title">Popular Calculations</h2>
+        <p class="section-subtitle">Select any tool below to calculate projections and view interactive charts instantly.</p>
+      </div>
+
+      <!-- Calculators List -->
+      <div class="calculators-grid" id="calculators-grid">
+        <!-- SIP Calculator -->
+        <div class="calc-card-item" data-title="lumpsum sip mutual funds investing compounding comparison">
+          <Card hoverable elevation="md" class="calc-card">
+            <span class="calc-card-badge text-primary">Investments</span>
+            <h3 class="calc-card-title">SIP vs Lumpsum</h3>
+            <p class="calc-card-desc">Compare dynamic side-by-side returns of mutual fund systematic monthly deposits versus a single cash lumpsum.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/lumpsum-vs-sip-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Kids Compounder -->
+        <div class="calc-card-item" data-title="kids pocket money allowance savings compound compounder">
+          <Card hoverable elevation="md" class="calc-card">
+            <span class="calc-card-badge text-accent">Savings</span>
+            <h3 class="calc-card-title">Kids Pocket Money Compounder</h3>
+            <p class="calc-card-desc">Discover the power of interest growth by compounding weekly or monthly children allowances with annual step-up raises.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/kids-pocket-money-compounder-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Salary Calculator -->
+        <div class="calc-card-item" data-title="salary net in hand tax slabs budget 2025 India new regime gross ctc HRA deductions pf">
+          <Card hoverable elevation="md" class="calc-card">
+            <span class="calc-card-badge text-success">Salary & Tax</span>
+            <h3 class="calc-card-title">In-Hand Salary Calculator</h3>
+            <p class="calc-card-desc">Calculate your monthly take-home pay, project tax liabilities under Budget 2025 slabs, and analyze salary deductions.</p>
+            <div class="calc-card-action">
+              <Button href="/calculator/in-hand-salary-calculator" variant="text" size="sm" class="full-link-btn">
+                Launch Calculator
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Value Propositions / Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <Badge variant="accent">Why FinCalcLab</Badge>
+        <h2 class="section-title">Designed for Accuracy & Performance</h2>
+        <p class="section-subtitle">A premium finance tools suite built on modern developer standards.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-header">
+            <div class="feat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+            <h3>Blazing Fast Speeds</h3>
+          </div>
+          <p>Built with Astro static generation and 0kb third-party frameworks. Pages load instantly with LCP under 1.8s.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-header">
+            <div class="feat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h3>100% Secure & Private</h3>
+          </div>
+          <p>No account registrations, no email requirements, and no storage tracking. All calculation inputs remain client-side.</p>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-header">
+            <div class="feat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <h3>Guaranteed Accuracy</h3>
+          </div>
+          <p>Formulas validated against official tax policies (Budget 2025) and compound annuity regulations. Standardized round-off margins.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Articles Section -->
+  {latestPosts.length > 0 && (
+    <section class="latest-posts-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <Badge variant="primary">Guides & Tutorials</Badge>
+          <h2 class="section-title">Latest Financial Insights</h2>
+          <p class="section-subtitle">Understand the core logic, formulas, and strategies of finance.</p>
+        </div>
+
+        <div class="latest-posts-grid">
+          {latestPosts.map((post) => (
+            <Card hoverable elevation="md" class="latest-post-card">
+              <a href={`/blog/${post.id}`} class="latest-post-link">
+                {post.data.image && (
+                  <div class="blog-thumbnail-wrapper">
+                    <img src={post.data.image} alt="" class="blog-thumbnail" loading="lazy" />
+                  </div>
+                )}
+                <span class="post-meta-cat">{post.data.category}</span>
+                <h3 class="post-title-link">{post.data.title}</h3>
+                <p class="post-desc-text">{post.data.description}</p>
+                <div class="post-footer-row">
+                  <span>Read Article</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+              </a>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+</Layout>
+
+
+<style>
+  /* Hero section styling */
+  .hero-section {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+    align-items: center;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-badge {
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-title {
+    font-size: 3.25rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    margin-bottom: var(--space-4);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-8);
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-12);
+  }
+
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+  }
+
+  .stat-lbl {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 32px;
+    background-color: var(--color-border);
+  }
+
+  /* Mockup dashboard card window visual */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .mockup-window {
+    width: 100%;
+    max-width: 440px;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+  }
+
+  .mockup-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--color-bg-base);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .dot.red { background-color: #ef4444; }
+  .dot.yellow { background-color: #f59e0b; }
+  .dot.green { background-color: #10b981; }
+
+  .mockup-address {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    padding: 2px 24px;
+    border-radius: var(--radius-sm);
+  }
+
+  .mockup-body {
+    padding: var(--space-6);
+  }
+
+  .mockup-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+
+  .mockup-chart-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .mockup-chart-val {
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  .mockup-chart-svg-wrap {
+    height: 150px;
+    margin-bottom: var(--space-4);
+  }
+
+  .mockup-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mockup-legend {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-3);
+  }
+
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .leg-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .leg-dot.lumpsum { background-color: var(--color-primary); }
+  .leg-dot.sip { background-color: var(--color-accent); }
+
+  /* Sections general spacing */
+  .calculators-section, .features-section, .latest-posts-section {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .section-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-top: var(--space-2);
+  }
+
+  .section-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+
+  /* Grid */
+  .calculators-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .calc-card-item.hidden {
+    display: none !important;
+  }
+
+  .calc-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calc-card-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-3);
+  }
+
+  .calc-card-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: var(--space-2);
+  }
+
+  .calc-card-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin-bottom: var(--space-6);
+    flex-grow: 1;
+  }
+
+  .calc-card-action {
+    width: 100%;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .full-link-btn {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0;
+  }
+
+  /* Empty state */
+  .empty-state-search {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-12) 0;
+    color: var(--color-text-light);
+  }
+  
+  .empty-state-search svg {
+    margin-bottom: var(--space-4);
+  }
+
+  .empty-state-search h4 {
+    color: var(--color-text-base);
+    font-size: 1.15rem;
+    margin-bottom: var(--space-1);
+  }
+
+  .empty-state-search p {
+    font-size: 0.9rem;
+    max-width: 320px;
+  }
+
+  /* Features */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  .feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .feature-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .feat-icon {
+    color: var(--color-primary);
+    background-color: rgba(37, 99, 235, 0.1);
+    padding: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  :global(html.dark) .feat-icon {
+    background-color: rgba(37, 99, 235, 0.2);
+  }
+
+  .feature-header h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .feature-item p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  /* Latest Posts */
+  .latest-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .latest-post-card {
+    height: 100%;
+  }
+
+  .latest-post-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-thumbnail-wrapper {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+  }
+
+  .blog-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .latest-post-link:hover .blog-thumbnail {
+    transform: scale(1.04);
+  }
+
+  .post-meta-cat {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .post-title-link {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+    transition: color var(--transition-fast);
+  }
+
+  .latest-post-link:hover .post-title-link {
+    color: var(--color-primary);
+  }
+
+  .post-desc-text {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin-bottom: var(--space-4);
+    flex-grow: 1;
+  }
+
+  .post-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-3);
+    transition: transform var(--transition-fast);
+  }
+
+  .latest-post-link:hover .post-footer-row {
+    transform: translateX(4px);
+  }
+
+
+
+  /* Responsive styling */
+  @media (max-width: 1024px) {
+    .hero-container {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: var(--space-8);
+    }
+    .hero-content {
+      align-items: center;
+    }
+    .hero-ctas {
+      justify-content: center;
+    }
+    .hero-visual {
+      width: 100%;
+      margin-top: var(--space-4);
+    }
+    .mockup-window {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .calculators-grid, .features-grid, .latest-posts-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2.5rem;
+    }
+    .calculators-grid, .features-grid, .latest-posts-grid {
+      grid-template-columns: 1fr;
+    }
+    .feature-item {
+      align-items: center;
+      text-align: center;
+    }
+    .feature-header {
+      justify-content: center;
+    }
+    .news-form {
+      flex-direction: column;
+    }
+    .news-form button {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+    .hero-ctas {
+      flex-direction: column;
+      width: 100%;
+      gap: var(--space-3);
+    }
+    .hero-ctas :global(.btn) {
+      width: 100%;
+    }
+    .hero-stats {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-4);
+      width: 100%;
+    }
+    .stat-divider {
+      display: none;
+    }
+    .stat-item {
+      flex: 1 1 40%;
+      text-align: center;
+      align-items: center;
+    }
+    .stat-num {
+      font-size: 1.25rem;
+    }
+    .stat-lbl {
+      font-size: 0.65rem;
+    }
+    .mockup-window {
+      max-width: 100%;
+    }
+    .mockup-body {
+      padding: var(--space-4);
+    }
+    .mockup-chart-svg-wrap {
+      height: 120px;
+    }
+  }
+</style>

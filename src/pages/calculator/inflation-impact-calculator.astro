@@ -1,0 +1,223 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import InflationImpactCalculator from '../../components/calculator/InflationImpactCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+
+const faqItems = [
+  {
+    q: "How to calculate inflation impact?",
+    a: "To calculate the impact of inflation on a sum of money, you discount the principal sum using the compounding inflation rate over a given time horizon. The math applies a negative exponent to the growth factor: Future Purchasing Power = Present Capital x (1 + Inflation Rate)^(-Years). The difference between your initial capital and this future purchasing power represents the total value lost to inflation."
+  },
+  {
+    q: "How to calculate inflation impact on savings?",
+    a: "To calculate inflation's impact on savings, you must compare your savings account's nominal interest rate with the annual inflation rate. If your savings yield 2% interest but inflation is running at 3.5%, your savings are losing 1.5% in real purchasing power annually. Multiply your savings balance by this negative real return rate to estimate the annual erosion of your cash value."
+  },
+  {
+    q: "How do i calculate the impact of inflation on a future budget?",
+    a: "To calculate how inflation impacts a future budget, you work backward from your current costs to find the future sum required to maintain the same quality of life. Take your current annual budget and compound it forward using the expected average inflation rate: Required Future Sum = Present Budget x (1 + Inflation Rate)^Years. For instance, at 3% inflation, a $5,000 monthly budget today will require $7,800 monthly in 15 years."
+  },
+  {
+    q: "How does inflation affect my purchasing power?",
+    a: "Inflation directly decreases your purchasing power by raising the cost of living. When the prices of goods and services increase, each unit of currency buys a smaller percentage of those goods. Over time, this compounding rise in prices erodes the real value of cash, meaning the same dollar amount in your bank account will purchase progressively fewer commodities, services, or investments in the future."
+  },
+  {
+    q: "How to calculate future value adjusted for inflation?",
+    a: "To calculate the future value adjusted for inflation, you compound a current sum forward using the formula: FV = PV x (1 + r)^n, where PV is the present value, r is the annual inflation rate, and n is the number of years. This formula computes the future nominal dollar amount that carries the exact same purchasing power as your current starting capital."
+  }
+];
+---
+
+<Layout
+  title="Inflation Impact Calculator | Calculate Purchasing Power Decay - FinCalcLab"
+  description="Calculate the compounding decay of purchasing power over time. Factor in annual inflation rates, estimate cash savings loss, and project future value adjustments."
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Calculators', item: '/all-calculators' },
+    { name: 'Inflation Impact Calculator', item: '/calculator/inflation-impact-calculator' }
+  ]}
+>
+  <InflationImpactCalculator />
+
+  <!-- Content & Editorial Section -->
+  <div class="calculator-extra-seo-content container" style="max-width: 1040px; margin-top: var(--space-8);">
+    <!-- Prominent Blog Cross-Link Callout -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-6);">
+        <p style="margin: 0; font-size: 1rem; line-height: 1.6; color: var(--color-text-base);">
+          <strong>Real-World Story:</strong> Read our personal case study on <a href="/blog/how-to-calculate-inflation-impact" style="font-weight: 700; color: var(--color-primary); text-decoration: underline; transition: color var(--transition-fast);">The Silent Thief in Your Savings Account</a> to see how a $1,000 savings bond lost half its value over 20 years, and learn strategies to hedge your portfolio.
+        </p>
+      </Card>
+    </div>
+
+    <section class="seo-section">
+      <h2>The Invisible Tax: Understanding Inflation and Purchasing Power</h2>
+      <p>
+        Determining <strong>how to calculate inflation impact</strong> is one of the most vital exercises in long-term financial planning. Often referred to as a "silent tax," inflation slowly and steadily erodes the value of money sitting in savings accounts, under mattresses, or in low-yield bonds. 
+      </p>
+      <p>
+        While an annual inflation rate of 2% or 3% may sound negligible, its cumulative impact over a decade or two is massive. When inflation is active, a fixed sum of currency buys a progressively smaller basket of goods. To preserve your wealth, you must understand the mathematical mechanics of inflation decay and align your investment allocations accordingly.
+      </p>
+
+      <div class="formula-box-grid">
+        <Card elevation="sm" class="formula-card">
+          <h3>Purchasing Power Decay</h3>
+          <p>The compounding formula to find the future real value of a cash sum is:</p>
+          <div class="formula-math" set:html={`\\[\\text{Purchasing Power} = PV \\times (1 + r)^{-n}\\]`} />
+          <p class="formula-example">
+            Where **PV** is your starting principal, **r** is the annual inflation rate, and **n** is the number of years. This discounts the future sum to show its actual equivalent value in today's currency.
+          </p>
+        </Card>
+
+        <Card elevation="sm" class="formula-card">
+          <h3>Required Future Target Sum</h3>
+          <p>To find how much money you will need in the future to match a current sum's buying power:</p>
+          <div class="formula-math" set:html={`\\[\\text{Future Nominal Sum} = PV \\times (1 + r)^n\\]`} />
+          <p class="formula-example">
+            <strong>Example:</strong> If a vehicle costs $30,000 today, and inflation averages 3.5% annually, you will need **$50,260** in 15 years to buy the exact same vehicle.
+          </p>
+        </Card>
+      </div>
+    </section>
+
+    <section class="seo-section">
+      <h2>Why Cash is a Guaranteed Long-Term Loss</h2>
+      <p>
+        Holding substantial cash reserves in a standard checking account or a low-yield savings vault feels safe. There is no stock market volatility, and the nominal balance never decreases. However, this safety is an illusion. When you study <strong>how to calculate inflation impact on savings</strong>, you realize that cash is guaranteed to lose purchasing power.
+      </p>
+      <p>
+        At a historic US average inflation rate of **3.2%**, your money’s value is cut in half every **22 years**. 
+      </p>
+      <ul>
+        <li>A $10,000 emergency fund left in a zero-interest account will only buy **$6,200** worth of goods in 15 years.</li>
+        <li>In 30 years, that same $10,000 will have lost over **60%** of its real value, shrinking in purchasing power to just **$3,800**.</li>
+      </ul>
+      <p>
+        This makes cash hoarding one of the most expensive financial strategies over a long-term horizon. Cash is vital for short-term liquidity and emergencies, but it should not be treated as a wealth-preservation vehicle.
+      </p>
+    </section>
+
+    <section class="seo-section">
+      <h2>Nominal vs. Real Rates of Return</h2>
+      <p>
+        To evaluate any investment, you must distinguish between your nominal return and your real return. The nominal return is the raw percentage increase reported on your statement. The real return is the actual growth of your buying power after subtracting inflation.
+      </p>
+      <div class="formula-math" set:html={`\\[\\text{Real Return} \\approx \\text{Nominal Return} - \\text{Inflation Rate}\\]`} />
+      <p>
+        If your mutual fund returns 8% in a year, and inflation is running at 3.5%, your real wealth growth is only **4.5%**. If you are holding a Certificate of Deposit (CD) paying 4.0% interest during a 4.5% high-inflation year, you are actually experiencing a **negative real yield of -0.5%**, meaning your capital is depreciating despite earning interest.
+      </p>
+    </section>
+
+    <section class="seo-section">
+      <h2>Strategies to Protect Your Capital from Inflation</h2>
+      <p>
+        To hedge your savings against the compounding effects of price increases, you must allocate a portion of your wealth into assets that historically keep pace with or outperform inflation:
+      </p>
+      <ul>
+        <li>
+          <strong>Equities (Stocks):</strong> Corporations can raise product prices and service fees as their own operating costs rise. Consequently, corporate earnings and stock values have historically outpaced inflation over multi-decade cycles.
+        </li>
+        <li>
+          <strong>Real Estate & Property:</strong> Land and houses are tangible assets with intrinsic value. Rental yields and property valuations naturally float upward during inflationary periods, making real estate a premier hedge.
+        </li>
+        <li>
+          <strong>TIPS (Treasury Inflation-Protected Securities):</strong> These government bonds feature a principal value that rises and falls with changes in the Consumer Price Index (CPI), guaranteeing that your investment preserves its core purchasing power.
+        </li>
+        <li>
+          <strong>Commodities:</strong> Hard assets like gold, energy resources, and agricultural products historically rise in value when fiat currencies lose their purchasing power.
+        </li>
+      </ul>
+    </section>
+
+    <!-- FAQs Section -->
+    <section class="seo-section" style="margin-top: var(--space-8);">
+      <h2 style="margin-bottom: var(--space-6);">Frequently Asked Questions</h2>
+      <div class="faq-accordion-group">
+        {faqItems.map((item) => (
+          <Accordion title={item.q}>
+            <p>{item.a}</p>
+          </Accordion>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .calculator-extra-seo-content {
+    margin-bottom: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .seo-section h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-4);
+  }
+
+  .seo-section p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .seo-section ul {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .seo-section li {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .formula-box-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+  }
+
+  .formula-card {
+    padding: var(--space-6);
+    height: 100%;
+  }
+
+  .formula-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+  }
+
+  .formula-math {
+    background-color: var(--color-bg-base);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-4);
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+  }
+
+  .formula-example {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    .formula-box-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

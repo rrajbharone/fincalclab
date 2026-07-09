@@ -1,0 +1,168 @@
+---
+interface TabItem {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  tabs: TabItem[];
+  activeId: string;
+  class?: string;
+  id?: string;
+}
+
+const { tabs, activeId, class: className = '', id } = Astro.props;
+---
+
+<div class={`tabs-container ${className}`} id={id} data-tabs>
+  <div class="tabs-list" role="tablist">
+    {tabs.map((tab) => (
+      <button
+        type="button"
+        class={`tab-button ${tab.id === activeId ? 'active' : ''}`}
+        role="tab"
+        id={`tab-btn-${tab.id}`}
+        aria-selected={tab.id === activeId ? 'true' : 'false'}
+        aria-controls={`tab-panel-${tab.id}`}
+        data-tab-target={tab.id}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+  <div class="tabs-panels">
+    <slot />
+  </div>
+</div>
+
+<script>
+  function initTabs() {
+    const containers = document.querySelectorAll('[data-tabs]');
+    
+    containers.forEach((container) => {
+      // Check if already initialized to avoid duplicate listeners
+      if (container.getAttribute('data-tabs-init') === 'true') return;
+      
+      const buttons = container.querySelectorAll('.tab-button');
+      
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-tab-target');
+          if (!targetId) return;
+
+          // Deactivate all buttons in this container
+          buttons.forEach((b) => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+
+          // Activate clicked button
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+
+          // Hide all panels in this container
+          const panels = container.querySelectorAll('.tab-panel');
+          panels.forEach((panel) => {
+            panel.classList.remove('active');
+          });
+
+          // Show targeted panel
+          const targetPanel = container.querySelector(`#tab-panel-${targetId}`);
+          if (targetPanel) {
+            targetPanel.classList.add('active');
+          }
+
+          // Trigger a custom event in case parent components need to listen for tab changes (e.g. recalculating salary/chart redrawing)
+          container.dispatchEvent(new CustomEvent('tab-change', { detail: { activeTab: targetId } }));
+        });
+      });
+      
+      container.setAttribute('data-tabs-init', 'true');
+    });
+  }
+
+  // Run on load and after page transitions (in case Astro transitions are added in future)
+  document.addEventListener('DOMContentLoaded', initTabs);
+  document.addEventListener('astro:after-swap', initTabs);
+</script>
+
+<style>
+  .tabs-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    width: 100%;
+  }
+
+  .tabs-list {
+    display: flex;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 4px;
+    width: 100%;
+    max-width: fit-content;
+  }
+
+  .tab-button {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1.25rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .tab-button:hover:not(.active) {
+    color: var(--color-text-base);
+    background-color: var(--color-bg-surface-hover);
+  }
+
+  .tab-button.active {
+    color: var(--color-primary);
+    background-color: var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tab-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+  }
+
+  /* We styling the tab-panels globally because the slot elements are parsed from outside */
+  :global(.tab-panel) {
+    display: none;
+    width: 100%;
+  }
+
+  :global(.tab-panel.active) {
+    display: block;
+    animation: fadeIn var(--transition-normal);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .tabs-list {
+      max-width: 100%;
+      width: 100%;
+      justify-content: stretch;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 0.5rem 0.5rem;
+      font-size: 0.85rem;
+      justify-content: center;
+    }
+  }
+</style>

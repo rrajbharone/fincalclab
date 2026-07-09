@@ -1,0 +1,188 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PayRaiseCalculator from '../../components/calculator/PayRaiseCalculator.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+import Card from '../../components/ui/Card.astro';
+import Button from '../../components/ui/Button.astro';
+
+const faqs = [
+  {
+    question: "How do I use this pay raise calculator percent tool?",
+    answer: "Our pay raise percentage calculator is simple: select your mode (Basic, 5-Star Merit Rating, Back Pay, or Federal Locality), input your current pay rate or salary, specify your raise rate or new target, and click calculate. The tool immediately projects your new salary, raise amount, and a periodic matrix."
+  },
+  {
+    question: "How to calculate pay raise percentage manually?",
+    answer: "To calculate your pay raise percentage, subtract your old salary from your new salary to find the difference (raise amount). Divide this difference by your old salary, then multiply the result by 100. Formula: (New Salary - Old Salary) / Old Salary * 100 = Pay Raise Percentage."
+  },
+  {
+    question: "How to calculate back pay for a raise?",
+    answer: "To calculate back pay, find the difference between your new pay rate and your old pay rate (hourly or annual). Multiply this pay rate difference by the total hours, weeks, or months worked during the backdated period. For instance, if your hourly rate increased by $2.50 and you worked 160 hours during the backdated period, your gross back pay is $400 ($2.50 * 160)."
+  },
+  {
+    question: "How does the federal employee pay raise calculator GS locality model work?",
+    answer: "Federal employees on the General Schedule (GS) receive a base pay raise plus a locality-specific adjustment. To estimate your new locality-adjusted salary, multiply your new base salary by your locality multiplier: Locality Adjusted Salary = New Base Salary * (1 + Locality Pay %). Our tool automates this dual-percentage calculation."
+  }
+];
+---
+
+<Layout
+  title="Pay Raise Calculator Percent | Annual Salary Increase Calculator"
+  description="Use our free annual pay raise calculator percent to calculate salary increases. Learn how to calculate pay raise percentage, back pay, and federal GS employee adjustments."
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Calculators', item: '/all-calculators' },
+    { name: 'Pay Raise Calculator', item: '/calculator/pay-raise-calculator' }
+  ]}
+  faqs={faqs}
+>
+  <PayRaiseCalculator />
+
+  <!-- Educational Explanations Section -->
+  <div class="calculator-extra-seo-content container" style="max-width: 1040px; margin-top: var(--space-8);">
+    <section class="seo-section">
+      <h2>How to Calculate Pay Raise Percentage & Amounts</h2>
+      <p>
+        Understanding how salary increases are computed is essential for performance reviews, contract negotiations, and career changes. This <strong>annual pay raise calculator</strong> is a comprehensive <strong>pay raise increase calculator</strong> that helps you model different salary adjustments, from basic merit increases to complex backdated pay.
+      </p>
+
+      <div class="formula-box-grid">
+        <Card elevation="sm" class="formula-card">
+          <h3>Calculating Raise Percentage</h3>
+          <p>If you know your old salary and your new salary, here is <strong>how to calculate pay raise percentage</strong>:</p>
+          <div class="formula-math" set:html={`\\[\\text{Raise Percentage} = \\frac{\\text{New Salary} - \\text{Old Salary}}{\\text{Old Salary}} \\times 100\\]`} />
+          <p class="formula-example">
+            <strong>Example:</strong> If your annual salary goes from $60,000 to $63,000, the raise amount is $3,000. Dividing $3,000 by $60,000 equals 0.05. Multiplying by 100 yields a <strong>5% pay raise</strong>.
+          </p>
+        </Card>
+
+        <Card elevation="sm" class="formula-card">
+          <h3>Calculating New Salary</h3>
+          <p>If you know your current salary and are offered a specific raise percent, here is <strong>how to calculate pay raise</strong> amount and new salary:</p>
+          <div class="formula-math" set:html={`\\[\\text{Raise Amount} = \\text{Current Salary} \\times \\frac{\\text{Raise Percentage}}{100}\\]`} />
+          <div class="formula-math" style="margin-top: var(--space-2);" set:html={`\\[\\text{New Salary} = \\text{Current Salary} + \\text{Raise Amount}\\]`} />
+          <p class="formula-example">
+            <strong>Example:</strong> If your current hourly wage is $30/hr and you receive a 4% raise, your raise amount is $1.20/hr ($30 * 0.04), making your new wage $31.20/hr.
+          </p>
+        </Card>
+      </div>
+    </section>
+
+    <section class="seo-section">
+      <h2>How to Calculate Back Pay for a Raise</h2>
+      <p>
+        Sometimes, companies approve a pay raise but backdate its effective date to an earlier period. This results in back pay owed to the employee. 
+      </p>
+      <p>
+        To compute your gross back pay, determine the wage difference between your new rate and old rate, then multiply it by the time units worked in that interim period.
+      </p>
+      <ul>
+        <li><strong>Hourly back pay:</strong> Subtract old hourly rate from new hourly rate, then multiply by the total regular and overtime hours worked during the backdated period.</li>
+        <li><strong>Salaried back pay:</strong> Subtract old monthly/weekly salary from new monthly/weekly salary, then multiply by the number of months or weeks the raise was backdated.</li>
+      </ul>
+      <p>
+        Our built-in <strong>back pay calculator</strong> tab handles all these conversions automatically, saving you complex calendar tracking.
+      </p>
+    </section>
+
+    <section class="seo-section">
+      <h2>Federal Employee Pay Raise Calculator (GS Pay Grade)</h2>
+      <p>
+        For federal employees working under the General Schedule (GS) pay system, annual adjustments are decided by Congress and the President. The final pay rate combines a GS base salary with a locality pay adjustment reflecting local cost-of-living differences.
+      </p>
+      <p>
+        Our <strong>federal employee pay raise calculator</strong> mode lets you input your federal base salary, apply the base raise percentage, and project how the locality modifier changes your final pay check.
+      </p>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="seo-section" style="margin-top: var(--space-8);">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion-group">
+        {faqs.map((faq) => (
+          <Accordion title={faq.question}>
+            <p style="margin:0;">{faq.answer}</p>
+          </Accordion>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .calculator-extra-seo-content {
+    margin-bottom: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .seo-section h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-4);
+  }
+
+  .seo-section p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .seo-section ul {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .seo-section li {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .formula-box-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+  }
+
+  .formula-card {
+    padding: var(--space-6);
+    height: 100%;
+  }
+
+  .formula-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+  }
+
+  .formula-math {
+    background-color: var(--color-bg-base);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-4);
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+  }
+
+  .formula-example {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    .formula-box-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

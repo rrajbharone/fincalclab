@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+---
+
+<Layout
+  title="Privacy Policy - FinCalcLab"
+  description="Read our Privacy Policy. FinCalcLab is committed to absolute user privacy. Learn about Google cookies, analytics, and data policies."
+>
+  <div class="static-page-wrapper">
+    <div class="container" style="max-width: 800px;">
+      <div class="text-center" style="margin-bottom: var(--space-8);">
+        <Badge variant="success">Security</Badge>
+        <h1 style="margin-top: var(--space-2); font-size: 2.5rem; letter-spacing: -0.04em;">Privacy Policy</h1>
+        <p style="font-size: 1.15rem; color: var(--color-text-muted);">Effective Date: July 5, 2026. Your financial data is private and remains yours.</p>
+      </div>
+
+      <Card elevation="sm" style="padding: var(--space-8); border-color: var(--color-border);">
+        <div class="article-content">
+          <p>
+            At <strong>FinCalcLab.com</strong>, protecting user privacy is our highest priority. This Privacy Policy describes how we handle inputs, calculations, cookies, and ads on our website.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">1. Local Calculation Processing</h2>
+          <p>
+            FinCalcLab is a client-side calculator platform. When you enter parameters (such as salary, investment amounts, expected return rates, or years) into our calculators:
+          </p>
+          <ul>
+            <li>None of these inputs are transmitted to our servers or stored in any database.</li>
+            <li>We do not record, store, or profile your calculations.</li>
+            <li>All calculations occur in your browser's local memory.</li>
+          </ul>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">2. Cookies and DoubleClick DART Cookies</h2>
+          <p>
+            We use standard session cookies solely to preserve user preferences (such as light or dark mode theme settings).
+          </p>
+          <p>
+            <strong>Google AdSense Advertising:</strong> Google, as a third-party vendor, uses cookies to serve ads on FinCalcLab.com. Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visits to our site and other sites on the Internet.
+          </p>
+          <ul>
+            <li>Users may opt-out of personalized advertising by visiting Google Ad Settings (<a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">google.com/settings/ads</a>).</li>
+            <li>Alternatively, you can opt-out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer">aboutads.info</a>.</li>
+          </ul>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">3. GDPR & CCPA Compliance (User Rights)</h2>
+          <p>
+            If you reside within the European Union (under GDPR) or California (under CCPA), you are granted specific data protection rights:
+          </p>
+          <ul>
+            <li>Since we do not collect personal financial data or store any identifiers (like names, emails, or IPs), we do not possess any data to disclose, erase, or modify.</li>
+            <li>You have the right to inspect or clear your browser's local storage or cookies at any time via your browser settings.</li>
+          </ul>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">4. Contact Information</h2>
+          <p>
+            If you have any questions about this Privacy Policy or how we manage cookies, please feel free to reach out via our <a href="/contact">Contact Page</a> or write directly to us at <code>privacy@fincalclab.com</code>.
+          </p>
+        </div>
+      </Card>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .static-page-wrapper {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .article-content p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content ul {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+  
+  .article-content li {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-2);
+  }
+</style>

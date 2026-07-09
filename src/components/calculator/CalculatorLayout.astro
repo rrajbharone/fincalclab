@@ -1,0 +1,283 @@
+---
+import Card from '../ui/Card.astro';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  category: string;
+}
+
+const { title, description, category } = Astro.props;
+---
+
+<div class="calculator-page">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="calculator-breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></li>
+        <li><a href="/#calculators">Calculators</a></li>
+        <li><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></li>
+        <li class="active" aria-current="page">{title}</li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="calculator-header">
+      <span class="category-badge">{category}</span>
+      <h1 class="calculator-title">{title}</h1>
+      <p class="calculator-desc">{description}</p>
+    </div>
+
+    <!-- Action Toolbar (Share, Copy, Print) -->
+    <div class="calc-toolbar">
+      <button id="toolbar-share" class="toolbar-btn" aria-label="Share this calculator">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        <span>Share Tool</span>
+      </button>
+      <button id="toolbar-copy" class="toolbar-btn" aria-label="Copy results to clipboard">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span>Copy Results</span>
+      </button>
+      <button id="toolbar-print" class="toolbar-btn" aria-label="Print results">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        <span>Print</span>
+      </button>
+    </div>
+
+    <!-- Main Grid (Inputs / Results) -->
+    <div class="calculator-grid">
+      <div class="calculator-inputs-column">
+        <Card elevation="md" class="calc-inputs-card">
+          <slot name="inputs" />
+        </Card>
+      </div>
+      <div class="calculator-results-column">
+        <Card elevation="lg" class="calc-results-card">
+          <slot name="results" />
+        </Card>
+      </div>
+    </div>
+
+    <!-- Articles, Formula, FAQs sections -->
+    <div class="calculator-content-sections">
+      <slot name="extra-content" />
+    </div>
+  </div>
+</div>
+
+<script>
+  function initToolbar() {
+    const shareBtn = document.getElementById('toolbar-share');
+    const copyBtn = document.getElementById('toolbar-copy');
+    const printBtn = document.getElementById('toolbar-print');
+
+    if (shareBtn) {
+      shareBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          const originalText = shareBtn.innerHTML;
+          shareBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span style="color:var(--color-success);">Link Copied!</span>
+          `;
+          setTimeout(() => { shareBtn.innerHTML = originalText; }, 2000);
+        } catch (e) {
+          console.error("Clipboard copy failed", e);
+        }
+      });
+    }
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        // Dispatch a custom event so the active calculator can copy its formatted results to clipboard
+        window.dispatchEvent(new CustomEvent('copy-calculator-results'));
+      });
+      
+      // Listen for confirmation
+      window.addEventListener('calculator-copied-success', () => {
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-success);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span style="color:var(--color-success);">Copied!</span>
+        `;
+        setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
+      });
+    }
+
+    if (printBtn) {
+      printBtn.addEventListener('click', () => {
+        window.print();
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initToolbar);
+  document.addEventListener('astro:after-swap', initToolbar);
+</script>
+
+<style>
+  .calculator-page {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-16);
+  }
+
+  /* Breadcrumbs */
+  .calculator-breadcrumbs ol {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin-bottom: var(--space-6);
+  }
+
+  .calculator-breadcrumbs a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-light);
+  }
+
+  .calculator-breadcrumbs svg {
+    color: var(--color-text-light);
+  }
+
+  .calculator-breadcrumbs li.active {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-base);
+  }
+
+  /* Header */
+  .calculator-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .category-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    background-color: rgba(37, 99, 235, 0.08);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.03em;
+  }
+
+  .calculator-desc {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    max-width: 720px;
+    margin-bottom: 0;
+  }
+
+  /* Toolbar */
+  .calc-toolbar {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-4);
+  }
+
+  .toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .toolbar-btn:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-border-hover);
+    background-color: var(--color-bg-surface-hover);
+  }
+
+  /* Grid Layout */
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .calculator-inputs-column,
+  .calculator-results-column {
+    min-width: 0;
+  }
+
+  .calc-inputs-card {
+    border-color: var(--color-border);
+  }
+
+  .calc-results-card {
+    background-color: var(--color-bg-surface);
+    border-color: var(--color-border);
+    /* Subtle neon border accent for premium dark mode feel */
+    border-top: 4px solid var(--color-primary);
+  }
+
+  /* Extra contents */
+  .calculator-content-sections {
+    margin-top: var(--space-12);
+  }
+
+  /* Print Media Overrides */
+  @media print {
+    .site-header, .site-footer, .calc-toolbar, .calculator-breadcrumbs, .calculator-inputs-column {
+      display: none !important;
+    }
+    .calculator-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .calc-results-card {
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /* Responsive styling */
+  @media (max-width: 1024px) {
+    .calculator-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .calculator-title {
+      font-size: 1.75rem;
+    }
+    .calculator-desc {
+      font-size: 1rem;
+    }
+    .calc-toolbar {
+      flex-wrap: wrap;
+    }
+    .toolbar-btn {
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+  }
+</style>

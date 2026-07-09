@@ -1,0 +1,638 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Markup Calculator"
+  description="Calculate selling price, cost, markup percentage, or gross margin. Easily convert between markup and margin, and plan your wholesale and retail pricing tiers."
+  category="Salary & Tax"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="markup-calc">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="markup-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="markup-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="selling-price" selected>Calculate Selling Price (from Cost & Markup)</option>
+        <option value="selling-price-margin">Calculate Selling Price (from Cost & Margin)</option>
+        <option value="markup-from-cost">Calculate Markup & Margin (from Cost & Selling Price)</option>
+        <option value="cost-from-selling">Calculate Cost (from Selling Price & Markup)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="markup-currency-select">Currency</label>
+        <select id="markup-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Dynamic Inputs based on mode -->
+    <!-- Cost input group (used in modes 1, 2, 3) -->
+    <div class="input-group" id="group-cost">
+      <div class="input-label-row">
+        <label for="markup-cost">Product Cost</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="markup-cost" min="0.01" step="0.01" value="50.00" aria-label="Product Cost" />
+        </div>
+      </div>
+      <input type="range" id="markup-cost-slider" min="1" max="1000" step="1" value="50" class="slider-range" aria-label="Cost Slider" />
+    </div>
+
+    <!-- Selling Price input group (used in mode 4, and 3 as input) -->
+    <div class="input-group hidden" id="group-selling-price">
+      <div class="input-label-row">
+        <label for="markup-selling-price">Selling Price</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="markup-selling-price" min="0.01" step="0.01" value="75.00" aria-label="Selling Price" />
+        </div>
+      </div>
+      <input type="range" id="markup-selling-price-slider" min="1" max="1500" step="1" value="75" class="slider-range" aria-label="Selling Price Slider" />
+    </div>
+
+    <!-- Markup percent input group (used in mode 1, 4) -->
+    <div class="input-group" id="group-markup-percent">
+      <div class="input-label-row">
+        <label for="markup-percent">Markup Percentage</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="markup-percent" min="0" max="1000" step="0.1" value="50" aria-label="Markup Percentage" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="markup-percent-slider" min="0" max="300" step="1" value="50" class="slider-range" aria-label="Markup Percentage Slider" />
+    </div>
+
+    <!-- Margin percent input group (used in mode 2) -->
+    <div class="input-group hidden" id="group-margin-percent">
+      <div class="input-label-row">
+        <label for="markup-margin">Desired Margin</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="markup-margin" min="0" max="99" step="0.1" value="33.3" aria-label="Margin Percentage" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="markup-margin-slider" min="0" max="95" step="1" value="33" class="slider-range" aria-label="Margin Percentage Slider" />
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="markup-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Pricing & Profit Breakdown</h3>
+
+    <!-- Selling Price Card Callout -->
+    <div id="results-banner-container" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Recommended Selling Price</span>
+        <div id="res-selling-price" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px;">$75.00</div>
+        <p id="res-profit-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Selling at this price yields a gross profit of $25.00 (33.3% gross profit margin).
+        </p>
+      </Card>
+    </div>
+
+    <div class="results-grid" style="margin-bottom: var(--space-6); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4);">
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Cost</span>
+        <div class="tile-value" id="res-cost" style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-base);">$50.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Gross Profit</span>
+        <div class="tile-value" id="res-profit" style="font-size: 1.25rem; font-weight: 700; color: var(--color-success);">$25.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Calculated Markup</span>
+        <div class="tile-value" id="res-markup-percent" style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);">50.0%</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Profit Margin</span>
+        <div class="tile-value" id="res-margin-percent" style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">33.3%</div>
+      </div>
+    </div>
+
+    <!-- Comparative Stacked Cost vs Profit Bar -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Price Composition</h4>
+      <div id="price-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-2); padding: 0 4px;">
+        <span style="display: flex; align-items: center; gap: 4px;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary);"></span>
+          Cost: <strong id="chart-cost-label">$50.00</strong>
+        </span>
+        <span style="display: flex; align-items: center; gap: 4px;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--color-success);"></span>
+          Profit: <strong id="chart-profit-label">$25.00</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Wholesale & Retail Tiers Matrix -->
+    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3);">Common Markup Tiers</h4>
+    <div class="table-container" style="overflow-x: auto;">
+      <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+            <th style="padding: var(--space-2) var(--space-3);">Markup (%)</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Selling Price</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-success);">Profit</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-accent);">Margin (%)</th>
+          </tr>
+        </thead>
+        <tbody id="markup-matrix-body">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initMarkupCalculator() {
+    const modeSelect = document.getElementById('markup-calc-mode') as HTMLSelectElement;
+    
+    // Input groups
+    const costGroup = document.getElementById('group-cost') as HTMLDivElement;
+    const sellGroup = document.getElementById('group-selling-price') as HTMLDivElement;
+    const markupGroup = document.getElementById('group-markup-percent') as HTMLDivElement;
+    const marginGroup = document.getElementById('group-margin-percent') as HTMLDivElement;
+
+    // Inputs
+    const costInput = document.getElementById('markup-cost') as HTMLInputElement;
+    const costSlider = document.getElementById('markup-cost-slider') as HTMLInputElement;
+    const sellInput = document.getElementById('markup-selling-price') as HTMLInputElement;
+    const sellSlider = document.getElementById('markup-selling-price-slider') as HTMLInputElement;
+    const markupInput = document.getElementById('markup-percent') as HTMLInputElement;
+    const markupSlider = document.getElementById('markup-percent-slider') as HTMLInputElement;
+    const marginInput = document.getElementById('markup-margin') as HTMLInputElement;
+    const marginSlider = document.getElementById('markup-margin-slider') as HTMLInputElement;
+
+    if (!modeSelect || !costGroup || !sellGroup || !markupGroup || !marginGroup) return;
+
+    // Mode Toggle script
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      
+      // Hide all input groups first
+      costGroup.classList.add('hidden');
+      sellGroup.classList.add('hidden');
+      markupGroup.classList.add('hidden');
+      marginGroup.classList.add('hidden');
+
+      if (mode === 'selling-price') {
+        costGroup.classList.remove('hidden');
+        markupGroup.classList.remove('hidden');
+      } else if (mode === 'selling-price-margin') {
+        costGroup.classList.remove('hidden');
+        marginGroup.classList.remove('hidden');
+      } else if (mode === 'markup-from-cost') {
+        costGroup.classList.remove('hidden');
+        sellGroup.classList.remove('hidden');
+      } else if (mode === 'cost-from-selling') {
+        sellGroup.classList.remove('hidden');
+        markupGroup.classList.remove('hidden');
+      }
+
+      calculateAll();
+    });
+
+    // Double slider bindings helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(costInput, costSlider);
+    bindSlider(sellInput, sellSlider);
+    bindSlider(markupInput, markupSlider);
+    bindSlider(marginInput, marginSlider);
+
+    // Watch all inputs for calculation
+    const allInputs = [costInput, sellInput, markupInput, marginInput];
+    allInputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('markup-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        costInput.value = '50.00';
+        costSlider.value = '50';
+        sellInput.value = '75.00';
+        sellSlider.value = '75';
+        markupInput.value = '50';
+        markupSlider.value = '50';
+        marginInput.value = '33.3';
+        marginSlider.value = '33';
+
+        modeSelect.value = 'selling-price';
+        costGroup.classList.remove('hidden');
+        sellGroup.classList.add('hidden');
+        markupGroup.classList.remove('hidden');
+        marginGroup.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    // Currency selector
+    const currencySelect = document.getElementById('markup-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      let cost = parseFloat(costInput.value) || 0;
+      let sellingPrice = parseFloat(sellInput.value) || 0;
+      let markupPercent = parseFloat(markupInput.value) || 0;
+      let marginPercent = parseFloat(marginInput.value) || 0;
+      let grossProfit = 0;
+
+      if (mode === 'selling-price') {
+        // Calculate Selling Price from Cost and Markup
+        sellingPrice = cost * (1 + markupPercent / 100);
+        grossProfit = sellingPrice - cost;
+        marginPercent = sellingPrice > 0 ? (grossProfit / sellingPrice) * 100 : 0;
+      } else if (mode === 'selling-price-margin') {
+        // Calculate Selling Price from Cost and Margin
+        // Selling Price = Cost / (1 - Margin/100)
+        const marginDecimal = marginPercent / 100;
+        if (marginDecimal >= 1) {
+          sellingPrice = 0;
+          grossProfit = 0;
+          markupPercent = 0;
+        } else {
+          sellingPrice = cost / (1 - marginDecimal);
+          grossProfit = sellingPrice - cost;
+          markupPercent = cost > 0 ? (grossProfit / cost) * 100 : 0;
+        }
+      } else if (mode === 'markup-from-cost') {
+        // Calculate Markup and Margin from Cost and Selling Price
+        grossProfit = sellingPrice - cost;
+        markupPercent = cost > 0 ? (grossProfit / cost) * 100 : 0;
+        marginPercent = sellingPrice > 0 ? (grossProfit / sellingPrice) * 100 : 0;
+      } else if (mode === 'cost-from-selling') {
+        // Calculate Cost from Selling Price and Markup
+        // Cost = Selling Price / (1 + Markup/100)
+        cost = sellingPrice / (1 + markupPercent / 100);
+        grossProfit = sellingPrice - cost;
+        marginPercent = sellingPrice > 0 ? (grossProfit / sellingPrice) * 100 : 0;
+      }
+
+      // Update output elements
+      const resSellingPrice = document.getElementById('res-selling-price');
+      const resCost = document.getElementById('res-cost');
+      const resProfit = document.getElementById('res-profit');
+      const resMarkupPercent = document.getElementById('res-markup-percent');
+      const resMarginPercent = document.getElementById('res-margin-percent');
+      const resVerdict = document.getElementById('res-profit-verdict');
+
+      if (resSellingPrice) resSellingPrice.textContent = formatCurrency(sellingPrice);
+      if (resCost) resCost.textContent = formatCurrency(cost);
+      if (resProfit) resProfit.textContent = formatCurrency(grossProfit);
+      if (resMarkupPercent) resMarkupPercent.textContent = `${markupPercent.toFixed(1)}%`;
+      if (resMarginPercent) resMarginPercent.textContent = `${marginPercent.toFixed(1)}%`;
+
+      if (resVerdict) {
+        resVerdict.innerHTML = `Selling at this price yields a gross profit of <strong>${formatCurrency(grossProfit)}</strong> (${marginPercent.toFixed(1)}% profit margin).`;
+      }
+
+      // Update Price composition horizontal bar chart
+      const chartBar = document.getElementById('price-composition-bar');
+      const costLabel = document.getElementById('chart-cost-label');
+      const profitLabel = document.getElementById('chart-profit-label');
+
+      if (costLabel) costLabel.textContent = formatCurrency(cost);
+      if (profitLabel) profitLabel.textContent = formatCurrency(grossProfit);
+
+      if (chartBar) {
+        const total = cost + Math.max(0, grossProfit);
+        if (total > 0) {
+          const costPercentage = (cost / total) * 100;
+          const profitPercentage = (Math.max(0, grossProfit) / total) * 100;
+          chartBar.innerHTML = `
+            <div style="width: ${costPercentage.toFixed(1)}%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+            <div style="width: ${profitPercentage.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+          `;
+        } else {
+          chartBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+
+      // Populate pricing tiers matrix based on cost
+      const tableBody = document.getElementById('markup-matrix-body');
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        const tiers = [10, 20, 25, 33.3, 40, 50, 75, 100, 150];
+        
+        tiers.forEach(tierMarkup => {
+          const tierSell = cost * (1 + tierMarkup / 100);
+          const tierProfit = tierSell - cost;
+          const tierMargin = tierSell > 0 ? (tierProfit / tierSell) * 100 : 0;
+
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid var(--color-border)';
+          tr.innerHTML = `
+            <td style="padding: var(--space-3) var(--space-3); font-weight:600;">${tierMarkup.toFixed(1)}%</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; font-weight:700;">${formatCurrency(tierSell)}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; color: var(--color-success); font-weight:500;">+${formatCurrency(tierProfit)}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; color: var(--color-accent);">${tierMargin.toFixed(1)}%</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+    }
+
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Markup Calculator Projections:\n` +
+                   `Recommended Selling Price: ${document.getElementById('res-selling-price')?.textContent}\n` +
+                   `Total Cost: ${document.getElementById('res-cost')?.textContent}\n` +
+                   `Gross Profit: ${document.getElementById('res-profit')?.textContent}\n` +
+                   `Calculated Markup: ${document.getElementById('res-markup-percent')?.textContent}\n` +
+                   `Gross Margin: ${document.getElementById('res-margin-percent')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Run initial calculations
+    calculateAll();
+  }
+
+  // Bind lifecycle listeners
+  document.addEventListener('DOMContentLoaded', initMarkupCalculator);
+  document.addEventListener('astro:after-swap', initMarkupCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .small-wrapper {
+    width: 100px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    padding: 0 4px;
+  }
+
+  /* Layout grids */
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .calc-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

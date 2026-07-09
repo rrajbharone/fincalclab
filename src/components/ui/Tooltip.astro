@@ -1,0 +1,78 @@
+---
+interface Props {
+  text: string;
+  class?: string;
+}
+
+const { text, class: className = '' } = Astro.props;
+---
+
+<span class={`tooltip-wrapper ${className}`} tabindex="0">
+  <slot />
+  <span class="tooltip-box" role="tooltip">{text}</span>
+</span>
+
+<style>
+  .tooltip-wrapper {
+    position: relative;
+    display: inline-flex;
+    cursor: help;
+    border-bottom: 1px dashed var(--color-text-light);
+    color: inherit;
+    outline: none;
+  }
+
+  .tooltip-wrapper:focus-visible {
+    outline: 2px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+  }
+
+  .tooltip-box {
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    width: 220px;
+    background-color: var(--color-text-base);
+    color: var(--color-bg-base);
+    text-align: center;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.4;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Tooltip arrow */
+  .tooltip-box::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--color-text-base) transparent transparent transparent;
+  }
+
+  /* Hover & Focus states */
+  .tooltip-wrapper:hover .tooltip-box,
+  .tooltip-wrapper:focus .tooltip-box,
+  .tooltip-wrapper:focus-within .tooltip-box {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 480px) {
+    .tooltip-box {
+      width: 160px;
+      font-size: 0.75rem;
+    }
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+---
+
+<Layout
+  title="About Us - FinCalcLab"
+  description="Learn about FinCalcLab.com, our mission to democratize financial planning, and our commitment to providing private, fast, and free financial calculators."
+>
+  <div class="static-page-wrapper">
+    <div class="container" style="max-width: 800px;">
+      <div class="text-center" style="margin-bottom: var(--space-8);">
+        <Badge variant="primary">Our Mission</Badge>
+        <h1 style="margin-top: var(--space-2); font-size: 2.5rem; letter-spacing: -0.04em;">Democratizing Financial Planning</h1>
+        <p style="font-size: 1.15rem; color: var(--color-text-muted);">We believe financial planning tools should be premium, easy to understand, 100% free, and completely private.</p>
+      </div>
+
+      <Card elevation="sm" style="padding: var(--space-8); border-color: var(--color-border); margin-bottom: var(--space-8);">
+        <div class="article-content">
+          <p>
+            Welcome to <strong>FinCalcLab.com</strong>! Our platform is designed to provide high-quality financial calculations to users worldwide. Whether you are comparing systematic investment plans (SIPs), compounding a child's weekly allowance, or calculating complex in-hand tax liabilities under latest budgets, we build tools that make numbers clear.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">Our Core Values</h2>
+          
+          <h3 style="font-size: 1.15rem; margin-top: var(--space-4); margin-bottom: var(--space-1);">1. Privacy First</h3>
+          <p>
+            Unlike other personal finance platforms, we do not require you to sign up, input your phone number, or download an app. We do not track your financial parameters or sell your profile data. All inputs stay processed locally in your browser.
+          </p>
+
+          <h3 style="font-size: 1.15rem; margin-top: var(--space-4); margin-bottom: var(--space-1);">2. Speed & Clarity</h3>
+          <p>
+            We optimize our calculators for performance. There are no bloated javascript bundles, pop-up advertisements, or layout-shifting elements. You get immediate calculations and clear responsive vector charts.
+          </p>
+
+          <h3 style="font-size: 1.15rem; margin-top: var(--space-4); margin-bottom: var(--space-1);">3. Financial Accuracy</h3>
+          <p>
+            Our calculators are vetted against regulatory tax slabs (such as India Budget 2025) and standard compound interest regulations. We update our modules whenever policies shift so that you calculate with absolute confidence.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">Get In Touch</h2>
+          <p>
+            Have suggestions for a new calculator or noticed a typo? We want to hear from you. Visit our <a href="/contact">Contact Page</a> to send us a message or report a bug.
+          </p>
+        </div>
+      </Card>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .static-page-wrapper {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .article-content p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+  }
+</style>

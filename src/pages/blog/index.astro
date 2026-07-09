@@ -1,0 +1,289 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/ui/Card.astro';
+import Badge from '../../components/ui/Badge.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+// Sort by publication date desc
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Get unique categories for future-ready filter pills
+const categories = ['All', ...new Set(posts.map(post => post.data.category))];
+---
+
+<Layout
+  title="Financial Articles, Calculators Guides & Resources"
+  description="Explore our collection of in-depth financial articles, guides, and tax strategies to make smarter money decisions. Written by financial experts."
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Blog', item: '/blog' }
+  ]}
+>
+  <div class="blog-list-page">
+    <div class="container">
+      <div class="blog-header text-center">
+        <Badge variant="accent">Resources</Badge>
+        <h1 class="blog-page-title">Smarter Money Decisions Start Here</h1>
+        <p class="blog-page-subtitle">Learn the formulas, strategies, and logic behind wealth building, compound savings, and smart tax planning.</p>
+      </div>
+
+      <!-- Categories filter row -->
+      <div class="blog-categories-filter">
+        {categories.map((cat) => (
+          <button class={`filter-pill ${cat === 'All' ? 'active' : ''}`} data-category={cat}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <!-- Blog Grid -->
+      <div class="blog-grid" id="blog-grid">
+        {sortedPosts.map((post) => (
+          <div class="blog-item" data-post-category={post.data.category}>
+            <Card hoverable elevation="md" class="blog-card">
+              <a href={`/blog/${post.id}`} class="blog-card-link-wrapper">
+                {post.data.image && (
+                  <div class="blog-thumbnail-wrapper">
+                    <img src={post.data.image} alt="" class="blog-thumbnail" loading="lazy" />
+                  </div>
+                )}
+                <div class="blog-card-meta">
+                  <Badge variant={post.data.category === 'Investing' ? 'primary' : post.data.category === 'Tax' ? 'success' : 'accent'}>
+                    {post.data.category}
+                  </Badge>
+                  <span class="meta-date">
+                    {post.data.pubDate.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                </div>
+                <h2 class="blog-title">{post.data.title}</h2>
+                <p class="blog-description">{post.data.description}</p>
+                <div class="blog-card-footer">
+                  <span class="author-name">By {post.data.author}</span>
+                  <span class="read-more">
+                    Read Article
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </span>
+                </div>
+              </a>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  function initBlogFilters() {
+    const pills = document.querySelectorAll('.filter-pill');
+    const items = document.querySelectorAll('.blog-item');
+
+    if (pills.length === 0 || items.length === 0) return;
+
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        // Toggle active status
+        pills.forEach((p) => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const filterCategory = pill.getAttribute('data-category');
+
+        items.forEach((item) => {
+          const itemCategory = item.getAttribute('data-post-category');
+          if (filterCategory === 'All' || itemCategory === filterCategory) {
+            (item as HTMLElement).style.display = 'block';
+          } else {
+            (item as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initBlogFilters);
+  document.addEventListener('astro:after-swap', initBlogFilters);
+</script>
+
+<style>
+  .blog-list-page {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .blog-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .blog-page-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.04em;
+  }
+
+  .blog-page-subtitle {
+    font-size: 1.15rem;
+    color: var(--color-text-muted);
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Filters */
+  .blog-categories-filter {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-12);
+  }
+
+  .filter-pill {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .filter-pill:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-border-hover);
+    background-color: var(--color-bg-surface-hover);
+  }
+
+  .filter-pill.active {
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+
+  /* Grid */
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .blog-card {
+    height: 100%;
+    padding: var(--space-6);
+  }
+
+  .blog-card-link-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-thumbnail-wrapper {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+  }
+
+  .blog-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .blog-card-link-wrapper:hover .blog-thumbnail {
+    transform: scale(1.04);
+  }
+
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+
+  .meta-date {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+  }
+
+  .blog-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+    transition: color var(--transition-fast);
+  }
+
+  .blog-card-link-wrapper:hover .blog-title {
+    color: var(--color-primary);
+  }
+
+  .blog-description {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+    flex-grow: 1;
+  }
+
+  .blog-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+    color: var(--color-text-light);
+  }
+
+  .author-name {
+    font-weight: 600;
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    color: var(--color-primary);
+    transition: transform var(--transition-fast);
+  }
+
+  .blog-card-link-wrapper:hover .read-more {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 1024px) {
+    .blog-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .blog-page-title {
+      font-size: 2.25rem;
+    }
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

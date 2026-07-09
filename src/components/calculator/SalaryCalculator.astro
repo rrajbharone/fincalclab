@@ -1,0 +1,1174 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Tabs from '../ui/Tabs.astro';
+import Tooltip from '../ui/Tooltip.astro';
+import Alert from '../ui/Alert.astro';
+---
+
+<CalculatorLayout
+  title="In Hand Salary & Income Tax Calculator"
+  description="Estimate your monthly in-hand take-home salary, calculate income tax liability, and analyze deductions under the latest tax regimes."
+  category="Salary"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="salary-calc">
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="salary-currency-select">Currency</label>
+        <select id="salary-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="INR" selected>INR (₹) - Indian Rupee</option>
+          <option value="USD">USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="CNY">CNY (¥) - Chinese Yuan</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Regime Tab Selection -->
+    <Tabs
+      tabs={[
+        { id: 'india-new', label: 'India (New Regime)' },
+        { id: 'india-old', label: 'India (Old Regime)' },
+        { id: 'custom-tax', label: 'Custom / Global' }
+      ]}
+      activeId="india-new"
+      id="regime-tabs"
+    />
+
+    <div class="input-group" style="margin-top: var(--space-4);">
+      <div class="input-label-row">
+        <label for="salary-ctc-input">Annual CTC (Gross Salary)</label>
+        <div class="input-symbol-wrapper wide-symbol">
+          <span class="currency-symbol">₹</span>
+          <input type="number" id="salary-ctc-input" min="50000" max="100000000" value="1500000" aria-label="Cost to Company Gross Salary" />
+        </div>
+      </div>
+      <input type="range" id="salary-ctc-slider" min="100000" max="5000000" step="25000" value="1500000" class="slider-range" aria-label="CTC Slider" />
+      <div class="slider-ticks">
+        <span>100k</span>
+        <span>2.5M</span>
+        <span>5M</span>
+      </div>
+    </div>
+
+    <!-- Collapsible Advanced Indian Options (PF, HRA, etc.) -->
+    <div id="indian-tax-options" class="accordion-sub-section">
+      <h4 class="sub-section-title">Salary Breakdown Settings</h4>
+      
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-basic-percent">
+              Basic Salary
+              <Tooltip text="Usually 40% to 50% of your Gross CTC. Basic is the base for PF calculation.">
+                <span class="info-bubble">i</span>
+              </Tooltip>
+            </label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="salary-basic-percent" min="10" max="90" value="40" aria-label="Basic Salary Percentage" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-bonus-input">
+              Annual Bonus
+              <Tooltip text="Variable pay or performance bonuses included in your annual CTC.">
+                <span class="info-bubble">i</span>
+              </Tooltip>
+            </label>
+            <div class="input-symbol-wrapper wide-symbol small-wrapper">
+              <span class="currency-symbol">₹</span>
+              <input type="number" id="salary-bonus-input" min="0" value="100000" aria-label="Annual Bonus Amount" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-pf-checkbox" class="checkbox-label">
+              <input type="checkbox" id="salary-pf-checkbox" checked />
+              Deduct Employee PF
+              <Tooltip text="Provident Fund contribution (12% of Basic Salary).">
+                <span class="info-bubble">i</span>
+              </Tooltip>
+            </label>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-pt-checkbox" class="checkbox-label">
+              <input type="checkbox" id="salary-pt-checkbox" checked />
+              Deduct Professional Tax
+              <Tooltip text="State government tax on profession (usually ₹2,400 annually / ₹200 monthly).">
+                <span class="info-bubble">i</span>
+              </Tooltip>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Old Regime Only Deductions -->
+      <div id="old-regime-exemptions" class="old-regime-fields-container hidden">
+        <h4 class="sub-section-title" style="margin-top: var(--space-4);">Old Regime Deductions & Exemptions</h4>
+        
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="salary-80c-input">
+              Section 80C Deductions
+              <Tooltip text="Investments in EPF, PPF, ELSS, Insurance, etc. (Max ₹1.5 Lakhs).">
+                <span class="info-bubble">i</span>
+              </Tooltip>
+            </label>
+            <div class="input-symbol-wrapper wide-symbol small-wrapper">
+              <span class="currency-symbol">₹</span>
+              <input type="number" id="salary-80c-input" min="0" max="150000" value="150000" aria-label="Section 80C deductions limit" />
+            </div>
+          </div>
+        </div>
+
+        <div class="input-row-grid">
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="salary-80d-input">
+                Section 80D (Health Ins.)
+                <Tooltip text="Premium paid for health insurance (Max ₹25k for self/kids, ₹50k if including parents).">
+                  <span class="info-bubble">i</span>
+                </Tooltip>
+              </label>
+              <div class="input-symbol-wrapper wide-symbol small-wrapper">
+                <span class="currency-symbol">₹</span>
+                <input type="number" id="salary-80d-input" min="0" max="100000" value="25000" aria-label="Section 80D health insurance" />
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="salary-hra-input">
+                HRA Exemption Claimed
+                <Tooltip text="House Rent Allowance tax exemption. Enter calculated HRA exempt amount.">
+                  <span class="info-bubble">i</span>
+                </Tooltip>
+              </label>
+              <div class="input-symbol-wrapper wide-symbol small-wrapper">
+                <span class="currency-symbol">₹</span>
+                <input type="number" id="salary-hra-input" min="0" value="50000" aria-label="HRA exemption amount" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Global Settings -->
+    <div id="custom-tax-options" class="custom-fields-container hidden">
+      <h4 class="sub-section-title">Custom Tax Settings</h4>
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="custom-tax-rate">Flat Tax Rate</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="custom-tax-rate" min="0" max="80" value="20" aria-label="Custom flat tax rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="custom-deduct-rate">Other Deductions</label>
+            <div class="input-symbol-wrapper percent-wrapper small-wrapper">
+              <input type="number" id="custom-deduct-rate" min="0" max="50" value="5" aria-label="Custom other deductions rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inputs-actions">
+      <Button id="salary-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Net Take-Home Breakdown</h3>
+
+    <div class="salary-takehome-hero">
+      <div class="hero-takehome-item">
+        <span class="hero-label">Monthly In-Hand</span>
+        <h2 class="hero-val text-success" id="salary-monthly-takehome">₹0</h2>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-takehome-item">
+        <span class="hero-label">Annual In-Hand</span>
+        <h3 class="hero-val" id="salary-annual-takehome" style="margin-top: 0; font-size: 1.5rem; font-weight: 800; color: var(--color-text-base);">₹0</h3>
+      </div>
+    </div>
+
+    <div class="results-pie-grid">
+      <!-- Donut Chart -->
+      <div class="chart-box">
+        <div class="donut-chart-container">
+          <svg class="donut-svg" viewBox="0 0 160 160">
+            <!-- Background circle -->
+            <circle class="donut-bg" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-bg-base)" stroke-width="20" />
+            <!-- Segment circles -->
+            <circle id="donut-segment-takehome" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-success)" stroke-width="20" stroke-dasharray="376.99" stroke-dashoffset="0" transform="rotate(-90 80 80)" />
+            <circle id="donut-segment-tax" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-error)" stroke-width="20" stroke-dasharray="376.99" stroke-dashoffset="376.99" transform="rotate(-90 80 80)" />
+            <circle id="donut-segment-pf" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-primary)" stroke-width="20" stroke-dasharray="376.99" stroke-dashoffset="376.99" transform="rotate(-90 80 80)" />
+            <circle id="donut-segment-other" cx="80" cy="80" r="60" fill="transparent" stroke="var(--color-text-light)" stroke-width="20" stroke-dasharray="376.99" stroke-dashoffset="376.99" transform="rotate(-90 80 80)" />
+          </svg>
+          <div class="donut-center-label">
+            <span class="center-percent" id="salary-takehome-percentage">0%</span>
+            <span class="center-text">Take-Home</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deductions table -->
+      <div class="deductions-breakdown-details">
+        <div class="breakdown-row">
+          <div class="row-label"><span class="legend-dot" style="background-color: var(--color-success);"></span> Take-Home Pay</div>
+          <div class="row-val" id="row-val-takehome">₹0</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="row-label"><span class="legend-dot" style="background-color: var(--color-error);"></span> Income Tax</div>
+          <div class="row-val" id="row-val-tax">₹0</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="row-label"><span class="legend-dot" style="background-color: var(--color-primary);"></span> EPF Contribution</div>
+          <div class="row-val" id="row-val-pf">₹0</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="row-label"><span class="legend-dot" style="background-color: var(--color-text-light);"></span> Prof. Tax & Other</div>
+          <div class="row-val" id="row-val-other">₹0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Note on Budget 2025 -->
+    <Alert variant="info" id="regime-alert" title="Budget 2025 Updates Applied">
+      Calculations are based on the latest default New Tax Regime slabs (FY 2025-26) introduced in Union Budget 2025. Standard deduction is ₹75,000 and Section 87A rebate offers zero tax up to ₹12 Lakhs income.
+    </Alert>
+
+    <!-- Calculation Trace Steps -->
+    <div class="tax-steps-accordion">
+      <h4 class="sub-section-title">Income Tax Calculations (Annual)</h4>
+      <div class="tax-steps-table">
+        <div class="table-row">
+          <span>Gross Annual Salary (CTC)</span>
+          <span class="font-semibold" id="step-gross">₹0</span>
+        </div>
+        <div class="table-row">
+          <span>Standard Deduction</span>
+          <span class="font-semibold text-danger" id="step-std-ded">₹0</span>
+        </div>
+        <div class="table-row" id="step-exempt-row">
+          <span>Tax Exemptions & deductions</span>
+          <span class="font-semibold text-danger" id="step-exempt">₹0</span>
+        </div>
+        <div class="table-row divider">
+          <span>Net Taxable Income</span>
+          <span class="font-semibold text-primary" id="step-taxable">₹0</span>
+        </div>
+        <div class="table-row">
+          <span>Base Tax calculated</span>
+          <span class="font-semibold" id="step-base-tax">₹0</span>
+        </div>
+        <div class="table-row">
+          <span>Section 87A Rebate</span>
+          <span class="font-semibold text-success" id="step-rebate">₹0</span>
+        </div>
+        <div class="table-row">
+          <span>Health & Education Cess (4%)</span>
+          <span class="font-semibold" id="step-cess">₹0</span>
+        </div>
+        <div class="table-row divider">
+          <span>Total Income Tax Liability</span>
+          <span class="font-bold text-danger" id="step-final-tax">₹0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSalaryCalculator() {
+    const root = document.getElementById('salary-calc');
+    if (!root) return;
+
+    // Inputs
+    const ctcInput = root.querySelector('#salary-ctc-input') as HTMLInputElement;
+    const ctcSlider = root.querySelector('#salary-ctc-slider') as HTMLInputElement;
+    
+    // Breakdown Settings
+    const basicInput = root.querySelector('#salary-basic-percent') as HTMLInputElement;
+    const bonusInput = root.querySelector('#salary-bonus-input') as HTMLInputElement;
+    const pfCheckbox = root.querySelector('#salary-pf-checkbox') as HTMLInputElement;
+    const ptCheckbox = root.querySelector('#salary-pt-checkbox') as HTMLInputElement;
+
+    // Old Regime Deductions
+    const input80c = root.querySelector('#salary-80c-input') as HTMLInputElement;
+    const input80d = root.querySelector('#salary-80d-input') as HTMLInputElement;
+    const inputHra = root.querySelector('#salary-hra-input') as HTMLInputElement;
+
+    // Custom Options
+    const customTaxRateInput = root.querySelector('#custom-tax-rate') as HTMLInputElement;
+    const customDeductRateInput = root.querySelector('#custom-deduct-rate') as HTMLInputElement;
+    // Reset button
+    const resetBtn = root.querySelector('#salary-reset');
+    const currencySelect = root.querySelector('#salary-currency-select') as HTMLSelectElement;
+
+    // Layout/Section Containers
+    const tabsContainer = document.getElementById('regime-tabs');
+    const indianOptions = root.querySelector('#indian-tax-options') as HTMLElement;
+    const oldRegimeOptions = root.querySelector('#old-regime-exemptions') as HTMLElement;
+    const customTaxOptions = root.querySelector('#custom-tax-options') as HTMLElement;
+    
+    let activeRegime = 'india-new';
+
+    if (!ctcInput || !ctcSlider || !basicInput || !bonusInput || !pfCheckbox || !ptCheckbox || !currencySelect) return;
+
+    const CURRENCIES: Record<string, { symbol: string; locale: string }> = {
+      USD: { symbol: '$', locale: 'en-US' },
+      EUR: { symbol: '€', locale: 'de-DE' },
+      GBP: { symbol: '£', locale: 'en-GB' },
+      INR: { symbol: '₹', locale: 'en-IN' },
+      JPY: { symbol: '¥', locale: 'ja-JP' },
+      AUD: { symbol: 'A$', locale: 'en-AU' },
+      CAD: { symbol: 'C$', locale: 'en-CA' },
+      CHF: { symbol: 'CHF', locale: 'de-CH' },
+      CNY: { symbol: '¥', locale: 'zh-CN' },
+      SGD: { symbol: 'S$', locale: 'en-SG' }
+    };
+
+    const getSelectedCurrency = () => {
+      return currencySelect ? currencySelect.value : 'INR';
+    };
+
+    const formatCurrency = (val: number) => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.INR;
+      return new Intl.NumberFormat(config.locale, {
+        style: 'currency',
+        currency: curr,
+        maximumFractionDigits: 0
+      }).format(val);
+    };
+
+    const updateCurrencyLabels = () => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.INR;
+      root.querySelectorAll('.currency-symbol').forEach((el) => {
+        el.textContent = config.symbol;
+      });
+    };
+
+    const updateRegimeVisibility = () => {
+      const curr = getSelectedCurrency();
+      const alertEl = document.getElementById('regime-alert');
+      const exemptRow = document.getElementById('step-exempt-row');
+
+      if (curr === 'INR') {
+        if (tabsContainer) tabsContainer.classList.remove('hidden');
+        const activeTabBtn = tabsContainer?.querySelector('.tab-button.active') as HTMLElement;
+        activeRegime = activeTabBtn ? (activeTabBtn.getAttribute('data-tab-target') || 'india-new') : 'india-new';
+      } else {
+        if (tabsContainer) tabsContainer.classList.add('hidden');
+        activeRegime = 'custom';
+      }
+
+      if (activeRegime === 'india-new') {
+        indianOptions.classList.remove('hidden');
+        oldRegimeOptions.classList.add('hidden');
+        customTaxOptions.classList.add('hidden');
+        if (exemptRow) exemptRow.classList.add('hidden');
+        if (alertEl) alertEl.classList.remove('hidden');
+      } else if (activeRegime === 'india-old') {
+        indianOptions.classList.remove('hidden');
+        oldRegimeOptions.classList.remove('hidden');
+        customTaxOptions.classList.add('hidden');
+        if (exemptRow) exemptRow.classList.remove('hidden');
+        if (alertEl) alertEl.classList.remove('hidden');
+      } else {
+        indianOptions.classList.add('hidden');
+        oldRegimeOptions.classList.add('hidden');
+        customTaxOptions.classList.remove('hidden');
+        if (exemptRow) exemptRow.classList.add('hidden');
+        if (alertEl) alertEl.classList.add('hidden');
+      }
+    };
+
+    currencySelect.addEventListener('change', () => {
+      updateCurrencyLabels();
+      updateRegimeVisibility();
+      calculateResults();
+    });
+
+    // Indian New Regime Slabs (FY 2025-26 Budget Slabs)
+    const calculateNewRegimeTax = (taxableIncome: number) => {
+      // Rebate under Section 87A: If taxable income is up to 12 lakhs, tax is 0.
+      if (taxableIncome <= 1200000) {
+        return { baseTax: 0, rebate: 0, cess: 0, totalTax: 0 };
+      }
+
+      let baseTax = 0;
+      
+      // Slabs:
+      // Up to 4L: Nil
+      // 4L to 8L: 5% (Max 20,000)
+      // 8L to 12L: 10% (Max 40,000)
+      // 12L to 16L: 15% (Max 60,000)
+      // 16L to 20L: 20% (Max 80,000)
+      // 20L to 24L: 25% (Max 1,00,000)
+      // Above 24L: 30%
+      if (taxableIncome > 2400000) {
+        baseTax += (taxableIncome - 2400000) * 0.30 + 300000; // 3L sum of previous slabs
+      } else if (taxableIncome > 2000000) {
+        baseTax += (taxableIncome - 2000000) * 0.25 + 200000;
+      } else if (taxableIncome > 1600000) {
+        baseTax += (taxableIncome - 1600000) * 0.20 + 120000;
+      } else if (taxableIncome > 1200000) {
+        baseTax += (taxableIncome - 1200000) * 0.15 + 60000;
+      } else if (taxableIncome > 800000) {
+        baseTax += (taxableIncome - 800000) * 0.10 + 20000;
+      } else if (taxableIncome > 400000) {
+        baseTax += (taxableIncome - 400000) * 0.05;
+      }
+
+      const cess = baseTax * 0.04;
+      const totalTax = baseTax + cess;
+
+      return { baseTax, rebate: 0, cess, totalTax };
+    };
+
+    // Indian Old Regime Slabs
+    const calculateOldRegimeTax = (taxableIncome: number) => {
+      let baseTax = 0;
+
+      // Slabs:
+      // Up to 2.5L: Nil
+      // 2.5L to 5L: 5% (Max 12,500)
+      // 5L to 10L: 20% (Max 1,00,000)
+      // Above 10L: 30%
+      if (taxableIncome > 1000000) {
+        baseTax += (taxableIncome - 1000000) * 0.30 + 112500;
+      } else if (taxableIncome > 500000) {
+        baseTax += (taxableIncome - 500000) * 0.20 + 12500;
+      } else if (taxableIncome > 250000) {
+        baseTax += (taxableIncome - 250000) * 0.05;
+      }
+
+      // Rebate under Section 87A: If taxable income <= 5L, rebate up to ₹12,500
+      let rebate = 0;
+      if (taxableIncome <= 500000) {
+        rebate = baseTax;
+      }
+
+      const netBaseTax = Math.max(0, baseTax - rebate);
+      const cess = netBaseTax * 0.04;
+      const totalTax = netBaseTax + cess;
+
+      return { baseTax, rebate, cess, totalTax };
+    };
+
+    const calculateResults = () => {
+      const ctc = parseFloat(ctcInput.value) || 0;
+      const bonus = parseFloat(bonusInput.value) || 0;
+      const basicPercent = parseFloat(basicInput.value) || 40;
+      
+      const basic = (ctc - bonus) * (basicPercent / 100);
+      
+      // Calculate PF (12% of basic)
+      const pf = pfCheckbox.checked ? (basic * 0.12) : 0;
+      // Calculate PT (₹2,400 per year)
+      const pt = ptCheckbox.checked ? 2400 : 0;
+
+      let stdDeduction = 0;
+      let totalExemptions = 0;
+      let taxableIncome = 0;
+      let baseTax = 0;
+      let rebate = 0;
+      let cess = 0;
+      let incomeTax = 0;
+      let otherDeductions = 0;
+
+      if (activeRegime === 'india-new') {
+        stdDeduction = 75000;
+        // In New Regime, taxable income = Gross CTC - Std Deduction
+        taxableIncome = Math.max(0, ctc - stdDeduction);
+        
+        const taxRes = calculateNewRegimeTax(taxableIncome);
+        baseTax = taxRes.baseTax;
+        rebate = taxRes.rebate;
+        cess = taxRes.cess;
+        incomeTax = taxRes.totalTax;
+      } else if (activeRegime === 'india-old') {
+        stdDeduction = 50000;
+        
+        // Deductions & Exemptions inputs
+        const ded80c = parseFloat(input80c.value) || 0;
+        const ded80d = parseFloat(input80d.value) || 0;
+        const dedHra = parseFloat(inputHra.value) || 0;
+
+        // Note: PF contribution is also part of 80C
+        const total80c = Math.min(150000, ded80c + pf);
+        totalExemptions = total80c + ded80d + dedHra;
+
+        taxableIncome = Math.max(0, ctc - stdDeduction - totalExemptions);
+
+        const taxRes = calculateOldRegimeTax(taxableIncome);
+        baseTax = taxRes.baseTax;
+        rebate = taxRes.rebate;
+        cess = taxRes.cess;
+        incomeTax = taxRes.totalTax;
+      } else {
+        // Custom Flat tax mode
+        const flatTaxRate = parseFloat(customTaxRateInput.value) || 0;
+        const otherDeductRate = parseFloat(customDeductRateInput.value) || 0;
+
+        incomeTax = ctc * (flatTaxRate / 100);
+        otherDeductions = ctc * (otherDeductRate / 100);
+        taxableIncome = ctc;
+      }
+
+      // Net Annual Take-Home
+      const annualTakeHome = Math.max(0, ctc - pf - pt - incomeTax - otherDeductions);
+      const monthlyTakeHome = annualTakeHome / 12;
+
+      // Update DOM Text Values
+      const monthlyTakehomeEl = document.getElementById('salary-monthly-takehome');
+      const annualTakehomeEl = document.getElementById('salary-annual-takehome');
+      const takehomePercentEl = document.getElementById('salary-takehome-percentage');
+
+      if (monthlyTakehomeEl) monthlyTakehomeEl.textContent = formatCurrency(monthlyTakeHome);
+      if (annualTakehomeEl) annualTakehomeEl.textContent = formatCurrency(annualTakeHome);
+      
+      const takehomePercent = ctc > 0 ? Math.round((annualTakeHome / ctc) * 100) : 0;
+      if (takehomePercentEl) takehomePercentEl.textContent = `${takehomePercent}%`;
+
+      // Update breakdown table values
+      const valTakehomeEl = document.getElementById('row-val-takehome');
+      const valTaxEl = document.getElementById('row-val-tax');
+      const valPfEl = document.getElementById('row-val-pf');
+      const valOtherEl = document.getElementById('row-val-other');
+
+      if (valTakehomeEl) valTakehomeEl.textContent = formatCurrency(annualTakeHome);
+      if (valTaxEl) valTaxEl.textContent = formatCurrency(incomeTax);
+      if (valPfEl) valPfEl.textContent = formatCurrency(pf);
+      if (valOtherEl) valOtherEl.textContent = formatCurrency(pt + otherDeductions);
+
+      // Update Steps Accordion
+      const stepGrossEl = document.getElementById('step-gross');
+      const stepStdDedEl = document.getElementById('step-std-ded');
+      const stepExemptEl = document.getElementById('step-exempt');
+      const stepTaxableEl = document.getElementById('step-taxable');
+      const stepBaseTaxEl = document.getElementById('step-base-tax');
+      const stepRebateEl = document.getElementById('step-rebate');
+      const stepCessEl = document.getElementById('step-cess');
+      const stepFinalTaxEl = document.getElementById('step-final-tax');
+
+      if (stepGrossEl) stepGrossEl.textContent = formatCurrency(ctc);
+      if (stepStdDedEl) stepStdDedEl.textContent = `-${formatCurrency(stdDeduction)}`;
+      if (stepExemptEl) stepExemptEl.textContent = `-${formatCurrency(totalExemptions)}`;
+      if (stepTaxableEl) stepTaxableEl.textContent = formatCurrency(taxableIncome);
+      if (stepBaseTaxEl) stepBaseTaxEl.textContent = formatCurrency(baseTax);
+      if (stepRebateEl) stepRebateEl.textContent = `-${formatCurrency(rebate)}`;
+      if (stepCessEl) stepCessEl.textContent = formatCurrency(cess);
+      if (stepFinalTaxEl) stepFinalTaxEl.textContent = formatCurrency(incomeTax);
+
+      // Draw Donut Chart
+      drawDonutChart(annualTakeHome, incomeTax, pf, pt + otherDeductions, ctc);
+    };
+
+    const drawDonutChart = (takehome: number, tax: number, pf: number, other: number, total: number) => {
+      const segTakehome = document.getElementById('donut-segment-takehome');
+      const segTax = document.getElementById('donut-segment-tax');
+      const segPf = document.getElementById('donut-segment-pf');
+      const segOther = document.getElementById('donut-segment-other');
+
+      if (!segTakehome || !segTax || !segPf || !segOther || total === 0) return;
+
+      const circumference = 2 * Math.PI * 60; // 376.991
+
+      // Percentages
+      const pTakehome = takehome / total;
+      const pTax = tax / total;
+      const pPf = pf / total;
+      const pOther = other / total;
+
+      // Stroke lengths
+      const strokeTakehome = circumference * pTakehome;
+      const strokeTax = circumference * pTax;
+      const strokePf = circumference * pPf;
+      const strokeOther = circumference * pOther;
+
+      // Update segment patterns
+      segTakehome.setAttribute('stroke-dasharray', `${strokeTakehome} ${circumference}`);
+      segTakehome.setAttribute('stroke-dashoffset', '0');
+
+      segTax.setAttribute('stroke-dasharray', `${strokeTax} ${circumference}`);
+      segTax.setAttribute('stroke-dashoffset', String(-strokeTakehome));
+
+      segPf.setAttribute('stroke-dasharray', `${strokePf} ${circumference}`);
+      segPf.setAttribute('stroke-dashoffset', String(-(strokeTakehome + strokeTax)));
+
+      segOther.setAttribute('stroke-dasharray', `${strokeOther} ${circumference}`);
+      segOther.setAttribute('stroke-dashoffset', String(-(strokeTakehome + strokeTax + strokePf)));
+    };
+
+    // Synchronize inputs & sliders
+    const setupSync = (input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) => {
+      const updateFromInput = () => {
+        let val = parseFloat(input.value);
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+        
+        if (isNaN(val)) val = min;
+        if (val < min) val = min;
+        if (val > max) val = max;
+
+        slider.value = String(val);
+        callback();
+      };
+
+      const updateFromSlider = () => {
+        input.value = slider.value;
+        callback();
+      };
+
+      input.addEventListener('change', updateFromInput);
+      slider.addEventListener('input', updateFromSlider);
+    };
+
+    setupSync(ctcInput, ctcSlider, calculateResults);
+
+    // Event listeners for breakdowns & selections
+    basicInput.addEventListener('change', calculateResults);
+    bonusInput.addEventListener('change', calculateResults);
+    pfCheckbox.addEventListener('change', calculateResults);
+    ptCheckbox.addEventListener('change', calculateResults);
+
+    input80c.addEventListener('change', calculateResults);
+    input80d.addEventListener('change', calculateResults);
+    inputHra.addEventListener('change', calculateResults);
+
+    customTaxRateInput.addEventListener('change', calculateResults);
+    customDeductRateInput.addEventListener('change', calculateResults);
+
+    // Tab Switching Listener
+    tabsContainer?.addEventListener('tab-change', (e: any) => {
+      activeRegime = e.detail.activeTab;
+      const alertEl = document.getElementById('regime-alert');
+      const exemptRow = document.getElementById('step-exempt-row');
+
+      if (activeRegime === 'india-new') {
+        indianOptions.classList.remove('hidden');
+        oldRegimeOptions.classList.add('hidden');
+        customTaxOptions.classList.add('hidden');
+        if (exemptRow) exemptRow.classList.add('hidden');
+        if (alertEl) {
+          alertEl.classList.remove('hidden');
+          alertEl.innerHTML = `
+            <div class="alert-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+            <div class="alert-body">
+              <h5 class="alert-title">Budget 2025 Updates Applied</h5>
+              <div class="alert-content">Calculations are based on the latest default New Tax Regime slabs (FY 2025-26) introduced in Union Budget 2025. Standard deduction is ₹75,000 and Section 87A rebate offers zero tax up to ₹12 Lakhs income.</div>
+            </div>
+          `;
+        }
+      } else if (activeRegime === 'india-old') {
+        indianOptions.classList.remove('hidden');
+        oldRegimeOptions.classList.remove('hidden');
+        customTaxOptions.classList.add('hidden');
+        if (exemptRow) exemptRow.classList.remove('hidden');
+        if (alertEl) {
+          alertEl.classList.remove('hidden');
+          alertEl.innerHTML = `
+            <div class="alert-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></div>
+            <div class="alert-body">
+              <h5 class="alert-title">Old Regime Active</h5>
+              <div class="alert-content">Old Tax Regime remains active. Traditional exemptions like Section 80C (EPF/PPF), Section 80D (Health Premium), and House Rent Allowance (HRA) are fully deductible. Standard deduction is ₹50,000.</div>
+            </div>
+          `;
+        }
+      } else {
+        indianOptions.classList.add('hidden');
+        oldRegimeOptions.classList.add('hidden');
+        customTaxOptions.classList.remove('hidden');
+        if (exemptRow) exemptRow.classList.add('hidden');
+        if (alertEl) {
+          alertEl.classList.add('hidden');
+        }
+      }
+      
+      calculateResults();
+    });
+
+    // Reset button
+    resetBtn?.addEventListener('click', () => {
+      ctcInput.value = '1500000';
+      ctcSlider.value = '1500000';
+      basicInput.value = '40';
+      bonusInput.value = '100000';
+      pfCheckbox.checked = true;
+      ptCheckbox.checked = true;
+      input80c.value = '150000';
+      input80d.value = '25000';
+      inputHra.value = '5000';
+      customTaxRateInput.value = '20';
+      customDeductRateInput.value = '5';
+      calculateResults();
+    });
+
+    // Results Copy Handler
+    window.dispatchEvent(new CustomEvent('tab-change', { detail: { activeTab: activeRegime } }));
+    window.addEventListener('copy-calculator-results', () => {
+      const resultsText = `
+FinCalcLab.com - In-Hand Salary Breakdown Results:
+----------------------------------------------
+Tax Regime Mode: ${activeRegime === 'india-new' ? 'India New Regime' : activeRegime === 'india-old' ? 'India Old Regime' : 'Custom Global'}
+Gross Annual CTC: ${formatCurrency(parseFloat(ctcInput.value))}
+Annual Variable Bonus: ${formatCurrency(parseFloat(bonusInput.value))}
+
+Projections:
+- Monthly Take-Home Pay: ${document.getElementById('salary-monthly-takehome')?.textContent || ''}
+- Annual Take-Home Pay: ${document.getElementById('salary-annual-takehome')?.textContent || ''}
+
+Annual Deductions Breakdown:
+- Income Tax Liability: ${document.getElementById('row-val-tax')?.textContent || ''}
+- Employee EPF Contribution: ${document.getElementById('row-val-pf')?.textContent || ''}
+- Profession Tax & Other: ${document.getElementById('row-val-other')?.textContent || ''}
+
+Take-Home Ratio: ${document.getElementById('salary-takehome-percentage')?.textContent || ''} of CTC
+----------------------------------------------
+Compute taxes at https://fincalclab.com
+      `.trim();
+
+      navigator.clipboard.writeText(resultsText).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    calculateResults();
+  }
+
+  document.addEventListener('DOMContentLoaded', initSalaryCalculator);
+  document.addEventListener('astro:after-swap', initSalaryCalculator);
+</script>
+
+<style>
+  /* Accordion Sub sections inside Inputs card */
+  .accordion-sub-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    border-top: 1px dashed var(--color-border);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+  }
+
+  .sub-section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-light);
+    margin-bottom: 0;
+    margin-top: 0;
+    border: none;
+    padding: 0;
+  }
+
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  /* Info Bubble design inside inputs */
+  .info-bubble {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-border-hover);
+    color: var(--color-text-light);
+    font-size: 0.65rem;
+    font-weight: 800;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-left: 2px;
+  }
+
+  /* Sub sections classes hidden/shown dynamically */
+  .hidden {
+    display: none !important;
+  }
+
+  .old-regime-fields-container, .custom-fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  /* Results layout adjustments */
+  .salary-takehome-hero {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    text-align: center;
+  }
+
+  .hero-takehome-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .hero-val {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -0.04em;
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 48px;
+    background-color: var(--color-border);
+  }
+
+  /* Donut chart layout */
+  .results-pie-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    margin-top: var(--space-6);
+  }
+
+  .donut-chart-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+  }
+
+  .donut-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .donut-center-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .center-percent {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+  }
+
+  .center-text {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+  }
+
+  .deductions-breakdown-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: var(--space-2);
+  }
+
+  .breakdown-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .row-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .row-val {
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  /* Trace steps list table */
+  .tax-steps-accordion {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+  }
+
+  .tax-steps-table {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .table-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .table-row.divider {
+    border-top: 1px dashed var(--color-border);
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+  }
+
+  .font-semibold { font-weight: 600; color: var(--color-text-base); }
+  .text-danger { color: var(--color-error) !important; }
+
+  /* Reused inputs styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 130px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .input-symbol-wrapper.wide-symbol {
+    width: 150px;
+  }
+
+  .input-symbol-wrapper.small-wrapper {
+    height: 32px;
+    border-radius: var(--radius-sm);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform var(--transition-fast), background var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    font-weight: 500;
+  }
+
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .inputs-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    border: none;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  @media (max-width: 580px) {
+    .results-pie-grid {
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+    .deductions-breakdown-details {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .salary-takehome-hero {
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .hero-divider {
+      width: 80%;
+      height: 1px;
+    }
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

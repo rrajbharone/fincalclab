@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalaryCalculator from '../../components/calculator/SalaryCalculator.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+import Card from '../../components/ui/Card.astro';
+import Button from '../../components/ui/Button.astro';
+
+const faqs = [
+  {
+    question: "What is CTC and how does it differ from In-Hand Salary?",
+    answer: "CTC stands for Cost to Company. It is the total annual amount that an employer spends on an employee, including salary, allowances, bonuses, and mandatory employee benefits like Provident Fund (PF) and insurance. In-hand salary (or take-home pay) is the net amount you receive in your bank account after deducting income tax, PF contributions, professional tax (PT), and other employer deductions."
+  },
+  {
+    question: "What are the New Tax Regime slabs for FY 2025-26 under Budget 2025?",
+    answer: "Under Union Budget 2025 (applicable for FY 2025-26 / AY 2026-27), the New Tax Regime slabs are: up to ₹4 Lakh: Nil, ₹4L-8L: 5%, ₹8L-12L: 10%, ₹12L-16L: 15%, ₹16L-20L: 20%, ₹20L-24L: 25%, and above ₹24L: 30%. Standard deduction is ₹75,000, and a tax rebate ensures zero tax up to ₹12 Lakhs annual income."
+  },
+  {
+    question: "Is Employee PF deductible under the New Tax Regime?",
+    answer: "No. The New Tax Regime does not allow any deductions under Section 80C, meaning your employee Provident Fund (EPF) contributions cannot be deducted to reduce your taxable income. However, they are still deducted from your gross CTC to arrive at your net in-hand salary."
+  },
+  {
+    question: "What deductions are allowed under the Old Tax Regime?",
+    answer: "The Old Tax Regime allows standard deductions of ₹50,000, Section 80C deductions (EPF, PPF, ELSS, Life Insurance) up to ₹1,50,000, Section 80D (Health Insurance) up to ₹25,000/₹50,000, and House Rent Allowance (HRA) exemptions, among others. Taxable income is gross CTC minus these exemptions."
+  }
+];
+---
+
+<Layout
+  title="In Hand Salary Calculator & Budget 2025 Tax Estimator"
+  description="Estimate your monthly in-hand take-home salary, calculate income tax liabilities under New & Old regimes, and audit EPF deductions. Fully updated for Budget 2025."
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Calculators', item: '/all-calculators' },
+    { name: 'Salary & Tax', item: '/calculator/in-hand-salary-calculator' }
+  ]}
+  faqs={faqs}
+>
+  <SalaryCalculator />
+
+  <!-- Educational Explanations -->
+  <div class="calculator-extra-seo-content container" style="max-width: 1040px; margin-top: var(--space-8);">
+    <!-- Standard Definitions -->
+    <section class="seo-section">
+      <h2>Understanding Salary Component Definitions</h2>
+      <p>Salary structures in global corporations (especially in India) are divided into several segments to optimize taxation and satisfy legal regulations:</p>
+      
+      <div class="definitions-grid">
+        <div class="def-item">
+          <h4>Basic Salary</h4>
+          <p>The core component of your package. It is 100% taxable and serves as the mathematical base for calculating PF and Gratuity. Typically accounts for 40-50% of the overall CTC.</p>
+        </div>
+        <div class="def-item">
+          <h4>House Rent Allowance (HRA)</h4>
+          <p>Provided to meet rental housing expenses. Under the Old Tax Regime, HRA is partially exempt from tax based on your actual rent paid, basic salary, and city tier.</p>
+        </div>
+        <div class="def-item">
+          <h4>Provident Fund (PF)</h4>
+          <p>A mandatory government-managed savings program. Salaried employees contribute 12% of their basic salary, which is locked for retirement but earns compound interest.</p>
+        </div>
+        <div class="def-item">
+          <h4>Professional Tax (PT)</h4>
+          <p>A minor state government tax levied on salaried professions. In most Indian states, this is capped at a flat ₹200 per month (₹2,400 per year).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Old vs New Regime Guide -->
+    <section class="seo-section">
+      <h2>Old vs New Tax Regime: Which Regime Saves You More?</h2>
+      <p>With Budget 2025 widening the New Regime brackets, selecting a tax regime requires comparing your total investments against the exemption gap:</p>
+      <ul class="spaced-list">
+        <li>
+          <strong>The Breakeven point:</strong> If your total tax-deductible investments (80C, 80D, HRA, Home Loan Interest) are <strong>less than ₹3,75,000</strong>, the New Tax Regime is mathematically guaranteed to save you more tax.
+        </li>
+        <li>
+          <strong>Zero Tax Liabilities:</strong> Salaried individuals earning up to <strong>₹12.75 Lakhs</strong> (₹12 Lakhs rebate limit + ₹75,000 standard deduction) pay ₹0 income tax under the New Regime.
+        </li>
+        <li>
+          <strong>Simplification:</strong> The New Regime removes the necessity of locking up capital in tax-saving funds (like 5-year FDs or insurance plans) to claim deductions, increasing your disposable liquidity.
+        </li>
+      </ul>
+    </section>
+
+    <!-- FAQs Section -->
+    <section class="seo-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion-group">
+        {faqs.map((faq) => (
+          <Accordion title={faq.question}>
+            <p style="margin:0;">{faq.answer}</p>
+          </Accordion>
+        ))}
+      </div>
+    </section>
+
+    <!-- Call to action related tools -->
+    <section class="related-tools-cta">
+      <Card elevation="md" class="related-cta-card">
+        <div class="cta-inner">
+          <div class="cta-text-side">
+            <h3>Try Our Other Free Calculators</h3>
+            <p>Compare systematic mutual fund returns or teach children about compounding pocket money allowances.</p>
+          </div>
+          <div class="cta-btn-side">
+            <Button href="/calculator/lumpsum-vs-sip-calculator" variant="primary">SIP vs Lumpsum</Button>
+            <Button href="/calculator/kids-pocket-money-compounder-calculator" variant="outline">Kids Compounder</Button>
+          </div>
+        </div>
+      </Card>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .seo-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .seo-section h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+  }
+
+  .spaced-list li {
+    margin-bottom: var(--space-4);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  /* Definitions Grid */
+  .definitions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+  }
+
+  .def-item h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+    color: var(--color-text-base);
+  }
+
+  .def-item p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .faq-accordion-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .related-tools-cta {
+    margin-top: var(--space-12);
+  }
+
+  .related-cta-card {
+    background-color: var(--color-bg-surface);
+    border-top: 4px solid var(--color-accent);
+  }
+
+  .cta-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .cta-text-side h3 {
+    margin: 0 0 6px 0;
+  }
+  .cta-text-side p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .cta-btn-side {
+    display: flex;
+    gap: var(--space-3);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .definitions-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    .cta-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+    .cta-btn-side {
+      flex-direction: column;
+      width: 100%;
+    }
+    .cta-btn-side a, .cta-btn-side button {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,964 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+---
+
+<CalculatorLayout
+  title="Sales Commission Calculator"
+  description="Calculate sales commission earnings across flat rate, tiered (graduated) commission structures, and draws against commission."
+  category="Salary"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="commission-calc">
+    <!-- Sub-calculator tab selection -->
+    <div class="raise-tabs-wrapper">
+      <label for="commission-calc-type" class="sr-only">Choose Calculator Mode</label>
+      <select id="commission-calc-type" class="currency-select" aria-label="Select Calculator Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-4);">
+        <option value="flat" selected>Flat Rate & Base Salary</option>
+        <option value="tiered">Tiered (Graduated) Commission</option>
+        <option value="draw">Draw Against Commission</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="comm-currency-select">Currency</label>
+        <select id="comm-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="CNY">CNY (¥) - Chinese Yuan</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PANEL 1: Flat Rate -->
+    <div id="panel-flat" class="calc-panel">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="flat-sales-amount">Total Sales Volume</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="flat-sales-amount" min="0" max="100000000" value="50000" aria-label="Total Sales Volume" />
+          </div>
+        </div>
+        <input type="range" id="flat-sales-slider" min="1000" max="500000" step="5000" value="50000" class="slider-range" aria-label="Sales Volume Slider" />
+      </div>
+
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="flat-commission-rate">Commission Rate</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="flat-commission-rate" min="0" max="100" step="0.1" value="5" aria-label="Commission Rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="flat-base-pay">Base Salary (Optional)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="flat-base-pay" min="0" max="1000000" value="3000" aria-label="Base Salary" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="flat-base-period">Base Salary Period</label>
+          <select id="flat-base-period" class="currency-select" style="max-width: 100%;" aria-label="Base Salary Period">
+            <option value="monthly" selected>Monthly</option>
+            <option value="annual">Annually</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Tiered Commission -->
+    <div id="panel-tiered" class="calc-panel hidden">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="tiered-sales-amount">Total Sales Volume</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="tiered-sales-amount" min="0" max="100000000" value="75000" aria-label="Total Sales Volume for Tiered" />
+          </div>
+        </div>
+        <input type="range" id="tiered-sales-slider" min="1000" max="500000" step="5000" value="75000" class="slider-range" aria-label="Sales Volume Slider" />
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="tiered-type">Tier Model</label>
+          <select id="tiered-type" class="currency-select" style="max-width: 100%;" aria-label="Tier Model Type">
+            <option value="cumulative" selected>Cumulative (Commission calculated per tier)</option>
+            <option value="flat">Flat-Rate Shift (Highest tier applies to all sales)</option>
+          </select>
+        </div>
+      </div>
+
+      <h4 class="sub-section-title" style="margin-top: var(--space-4); margin-bottom: var(--space-2);">Define Tiers</h4>
+      
+      <!-- Tier 1 -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label>Tier 1 Cap</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="tier1-cap" min="0" value="10000" aria-label="Tier 1 Cap" />
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label-row">
+            <label>Tier 1 Rate</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="tier1-rate" min="0" max="100" step="0.1" value="3" aria-label="Tier 1 Rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 2 -->
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label>Tier 2 Cap</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="tier2-cap" min="0" value="50000" aria-label="Tier 2 Cap" />
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label-row">
+            <label>Tier 2 Rate</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="tier2-rate" min="0" max="100" step="0.1" value="5" aria-label="Tier 2 Rate" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 3 -->
+      <div class="input-row-grid" style="margin-top: var(--space-2);">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label>Tier 3 Rate (Above Cap 2)</label>
+            <div class="input-symbol-wrapper percent-wrapper">
+              <input type="number" id="tier3-rate" min="0" max="100" step="0.1" value="8" aria-label="Tier 3 Rate" style="width: 100%;" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 3: Draws -->
+    <div id="panel-draw" class="calc-panel hidden">
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="draw-commission">Commissions Earned</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="draw-commission" min="0" max="1000000" value="4500" aria-label="Commissions Earned" />
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="draw-amount">Draw Amount (Advance)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="draw-amount" min="0" max="1000000" value="3000" aria-label="Draw Amount" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="draw-type">Draw Type</label>
+          <select id="draw-type" class="currency-select" style="max-width: 100%;" aria-label="Draw Type">
+            <option value="recoverable" selected>Recoverable (Unearned draw carried forward as debt)</option>
+            <option value="nonrecoverable">Non-Recoverable (Company absorbs unearned draw)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Button -->
+    <div style="margin-top: var(--space-6); display: flex; justify-content: flex-end;">
+      <Button id="comm-reset" variant="outline" size="sm" class="reset-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><polyline points="16 3 21 8 16 13"></polyline><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><polyline points="8 21 3 16 8 11"></polyline></svg>
+        Reset Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <div class="results-inner-card">
+      <div class="result-highlight-box">
+        <span class="highlight-label" id="comm-result-label-primary">Total Gross Earnings</span>
+        <span class="highlight-value" id="comm-result-val-primary">$0</span>
+      </div>
+
+      <div class="results-grid" style="margin-top: var(--space-6);">
+        <div class="result-tile">
+          <span class="tile-label" id="comm-result-label-secondary">Commission Only</span>
+          <span class="tile-value" id="comm-result-val-secondary">$0</span>
+        </div>
+        <div class="result-tile">
+          <span class="tile-label" id="comm-result-label-tertiary">Base / Draw Component</span>
+          <span class="tile-value text-accent" id="comm-result-val-tertiary">$0</span>
+        </div>
+      </div>
+
+      <!-- Ratio bar / info block -->
+      <div class="chart-container" style="margin-top: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4);" id="comm-extra-results">
+        <h4 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 0px;" id="comm-breakdown-title">Pay Mix Breakdown</h4>
+        
+        <div class="pay-ratio-bar-wrapper">
+          <div class="pay-ratio-bar">
+            <div class="ratio-segment base-segment" id="ratio-bar-base" style="width: 50%;"></div>
+            <div class="ratio-segment commission-segment" id="ratio-bar-comm" style="width: 50%;"></div>
+          </div>
+          <div class="ratio-legend" style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 500; margin-top: 6px;">
+            <span style="color: var(--color-primary);"><span class="legend-dot" style="background:var(--color-primary);"></span> Base: <span id="legend-base-pct">50%</span></span>
+            <span style="color: var(--color-accent);"><span class="legend-dot" style="background:var(--color-accent);"></span> Commission: <span id="legend-comm-pct">50%</span></span>
+          </div>
+        </div>
+
+        <div class="table-responsive" id="comm-breakdown-table-wrapper" style="display:none; margin-top: var(--space-2);">
+          <table class="data-table" id="comm-tiers-table">
+            <thead>
+              <tr>
+                <th>Tier Range</th>
+                <th>Sales in Tier</th>
+                <th>Rate</th>
+                <th>Commission</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Dynamic -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="comm-draw-feedback" class="draw-debt-box hidden" style="background-color: var(--color-bg-base); padding: var(--space-4); border-radius: var(--radius-md); border-left: 4px solid var(--color-accent); font-size: 0.85rem; line-height: 1.5;">
+          <!-- Dynamic -->
+        </div>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initCommissionCalculator() {
+    const root = document.getElementById('commission-calc');
+    if (!root) return;
+
+    // Selectors
+    const modeSelect = root.querySelector('#commission-calc-type') as HTMLSelectElement;
+    const currencySelect = root.querySelector('#comm-currency-select') as HTMLSelectElement;
+    const resetBtn = root.querySelector('#comm-reset') as HTMLButtonElement;
+
+    // Panels
+    const panelFlat = root.querySelector('#panel-flat') as HTMLElement;
+    const panelTiered = root.querySelector('#panel-tiered') as HTMLElement;
+    const panelDraw = root.querySelector('#panel-draw') as HTMLElement;
+
+    // Panel Inputs - Flat
+    const flatSales = root.querySelector('#flat-sales-amount') as HTMLInputElement;
+    const flatSalesSlider = root.querySelector('#flat-sales-slider') as HTMLInputElement;
+    const flatRate = root.querySelector('#flat-commission-rate') as HTMLInputElement;
+    const flatBasePay = root.querySelector('#flat-base-pay') as HTMLInputElement;
+    const flatBasePeriod = root.querySelector('#flat-base-period') as HTMLSelectElement;
+
+    // Panel Inputs - Tiered
+    const tieredSales = root.querySelector('#tiered-sales-amount') as HTMLInputElement;
+    const tieredSalesSlider = root.querySelector('#tiered-sales-slider') as HTMLInputElement;
+    const tieredType = root.querySelector('#tiered-type') as HTMLSelectElement;
+    const tier1Cap = root.querySelector('#tier1-cap') as HTMLInputElement;
+    const tier1Rate = root.querySelector('#tier1-rate') as HTMLInputElement;
+    const tier2Cap = root.querySelector('#tier2-cap') as HTMLInputElement;
+    const tier2Rate = root.querySelector('#tier2-rate') as HTMLInputElement;
+    const tier3Rate = root.querySelector('#tier3-rate') as HTMLInputElement;
+
+    // Panel Inputs - Draw
+    const drawComm = root.querySelector('#draw-commission') as HTMLInputElement;
+    const drawAmount = root.querySelector('#draw-amount') as HTMLInputElement;
+    const drawType = root.querySelector('#draw-type') as HTMLSelectElement;
+
+    // Outputs
+    const resLabelPrimary = document.getElementById('comm-result-label-primary');
+    const resValPrimary = document.getElementById('comm-result-val-primary');
+    const resLabelSecondary = document.getElementById('comm-result-label-secondary');
+    const resValSecondary = document.getElementById('comm-result-val-secondary');
+    const resLabelTertiary = document.getElementById('comm-result-label-tertiary');
+    const resValTertiary = document.getElementById('comm-result-val-tertiary');
+
+    // Extra results elements
+    const commBreakdownTitle = document.getElementById('comm-breakdown-title');
+    const ratioBarWrapper = document.querySelector('.pay-ratio-bar-wrapper') as HTMLElement;
+    const ratioBarBase = document.getElementById('ratio-bar-base');
+    const ratioBarComm = document.getElementById('ratio-bar-comm');
+    const legendBasePct = document.getElementById('legend-base-pct');
+    const legendCommPct = document.getElementById('legend-comm-pct');
+
+    const tableWrapper = document.getElementById('comm-breakdown-table-wrapper');
+    const tableBody = document.querySelector('#comm-tiers-table tbody');
+    const drawFeedback = document.getElementById('comm-draw-feedback');
+
+    if (!modeSelect || !currencySelect || !resetBtn) return;
+
+    const CURRENCIES: Record<string, { symbol: string; locale: string }> = {
+      USD: { symbol: '$', locale: 'en-US' },
+      EUR: { symbol: '€', locale: 'de-DE' },
+      GBP: { symbol: '£', locale: 'en-GB' },
+      INR: { symbol: '₹', locale: 'en-IN' },
+      JPY: { symbol: '¥', locale: 'ja-JP' },
+      AUD: { symbol: 'A$', locale: 'en-AU' },
+      CAD: { symbol: 'C$', locale: 'en-CA' },
+      CHF: { symbol: 'CHF', locale: 'de-CH' },
+      CNY: { symbol: '¥', locale: 'zh-CN' },
+      SGD: { symbol: 'S$', locale: 'en-SG' }
+    };
+
+    const getSelectedCurrency = () => currencySelect.value || 'USD';
+
+    const formatCurrency = (val: number) => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      return new Intl.NumberFormat(config.locale, {
+        style: 'currency',
+        currency: curr,
+        maximumFractionDigits: 0
+      }).format(val);
+    };
+
+    const updateCurrencyLabels = () => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      root.querySelectorAll('.currency-symbol').forEach((el) => {
+        el.textContent = config.symbol;
+      });
+    };
+
+    const handleModeSwitch = () => {
+      const mode = modeSelect.value;
+      
+      panelFlat.classList.add('hidden');
+      panelTiered.classList.add('hidden');
+      panelDraw.classList.add('hidden');
+
+      if (mode === 'flat') panelFlat.classList.remove('hidden');
+      if (mode === 'tiered') panelTiered.classList.remove('hidden');
+      if (mode === 'draw') panelDraw.classList.remove('hidden');
+
+      calculateResults();
+    };
+
+    const setupSync = (input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) => {
+      const syncInput = () => {
+        let val = parseFloat(input.value);
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+        if (isNaN(val)) val = min;
+        if (val < min) val = min;
+        if (val > max) val = max;
+        slider.value = String(val);
+        callback();
+      };
+      const syncSlider = () => {
+        input.value = slider.value;
+        callback();
+      };
+      input.addEventListener('change', syncInput);
+      slider.addEventListener('input', syncSlider);
+    };
+
+    setupSync(flatSales, flatSalesSlider, calculateResults);
+    setupSync(tieredSales, tieredSalesSlider, calculateResults);
+
+    function calculateResults() {
+      const mode = modeSelect.value;
+
+      if (mode === 'flat') {
+        ratioBarWrapper.style.display = 'block';
+        if (tableWrapper) tableWrapper.style.display = 'none';
+        if (drawFeedback) drawFeedback.classList.add('hidden');
+        if (commBreakdownTitle) commBreakdownTitle.textContent = 'Pay Mix Breakdown';
+
+        const sales = parseFloat(flatSales.value) || 0;
+        const rate = parseFloat(flatRate.value) || 0;
+        const basePay = parseFloat(flatBasePay.value) || 0;
+
+        const commissionEarned = sales * (rate / 100);
+        const grossEarnings = commissionEarned + basePay;
+
+        if (resLabelPrimary) resLabelPrimary.textContent = 'Total Gross Earnings';
+        if (resValPrimary) resValPrimary.textContent = formatCurrency(grossEarnings);
+        if (resLabelSecondary) resLabelSecondary.textContent = 'Commission Component';
+        if (resValSecondary) resValSecondary.textContent = formatCurrency(commissionEarned);
+        if (resLabelTertiary) resLabelTertiary.textContent = 'Base Salary Component';
+        if (resValTertiary) resValTertiary.textContent = formatCurrency(basePay);
+
+        // Update ratio segments
+        const basePct = grossEarnings > 0 ? (basePay / grossEarnings) * 100 : 100;
+        const commPct = grossEarnings > 0 ? (commissionEarned / grossEarnings) * 100 : 0;
+
+        if (ratioBarBase) ratioBarBase.style.width = `${basePct}%`;
+        if (ratioBarComm) ratioBarComm.style.width = `${commPct}%`;
+        if (legendBasePct) legendBasePct.textContent = `${Math.round(basePct)}%`;
+        if (legendCommPct) legendCommPct.textContent = `${Math.round(commPct)}%`;
+
+      } else if (mode === 'tiered') {
+        ratioBarWrapper.style.display = 'none';
+        if (tableWrapper) tableWrapper.style.display = 'block';
+        if (drawFeedback) drawFeedback.classList.add('hidden');
+        if (commBreakdownTitle) commBreakdownTitle.textContent = 'Graduated Tiers Commission';
+
+        const sales = parseFloat(tieredSales.value) || 0;
+        const type = tieredType.value;
+        const cap1 = parseFloat(tier1Cap.value) || 0;
+        const rate1 = parseFloat(tier1Rate.value) || 0;
+        const cap2 = parseFloat(tier2Cap.value) || 0;
+        const rate2 = parseFloat(tier2Rate.value) || 0;
+        const rate3 = parseFloat(tier3Rate.value) || 0;
+
+        let totalCommission = 0;
+        let tierHtml = '';
+
+        if (type === 'cumulative') {
+          // Cumulative Tiers
+          let remainingSales = sales;
+
+          // Tier 1 calculation
+          const salesInTier1 = Math.min(remainingSales, cap1);
+          const comm1 = salesInTier1 * (rate1 / 100);
+          totalCommission += comm1;
+          remainingSales = Math.max(0, remainingSales - cap1);
+          tierHtml += `<tr><td>$0 - ${formatCurrency(cap1)}</td><td>${formatCurrency(salesInTier1)}</td><td>${rate1}%</td><td>${formatCurrency(comm1)}</td></tr>`;
+
+          // Tier 2 calculation
+          const tier2Size = cap2 - cap1;
+          const salesInTier2 = Math.min(remainingSales, tier2Size);
+          const comm2 = salesInTier2 * (rate2 / 100);
+          totalCommission += comm2;
+          remainingSales = Math.max(0, remainingSales - tier2Size);
+          tierHtml += `<tr><td>${formatCurrency(cap1)} - ${formatCurrency(cap2)}</td><td>${formatCurrency(salesInTier2)}</td><td>${rate2}%</td><td>${formatCurrency(comm2)}</td></tr>`;
+
+          // Tier 3 calculation
+          const salesInTier3 = remainingSales;
+          const comm3 = salesInTier3 * (rate3 / 100);
+          totalCommission += comm3;
+          tierHtml += `<tr><td>Above ${formatCurrency(cap2)}</td><td>${formatCurrency(salesInTier3)}</td><td>${rate3}%</td><td>${formatCurrency(comm3)}</td></tr>`;
+
+        } else {
+          // Flat-Rate Shift (highest rating applies to all sales)
+          let finalRate = rate1;
+          let tierName = 'Tier 1';
+          if (sales > cap2) {
+            finalRate = rate3;
+            tierName = 'Tier 3';
+          } else if (sales > cap1) {
+            finalRate = rate2;
+            tierName = 'Tier 2';
+          }
+
+          totalCommission = sales * (finalRate / 100);
+          tierHtml = `
+            <tr>
+              <td>All Sales (${tierName})</td>
+              <td>${formatCurrency(sales)}</td>
+              <td>${finalRate}%</td>
+              <td>${formatCurrency(totalCommission)}</td>
+            </tr>
+          `;
+        }
+
+        if (tableBody) tableBody.innerHTML = tierHtml;
+
+        if (resLabelPrimary) resLabelPrimary.textContent = 'Total Commission';
+        if (resValPrimary) resValPrimary.textContent = formatCurrency(totalCommission);
+        if (resLabelSecondary) resLabelSecondary.textContent = 'Total Sales Volume';
+        if (resValSecondary) resValSecondary.textContent = formatCurrency(sales);
+        if (resLabelTertiary) resLabelTertiary.textContent = 'Blended Rate';
+        const blended = sales > 0 ? (totalCommission / sales) * 100 : 0;
+        if (resValTertiary) resValTertiary.textContent = `${blended.toFixed(2)}%`;
+
+      } else if (mode === 'draw') {
+        ratioBarWrapper.style.display = 'none';
+        if (tableWrapper) tableWrapper.style.display = 'none';
+        if (drawFeedback) drawFeedback.classList.remove('hidden');
+        if (commBreakdownTitle) commBreakdownTitle.textContent = 'Draw Payout Reconciliation';
+
+        const earned = parseFloat(drawComm.value) || 0;
+        const draw = parseFloat(drawAmount.value) || 0;
+        const type = drawType.value;
+
+        let netPay = 0;
+        let drawDebt = 0;
+
+        if (earned >= draw) {
+          // Commission exceeds advance draw. Repay the draw and pay remaining
+          netPay = earned; // They get paid total commission, which covers the draw advance
+          drawDebt = 0;
+          if (drawFeedback) {
+            drawFeedback.innerHTML = `
+              <strong>Commissions covered the draw advance!</strong> You earned ${formatCurrency(earned)} which fully cleared your advance draw of ${formatCurrency(draw)}. 
+              Your final gross payout is <strong>${formatCurrency(netPay)}</strong>. You have <strong>$0</strong> draw debt.
+            `;
+          }
+        } else {
+          // Commission is less than advance draw
+          if (type === 'recoverable') {
+            netPay = draw; // You are guaranteed the draw advance
+            drawDebt = draw - earned; // You owe the difference back
+            if (drawFeedback) {
+              drawFeedback.innerHTML = `
+                <strong>Commissions fell short of recoverable draw advance.</strong> You are paid the draw floor of ${formatCurrency(draw)} but you owe a remaining 
+                <span class="text-danger" style="font-weight:700;">${formatCurrency(drawDebt)}</span> which will be carried forward as debt to be recovered from next month's commissions.
+              `;
+            }
+          } else {
+            netPay = draw; // You get the draw
+            drawDebt = 0; // Company absorbs the loss
+            if (drawFeedback) {
+              drawFeedback.innerHTML = `
+                <strong>Commissions fell short of non-recoverable draw advance.</strong> You are paid the draw floor of ${formatCurrency(draw)}. 
+                Since the draw is non-recoverable, the company absorbs the unearned gap of ${formatCurrency(draw - earned)} and you carry forward <strong>$0</strong> draw debt.
+              `;
+            }
+          }
+        }
+
+        if (resLabelPrimary) resLabelPrimary.textContent = 'Net Payout Received';
+        if (resValPrimary) resValPrimary.textContent = formatCurrency(netPay);
+        if (resLabelSecondary) resLabelSecondary.textContent = 'Commissions Earned';
+        if (resValSecondary) resValSecondary.textContent = formatCurrency(earned);
+        if (resLabelTertiary) resLabelTertiary.textContent = 'Unearned Draw Debt';
+        if (resValTertiary) resValTertiary.textContent = formatCurrency(drawDebt);
+      }
+    }
+
+    // Event listeners
+    modeSelect.addEventListener('change', handleModeSwitch);
+    currencySelect.addEventListener('change', () => {
+      updateCurrencyLabels();
+      calculateResults();
+    });
+
+    flatRate.addEventListener('input', calculateResults);
+    flatBasePay.addEventListener('input', calculateResults);
+    flatBasePeriod.addEventListener('change', calculateResults);
+
+    tieredType.addEventListener('change', calculateResults);
+    tier1Cap.addEventListener('input', calculateResults);
+    tier1Rate.addEventListener('input', calculateResults);
+    tier2Cap.addEventListener('input', calculateResults);
+    tier2Rate.addEventListener('input', calculateResults);
+    tier3Rate.addEventListener('input', calculateResults);
+
+    drawComm.addEventListener('input', calculateResults);
+    drawAmount.addEventListener('input', calculateResults);
+    drawType.addEventListener('change', calculateResults);
+
+    // Reset listener
+    resetBtn.addEventListener('click', () => {
+      flatSales.value = '50000';
+      flatSalesSlider.value = '50000';
+      flatRate.value = '5';
+      flatBasePay.value = '3000';
+      flatBasePeriod.value = 'monthly';
+
+      tieredSales.value = '75000';
+      tieredSalesSlider.value = '75000';
+      tieredType.value = 'cumulative';
+      tier1Cap.value = '10000';
+      tier1Rate.value = '3';
+      tier2Cap.value = '50000';
+      tier2Rate.value = '5';
+      tier3Rate.value = '8';
+
+      drawComm.value = '4500';
+      drawAmount.value = '3000';
+      drawType.value = 'recoverable';
+
+      calculateResults();
+    });
+
+    // Copy listener
+    window.addEventListener('copy-calculator-results', () => {
+      const resultsText = `
+FinCalcLab.com - Sales Commission Calculator Results:
+----------------------------------------------
+Mode: ${modeSelect.value.toUpperCase()}
+Total Gross Payout: ${resValPrimary?.textContent || ''}
+Commission Component: ${resValSecondary?.textContent || ''}
+Base/Draw Component: ${resValTertiary?.textContent || ''}
+----------------------------------------------
+Calculate more at https://fincalclab.com
+      `.trim();
+
+      navigator.clipboard.writeText(resultsText).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Initial setup
+    updateCurrencyLabels();
+    handleModeSwitch();
+  }
+
+  document.addEventListener('DOMContentLoaded', initCommissionCalculator);
+  document.addEventListener('astro:after-swap', initCommissionCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  /* Layout grids */
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .calc-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .calc-panel.hidden {
+    display: none !important;
+  }
+
+  .sub-section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-1);
+  }
+
+  /* Results styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .results-inner-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .result-highlight-box {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .highlight-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .highlight-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .tile-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  /* Pay Mix ratio bar styling */
+  .pay-ratio-bar-wrapper {
+    margin-top: var(--space-2);
+  }
+
+  .pay-ratio-bar {
+    width: 100%;
+    height: 16px;
+    background-color: var(--color-border);
+    border-radius: var(--radius-full);
+    display: flex;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .ratio-segment {
+    height: 100%;
+    transition: width var(--transition-fast);
+  }
+
+  .base-segment {
+    background-color: var(--color-primary);
+  }
+
+  .commission-segment {
+    background-color: var(--color-accent);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    margin-right: 6px;
+  }
+
+  .draw-debt-box {
+    background-color: var(--color-bg-base);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-accent);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .draw-debt-box.hidden {
+    display: none !important;
+  }
+
+  /* Table styling */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .data-table th, .data-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .data-table th {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Mobile responsive overrides */
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .data-table {
+      min-width: 480px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

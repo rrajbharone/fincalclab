@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+---
+
+<Layout
+  title="Terms of Service - FinCalcLab"
+  description="Read our Terms of Service. FinCalcLab provides free financial planning tools for educational and general informational purposes."
+>
+  <div class="static-page-wrapper">
+    <div class="container" style="max-width: 800px;">
+      <div class="text-center" style="margin-bottom: var(--space-8);">
+        <Badge variant="neutral">Legal</Badge>
+        <h1 style="margin-top: var(--space-2); font-size: 2.5rem; letter-spacing: -0.04em;">Terms of Service</h1>
+        <p style="font-size: 1.15rem; color: var(--color-text-muted);">Effective Date: July 5, 2026. General terms of use for our financial tools.</p>
+      </div>
+
+      <Card elevation="sm" style="padding: var(--space-8); border-color: var(--color-border);">
+        <div class="article-content">
+          <p>
+            By accessing and using <strong>FinCalcLab.com</strong>, you agree to comply with and be bound by the following Terms of Service. If you do not agree, please do not use our site.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">1. Educational Purposes Only</h2>
+          <p>
+            All calculations, projections, charts, and articles provided on FinCalcLab.com are intended for **informational and educational purposes only**. They do not constitute formal investment, tax, legal, or financial advice.
+          </p>
+          <p>
+            Financial markets carry inherent risks, and tax regulations vary by jurisdiction. You should consult a licensed financial advisor or registered tax professional before making major money decisions.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">2. Accuracy of Calculations</h2>
+          <p>
+            While we strive to ensure that all financial formulas and tax slab updates (e.g. India Budget 2025) are accurate and bug-free, we make no representations or warranties regarding the absolute precision of maturity values, compound metrics, or tax liabilities.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">3. Acceptable Use & Intellectual Property</h2>
+          <p>
+            You agree to use this site for personal, non-commercial purposes. You may not scrape, copy, modify, republish, or hotlink our calculator source code, styling assets, blog articles, or layout structures without direct written permission.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">4. Limitation of Liability</h2>
+          <p>
+            In no event shall FinCalcLab.com or its creators be held liable for any direct, indirect, incidental, or consequential damages (including financial losses, missed tax benefits, or investment dips) resulting from the use or inability to use our tools.
+          </p>
+
+          <h2 style="font-size: 1.5rem; margin-top: var(--space-6); margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-1);">5. Modifications & Governing Law</h2>
+          <p>
+            We reserve the right to modify these terms at any time. Your continued use of the website following any changes indicates your acceptance of the updated terms. These terms are governed by standard internet usage policies and laws applicable in the jurisdiction of the website operators.
+          </p>
+        </div>
+      </Card>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .static-page-wrapper {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .article-content p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+  }
+</style>

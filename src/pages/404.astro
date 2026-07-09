@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/ui/Card.astro';
+import Button from '../components/ui/Button.astro';
+import Badge from '../components/ui/Badge.astro';
+
+const popularCalculators = [
+  { name: 'SIP vs Lumpsum', path: '/calculator/lumpsum-vs-sip-calculator', desc: 'Compare side-by-side growth of monthly vs. lump sum investments.' },
+  { name: 'In-Hand Salary Calculator', path: '/calculator/in-hand-salary-calculator', desc: 'Estimate net monthly take-home salary and tax liabilities.' },
+  { name: 'Salary Increase Calculator', path: '/calculator/salary-increase-calculator', desc: 'Factor raise percentages against inflation and compare job offers.' },
+  { name: 'Retirement Gap Calculator', path: '/calculator/retirement-gap-calculator', desc: 'Find savings shortfalls and project retirement depletion curves.' }
+];
+---
+
+<Layout
+  title="Page Not Found (404) - FinCalcLab"
+  description="The page you are looking for does not exist. Return home or search our library of financial planning calculators."
+>
+  <div class="error-page-wrapper">
+    <div class="container" style="max-width: 680px;">
+      
+      <!-- Styled Error Card -->
+      <Card elevation="md" style="padding: var(--space-8) var(--space-6); text-align: center; border-top: 4px solid var(--color-primary); background-color: var(--color-bg-surface);">
+        <Badge variant="outline" style="color: var(--color-text-muted);">Error 404</Badge>
+        
+        <h1 class="error-title" style="font-size: 3rem; font-weight: 800; letter-spacing: -0.05em; margin-top: var(--space-3); margin-bottom: var(--space-2); color: var(--color-text-base);">
+          Lost in the Math?
+        </h1>
+        
+        <p style="font-size: 1.1rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: var(--space-6); max-width: 500px; margin-left: auto; margin-right: auto;">
+          The page you are looking for doesn't exist, was moved, or has an incorrect URL. Let's get you back on track.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div style="display: flex; gap: var(--space-3); justify-content: center; margin-bottom: var(--space-8); flex-wrap: wrap;">
+          <Button href="/" variant="primary">
+            Go to Homepage
+          </Button>
+          <Button href="/all-calculators" variant="outline">
+            Browse All Calculators
+          </Button>
+        </div>
+
+        <!-- Popular Tools Selection List -->
+        <div class="tools-suggestions-block" style="text-align: left; border-top: 1px solid var(--color-border); padding-top: var(--space-6);">
+          <h4 style="font-size: 0.95rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light); letter-spacing: 0.05em; margin-bottom: var(--space-4);">
+            Popular Financial Calculators
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            {popularCalculators.map(calc => (
+              <a href={calc.path} class="suggestion-item-link" style="display: block; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); transition: all var(--transition-fast); background: var(--color-bg-base); text-decoration: none;">
+                <div style="font-weight: 700; color: var(--color-text-base); font-size: 0.95rem; display: flex; align-items: center; gap: var(--space-1);">
+                  {calc.name}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-primary);"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 2px;">{calc.desc}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .error-page-wrapper {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .suggestion-item-link:hover {
+    border-color: var(--color-primary) !important;
+    background: var(--color-bg-surface-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+</style>

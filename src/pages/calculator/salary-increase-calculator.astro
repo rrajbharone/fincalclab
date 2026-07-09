@@ -1,0 +1,118 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalaryIncreaseCalculator from '../../components/calculator/SalaryIncreaseCalculator.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+import Card from '../../components/ui/Card.astro';
+
+const faqs = [
+  {
+    question: "How do I calculate my salary increase percentage?",
+    answer: "To calculate your salary increase percentage, subtract your old salary from your new salary to find the raise amount. Divide that raise amount by your old salary, then multiply by 100. Formula: ((New Salary - Old Salary) / Old Salary) * 100."
+  },
+  {
+    question: "What is the difference between a nominal raise and a real raise?",
+    answer: "A nominal raise is the absolute dollar or percentage increase in your salary (e.g., a 5% increase). A real raise accounts for the rate of inflation. If you receive a 5% nominal raise but inflation is at 4%, your real raise is only about 1% in terms of actual purchasing power."
+  },
+  {
+    question: "How do I convert an hourly wage increase to an annual salary raise?",
+    answer: "To convert an hourly raise to an annual salary raise, multiply the hourly raise rate by the number of hours you work per week, then multiply by 52 (the weeks in a year). For example, a $2.50 per hour raise at a standard 40-hour work week is worth $5,200 annually ($2.50 * 40 * 52)."
+  },
+  {
+    question: "What should I factor in when comparing two job offers?",
+    answer: "Do not look at base salary alone. You must factor in: 1) Annual bonuses or sales commissions, 2) Employer retirement contributions or match rates, 3) Out-of-pocket health insurance premiums, 4) Annual commute expenses (parking, gas, public transit), and 5) Differences in weekly working hours."
+  }
+];
+---
+
+<Layout
+  title="Salary Increase Calculator | Total Compensation & Real Raise tool"
+  description="Calculate your pay raises, estimate after-tax pay increases, and compare job offer packages side-by-side using our premium salary increase calculator."
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Calculators', item: '/all-calculators' },
+    { name: 'Salary Increase Calculator', item: '/calculator/salary-increase-calculator' }
+  ]}
+  faqs={faqs}
+>
+  <SalaryIncreaseCalculator />
+
+  <!-- Content & Editorial Section -->
+  <div class="calculator-extra-seo-content container" style="max-width: 1040px; margin-top: var(--space-8);">
+    <!-- Prominent Blog Cross-Link Callout -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-6);">
+        <p style="margin: 0; font-size: 1rem; line-height: 1.6; color: var(--color-text-base);">
+          <strong>Real-World Guide:</strong> Read our comprehensive breakdown on <a href="/blog/how-to-calculate-salary-increase" style="font-weight: 700; color: var(--color-primary); text-decoration: underline; transition: color var(--transition-fast);">The Math Behind Your Next Paycheck: How to Calculate Your True Salary Increase</a> to discover negotiation tips, case studies, and how to value fringe benefits.
+        </p>
+      </Card>
+    </div>
+
+    <section class="seo-section">
+      <h2>The True Value of a Raise: Nominal vs. Real Salary Growth</h2>
+      <p>
+        Receiving a job offer or learning that you are getting a raise is an exciting career milestone. However, evaluating that adjustment requires looking beyond the raw dollar amount. In today's economy, understanding <strong>how to calculate salary increase</strong> values requires analyzing your purchasing power, tax brackets, and the true cost of employee benefits.
+      </p>
+      <p>
+        Too many professionals fall into the trap of accepting a promotion or a new job offer based solely on the base salary figure. This guide breaks down the mathematical equations behind salary hikes, details why inflation can secretly dissolve your hard-earned raise, and provides a framework to compare job offers using total compensation modeling.
+      </p>
+
+      <div class="formula-box-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6); margin: var(--space-6) 0;">
+        <Card elevation="sm" class="formula-card" style="padding: var(--space-5);">
+          <h3>The Nominal Increase Formula</h3>
+          <p>This is the standard formula to determine the basic percentage hike in your salary:</p>
+          <div class="formula-math" style="font-size: 1.2rem; font-weight: 700; text-align: center; margin: var(--space-4) 0; color: var(--color-primary);" set:html={`\\[\\text{Hike \\%} = \\frac{\\text{New Salary} - \\text{Old Salary}}{\\text{Old Salary}} \\times 100\\]`} />
+          <p class="formula-example" style="font-size: 0.85rem; color: var(--color-text-muted);">
+            If your salary rises from $70,000 to $74,200, subtract $70,000 from $74,200 to get a $4,200 increase. Divide $4,200 by $70,000 to get 0.06. Multiply by 100 for a <strong>6.0% salary increment</strong>.
+          </p>
+        </Card>
+
+        <Card elevation="sm" class="formula-card" style="padding: var(--space-5);">
+          <h3>The Real (Inflation-Adjusted) Increase Formula</h3>
+          <p>To determine if your raise actually boosts your standard of living, you must factor in inflation:</p>
+          <div class="formula-math" style="font-size: 1.2rem; font-weight: 700; text-align: center; margin: var(--space-4) 0; color: var(--color-accent);" set:html={`\\[\\text{Real New Salary} = \\frac{\\text{New Salary}}{1 + \\frac{\\text{Inflation Rate}}{100}}\\]`} />
+          <p class="formula-example" style="font-size: 0.85rem; color: var(--color-text-muted);">
+            If you get a 5% raise to $73,500 but inflation is 4%, the real value of your new salary in old dollars is $73,500 / 1.04 = $70,673. Your <strong>real raise is only $673 (0.96%)</strong>!
+          </p>
+        </Card>
+      </div>
+
+      <h2>How to Calculate Salary Increase from Hourly to Annual Rates</h2>
+      <p>
+        If your pay rate changes from an hourly wage to an annual salary, or vice versa, standardizing the comparison is key. To perform a standard conversion, we assume a traditional 40-hour work week and 52 weeks in a calendar year (totaling 2,080 working hours).
+      </p>
+      <ul>
+        <li><strong>Hourly to Annual:</strong> Multiply the hourly rate by 2,080. For example, a wage of $35.00 per hour equates to a gross annual salary of $72,800 ($35.00 * 40 * 52).</li>
+        <li><strong>Annual to Hourly:</strong> Divide the annual salary by 2,080. A salary of $90,000 equates to an hourly rate of approximately $43.27.</li>
+      </ul>
+      <p>
+        Using our <strong>salary increase calculator</strong>, you can swap between pay frequencies instantly. This prevents calculation errors when comparing an hourly contract role with a salaried corporate position.
+      </p>
+
+      <h2>Total Compensation: Evaluating Beyond the Base Pay</h2>
+      <p>
+        When you negotiate a raise or compare a new job offer with your current job, base salary is only one line item in a complex financial equation. To evaluate a package professionally, you must calculate the **Total Compensation Value**.
+      </p>
+      <h3>Fringe Benefits That Boost Total Value</h3>
+      <ol>
+        <li><strong>Retirement Match:</strong> A company matching 4% of your salary on a 401(k) or pension plan is offering direct cash. For an $80,000 salary, this adds $3,200 in annual value.</li>
+        <li><strong>Health Insurance Premiums:</strong> If Job A charges $100/month for premiums and Job B charges $300/month for the same coverage, Job A saves you $2,400 in post-tax money every year.</li>
+        <li><strong>Bonuses & Commissions:</strong> Calculate the historical average payout rate of performance bonuses to determine their expected value.</li>
+      </ol>
+
+      <h3>Hidden Costs That Subtract Value</h3>
+      <ol>
+        <li><strong>Commute Expenses:</strong> Driving 30 miles daily or buying train passes adds gas, maintenance, and ticket costs. A heavy commute can easily cost $2,000 to $5,000 per year out of pocket.</li>
+        <li><strong>Work Hours:</strong> A salary of $80,000 at a firm requiring 45 hours per week pays less per hour than an $80,000 salary at a firm with a strict 37.5-hour week.</li>
+      </ol>
+
+      <h2>Frequently Asked Questions</h2>
+      <div style="margin-top: var(--space-4); display: flex; flex-direction: column; gap: var(--space-4);">
+        {faqs.map(faq => (
+          <Accordion title={faq.question}>
+            <p style="margin: 0; line-height: 1.6; color: var(--color-text-muted);">{faq.answer}</p>
+          </Accordion>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>

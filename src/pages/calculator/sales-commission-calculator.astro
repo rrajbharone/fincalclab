@@ -1,0 +1,218 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalesCommissionCalculator from '../../components/calculator/SalesCommissionCalculator.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+import Card from '../../components/ui/Card.astro';
+
+const faqs = [
+  {
+    question: "What is the difference between cumulative and flat-rate shift tiered commission?",
+    answer: "In a cumulative tiered structure, commissions are calculated incrementally: sales within Tier 1 are paid at the Tier 1 rate, sales within Tier 2 are paid at the Tier 2 rate, and only sales above the second cap are paid at the Tier 3 rate. In a flat-rate shift model, hitting a higher tier triggers the higher rate for the entire sales volume retroactively."
+  },
+  {
+    question: "How does a draw against commission work?",
+    answer: "A draw is an advance payment paid to a sales representative to guarantee income during slow periods. When commissions are earned, they are first used to repay the draw advance. If earned commissions exceed the draw, the rep gets the commissions. If they fall short, the payout depends on whether the draw is recoverable or non-recoverable."
+  },
+  {
+    question: "What is a recoverable draw?",
+    answer: "A recoverable draw is an advance that must be repaid. If your commission falls short of the draw advance, the company still pays you the draw floor, but the deficit becomes a debt (unearned draw balance) carried forward to next month's commission cycle."
+  },
+  {
+    question: "What is a non-recoverable draw?",
+    answer: "A non-recoverable draw is an advance where any shortfall is absorbed by the company. If your commission earnings are less than the draw amount, you keep the full draw advance and carry forward zero debt."
+  }
+];
+---
+
+<Layout
+  title="Sales Commission Calculator | Tiered & Draw Pay Calculator"
+  description="Calculate sales commission earnings across flat rate, tiered (graduated) structures, or draw advance programs. Includes an 800-word compensation guide."
+  breadcrumbs={[
+    { name: 'Home', item: '/' },
+    { name: 'Calculators', item: '/all-calculators' },
+    { name: 'Sales Commission Calculator', item: '/calculator/sales-commission-calculator' }
+  ]}
+  faqs={faqs}
+>
+  <SalesCommissionCalculator />
+
+  <!-- Educational Explanations Section (800+ Words Guide) -->
+  <div class="calculator-extra-seo-content container" style="max-width: 1040px; margin-top: var(--space-8);">
+    <section class="seo-section">
+      <h2>A Comprehensive Guide to Sales Commission Calculations</h2>
+      <p>
+        Sales compensation structures are designed to align sales representative behaviors with company revenue targets. A well-designed commission structure rewards top performers, establishes a reliable income baseline, and incentivizes sales velocity. 
+      </p>
+      <p>
+        Whether you are a Sales Representative calculating your monthly paycheck, a Sales Operations Manager designing a new commission plan, or a business owner budgeting compensation, understanding the mechanics of different commission structures is essential. This guide breaks down the core calculations for flat rate commissions, graduated/tiered structures, and draws against commission.
+      </p>
+    </section>
+
+    <section class="seo-section">
+      <h2>1. Flat Rate Commission & Salary Mix</h2>
+      <p>
+        The flat rate commission structure is the simplest and most common compensation model. In this structure, the sales representative receives a fixed percentage of all closed-won sales volume. There are no threshold caps, accelerators, or tier shifts.
+      </p>
+      <p>
+        Many organizations combine a flat rate commission with a base salary to offer stability. The ratio between the base salary and variable commission is called the <strong>Pay Mix</strong> (e.g., a 60/40 mix means 60% of total compensation is base salary, and 40% is variable commission).
+      </p>
+      
+      <div class="formula-box-grid">
+        <Card elevation="sm" class="formula-card">
+          <h3>The Flat Rate Formula</h3>
+          <div class="formula-math" set:html={`\\[\\text{Commission} = \\text{Total Sales Volume} \\times \\frac{\\text{Commission Rate \\%}}{100}\\]`} />
+          <div class="formula-math" style="margin-top:var(--space-2);" set:html={`\\[\\text{Total Earnings} = \\text{Commission} + \\text{Base Salary}\\]`} />
+          <p class="formula-example" style="margin-top:var(--space-4);">
+            <strong>Example Calculation:</strong> If you close $80,000 in sales volume and have a flat commission rate of 6%, your commission is $4,800 ($80,000 * 0.06). If your monthly base salary is $3,000, your total monthly gross earnings are $7,800 ($4,800 + $3,000).
+          </p>
+        </Card>
+      </div>
+    </section>
+
+    <section class="seo-section">
+      <h2>2. Tiered (Graduated) Commission Structures</h2>
+      <p>
+        To incentivize representatives to exceed their quotas, companies often utilize tiered or graduated commission structures. In this model, the commission percentage increases as the representative reaches higher sales volume thresholds (tiers). 
+      </p>
+      <p>
+        There are two primary methods for calculating tiered commissions: **Cumulative Tiers** and **Flat-Rate Shift (Accelerators)**.
+      </p>
+
+      <h3>Cumulative Tiers (Incremental Calculation)</h3>
+      <p>
+        In a cumulative model, the sales volume is split across different thresholds, and each portion is multiplied by its corresponding tier rate.
+      </p>
+      <p>
+        Suppose a company sets the following tiers:
+        <ul>
+          <li><strong>Tier 1:</strong> $0 to $10,000 at 3% commission</li>
+          <li><strong>Tier 2:</strong> $10,001 to $50,000 at 5% commission</li>
+          <li><strong>Tier 3:</strong> Above $50,000 at 8% commission</li>
+        </ul>
+        If a representative achieves $75,000 in total sales, their commission is calculated incrementally:
+        <ol>
+          <li><strong>Tier 1 Commission:</strong> $10,000 × 3% = $300</li>
+          <li><strong>Tier 2 Commission:</strong> ($50,000 - $10,000) × 5% = $40,000 × 5% = $2,000</li>
+          <li><strong>Tier 3 Commission:</strong> ($75,000 - $50,000) × 8% = $25,000 × 8% = $2,000</li>
+          <li><strong>Total Commission:</strong> $300 + $2,000 + $2,000 = **$4,300**</li>
+        </ol>
+      </p>
+
+      <h3>Flat-Rate Shift (Accelerator Shift)</h3>
+      <p>
+        In a flat-rate shift model, hitting a higher tier triggers the new, higher rate for the **entire** sales volume. 
+      </p>
+      <p>
+        Using the same tiers from the example above, if a representative closes $75,000 in sales, they surpass the Tier 2 threshold of $50,000. Under the flat-rate shift model, their entire sales volume is multiplied by the Tier 3 rate of 8%:
+      </p>
+      <div class="formula-math" set:html={`\\[\\text{Total Commission} = \\$75,000 \\times 8\\% = \\$6,000\\]`} />
+      <p>
+        This model offers a massive incentive to cross thresholds, but it can create high commission payouts for small volume increases near the border of a tier.
+      </p>
+    </section>
+
+    <section class="seo-section">
+      <h2>3. Understanding Draws Against Commission</h2>
+      <p>
+        In industries with long sales cycles (such as real estate or enterprise SaaS software), reps may go months without closing a deal. To ensure reps have a baseline cash flow to cover living expenses, companies use a **draw against commission** structure.
+      </p>
+      <p>
+        A draw is an advance on future commission earnings. When commissions are eventually earned, the advance draw must be repaid to the company. Payout reconciliation differs depending on the draw type:
+      </p>
+      <ul>
+        <li>
+          <strong>Recoverable Draw:</strong> The advance draw is treated as a loan. If your earned commission is less than the draw advance, you receive the full draw, but the deficit carries forward as a debt. For example, if you receive a $3,000 monthly draw but only earn $2,000 in commission, you carry a $1,000 draw debt that will be deducted from your future commission checks.
+        </li>
+        <li>
+          <strong>Non-Recoverable Draw:</strong> The advance draw acts as a guaranteed salary floor. If your commissions fall below the draw floor, you receive the draw amount, and the unearned gap is permanently absorbed by the company. You carry forward zero debt.
+        </li>
+      </ul>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="seo-section" style="margin-top: var(--space-8);">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion-group">
+        {faqs.map((faq) => (
+          <Accordion title={faq.question}>
+            <p style="margin:0;">{faq.answer}</p>
+          </Accordion>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .calculator-extra-seo-content {
+    margin-bottom: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .seo-section h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-4);
+  }
+
+  .seo-section h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+
+  .seo-section p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .seo-section ul, .seo-section ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .seo-section li {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .formula-box-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+  }
+
+  .formula-card {
+    padding: var(--space-6);
+  }
+
+  .formula-math {
+    background-color: var(--color-bg-base);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-4);
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+  }
+
+  .formula-example {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 0 !important;
+  }
+</style>

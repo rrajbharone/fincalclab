@@ -1,0 +1,836 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+---
+
+<CalculatorLayout
+  title="Kids' Pocket Money Compounder"
+  description="Discover the magic of compound interest! See how saving a small pocket money allowance and investing it can compound into massive future wealth."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="kids-calc">
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="kids-currency-select">Currency</label>
+        <select id="kids-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="CNY">CNY (¥) - Chinese Yuan</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="kids-allowance-input">Allowance Amount</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="kids-allowance-input" min="1" max="1000" value="10" aria-label="Allowance amount" />
+        </div>
+      </div>
+      <input type="range" id="kids-allowance-slider" min="1" max="500" step="1" value="10" class="slider-range" aria-label="Allowance amount slider" />
+      
+      <!-- Frequency Selector -->
+      <div class="frequency-toggle-wrapper">
+        <span class="frequency-label">Paid:</span>
+        <div class="freq-options">
+          <label class="freq-radio">
+            <input type="radio" name="kids-frequency" value="weekly" checked />
+            <span class="freq-btn">Weekly</span>
+          </label>
+          <label class="freq-radio">
+            <input type="radio" name="kids-frequency" value="monthly" />
+            <span class="freq-btn">Monthly</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="kids-increase-input">Annual Increase ("Raise")</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="kids-increase-input" min="0" max="25" step="0.5" value="5" aria-label="Annual allowance increase percentage" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="kids-increase-slider" min="0" max="25" step="0.5" value="5" class="slider-range" aria-label="Annual increase slider" />
+      <div class="slider-ticks">
+        <span>0%</span>
+        <span>12.5%</span>
+        <span>25%</span>
+      </div>
+    </div>
+
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="kids-rate-input">Savings Interest Rate</label>
+          <div class="input-symbol-wrapper percent-wrapper">
+            <input type="number" id="kids-rate-input" min="1" max="20" step="0.1" value="8" aria-label="Interest rate percentage" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="kids-rate-slider" min="1" max="20" step="0.5" value="8" class="slider-range" aria-label="Interest rate slider" />
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="kids-period-input">Number of Years</label>
+          <div class="input-symbol-wrapper years-wrapper">
+            <input type="number" id="kids-period-input" min="1" max="25" value="10" aria-label="Compounding period in years" />
+            <span class="years-symbol">Yr</span>
+          </div>
+        </div>
+        <input type="range" id="kids-period-slider" min="1" max="25" step="1" value="10" class="slider-range" aria-label="Years slider" />
+      </div>
+    </div>
+
+    <div class="inputs-actions">
+      <Button id="kids-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Magic Growth Projections</h3>
+
+    <div class="comparison-cards-grid">
+      <!-- Total Saved Column -->
+      <div class="comparison-card lumpsum-res-card">
+        <div class="comp-card-header">
+          <span class="indicator-dot lumpsum-dot" style="background-color: var(--color-text-light);"></span>
+          <h4>Total Allowance Paid</h4>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Base Paid</span>
+          <span class="metric-val" id="kids-base-paid">$0</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Raise Increases</span>
+          <span class="metric-val" id="kids-raise-add">$0</span>
+        </div>
+        <div class="metric-row divider">
+          <span class="metric-label font-bold">Sum of Allowance</span>
+          <span class="metric-val font-bold" id="kids-total-invested" style="color: var(--color-text-muted);">$0</span>
+        </div>
+      </div>
+
+      <!-- Compounded Future Value Column -->
+      <div class="comparison-card sip-res-card">
+        <div class="comp-card-header">
+          <span class="indicator-dot sip-dot" style="background-color: var(--color-accent);"></span>
+          <h4>Compounded Savings</h4>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Sum of Allowance</span>
+          <span class="metric-val" id="kids-contrib-match">$0</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Interest Earned</span>
+          <span class="metric-val text-success" id="kids-interest-gained">$0</span>
+        </div>
+        <div class="metric-row divider">
+          <span class="metric-label font-bold">Future Account Value</span>
+          <span class="metric-val font-bold text-accent" id="kids-future-value">$0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational Callout -->
+    <div class="recommendation-box" style="background-color: rgba(20, 184, 166, 0.05); border-color: rgba(20, 184, 166, 0.2);">
+      <div class="box-icon" style="color: var(--color-accent);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      </div>
+      <p id="kids-educational-msg" class="box-text">Calculating details...</p>
+    </div>
+
+    <!-- SVG Graph -->
+    <div class="chart-wrapper">
+      <h4 class="chart-title">Compounding Growth Curve</h4>
+      <div class="chart-container">
+        <svg id="kids-growth-svg" viewBox="0 0 500 280" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <!-- Gridlines -->
+          <g id="kids-chart-gridlines"></g>
+          <!-- Paths -->
+          <path id="kids-path-invested" fill="none" stroke="var(--color-text-light)" stroke-dasharray="4,4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path id="kids-path-value" fill="none" stroke="var(--color-accent)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-dot" style="background-color: var(--color-text-light);"></span>
+          <span>Allowance Paid (No Compound)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background-color: var(--color-accent);"></span>
+          <span>Compounded Balance</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initKidsCalculator() {
+    const root = document.getElementById('kids-calc');
+    if (!root) return;
+
+    // Grab elements
+    const allowanceInput = root.querySelector('#kids-allowance-input') as HTMLInputElement;
+    const allowanceSlider = root.querySelector('#kids-allowance-slider') as HTMLInputElement;
+    const increaseInput = root.querySelector('#kids-increase-input') as HTMLInputElement;
+    const increaseSlider = root.querySelector('#kids-increase-slider') as HTMLInputElement;
+    const rateInput = root.querySelector('#kids-rate-input') as HTMLInputElement;
+    const rateSlider = root.querySelector('#kids-rate-slider') as HTMLInputElement;
+    const periodInput = root.querySelector('#kids-period-input') as HTMLInputElement;
+    const periodSlider = root.querySelector('#kids-period-slider') as HTMLInputElement;
+    const resetBtn = root.querySelector('#kids-reset');
+    const currencySelect = root.querySelector('#kids-currency-select') as HTMLSelectElement;
+
+    if (!allowanceInput || !allowanceSlider || !increaseInput || !increaseSlider || !rateInput || !rateSlider || !periodInput || !periodSlider || !currencySelect) return;
+
+    const CURRENCIES: Record<string, { symbol: string; locale: string }> = {
+      USD: { symbol: '$', locale: 'en-US' },
+      EUR: { symbol: '€', locale: 'de-DE' },
+      GBP: { symbol: '£', locale: 'en-GB' },
+      INR: { symbol: '₹', locale: 'en-IN' },
+      JPY: { symbol: '¥', locale: 'ja-JP' },
+      AUD: { symbol: 'A$', locale: 'en-AU' },
+      CAD: { symbol: 'C$', locale: 'en-CA' },
+      CHF: { symbol: 'CHF', locale: 'de-CH' },
+      CNY: { symbol: '¥', locale: 'zh-CN' },
+      SGD: { symbol: 'S$', locale: 'en-SG' }
+    };
+
+    const getSelectedCurrency = () => {
+      return currencySelect ? currencySelect.value : 'USD';
+    };
+
+    const formatCurrency = (val: number) => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      return new Intl.NumberFormat(config.locale, {
+        style: 'currency',
+        currency: curr,
+        maximumFractionDigits: 0
+      }).format(val);
+    };
+
+    const updateCurrencyLabels = () => {
+      const curr = getSelectedCurrency();
+      const config = CURRENCIES[curr] || CURRENCIES.USD;
+      root.querySelectorAll('.currency-symbol').forEach((el) => {
+        el.textContent = config.symbol;
+      });
+    };
+
+    currencySelect.addEventListener('change', () => {
+      updateCurrencyLabels();
+      calculateResults();
+    });
+
+    const getFrequency = () => {
+      const radio = root.querySelector('input[name="kids-frequency"]:checked') as HTMLInputElement;
+      return radio ? radio.value : 'weekly';
+    };
+
+    const calculateResults = () => {
+      const baseAllowance = parseFloat(allowanceInput.value) || 0;
+      const annualIncrease = parseFloat(increaseInput.value) || 0;
+      const interestRate = parseFloat(rateInput.value) || 0;
+      const years = parseInt(periodInput.value) || 0;
+      const frequency = getFrequency();
+
+      const periodsPerYear = frequency === 'weekly' ? 52 : 12;
+      const totalPeriods = years * periodsPerYear;
+      const ratePerPeriod = (interestRate / 100) / periodsPerYear;
+
+      let totalInvested = 0;
+      let totalValue = 0;
+      let currentAllowance = baseAllowance;
+
+      // Track yearly values for chart and statistics
+      const yearlyInvested: number[] = [0];
+      const yearlyValue: number[] = [0];
+
+      // Base paid without increase
+      const basePaidOnly = baseAllowance * totalPeriods;
+
+      for (let period = 1; period <= totalPeriods; period++) {
+        // At the start of each year (starting year 2), increase allowance
+        if (period > 1 && (period - 1) % periodsPerYear === 0) {
+          currentAllowance = currentAllowance * (1 + (annualIncrease / 100));
+        }
+
+        totalInvested += currentAllowance;
+        // Compound interest (ordinary annuity standard / adding at start of period compounding)
+        totalValue = (totalValue + currentAllowance) * (1 + ratePerPeriod);
+
+        // Record year-end checkpoints
+        if (period % periodsPerYear === 0) {
+          yearlyInvested.push(totalInvested);
+          yearlyValue.push(totalValue);
+        }
+      }
+
+      const raiseAdd = Math.max(0, totalInvested - basePaidOnly);
+      const interestGained = Math.max(0, totalValue - totalInvested);
+
+      // Update Projections DOM
+      const basePaidEl = document.getElementById('kids-base-paid');
+      const raiseAddEl = document.getElementById('kids-raise-add');
+      const totalInvestedEl = document.getElementById('kids-total-invested');
+      
+      const matchEl = document.getElementById('kids-contrib-match');
+      const interestEl = document.getElementById('kids-interest-gained');
+      const futureValEl = document.getElementById('kids-future-value');
+
+      const educationalEl = document.getElementById('kids-educational-msg');
+
+      if (basePaidEl) basePaidEl.textContent = formatCurrency(basePaidOnly);
+      if (raiseAddEl) raiseAddEl.textContent = formatCurrency(raiseAdd);
+      if (totalInvestedEl) totalInvestedEl.textContent = formatCurrency(totalInvested);
+      
+      if (matchEl) matchEl.textContent = formatCurrency(totalInvested);
+      if (interestEl) interestEl.textContent = formatCurrency(interestGained);
+      if (futureValEl) futureValEl.textContent = formatCurrency(totalValue);
+
+      if (educationalEl) {
+        educationalEl.innerHTML = `
+          <strong>The power of starting early!</strong> By saving ${formatCurrency(baseAllowance)} a ${frequency === 'weekly' ? 'week' : 'month'} 
+          and compounding it at ${interestRate}%, you turn a total allowance of <strong>${formatCurrency(totalInvested)}</strong> 
+          into a future savings account of <strong>${formatCurrency(totalValue)}</strong> in ${years} years. 
+          That means compound interest paid you <strong>${formatCurrency(interestGained)}</strong> in free growth money!
+        `;
+      }
+
+      // Draw SVG Chart
+      drawChart(yearlyInvested, yearlyValue, years);
+    };
+
+    const drawChart = (investedData: number[], valueData: number[], years: number) => {
+      const chartSvg = document.getElementById('kids-growth-svg') as unknown as SVGSVGElement;
+      if (!chartSvg) return;
+
+      const width = 500;
+      const height = 280;
+      const paddingLeft = 60;
+      const paddingRight = 20;
+      const paddingTop = 20;
+      const paddingBottom = 40;
+
+      const chartWidth = width - paddingLeft - paddingRight;
+      const chartHeight = height - paddingTop - paddingBottom;
+
+      const maxVal = Math.max(valueData[valueData.length - 1] || 1000, 100);
+
+      const getX = (yr: number) => paddingLeft + (yr / years) * chartWidth;
+      const getY = (val: number) => paddingTop + chartHeight - (val / maxVal) * chartHeight;
+
+      // Draw paths
+      let investedD = `M ${getX(0)} ${getY(investedData[0])}`;
+      let valueD = `M ${getX(0)} ${getY(valueData[0])}`;
+
+      for (let i = 1; i <= years; i++) {
+        investedD += ` L ${getX(i)} ${getY(investedData[i])}`;
+        valueD += ` L ${getX(i)} ${getY(valueData[i])}`;
+      }
+
+      const pathInv = document.getElementById('kids-path-invested');
+      const pathVal = document.getElementById('kids-path-value');
+      if (pathInv) pathInv.setAttribute('d', investedD);
+      if (pathVal) pathVal.setAttribute('d', valueD);
+
+      // Gridlines & labels
+      const gridlinesContainer = document.getElementById('kids-chart-gridlines');
+      if (gridlinesContainer) {
+        let gridHtml = '';
+        
+        // Y Axis Horizontal lines
+        const yAxisTicks = 4;
+        for (let i = 0; i <= yAxisTicks; i++) {
+          const val = (maxVal / yAxisTicks) * i;
+          const y = getY(val);
+          
+          const curr = getSelectedCurrency();
+          const config = CURRENCIES[curr] || CURRENCIES.USD;
+          let label = '';
+          if (val >= 1000000) {
+            label = `${config.symbol}${(val / 1000000).toFixed(1)}M`;
+          } else if (val >= 1000) {
+            label = `${config.symbol}${(val / 1000).toFixed(0)}k`;
+          } else {
+            label = `${config.symbol}${val.toFixed(0)}`;
+          }
+
+          gridHtml += `
+            <line x1="${paddingLeft}" y1="${y}" x2="${width - paddingRight}" y2="${y}" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="4,4" />
+            <text x="${paddingLeft - 10}" y="${y + 4}" font-size="10" font-family="var(--font-sans)" font-weight="500" fill="var(--color-text-light)" text-anchor="end">${label}</text>
+          `;
+        }
+
+        // X Axis Vertical lines
+        const xAxisTicks = Math.min(years, 5);
+        for (let i = 0; i <= xAxisTicks; i++) {
+          const tickYr = Math.round((years / xAxisTicks) * i);
+          const x = getX(tickYr);
+          gridHtml += `
+            <line x1="${x}" y1="${paddingTop}" x2="${x}" y2="${height - paddingBottom}" stroke="var(--color-border)" stroke-width="1" stroke-dasharray="4,4" />
+            <text x="${x}" y="${height - paddingBottom + 18}" font-size="10" font-family="var(--font-sans)" font-weight="500" fill="var(--color-text-light)" text-anchor="middle">Yr ${tickYr}</text>
+          `;
+        }
+
+        gridlinesContainer.innerHTML = gridHtml;
+      }
+    };
+
+    // Synchronize sliders
+    const setupSync = (input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) => {
+      const updateFromInput = () => {
+        let val = parseFloat(input.value);
+        const min = parseFloat(input.min);
+        const max = parseFloat(input.max);
+        
+        if (isNaN(val)) val = min;
+        if (val < min) val = min;
+        if (val > max) val = max;
+
+        slider.value = String(val);
+        callback();
+      };
+
+      const updateFromSlider = () => {
+        input.value = slider.value;
+        callback();
+      };
+
+      input.addEventListener('change', updateFromInput);
+      slider.addEventListener('input', updateFromSlider);
+    };
+
+    setupSync(allowanceInput, allowanceSlider, calculateResults);
+    setupSync(increaseInput, increaseSlider, calculateResults);
+    setupSync(rateInput, rateSlider, calculateResults);
+    setupSync(periodInput, periodSlider, calculateResults);
+
+    // Listen for frequency changes
+    const freqRadios = root.querySelectorAll('input[name="kids-frequency"]');
+    freqRadios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        // Adjust default boundaries depending on selection to keep it user-friendly
+        const frequency = getFrequency();
+        if (frequency === 'weekly') {
+          allowanceInput.max = '500';
+          allowanceSlider.max = '500';
+          if (parseFloat(allowanceInput.value) > 500) {
+            allowanceInput.value = '500';
+            allowanceSlider.value = '500';
+          }
+        } else {
+          allowanceInput.max = '2000';
+          allowanceSlider.max = '2000';
+        }
+        calculateResults();
+      });
+    });
+
+    // Reset button
+    resetBtn?.addEventListener('click', () => {
+      allowanceInput.value = '10';
+      allowanceSlider.value = '10';
+      increaseInput.value = '5';
+      increaseSlider.value = '5';
+      rateInput.value = '8';
+      rateSlider.value = '8';
+      periodInput.value = '10';
+      periodSlider.value = '10';
+      const weeklyRadio = root.querySelector('input[name="kids-frequency"][value="weekly"]') as HTMLInputElement;
+      if (weeklyRadio) weeklyRadio.checked = true;
+      calculateResults();
+    });
+
+    // Results Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      const freq = getFrequency();
+      const resultsText = `
+FinCalcLab.com - Kids' Pocket Money Compounder Projections:
+-------------------------------------------------------
+Frequency: Paid ${freq === 'weekly' ? 'Weekly' : 'Monthly'}
+Base Allowance: ${formatCurrency(parseFloat(allowanceInput.value))}
+Annual Raise: ${increaseInput.value}%
+Compounding tenure: ${periodInput.value} Years
+Interest Rate: ${rateInput.value}%
+
+1. Cumulative Allowance Paid:
+- Base Sum: ${document.getElementById('kids-base-paid')?.textContent || ''}
+- Raise Increases: ${document.getElementById('kids-raise-add')?.textContent || ''}
+- Total Paid: ${document.getElementById('kids-total-invested')?.textContent || ''}
+
+2. Compounded Value Projections:
+- Compound Balance: ${document.getElementById('kids-future-value')?.textContent || ''}
+- Compound Gain: ${document.getElementById('kids-interest-gained')?.textContent || ''}
+
+Summary:
+${document.getElementById('kids-educational-msg')?.textContent?.trim() || ''}
+-------------------------------------------------------
+Compound more at https://fincalclab.com
+      `.trim();
+
+      navigator.clipboard.writeText(resultsText).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    calculateResults();
+  }
+
+  document.addEventListener('DOMContentLoaded', initKidsCalculator);
+  document.addEventListener('astro:after-swap', initKidsCalculator);
+</script>
+
+<style>
+  /* Frequency Toggles Custom CSS UI */
+  .frequency-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .frequency-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+  }
+
+  .freq-options {
+    display: flex;
+    background-color: var(--color-bg-base);
+    padding: 2px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .freq-radio {
+    cursor: pointer;
+  }
+
+  .freq-radio input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .freq-btn {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .freq-radio input:checked + .freq-btn {
+    background-color: var(--color-bg-surface);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Rest of layout reused from general components */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 130px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input, .years-wrapper input {
+    text-align: left;
+  }
+  .percent-symbol, .years-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform var(--transition-fast), background var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: var(--color-primary-hover);
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    font-weight: 500;
+  }
+
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .inputs-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    border: none;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .comparison-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .comparison-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+  }
+
+  .comp-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .comp-card-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .indicator-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .lumpsum-dot { background-color: var(--color-primary); }
+  .sip-dot { background-color: var(--color-accent); }
+
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: var(--space-1) 0;
+  }
+
+  .metric-label {
+    color: var(--color-text-light);
+    font-weight: 500;
+  }
+
+  .metric-val {
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .metric-row.divider {
+    border-top: 1px dashed var(--color-border);
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+  }
+
+  .text-success { color: var(--color-success) !important; }
+  .text-primary { color: var(--color-primary) !important; }
+  .text-accent { color: var(--color-accent) !important; }
+  .font-bold { font-weight: 800; font-size: 0.95rem; }
+
+  .recommendation-box {
+    display: flex;
+    gap: var(--space-3);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    border: 1px solid transparent;
+  }
+
+  .box-icon {
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .box-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .chart-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+  }
+
+  .chart-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 200px;
+    position: relative;
+  }
+
+  .chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-6);
+    margin-top: var(--space-2);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  @media (max-width: 480px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+    .comparison-cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

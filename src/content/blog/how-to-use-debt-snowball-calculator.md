@@ -3,6 +3,7 @@ title: "The Psychological Hack That Saved Me: Why I Chose the Debt Snowball Over
 description: "A first-person journey of paying off $35,000 in credit cards and student loans, comparing the Debt Snowball and Debt Avalanche, and building a debt-free plan."
 pubDate: 2026-07-09
 category: "Personal Finance"
+image: "/assets/blog/debt-snowball-calculator-guide.webp"
 author: "FinCalcLab Research Team"
 ---
 

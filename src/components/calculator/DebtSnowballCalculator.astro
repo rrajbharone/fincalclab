@@ -245,41 +245,53 @@ import Card from '../ui/Card.astro';
       userDebts.forEach((debt, index) => {
         const row = document.createElement('div');
         row.className = 'debt-row';
-        row.style.display = 'grid';
-        row.style.gridTemplateColumns = '2fr 1.5fr 1.2fr 1.5fr auto';
-        row.style.gap = 'var(--space-2)';
-        row.style.alignItems = 'center';
-        row.style.padding = 'var(--space-3)';
+        row.style.display = 'flex';
+        row.style.flexDirection = 'column';
+        row.style.gap = 'var(--space-3)';
+        row.style.padding = 'var(--space-4)';
         row.style.border = '1px solid var(--color-border)';
         row.style.borderRadius = 'var(--radius-md)';
         row.style.background = 'var(--color-bg-surface)';
 
         row.innerHTML = `
-          <div>
-            <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:2px;">Name</label>
-            <input type="text" class="debt-name-input currency-select" value="${debt.name}" style="height:32px; padding:0 6px; width:100%; border-radius:var(--radius-sm); border:1px solid var(--color-border);" />
-          </div>
-          <div>
-            <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:2px;">Balance</label>
-            <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-sm); height:32px; background:var(--color-bg-base); padding:0 6px;">
-              <span class="currency-symbol" style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-right:4px;">${currentSymbol}</span>
-              <input type="number" class="debt-balance-input" value="${debt.balance}" style="border:none; background:transparent; width:100%; text-align:right; font-weight:700; outline:none;" />
+          <!-- Top row: Name & Delete -->
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-3);">
+            <div style="flex:1;">
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Debt Name</label>
+              <input type="text" class="debt-name-input currency-select" value="${debt.name}" style="height:38px; padding:0 12px; width:100%; border-radius:var(--radius-md); border:1px solid var(--color-border);" />
+            </div>
+            <div style="display:flex; flex-direction:column; justify-content:flex-end;">
+              <span style="font-size:0.75rem; font-weight:700; visibility:hidden; margin-bottom:4px;">Delete</span>
+              <button class="debt-delete-btn" style="height:38px; width:38px; border-radius:var(--radius-md); border:1px solid var(--color-border); background:var(--color-bg-base); color:var(--color-danger, #ef4444); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all var(--transition-fast);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
             </div>
           </div>
-          <div>
-            <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:2px;">Rate (%)</label>
-            <input type="number" class="debt-rate-input currency-select" value="${debt.rate}" step="0.1" style="height:32px; padding:0 6px; width:100%; border-radius:var(--radius-sm); border:1px solid var(--color-border); text-align:right; font-weight:700;" />
-          </div>
-          <div>
-            <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:2px;">Min Pay</label>
-            <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-sm); height:32px; background:var(--color-bg-base); padding:0 6px;">
-              <span class="currency-symbol" style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-right:4px;">${currentSymbol}</span>
-              <input type="number" class="debt-min-input" value="${debt.min}" style="border:none; background:transparent; width:100%; text-align:right; font-weight:700; outline:none;" />
+
+          <!-- Bottom row: Balance, Rate, Min Payment -->
+          <div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--space-3);">
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Balance</label>
+              <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-md); height:38px; background:var(--color-bg-base); padding:0 10px;">
+                <span class="currency-symbol" style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-right:4px;">${currentSymbol}</span>
+                <input type="number" class="debt-balance-input" value="${debt.balance}" style="border:none; background:transparent; width:100%; text-align:right; font-weight:700; outline:none; font-family:var(--font-sans);" />
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Rate (%)</label>
+              <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-md); height:38px; background:var(--color-bg-base); padding:0 10px;">
+                <input type="number" class="debt-rate-input" value="${debt.rate}" step="0.1" style="border:none; background:transparent; width:100%; text-align:left; font-weight:700; outline:none; font-family:var(--font-sans);" />
+                <span style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-left:4px;">%</span>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Min Pay</label>
+              <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-md); height:38px; background:var(--color-bg-base); padding:0 10px;">
+                <span class="currency-symbol" style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-right:4px;">${currentSymbol}</span>
+                <input type="number" class="debt-min-input" value="${debt.min}" style="border:none; background:transparent; width:100%; text-align:right; font-weight:700; outline:none; font-family:var(--font-sans);" />
+              </div>
             </div>
           </div>
-          <button class="debt-delete-btn" style="height:32px; width:32px; border-radius:var(--radius-sm); border:1px solid var(--color-border); background:var(--color-bg-base); color:var(--color-danger, #ef4444); display:flex; align-items:center; justify-content:center; cursor:pointer; margin-top:16px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          </button>
         `;
 
         // Bind input update listeners
@@ -388,7 +400,7 @@ import Card from '../ui/Card.astro';
       if (chartWrapper && simulation.schedule.length > 0) {
         const wrapperWidth = chartWrapper.clientWidth || 360;
         const wrapperHeight = 180;
-        const maxBalance = totalOwedInitial;
+        const maxBalance = Math.max(totalOwedInitial, ...simulation.schedule.map(pt => pt.balance), 1);
 
         const points = simulation.schedule.map((pt, idx) => {
           const x = (pt.month / snowballMonths) * wrapperWidth;
@@ -397,7 +409,7 @@ import Card from '../ui/Card.astro';
         }).join(' ');
 
         chartWrapper.innerHTML = `
-          <svg width="100%" height="100%" viewBox="0 0 ${wrapperWidth} ${wrapperHeight}" preserveAspectRatio="none" style="overflow: visible;">
+          <svg width="100%" height="100%" viewBox="0 0 ${wrapperWidth} ${wrapperHeight}" preserveAspectRatio="none" style="overflow: hidden;">
             <defs>
               <linearGradient id="debt-grad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.25"/>

@@ -15,3 +15,5 @@ These are the permanent rules for the fincalclab.com project.
 11. **Minimal JavaScript**: Keep JavaScript minimal.
 12. **Production-Ready**: Always deliver production-ready code.
 13. **Verification**: Test every page for desktop, tablet, and mobile before marking it complete.
+14. **No Raw Markdown Bold inside HTML**: Never use raw markdown bold syntax (`**`) inside `.astro` files (either in static HTML paragraphs/lists/elements, or inside Javascript strings injected via `.innerHTML`). Always use proper `<strong>` and `</strong>` tags.
+15. **Responsive Results/Metrics Grid**: Results grids showing key numbers must wrap responsively on mobile screens (e.g., using CSS media queries to wrap columns or stack tiles) to prevent large numbers from overlapping or spilling outside card borders.

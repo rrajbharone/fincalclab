@@ -117,20 +117,20 @@ import Card from '../ui/Card.astro';
     </div>
 
     <!-- Key Metrics Grid -->
-    <div class="results-grid" style="margin-bottom: var(--space-6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3);">
-      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
-        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Net Price</span>
-        <div class="tile-value" id="tile-net" style="font-size: 1.15rem; font-weight: 700; color: var(--color-success);">$500.00</div>
+    <div class="results-grid">
+      <div class="result-tile">
+        <span class="tile-label">Net Price</span>
+        <div class="tile-value" id="tile-net" style="color: var(--color-success);">$500.00</div>
       </div>
 
-      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
-        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Tax Amount</span>
-        <div class="tile-value" id="tile-tax" style="font-size: 1.15rem; font-weight: 700; color: var(--color-warning);">$100.00</div>
+      <div class="result-tile">
+        <span class="tile-label">Tax Amount</span>
+        <div class="tile-value" id="tile-tax" style="color: var(--color-warning);">$100.00</div>
       </div>
 
-      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
-        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Gross Total</span>
-        <div class="tile-value" id="tile-gross" style="font-size: 1.15rem; font-weight: 700; color: var(--color-accent);">$600.00</div>
+      <div class="result-tile">
+        <span class="tile-label">Gross Total</span>
+        <div class="tile-value" id="tile-gross" style="color: var(--color-accent);">$600.00</div>
       </div>
     </div>
 
@@ -384,9 +384,9 @@ import Card from '../ui/Card.astro';
 
       if (resVerdict) {
         if (mode === 'rate') {
-          resVerdict.innerHTML = `At a pre-tax cost of **${formatCurrency(netPrice)}** and total cost of **${formatCurrency(grossPrice)}**, the tax paid is **${formatCurrency(taxAmount)}** (an effective tax rate of **${taxRate.toFixed(2)}%**).`;
+          resVerdict.innerHTML = `At a pre-tax cost of <strong>${formatCurrency(netPrice)}</strong> and total cost of <strong>${formatCurrency(grossPrice)}</strong>, the tax paid is <strong>${formatCurrency(taxAmount)}</strong> (an effective tax rate of <strong>${taxRate.toFixed(2)}%</strong>).`;
         } else {
-          resVerdict.innerHTML = `From a gross total of **${formatCurrency(grossPrice)}**, the pre-tax net cost is **${formatCurrency(netPrice)}** and the tax component represents **${formatCurrency(taxAmount)}** (${taxRate.toFixed(2)}% tax).`;
+          resVerdict.innerHTML = `From a gross total of <strong>${formatCurrency(grossPrice)}</strong>, the pre-tax net cost is <strong>${formatCurrency(netPrice)}</strong> and the tax component represents <strong>${formatCurrency(taxAmount)}</strong> (${taxRate.toFixed(2)}% tax).`;
         }
       }
 
@@ -627,6 +627,52 @@ import Card from '../ui/Card.astro';
 
   .results-table tr:last-child td {
     border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-width: 500px) {

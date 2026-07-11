@@ -53,7 +53,7 @@ const breadcrumbs = [
           A common mistake is attempting to extract tax by multiplying the total gross price by the tax rate. For example, if an item costs $120 tax-inclusive and the sales tax rate is 20%, multiplying $120 by 0.20 yields $24 in tax. 
         </p>
         <p>
-          This is incorrect. The tax rate is applied to the **pre-tax net price**, not the gross total. The correct formula to calculate the net pre-tax price is:
+          This is incorrect. The tax rate is applied to the <strong>pre-tax net price</strong>, not the gross total. The correct formula to calculate the net pre-tax price is:
         </p>
         <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
           {"\\(\\text{Net Price} = \\frac{\\text{Gross Price}}{1 + \\frac{\\text{Tax Rate \\%}}{100}}\\)"}
@@ -105,35 +105,35 @@ const breadcrumbs = [
           <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
             <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">1. How do I extract 20% VAT from a price? (Is it just multiplying by 0.80?)</summary>
             <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
-              No! Multiplying by 0.80 is a common mistake that calculates a **20% discount**, not a 20% tax extraction. To extract 20% VAT, you must divide the gross price by **1.20** (or `1 + 0.20`). For example, extracting 20% VAT from a $120 item yields a net price of $100 ($120 / 1.20) and a tax amount of $20. Multiplying by 0.80 would incorrectly yield $96 and $24 in tax.
+              No! Multiplying by 0.80 is a common mistake that calculates a <strong>20% discount</strong>, not a 20% tax extraction. To extract 20% VAT, you must divide the gross price by <strong>1.20</strong> (or `1 + 0.20`). For example, extracting 20% VAT from a $120 item yields a net price of $100 ($120 / 1.20) and a tax amount of $20. Multiplying by 0.80 would incorrectly yield $96 and $24 in tax.
             </p>
           </details>
 
           <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
             <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">2. Why does my accountant's reverse tax calculation differ by a few cents from my math?</summary>
             <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
-              This is usually caused by **fractional rounding**. If you run reverse tax calculations on a line-item level (calculating tax on each item separately and then summing them) vs. invoice-level (calculating tax on the subtotal), the rounding of half-cents can lead to small discrepancies. Standard accounting rules usually round half-cents up to the nearest whole cent at the line-item level.
+              This is usually caused by <strong>fractional rounding</strong>. If you run reverse tax calculations on a line-item level (calculating tax on each item separately and then summing them) vs. invoice-level (calculating tax on the subtotal), the rounding of half-cents can lead to small discrepancies. Standard accounting rules usually round half-cents up to the nearest whole cent at the line-item level.
             </p>
           </details>
 
           <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
             <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">3. How do I calculate a pre-tax invoice price from a GST-inclusive total?</summary>
             <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
-              To extract GST backwards, divide the total inclusive price by `1 + (GST Rate / 100)`. For example, under Australia's 10% GST, divide the total price by **1.10**. If the invoice total is $330, the pre-tax price is $300 ($330 / 1.10) and the GST collected is $30. Under India's standard 18% GST tier, divide the inclusive subtotal by **1.18**.
+              To extract GST backwards, divide the total inclusive price by `1 + (GST Rate / 100)`. For example, under Australia's 10% GST, divide the total price by <strong>1.10</strong>. If the invoice total is $330, the pre-tax price is $300 ($330 / 1.10) and the GST collected is $30. Under India's standard 18% GST tier, divide the inclusive subtotal by <strong>1.18</strong>.
             </p>
           </details>
 
           <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
             <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">4. Is sales tax calculated before or after coupon discounts are applied?</summary>
             <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
-              In most jurisdictions, sales tax is calculated on the **final discounted selling price** (the net price paid by the consumer). However, if the coupon is a manufacturer's rebate (where the store is reimbursed by the manufacturer), tax may still be calculated on the original full retail price.
+              In most jurisdictions, sales tax is calculated on the <strong>final discounted selling price</strong> (the net price paid by the consumer). However, if the coupon is a manufacturer's rebate (where the store is reimbursed by the manufacturer), tax may still be calculated on the original full retail price.
             </p>
           </details>
 
           <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
             <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">5. Can business owners write off sales tax/VAT paid on business purchases?</summary>
             <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
-              Yes, in VAT and GST systems, business owners can claim **Input Tax Credits (ITC)** for the tax paid on business inputs (purchases, software, materials). This tax amount is subtracted directly from the output tax (tax collected from clients) before sending the net balance to the government. This is why extracting tax from receipts is critical for corporate bookkeeping.
+              Yes, in VAT and GST systems, business owners can claim <strong>Input Tax Credits (ITC)</strong> for the tax paid on business inputs (purchases, software, materials). This tax amount is subtracted directly from the output tax (tax collected from clients) before sending the net balance to the government. This is why extracting tax from receipts is critical for corporate bookkeeping.
             </p>
           </details>
         </div>

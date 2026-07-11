@@ -410,13 +410,13 @@ import Card from '../ui/Card.astro';
       if (cardBanner && resVerdict) {
         if (roas < breakEvenRoas) {
           cardBanner.style.borderLeftColor = 'var(--color-danger, #ef4444)';
-          resVerdict.innerHTML = `Your campaign is **losing money**. Your current ROAS is **${roas.toFixed(2)}x**, which is below your break-even threshold of **${breakEvenRoas.toFixed(2)}x** due to your product costs.`;
+          resVerdict.innerHTML = `Your campaign is <strong>losing money</strong>. Your current ROAS is <strong>${roas.toFixed(2)}x</strong>, which is below your break-even threshold of <strong>${breakEvenRoas.toFixed(2)}x</strong> due to your product costs.`;
         } else if (roas === breakEvenRoas) {
           cardBanner.style.borderLeftColor = 'var(--color-warning, #f59e0b)';
-          resVerdict.innerHTML = `Your campaign is at **break-even**. You are covering both your advertising costs and product COGS, but generating no net profit.`;
+          resVerdict.innerHTML = `Your campaign is at <strong>break-even</strong>. You are covering both your advertising costs and product COGS, but generating no net profit.`;
         } else {
           cardBanner.style.borderLeftColor = 'var(--color-success)';
-          resVerdict.innerHTML = `Your campaign is **profitable**. For every $1.00 spent on advertising, you generate **${formatCurrency(roas)}** in revenue, leaving you with **${formatCurrency(netProfit)}** in net profit.`;
+          resVerdict.innerHTML = `Your campaign is <strong>profitable</strong>. For every $1.00 spent on advertising, you generate <strong>${formatCurrency(roas)}</strong> in revenue, leaving you with <strong>${formatCurrency(netProfit)}</strong> in net profit.`;
         }
       }
 

@@ -114,20 +114,20 @@ import Card from '../ui/Card.astro';
     </div>
 
     <!-- Key Metrics Grid -->
-    <div class="results-grid" style="margin-bottom: var(--space-6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3);">
-      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
-        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Final Price</span>
-        <div class="tile-value" id="tile-final" style="font-size: 1.15rem; font-weight: 700; color: var(--color-success);">$90.00</div>
+    <div class="results-grid">
+      <div class="result-tile">
+        <span class="tile-label">Final Price</span>
+        <div class="tile-value" id="tile-final" style="color: var(--color-success);">$90.00</div>
       </div>
 
-      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
-        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">You Save</span>
-        <div class="tile-value" id="tile-save" style="font-size: 1.15rem; font-weight: 700; color: var(--color-primary);">$30.00</div>
+      <div class="result-tile">
+        <span class="tile-label">You Save</span>
+        <div class="tile-value" id="tile-save" style="color: var(--color-primary);">$30.00</div>
       </div>
 
-      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
-        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Off</span>
-        <div class="tile-value" id="tile-percent" style="font-size: 1.15rem; font-weight: 700; color: var(--color-accent);">25%</div>
+      <div class="result-tile">
+        <span class="tile-label">Total Off</span>
+        <div class="tile-value" id="tile-percent" style="color: var(--color-accent);">25%</div>
       </div>
     </div>
 
@@ -382,9 +382,9 @@ import Card from '../ui/Card.astro';
 
       if (resVerdict) {
         if (mode === 'stacked') {
-          resVerdict.innerHTML = `You pay **${formatCurrency(finalPrice)}** and save a total of **${formatCurrency(savingsAmount)}** (${discountPct.toFixed(1)}% effective off) from the retail cost of **${formatCurrency(origPrice)}** through stacked double coupons.`;
+          resVerdict.innerHTML = `You pay <strong>${formatCurrency(finalPrice)}</strong> and save a total of <strong>${formatCurrency(savingsAmount)}</strong> (${discountPct.toFixed(1)}% effective off) from the retail cost of <strong>${formatCurrency(origPrice)}</strong> through stacked double coupons.`;
         } else {
-          resVerdict.innerHTML = `You pay **${formatCurrency(finalPrice)}** and save a total of **${formatCurrency(savingsAmount)}** (${discountPct.toFixed(1)}% off) from the original price of **${formatCurrency(origPrice)}**.`;
+          resVerdict.innerHTML = `You pay <strong>${formatCurrency(finalPrice)}</strong> and save a total of <strong>${formatCurrency(savingsAmount)}</strong> (${discountPct.toFixed(1)}% off) from the original price of <strong>${formatCurrency(origPrice)}</strong>.`;
         }
       }
 
@@ -608,6 +608,52 @@ import Card from '../ui/Card.astro';
 
   .results-table tr:last-child td {
     border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-width: 500px) {

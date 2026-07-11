@@ -32,7 +32,6 @@ import Button from '../components/ui/Button.astro';
             placeholder="Type to search calculators (e.g., SIP, salary, compound)..." 
             aria-label="Search financial calculators" 
             autocomplete="off"
-            autofocus
           />
         </div>
       </div>
@@ -468,6 +467,17 @@ import Button from '../components/ui/Button.astro';
     width: 100%;
     justify-content: space-between;
     padding: 0;
+  }
+
+  .full-link-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    cursor: pointer;
   }
 
   /* Empty state */

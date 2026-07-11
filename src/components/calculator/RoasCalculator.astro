@@ -1,0 +1,687 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="ROAS Calculator"
+  description="Calculate your Return on Ad Spend (ROAS) and advertising ROI. Estimate break-even ROAS thresholds based on your product margins and project click funnel profitability."
+  category="Salary & Tax"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="roas-calc">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="roas-calc-mode" class="sr-only">Choose Input Mode</label>
+      <select id="roas-calc-mode" class="currency-select" aria-label="Select Input Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="simple" selected>Simple Mode (Direct Ad Spend & Revenue)</option>
+        <option value="funnel">Funnel Mode (CPC, Conversion Rate & AOV)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="roas-currency-select">Currency</label>
+        <select id="roas-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- General: Product Gross Margin (%) -->
+    <div class="input-group" id="group-margin">
+      <div class="input-label-row">
+        <label for="roas-margin">Product Gross Margin</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="roas-margin" min="1" max="100" step="1" value="50" aria-label="Product Gross Margin" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="roas-margin-slider" min="5" max="95" step="1" value="50" class="slider-range" aria-label="Gross Margin Slider" />
+    </div>
+
+    <!-- Mode Simple: Ad Spend -->
+    <div class="input-group" id="group-ad-spend">
+      <div class="input-label-row">
+        <label for="roas-ad-spend">Ad Spend</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="roas-ad-spend" min="1" step="1" value="1000" aria-label="Ad Spend" />
+        </div>
+      </div>
+      <input type="range" id="roas-ad-spend-slider" min="50" max="10000" step="50" value="1000" class="slider-range" aria-label="Ad Spend Slider" />
+    </div>
+
+    <!-- Mode Simple: Revenue -->
+    <div class="input-group" id="group-revenue">
+      <div class="input-label-row">
+        <label for="roas-revenue">Revenue</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="roas-revenue" min="1" step="1" value="3000" aria-label="Revenue" />
+        </div>
+      </div>
+      <input type="range" id="roas-revenue-slider" min="100" max="30000" step="100" value="3000" class="slider-range" aria-label="Revenue Slider" />
+    </div>
+
+    <!-- Mode Funnel: Click Count -->
+    <div class="input-group hidden" id="group-clicks">
+      <div class="input-label-row">
+        <label for="roas-clicks">Clicks</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="roas-clicks" min="1" value="2000" aria-label="Clicks" style="text-align: left;" />
+        </div>
+      </div>
+      <input type="range" id="roas-clicks-slider" min="100" max="50000" step="100" value="2000" class="slider-range" aria-label="Clicks Slider" />
+    </div>
+
+    <!-- Mode Funnel: CPC -->
+    <div class="input-group hidden" id="group-cpc">
+      <div class="input-label-row">
+        <label for="roas-cpc">Cost Per Click (CPC)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="roas-cpc" min="0.05" step="0.05" value="0.50" aria-label="Cost Per Click" />
+        </div>
+      </div>
+      <input type="range" id="roas-cpc-slider" min="0.1" max="10" step="0.1" value="0.50" class="slider-range" aria-label="CPC Slider" />
+    </div>
+
+    <!-- Mode Funnel: Conversion Rate (%) -->
+    <div class="input-group hidden" id="group-conv-rate">
+      <div class="input-label-row">
+        <label for="roas-conv-rate">Conversion Rate</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="roas-conv-rate" min="0.1" max="100" step="0.1" value="2.5" aria-label="Conversion Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="roas-conv-rate-slider" min="0.1" max="15" step="0.1" value="2.5" class="slider-range" aria-label="Conversion Rate Slider" />
+    </div>
+
+    <!-- Mode Funnel: Average Order Value (AOV) -->
+    <div class="input-group hidden" id="group-aov">
+      <div class="input-label-row">
+        <label for="roas-aov">Average Order Value (AOV)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="roas-aov" min="1" step="1" value="60" aria-label="Average Order Value" />
+        </div>
+      </div>
+      <input type="range" id="roas-aov-slider" min="5" max="500" step="5" value="60" class="slider-range" aria-label="AOV Slider" />
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="roas-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">ROAS & Margin Projections</h3>
+
+    <!-- Target ROAS status card -->
+    <div id="results-banner-container" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="roas-banner-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Calculated ROAS</span>
+        <div id="res-roas-val" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px;">3.00x</div>
+        <p id="res-roas-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your campaign is profitable. For every $1.00 spent on advertising, you generate $3.00 in revenue.
+        </p>
+      </Card>
+    </div>
+
+    <div class="results-grid" style="margin-bottom: var(--space-6); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4);">
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Net Profit</span>
+        <div class="tile-value" id="res-profit" style="font-size: 1.25rem; font-weight: 700; color: var(--color-success);">$500</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Campaign ROI</span>
+        <div class="tile-value" id="res-roi" style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);">50%</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Break-Even ROAS</span>
+        <div class="tile-value" id="res-breakeven-roas" style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-base);">2.00x</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Revenue</span>
+        <div class="tile-value" id="res-total-rev" style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">$3,000</div>
+      </div>
+    </div>
+
+    <!-- Comparative Stacked Revenue Breakdown Bar -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Revenue Composition</h4>
+      <div id="roas-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; font-size: 0.72rem; color: var(--color-text-light); margin-top: var(--space-2); padding: 0 4px; text-align: center;">
+        <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-danger, #ef4444);"></span>
+          Ad Spend: <strong id="chart-spend-label">$1,000</strong>
+        </span>
+        <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary);"></span>
+          COGS: <strong id="chart-cogs-label">$1,500</strong>
+        </span>
+        <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-success);"></span>
+          Profit: <strong id="chart-profit-label">$500</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Break-Even Threshold Multiplier Matrix -->
+    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3);">ROAS Profitability Matrix</h4>
+    <div class="table-container" style="overflow-x: auto;">
+      <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+            <th style="padding: var(--space-2) var(--space-3);">ROAS</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Revenue</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Net Profit</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Status</th>
+          </tr>
+        </thead>
+        <tbody id="roas-matrix-body">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initRoasCalculator() {
+    const modeSelect = document.getElementById('roas-calc-mode') as HTMLSelectElement;
+    
+    // Input groups
+    const marginGroup = document.getElementById('group-margin') as HTMLDivElement;
+    const spendGroup = document.getElementById('group-ad-spend') as HTMLDivElement;
+    const revGroup = document.getElementById('group-revenue') as HTMLDivElement;
+    const clicksGroup = document.getElementById('group-clicks') as HTMLDivElement;
+    const cpcGroup = document.getElementById('group-cpc') as HTMLDivElement;
+    const convGroup = document.getElementById('group-conv-rate') as HTMLDivElement;
+    const aovGroup = document.getElementById('group-aov') as HTMLDivElement;
+
+    // Inputs
+    const marginInput = document.getElementById('roas-margin') as HTMLInputElement;
+    const marginSlider = document.getElementById('roas-margin-slider') as HTMLInputElement;
+    const spendInput = document.getElementById('roas-ad-spend') as HTMLInputElement;
+    const spendSlider = document.getElementById('roas-ad-spend-slider') as HTMLInputElement;
+    const revInput = document.getElementById('roas-revenue') as HTMLInputElement;
+    const revSlider = document.getElementById('roas-revenue-slider') as HTMLInputElement;
+    const clicksInput = document.getElementById('roas-clicks') as HTMLInputElement;
+    const clicksSlider = document.getElementById('roas-clicks-slider') as HTMLInputElement;
+    const cpcInput = document.getElementById('roas-cpc') as HTMLInputElement;
+    const cpcSlider = document.getElementById('roas-cpc-slider') as HTMLInputElement;
+    const convInput = document.getElementById('roas-conv-rate') as HTMLInputElement;
+    const convSlider = document.getElementById('roas-conv-rate-slider') as HTMLInputElement;
+    const aovInput = document.getElementById('roas-aov') as HTMLInputElement;
+    const aovSlider = document.getElementById('roas-aov-slider') as HTMLInputElement;
+
+    if (!modeSelect || !marginGroup || !spendGroup || !revGroup || !clicksGroup || !cpcGroup || !convGroup || !aovGroup) return;
+
+    // Mode Toggle script
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      
+      if (mode === 'simple') {
+        spendGroup.classList.remove('hidden');
+        revGroup.classList.remove('hidden');
+        clicksGroup.classList.add('hidden');
+        cpcGroup.classList.add('hidden');
+        convGroup.classList.add('hidden');
+        aovGroup.classList.add('hidden');
+      } else if (mode === 'funnel') {
+        spendGroup.classList.add('hidden');
+        revGroup.classList.add('hidden');
+        clicksGroup.classList.remove('hidden');
+        cpcGroup.classList.remove('hidden');
+        convGroup.classList.remove('hidden');
+        aovGroup.classList.remove('hidden');
+      }
+
+      calculateAll();
+    });
+
+    // Double slider bindings helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(marginInput, marginSlider);
+    bindSlider(spendInput, spendSlider);
+    bindSlider(revInput, revSlider);
+    bindSlider(clicksInput, clicksSlider);
+    bindSlider(cpcInput, cpcSlider);
+    bindSlider(convInput, convSlider);
+    bindSlider(aovInput, aovSlider);
+
+    // Watch all inputs for calculation
+    const allInputs = [marginInput, spendInput, revInput, clicksInput, cpcInput, convInput, aovInput];
+    allInputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('roas-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        marginInput.value = '50';
+        marginSlider.value = '50';
+        spendInput.value = '1000';
+        spendSlider.value = '1000';
+        revInput.value = '3000';
+        revSlider.value = '3000';
+        clicksInput.value = '2000';
+        clicksSlider.value = '2000';
+        cpcInput.value = '0.50';
+        cpcSlider.value = '0.50';
+        convInput.value = '2.5';
+        convSlider.value = '2.5';
+        aovInput.value = '60';
+        aovSlider.value = '60';
+
+        modeSelect.value = 'simple';
+        spendGroup.classList.remove('hidden');
+        revGroup.classList.remove('hidden');
+        clicksGroup.classList.add('hidden');
+        cpcGroup.classList.add('hidden');
+        convGroup.classList.add('hidden');
+        aovGroup.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    // Currency selector
+    const currencySelect = document.getElementById('roas-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      const margin = parseFloat(marginInput.value) || 0;
+      
+      let adSpend = 0;
+      let revenue = 0;
+
+      if (mode === 'simple') {
+        adSpend = parseFloat(spendInput.value) || 0;
+        revenue = parseFloat(revInput.value) || 0;
+      } else if (mode === 'funnel') {
+        const clicks = parseFloat(clicksInput.value) || 0;
+        const cpc = parseFloat(cpcInput.value) || 0;
+        const convRate = parseFloat(convInput.value) || 0;
+        const aov = parseFloat(aovInput.value) || 0;
+
+        adSpend = clicks * cpc;
+        revenue = clicks * (convRate / 100) * aov;
+      }
+
+      const roas = adSpend > 0 ? revenue / adSpend : 0;
+      const cogs = revenue * (1 - margin / 100);
+      const netProfit = revenue - adSpend - cogs;
+      const roi = adSpend > 0 ? (netProfit / adSpend) * 100 : 0;
+      const breakEvenRoas = margin > 0 ? 100 / margin : 0;
+
+      // Update UI elements
+      const resRoasVal = document.getElementById('res-roas-val');
+      const resProfit = document.getElementById('res-profit');
+      const resRoi = document.getElementById('res-roi');
+      const resBreakeven = document.getElementById('res-breakeven-roas');
+      const resTotalRev = document.getElementById('res-total-rev');
+      const resVerdict = document.getElementById('res-roas-verdict');
+      const cardBanner = document.getElementById('roas-banner-card');
+
+      if (resRoasVal) resRoasVal.textContent = `${roas.toFixed(2)}x`;
+      if (resProfit) {
+        resProfit.textContent = formatCurrency(netProfit);
+        if (netProfit < 0) {
+          resProfit.style.color = 'var(--color-danger, #ef4444)';
+        } else {
+          resProfit.style.color = 'var(--color-success)';
+        }
+      }
+      if (resRoi) {
+        resRoi.textContent = `${roi.toFixed(0)}%`;
+        if (roi < 0) {
+          resRoi.style.color = 'var(--color-danger, #ef4444)';
+        } else {
+          resRoi.style.color = 'var(--color-primary)';
+        }
+      }
+      if (resBreakeven) resBreakeven.textContent = `${breakEvenRoas.toFixed(2)}x`;
+      if (resTotalRev) resTotalRev.textContent = formatCurrency(revenue);
+
+      if (cardBanner && resVerdict) {
+        if (roas < breakEvenRoas) {
+          cardBanner.style.borderLeftColor = 'var(--color-danger, #ef4444)';
+          resVerdict.innerHTML = `Your campaign is **losing money**. Your current ROAS is **${roas.toFixed(2)}x**, which is below your break-even threshold of **${breakEvenRoas.toFixed(2)}x** due to your product costs.`;
+        } else if (roas === breakEvenRoas) {
+          cardBanner.style.borderLeftColor = 'var(--color-warning, #f59e0b)';
+          resVerdict.innerHTML = `Your campaign is at **break-even**. You are covering both your advertising costs and product COGS, but generating no net profit.`;
+        } else {
+          cardBanner.style.borderLeftColor = 'var(--color-success)';
+          resVerdict.innerHTML = `Your campaign is **profitable**. For every $1.00 spent on advertising, you generate **${formatCurrency(roas)}** in revenue, leaving you with **${formatCurrency(netProfit)}** in net profit.`;
+        }
+      }
+
+      // Update stacked composition bar
+      const chartBar = document.getElementById('roas-composition-bar');
+      const spendLabel = document.getElementById('chart-spend-label');
+      const cogsLabel = document.getElementById('chart-cogs-label');
+      const profitLabel = document.getElementById('chart-profit-label');
+
+      if (spendLabel) spendLabel.textContent = formatCurrency(adSpend);
+      if (cogsLabel) cogsLabel.textContent = formatCurrency(cogs);
+      if (profitLabel) profitLabel.textContent = formatCurrency(netProfit);
+
+      if (chartBar) {
+        const total = adSpend + cogs + Math.max(0, netProfit);
+        if (total > 0) {
+          const spendPct = (adSpend / total) * 100;
+          const cogsPct = (cogs / total) * 100;
+          const profitPct = (Math.max(0, netProfit) / total) * 100;
+
+          chartBar.innerHTML = `
+            <div style="width: ${spendPct.toFixed(1)}%; height: 100%; background: var(--color-danger, #ef4444); transition: width 0.3s ease;"></div>
+            <div style="width: ${cogsPct.toFixed(1)}%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+            <div style="width: ${profitPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+          `;
+        } else {
+          chartBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+
+      // Populate ROAS multiplier matrix
+      const tableBody = document.getElementById('roas-matrix-body');
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        const matrixTiers = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0];
+
+        matrixTiers.forEach(tierRoas => {
+          const tierRev = adSpend * tierRoas;
+          const tierCogs = tierRev * (1 - margin / 100);
+          const tierProfit = tierRev - adSpend - tierCogs;
+
+          let statusText = '';
+          let statusColor = '';
+
+          if (tierRoas < breakEvenRoas) {
+            statusText = 'Unprofitable';
+            statusColor = 'var(--color-danger, #ef4444)';
+          } else if (tierRoas === breakEvenRoas) {
+            statusText = 'Break-even';
+            statusColor = 'var(--color-warning, #f59e0b)';
+          } else {
+            statusText = 'Profitable';
+            statusColor = 'var(--color-success)';
+          }
+
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid var(--color-border)';
+          tr.innerHTML = `
+            <td style="padding: var(--space-3) var(--space-3); font-weight:600;">${tierRoas.toFixed(1)}x</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; font-weight:700;">${formatCurrency(tierRev)}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; font-weight:700; color: ${statusColor};">${formatCurrency(tierProfit)}</td>
+            <td style="padding: var(--space-3) var(--space-3); text-align: right; color: ${statusColor}; font-weight:700;">${statusText}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+    }
+
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `ROAS Calculator Projections:\n` +
+                   `Calculated ROAS: ${document.getElementById('res-roas-val')?.textContent}\n` +
+                   `Total Revenue: ${document.getElementById('res-total-rev')?.textContent}\n` +
+                   `Net Profit: ${document.getElementById('res-profit')?.textContent}\n` +
+                   `Campaign ROI: ${document.getElementById('res-roi')?.textContent}\n` +
+                   `Break-Even ROAS Threshold: ${document.getElementById('res-breakeven-roas')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initRoasCalculator);
+  document.addEventListener('astro:after-swap', initRoasCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

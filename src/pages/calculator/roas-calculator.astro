@@ -1,0 +1,190 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RoasCalculator from '../../components/calculator/RoasCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'ROAS Calculator', path: '/calculator/roas-calculator' }
+];
+---
+
+<Layout
+  title="ROAS Calculator - Calculate Return on Ad Spend & Profitability"
+  description="Free online ROAS calculator. Evaluate target return on ad spend, calculate break-even ROAS thresholds based on product margins, and plan click funnels."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <RoasCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Marketing Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The 2.0x ROAS Trap: How I Blew $10,000 on Profitable Ads (and Lost Money)</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person case study on how an e-commerce shop went bankrupt despite having a seemingly positive 2.0x ROAS, and learn how to calculate your true break-even ad spends.
+            </p>
+            <a href="/blog/how-to-calculate-roas" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Return on Ad Spend (ROAS) & Find Your True Profitability Slabs
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is ROAS (Return on Ad Spend)?</h2>
+        <p>
+          Return on Ad Spend (ROAS) is a marketing metric that measures the amount of gross revenue your business earns for every dollar spent on advertising. It is one of the most critical key performance indicators (KPIs) for e-commerce, digital marketing campaigns, and retail growth strategies.
+        </p>
+        <p>
+          ROAS is typically expressed as a ratio or multiplier (e.g., 4:1 or 4x). The basic formula is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{ROAS} = \\frac{\\text{Total Revenue Generated}}{\\text{Total Ad Spend}}\\)"}
+        </p>
+        <p>
+          For example, if you spend $1,000 on Facebook ads and generate $4,000 in product sales from those ads, your ROAS is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{ROAS} = \\frac{\\$4,000}{\\$1,000} = 4.00x\\text{ (or 400\\%)}\\)"}
+        </p>
+        <p>
+          This means you generate $4.00 in revenue for every $1.00 you spend on ads.
+        </p>
+
+        <h2>The Break-Even ROAS Trap</h2>
+        <p>
+          A common mistake made by rookie marketers and business owners is assuming that any ROAS above 1.0x is profitable. If you spend $1.00 and make $1.50 back, it looks like a profit. However, this math ignores the <strong>Cost of Goods Sold (COGS)</strong>—the wholesale cost, shipping, and fulfillment fees associated with making and delivering the product.
+        </p>
+        <p>
+          Your true **Break-Even ROAS** is the minimum multiplier you must achieve on advertising just to cover both the ad spend and the product costs. It is directly tied to your product's <strong>Gross Profit Margin</strong>:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Break-Even ROAS} = \\frac{100}{\\text{Gross Margin \\%}}\\)"}
+        </p>
+        <p>
+          For example, if your product has a 50% gross profit margin:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Break-Even ROAS} = \\frac{100}{50} = 2.00x\\)"}
+        </p>
+        <p>
+          If your ROAS is exactly 2.0x, your campaign is breaking even. If it is 1.5x, you are actually **losing money** on every single sale, despite making more revenue than ad spend.
+        </p>
+
+        <h2>ROAS vs. ROI: What is the Difference?</h2>
+        <p>
+          While both metrics measure advertising returns, they serve different purposes:
+        </p>
+        <ul>
+          <li>
+            <strong>ROAS</strong> compares gross revenue to ad spend. It is a tactical metric used to measure the efficiency of specific ad channels, keywords, or creative campaigns. It does not factor in other business expenses.
+          </li>
+          <li>
+            <strong>ROI (Return on Investment)</strong> compares net profit to ad spend. It is an overall financial metric that factors in product costs (COGS), credit card processing fees, shipping, and advertising. It tells you if the business campaign is actually profitable.
+          </li>
+        </ul>
+
+        <h2>Step-by-Step: How to Optimize Your Funnel</h2>
+        <p>
+          To model your digital advertising funnel and target profitability, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Determine Product Cost & Margin:</strong> Calculate your product gross margin. If a product sells for $100 and costs $40 to source, fulfill, and ship, your profit margin is 60%. Enter this as "Product Gross Margin".
+          </li>
+          <li>
+            <strong>Select Mode:</strong> 
+            <ul>
+              <li>Use **Simple Mode** if you already have the total ad spend and resulting sales revenue.</li>
+              <li>Use **Funnel Mode** if you want to project ad spend and revenue based on conversion targets.</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Input Funnel Parameters (Funnel Mode):</strong> Enter your estimated Click volume, Cost Per Click (CPC), Website Conversion Rate (%), and Average Order Value (AOV).
+          </li>
+          <li>
+            <strong>Review the Profitability Verdict:</strong> Check the "Results Card". It will dynamically calculate your ROAS, ROI, and let you know if you are profitable, breaking even, or operating at a loss.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">ROAS Calculator Frequently Asked Questions</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a good ROAS for e-commerce?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A "good" ROAS depends entirely on your product margins. For high-margin products (80%+ margin, e.g. software), a 1.5x ROAS can be highly profitable. For low-margin products (20% margin, e.g. electronics), you might need a 5.0x ROAS just to break even. As a general benchmark, most e-commerce stores target a **4.0x ROAS (4:1)** to ensure healthy net profitability.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do I calculate break-even ROAS?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Divide 1 by your gross profit margin percentage (in decimal format). For example, if your product margin is 40% (0.40), your break-even ROAS is 1 / 0.40 = 2.50x. Any campaign operating below 2.5x ROAS is generating a net loss for your business.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can I improve my campaign ROAS?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You can improve ROAS by adjusting the variables in your funnel: 1) Increase your **Average Order Value (AOV)** via upsells and bundles, 2) Optimize your landing page to increase your **Conversion Rate**, 3) Improve ad creatives to boost CTR and lower your **Cost Per Click (CPC)**, or 4) Focus ad spend on high-converting audience segments.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Does ROAS include sales tax or shipping charges?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Typically, ROAS calculations should use **gross revenue** generated directly from the ad platform (which often includes shipping charges paid by the customer but excludes sales tax). To get the most accurate profit projections, ensure that your gross margin percentage factors in shipping fulfillment costs.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

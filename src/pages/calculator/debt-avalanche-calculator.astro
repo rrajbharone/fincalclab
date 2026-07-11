@@ -1,0 +1,163 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DebtAvalancheCalculator from '../../components/calculator/DebtAvalancheCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Debt Avalanche Calculator', path: '/calculator/debt-avalanche-calculator' }
+];
+---
+
+<Layout
+  title="Debt Avalanche Calculator - Compare Avalanche vs. Snowball Payoff"
+  description="Compare the Debt Avalanche and Debt Snowball repayment methods. Model interest savings, payoff timelines, and plan your debt-free strategy."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <DebtAvalancheCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Payoff Strategy</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Why Mathematical Purity Saved Me Thousands in Interest Charges</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a real story about why pure mathematical efficiency wins the war on debt, how targeting high-interest rates cuts years off your timeline, and how to use the avalanche method to optimize your budget.
+            </p>
+            <a href="/blog/how-to-use-debt-avalanche-calculator" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Use a Debt Avalanche Calculator to Minimize Interest & Build Wealth
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is the Debt Avalanche Method?</h2>
+        <p>
+          The Debt Avalanche method (sometimes called debt stacking) is a debt reduction strategy where you pay off your debts in order of <strong>highest interest rate to lowest interest rate</strong>, regardless of the balance size. You make the minimum monthly payment on all your debts except the one with the highest interest rate. Any extra money you have—including your extra monthly budget—is thrown entirely at that highest-interest debt.
+        </p>
+        <p>
+          Once the highest-interest debt is fully paid off, you take the entire amount you were paying toward it (its minimum payment plus any extra money) and roll it over into the next highest-interest debt. As each account is cleared, the amount of cash available to roll over increases, creating a powerful cascading effect that wipes out your debts in the most mathematically efficient way possible.
+        </p>
+        <p>
+          This method focuses on <strong>interest minimization</strong>. By targeting high rates first, you prevent your balances from compounding aggressively, saving you the absolute maximum amount of money in interest fees and often cutting months or years off your total payoff timeline.
+        </p>
+
+        <h2>Debt Avalanche vs. Debt Snowball: Which is Better?</h2>
+        <p>
+          When planning your debt payoff, you will choose between two primary strategies: the Debt Avalanche and the Debt Snowball.
+        </p>
+        <ul>
+          <li>
+            <strong>Debt Avalanche (Highest Interest Rate First):</strong> You prioritize debts by interest rate. You target the debt with the highest interest first, regardless of the balance. This is mathematically optimal and saves the most interest money, but it can take longer to achieve your first fully paid-off account if that debt has a large balance.
+          </li>
+          <li>
+            <strong>Debt Snowball (Smallest Balance First):</strong> You prioritize debts by size. This provides quick psychological wins and reduces the number of bills you pay each month rapidly, but you may pay more in total interest over time.
+          </li>
+        </ul>
+        <p>
+          Our calculator allows you to toggle between these two strategies side-by-side. You can see the exact difference in your <strong>Months to Debt-Free</strong> and <strong>Total Interest Paid</strong> to make an informed, personal decision.
+        </p>
+
+        <h2>Step-by-Step Guide to Payoff Planning</h2>
+        <p>
+          To create your personalized debt payoff schedule using this calculator, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>List All Your Debts:</strong> Gather your statements. Enter the current remaining balance, interest rate, and minimum monthly payment for each debt.
+          </li>
+          <li>
+            <strong>Determine Your Extra Budget:</strong> Look at your monthly budget. Find any extra cash you can commit to your payoff plan on top of your minimum payments. Enter this under "Extra Monthly Payment".
+          </li>
+          <li>
+            <strong>Select Your Strategy:</strong> Toggle between the Debt Avalanche and Debt Snowball strategies. Compare the total interest paid and payoff timeline.
+          </li>
+          <li>
+            <strong>Review Your Timeline and Sequence:</strong> Look at the "Debt Elimination Timeline". This shows you the exact order in which your debts will hit $0 and which month you will pay them off.
+          </li>
+          <li>
+            <strong>Download or Track the Monthly Schedule:</strong> Consult the detailed monthly matrix showing your balance decline over time to track your progress month by month.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Debt Avalanche Calculator Frequently Asked Questions</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why choose the Debt Avalanche over the Debt Snowball?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The Debt Avalanche is mathematically superior. Because it targets the highest interest rate first, it prevents the most expensive debt from compounding. This minimizes the total interest you pay over the course of your repayment journey. If you have very high-interest debts (like credit cards at 24% APR) and large balances, the Avalanche method can save you thousands of dollars compared to the Snowball method.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What should I do if my budget cannot cover my minimum payments?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              This calculator requires that your total monthly budget at least covers the sum of all your minimum monthly payments. If it does not, you are in a deficit and risk default. You should contact your creditors immediately to request temporary hardship programs, lower interest rates, or restructured payments to reduce your minimums to a level you can sustain.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Should I stop saving for retirement while paying off debt?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Dave Ramsey's traditional Debt Snowball method recommends stopping all retirement contributions (even employer 401k matches) to maximize the amount of cash thrown at debt. However, many financial planners suggest continuing to contribute up to your employer's match rate (which represents a 100% immediate return on your savings) and then throwing all remaining surplus cash at your debt.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How often should I recalculate my debt avalanche?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You should update your debt avalanche worksheet or calculator whenever your financial situation changes. This includes receiving a salary raise (which increases your extra monthly payment capacity), receiving a lump-sum windfall (like a tax refund or work bonus that you can throw at the smallest debt), or when a variable interest rate adjusts.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

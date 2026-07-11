@@ -192,6 +192,10 @@ const relatedPosts = allPosts
     align-items: start;
   }
 
+  .post-main-content {
+    min-width: 0;
+  }
+
   .post-card-content {
     background-color: var(--color-bg-surface);
     border-color: var(--color-border);
@@ -320,7 +324,10 @@ const relatedPosts = allPosts
   }
 
   .markdown-body :global(table) {
+    display: block;
     width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border-collapse: collapse;
     margin-bottom: var(--space-6);
     font-size: 0.95rem;

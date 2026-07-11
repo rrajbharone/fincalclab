@@ -1,0 +1,637 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Discount Percentage Calculator"
+  description="Calculate discounted prices, original prices, discount percentages, or model stacked double discounts step-by-step with our interactive calculator."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="discount-calc">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="discount-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="discount-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="discounted-price" selected>Calculate Final Price (Original Price + Discount %)</option>
+        <option value="original-price">Calculate Original Price (Discounted Price + Discount %)</option>
+        <option value="discount-pct">Calculate Discount Percentage (Original Price + Discounted Price)</option>
+        <option value="stacked">Double Discount / Stacking (Original Price + Discount 1 + Discount 2)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="discount-currency-select">Currency</label>
+        <select id="discount-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Input: Original Price -->
+    <div class="input-group" id="group-orig-price">
+      <div class="input-label-row">
+        <label for="discount-orig-price">Original Price</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="discount-orig-price" min="1" step="1" value="120" aria-label="Original Price" />
+        </div>
+      </div>
+      <input type="range" id="discount-orig-price-slider" min="5" max="2000" step="5" value="120" class="slider-range" aria-label="Original Price Slider" />
+    </div>
+
+    <!-- Input: Discount Percentage (%) -->
+    <div class="input-group" id="group-discount-pct">
+      <div class="input-label-row">
+        <label for="discount-pct-val">Discount Percentage</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="discount-pct-val" min="1" max="100" step="1" value="25" aria-label="Discount Percentage" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="discount-pct-slider" min="1" max="99" step="1" value="25" class="slider-range" aria-label="Discount Percentage Slider" />
+    </div>
+
+    <!-- Input: Discounted Price (only for original-price / discount-pct modes) -->
+    <div class="input-group hidden" id="group-discounted-price">
+      <div class="input-label-row">
+        <label for="discount-final-val">Discounted Price</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="discount-final-val" min="1" step="1" value="90" aria-label="Discounted Price" />
+        </div>
+      </div>
+      <input type="range" id="discount-final-slider" min="5" max="2000" step="5" value="90" class="slider-range" aria-label="Discounted Price Slider" />
+    </div>
+
+    <!-- Input: Stacking Discount 2 (%) -->
+    <div class="input-group hidden" id="group-discount-stacked">
+      <div class="input-label-row">
+        <label for="discount-stacked-val">Additional Discount 2</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="discount-stacked-val" min="0" max="100" step="1" value="10" aria-label="Stacked Discount 2" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="discount-stacked-slider" min="1" max="99" step="1" value="10" class="slider-range" aria-label="Stacked Discount 2 Slider" />
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="discount-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Discount & Savings Summary</h3>
+
+    <!-- Summary Banner -->
+    <div id="results-banner-container" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="discount-banner-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Discounted Price</span>
+        <div id="res-final-price" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px;">$90.00</div>
+        <p id="res-discount-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          You pay $90.00 and save $30.00 (25% off) from the original retail price of $120.00.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="results-grid" style="margin-bottom: var(--space-6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3);">
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
+        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Final Price</span>
+        <div class="tile-value" id="tile-final" style="font-size: 1.15rem; font-weight: 700; color: var(--color-success);">$90.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
+        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">You Save</span>
+        <div class="tile-value" id="tile-save" style="font-size: 1.15rem; font-weight: 700; color: var(--color-primary);">$30.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
+        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Off</span>
+        <div class="tile-value" id="tile-percent" style="font-size: 1.15rem; font-weight: 700; color: var(--color-accent);">25%</div>
+      </div>
+    </div>
+
+    <!-- Comparative price composition bar -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Price Composition</h4>
+      <div id="discount-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-2); padding: 0 4px; text-align: center;">
+        <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-success);"></span>
+          What You Pay: <strong id="chart-pay-label">$90.00</strong>
+        </span>
+        <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary);"></span>
+          What You Save: <strong id="chart-save-label">$30.00</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Stacked Discounts Step Table -->
+    <div id="stacked-table-container" class="hidden">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Double Discount Breakdown</h4>
+      <div class="table-container" style="overflow-x: auto;">
+        <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+              <th style="padding: var(--space-2) var(--space-3);">Stage</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right;">Price</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right;">Discount Amount</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right;">Coupon</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight:600;">Original Retail Price</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700;" id="stack-row-orig">$120.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; color: var(--color-text-muted);">-</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; color: var(--color-text-muted);">-</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight:600;">After 1st Discount</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700;" id="stack-row-d1-price">$90.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700; color: var(--color-primary);" id="stack-row-d1-save">-$30.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700;" id="stack-row-d1-pct">25% Off</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight:600;">After 2nd Discount (Stacked)</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700; color: var(--color-success);" id="stack-row-d2-price">$81.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700; color: var(--color-primary);" id="stack-row-d2-save">-$9.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700;" id="stack-row-d2-pct">10% Off</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size: 0.78rem; line-height: 1.4; color: var(--color-text-muted); margin-top: 8px;">
+        * Note: Coupon codes are stacked sequentially. Applying a second coupon of 10% off onto a 25% off item yields an effective discount of <strong>32.5%</strong>, not 35%.
+      </p>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initDiscountCalculator() {
+    const modeSelect = document.getElementById('discount-calc-mode') as HTMLSelectElement;
+
+    // Input Groups
+    const origGroup = document.getElementById('group-orig-price') as HTMLDivElement;
+    const discountGroup = document.getElementById('group-discount-pct') as HTMLDivElement;
+    const finalGroup = document.getElementById('group-discounted-price') as HTMLDivElement;
+    const stackedGroup = document.getElementById('group-discount-stacked') as HTMLDivElement;
+    const stackedTable = document.getElementById('stacked-table-container') as HTMLDivElement;
+
+    // Inputs
+    const origInput = document.getElementById('discount-orig-price') as HTMLInputElement;
+    const origSlider = document.getElementById('discount-orig-price-slider') as HTMLInputElement;
+    const discountInput = document.getElementById('discount-pct-val') as HTMLInputElement;
+    const discountSlider = document.getElementById('discount-pct-slider') as HTMLInputElement;
+    const finalInput = document.getElementById('discount-final-val') as HTMLInputElement;
+    const finalSlider = document.getElementById('discount-final-slider') as HTMLInputElement;
+    const stackedInput = document.getElementById('discount-stacked-val') as HTMLInputElement;
+    const stackedSlider = document.getElementById('discount-stacked-slider') as HTMLInputElement;
+
+    if (!modeSelect || !origGroup || !discountGroup || !finalGroup || !stackedGroup) return;
+
+    // Mode Toggle script
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      
+      // Reset layout visibilities
+      origGroup.classList.remove('hidden');
+      discountGroup.classList.remove('hidden');
+      finalGroup.classList.add('hidden');
+      stackedGroup.classList.add('hidden');
+      stackedTable.classList.add('hidden');
+
+      if (mode === 'original-price') {
+        origGroup.classList.add('hidden');
+        finalGroup.classList.remove('hidden');
+      } else if (mode === 'discount-pct') {
+        discountGroup.classList.add('hidden');
+        finalGroup.classList.remove('hidden');
+      } else if (mode === 'stacked') {
+        stackedGroup.classList.remove('hidden');
+        stackedTable.classList.remove('hidden');
+      }
+
+      calculateAll();
+    });
+
+    // Double slider bindings helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(origInput, origSlider);
+    bindSlider(discountInput, discountSlider);
+    bindSlider(finalInput, finalSlider);
+    bindSlider(stackedInput, stackedSlider);
+
+    // Watch all inputs for calculation
+    const allInputs = [origInput, discountInput, finalInput, stackedInput];
+    allInputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('discount-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        origInput.value = '120';
+        origSlider.value = '120';
+        discountInput.value = '25';
+        discountSlider.value = '25';
+        finalInput.value = '90';
+        finalSlider.value = '90';
+        stackedInput.value = '10';
+        stackedSlider.value = '10';
+
+        modeSelect.value = 'discounted-price';
+        origGroup.classList.remove('hidden');
+        discountGroup.classList.remove('hidden');
+        finalGroup.classList.add('hidden');
+        stackedGroup.classList.add('hidden');
+        stackedTable.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    // Currency selector
+    const currencySelect = document.getElementById('discount-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toFixed(2);
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      
+      let origPrice = 0;
+      let finalPrice = 0;
+      let savingsAmount = 0;
+      let discountPct = 0;
+      let discount2 = 0;
+
+      if (mode === 'discounted-price') {
+        origPrice = parseFloat(origInput.value) || 0;
+        discountPct = parseFloat(discountInput.value) || 0;
+        savingsAmount = origPrice * (discountPct / 100);
+        finalPrice = origPrice - savingsAmount;
+      } else if (mode === 'original-price') {
+        finalPrice = parseFloat(finalInput.value) || 0;
+        discountPct = parseFloat(discountInput.value) || 0;
+        
+        if (discountPct < 100) {
+          origPrice = finalPrice / (1 - discountPct / 100);
+          savingsAmount = origPrice - finalPrice;
+        } else {
+          origPrice = 0;
+          savingsAmount = 0;
+        }
+      } else if (mode === 'discount-pct') {
+        origPrice = parseFloat(origInput.value) || 0;
+        finalPrice = parseFloat(finalInput.value) || 0;
+        
+        if (origPrice > 0) {
+          savingsAmount = origPrice - finalPrice;
+          discountPct = (savingsAmount / origPrice) * 100;
+        } else {
+          discountPct = 0;
+          savingsAmount = 0;
+        }
+      } else if (mode === 'stacked') {
+        origPrice = parseFloat(origInput.value) || 0;
+        discountPct = parseFloat(discountInput.value) || 0;
+        discount2 = parseFloat(stackedInput.value) || 0;
+
+        const firstDiscountPrice = origPrice * (1 - discountPct / 100);
+        finalPrice = firstDiscountPrice * (1 - discount2 / 100);
+        savingsAmount = origPrice - finalPrice;
+        discountPct = origPrice > 0 ? (savingsAmount / origPrice) * 100 : 0;
+      }
+
+      // Safeguard negative values
+      if (finalPrice < 0) finalPrice = 0;
+      if (savingsAmount < 0) savingsAmount = 0;
+
+      // Update Tiles
+      const tileFinal = document.getElementById('tile-final');
+      const tileSave = document.getElementById('tile-save');
+      const tilePercent = document.getElementById('tile-percent');
+      const resFinalPrice = document.getElementById('res-final-price');
+      const resVerdict = document.getElementById('res-discount-verdict');
+
+      if (tileFinal) tileFinal.textContent = formatCurrency(finalPrice);
+      if (tileSave) tileSave.textContent = formatCurrency(savingsAmount);
+      if (tilePercent) tilePercent.textContent = `${discountPct.toFixed(1)}%`;
+      if (resFinalPrice) resFinalPrice.textContent = formatCurrency(finalPrice);
+
+      if (resVerdict) {
+        if (mode === 'stacked') {
+          resVerdict.innerHTML = `You pay **${formatCurrency(finalPrice)}** and save a total of **${formatCurrency(savingsAmount)}** (${discountPct.toFixed(1)}% effective off) from the retail cost of **${formatCurrency(origPrice)}** through stacked double coupons.`;
+        } else {
+          resVerdict.innerHTML = `You pay **${formatCurrency(finalPrice)}** and save a total of **${formatCurrency(savingsAmount)}** (${discountPct.toFixed(1)}% off) from the original price of **${formatCurrency(origPrice)}**.`;
+        }
+      }
+
+      // Update stacked composition bar
+      const chartBar = document.getElementById('discount-composition-bar');
+      const payLabel = document.getElementById('chart-pay-label');
+      const saveLabel = document.getElementById('chart-save-label');
+
+      if (payLabel) payLabel.textContent = formatCurrency(finalPrice);
+      if (saveLabel) saveLabel.textContent = formatCurrency(savingsAmount);
+
+      if (chartBar) {
+        const total = finalPrice + savingsAmount;
+        if (total > 0) {
+          const payPct = (finalPrice / total) * 100;
+          const savePct = (savingsAmount / total) * 100;
+
+          chartBar.innerHTML = `
+            <div style="width: ${payPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+            <div style="width: ${savePct.toFixed(1)}%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+          `;
+        } else {
+          chartBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+
+      // Update Stacked double coupon progression table cells
+      if (mode === 'stacked') {
+        const d1Price = origPrice * (1 - parseFloat(discountInput.value) / 100);
+        const d1Save = origPrice - d1Price;
+        const d2Price = finalPrice;
+        const d2Save = d1Price - d2Price;
+
+        const elRowOrig = document.getElementById('stack-row-orig');
+        const elRowD1Price = document.getElementById('stack-row-d1-price');
+        const elRowD1Save = document.getElementById('stack-row-d1-save');
+        const elRowD1Pct = document.getElementById('stack-row-d1-pct');
+        const elRowD2Price = document.getElementById('stack-row-d2-price');
+        const elRowD2Save = document.getElementById('stack-row-d2-save');
+        const elRowD2Pct = document.getElementById('stack-row-d2-pct');
+
+        if (elRowOrig) elRowOrig.textContent = formatCurrency(origPrice);
+        if (elRowD1Price) elRowD1Price.textContent = formatCurrency(d1Price);
+        if (elRowD1Save) elRowD1Save.textContent = `-${formatCurrency(d1Save)}`;
+        if (elRowD1Pct) elRowD1Pct.textContent = `${parseFloat(discountInput.value).toFixed(0)}% Off`;
+        if (elRowD2Price) elRowD2Price.textContent = formatCurrency(d2Price);
+        if (elRowD2Save) elRowD2Save.textContent = `-${formatCurrency(d2Save)}`;
+        if (elRowD2Pct) elRowD2Pct.textContent = `${parseFloat(stackedInput.value).toFixed(0)}% Off`;
+      }
+    }
+
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Discount Calculator Summary:\n` +
+                   `Original Price: ${formatCurrency(parseFloat(origInput.value) || 0)}\n` +
+                   `Discounted Price: ${document.getElementById('tile-final')?.textContent}\n` +
+                   `Total Amount Saved: ${document.getElementById('tile-save')?.textContent}\n` +
+                   `Effective Discount: ${document.getElementById('tile-percent')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initDiscountCalculator);
+  document.addEventListener('astro:after-swap', initDiscountCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

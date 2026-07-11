@@ -1,0 +1,784 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Debt Avalanche Calculator"
+  description="Compare the Debt Avalanche vs. Debt Snowball methods side-by-side. Input your debts, interest rates, and extra payments to see your interest savings and payoff timeline."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="debt-avalanche-calc">
+    
+    <!-- Tab toggles: Avalanche vs Snowball method selection -->
+    <div class="calculator-mode-selector">
+      <label for="debt-calc-strategy" class="sr-only">Choose Strategy</label>
+      <select id="debt-calc-strategy" class="currency-select" aria-label="Select Payoff Strategy" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="avalanche" selected>Debt Avalanche (Highest Interest Rate First)</option>
+        <option value="snowball">Debt Snowball (Smallest Balance First)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="debt-currency-select">Currency</label>
+        <select id="debt-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Extra Monthly Budget Input -->
+    <div class="input-group" style="margin-bottom: var(--space-4);">
+      <div class="input-label-row">
+        <label for="debt-extra-budget">Extra Monthly Payment <span style="font-size: 0.75rem; font-weight:normal; color:var(--color-text-light);">(Avalanche amount)</span></label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="debt-extra-budget" min="0" value="300" aria-label="Extra Monthly Payment" />
+        </div>
+      </div>
+      <input type="range" id="debt-extra-budget-slider" min="0" max="2000" step="50" value="300" class="slider-range" aria-label="Extra Payment Slider" />
+    </div>
+
+    <!-- Dynamic Debt List Block -->
+    <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-4);">
+      <h4 style="font-size: 0.95rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light); letter-spacing: 0.05em; margin-bottom: var(--space-3);">
+        Your Debts List
+      </h4>
+      
+      <!-- List container where rows are injected -->
+      <div id="debt-list-container" style="display: flex; flex-direction: column; gap: var(--space-3);">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Add Debt trigger -->
+      <Button id="add-debt-btn" variant="outline" size="sm" style="margin-top: var(--space-3); width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Add Another Debt
+      </Button>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="debt-reset-btn" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Payoff Projections</h3>
+
+    <!-- Core Deficit/Surplus Block -->
+    <div id="results-banner-container" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="results-banner-card" style="padding: var(--space-4) var(--space-5); border-left: 4px solid var(--color-success); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Time to Debt-Free</span>
+        <div id="res-time-to-free" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-success);">0 Months</div>
+        <p id="res-payoff-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);"></p>
+      </Card>
+    </div>
+
+    <div class="results-grid" style="margin-bottom: var(--space-6); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4);">
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Debt Owed</span>
+        <div class="tile-value" id="res-total-owed" style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-base);">$0.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Interest Paid</span>
+        <div class="tile-value" id="res-total-interest" style="font-size: 1.25rem; font-weight: 700; color: var(--color-danger, #ef4444);">$0.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Interest Saved</span>
+        <div class="tile-value" id="res-interest-saved" style="font-size: 1.25rem; font-weight: 700; color: var(--color-success);">$0.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <span class="tile-label" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Time Saved</span>
+        <div class="tile-value" id="res-time-saved" style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);">0 Months</div>
+      </div>
+    </div>
+
+    <!-- Dynamic Alert for insufficient budget -->
+    <div id="insufficient-budget-alert" class="hidden" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" style="border-left: 4px solid var(--color-danger, #ef4444); padding: var(--space-4); background: var(--color-bg-base);">
+        <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--color-danger, #ef4444);">Budget Warning</h4>
+        <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.4;">
+          Your extra payment is negative or the total budget is less than the sum of minimum payments. Increase your monthly budget to cover all minimum payments.
+        </p>
+      </Card>
+    </div>
+
+    <!-- SVG Payoff Curve Chart -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Debt Payoff Progress</h4>
+      <div id="debt-chart-wrapper" style="width: 100%; height: 180px; position: relative;">
+        <!-- Injected via JS -->
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-2); padding: 0 4px;">
+        <span>Month 0</span>
+        <span id="chart-half-label">Month 12</span>
+        <span id="chart-end-label">Month 24</span>
+      </div>
+    </div>
+
+    <!-- Payoff Sequence Tiers -->
+    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3);">Debt Elimination Timeline</h4>
+    <div id="timeline-tiers-container" style="display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-6);">
+      <!-- Injected via JS -->
+    </div>
+
+    <!-- Monthly Repayment Schedule Table -->
+    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-3);">Monthly Payment Schedule</h4>
+    <div class="table-container" style="overflow-x: auto;">
+      <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+            <th style="padding: var(--space-2) var(--space-3);">Month</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Total Paid</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-danger, #ef4444);">Interest Paid</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-primary);">Remaining Balance</th>
+          </tr>
+        </thead>
+        <tbody id="debt-matrix-body">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Initial pre-populated debts list
+  let userDebts = [
+    { id: 1, name: 'Credit Card', balance: 5000, rate: 18.9, min: 150 },
+    { id: 2, name: 'Car Loan', balance: 12000, rate: 6.5, min: 350 },
+    { id: 3, name: 'Student Loan', balance: 20000, rate: 4.5, min: 250 }
+  ];
+
+  function initDebtCalculator() {
+    const extraBudgetInput = document.getElementById('debt-extra-budget') as HTMLInputElement;
+    const extraBudgetSlider = document.getElementById('debt-extra-budget-slider') as HTMLInputElement;
+    const strategySelect = document.getElementById('debt-calc-strategy') as HTMLSelectElement;
+    const currencySelect = document.getElementById('debt-currency-select') as HTMLSelectElement;
+    const addBtn = document.getElementById('add-debt-btn');
+    const resetBtn = document.getElementById('debt-reset-btn');
+    const listContainer = document.getElementById('debt-list-container');
+
+    if (!extraBudgetInput || !extraBudgetSlider || !strategySelect || !listContainer) return;
+
+    // Double slider bindings
+    extraBudgetInput.addEventListener('input', () => {
+      extraBudgetSlider.value = extraBudgetInput.value;
+      calculateAll();
+    });
+    extraBudgetSlider.addEventListener('input', () => {
+      extraBudgetInput.value = extraBudgetSlider.value;
+      calculateAll();
+    });
+
+    strategySelect.addEventListener('change', calculateAll);
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        const currencySymbols = document.querySelectorAll('.currency-symbol');
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        const nextId = userDebts.length > 0 ? Math.max(...userDebts.map(d => d.id)) + 1 : 1;
+        userDebts.push({
+          id: nextId,
+          name: `Debt #${nextId}`,
+          balance: 1000,
+          rate: 10.0,
+          min: 30
+        });
+        renderList();
+        calculateAll();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        userDebts = [
+          { id: 1, name: 'Credit Card', balance: 5000, rate: 18.9, min: 150 },
+          { id: 2, name: 'Car Loan', balance: 12000, rate: 6.5, min: 350 },
+          { id: 3, name: 'Student Loan', balance: 20000, rate: 4.5, min: 250 }
+        ];
+        extraBudgetInput.value = '300';
+        extraBudgetSlider.value = '300';
+        strategySelect.value = 'avalanche';
+        if (currencySelect) currencySelect.value = 'USD';
+        
+        const symbol = getCurrencySymbol('USD');
+        const currencySymbols = document.querySelectorAll('.currency-symbol');
+        currencySymbols.forEach(el => el.textContent = symbol);
+
+        renderList();
+        calculateAll();
+      });
+    }
+
+    function renderList() {
+      if (!listContainer) return;
+      listContainer.innerHTML = '';
+      const currentSymbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      
+      userDebts.forEach((debt, index) => {
+        const row = document.createElement('div');
+        row.className = 'debt-row';
+        row.style.display = 'flex';
+        row.style.flexDirection = 'column';
+        row.style.gap = 'var(--space-3)';
+        row.style.padding = 'var(--space-4)';
+        row.style.border = '1px solid var(--color-border)';
+        row.style.borderRadius = 'var(--radius-md)';
+        row.style.background = 'var(--color-bg-surface)';
+
+        row.innerHTML = `
+          <!-- Top row: Name & Delete -->
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-3);">
+            <div style="flex:1;">
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Debt Name</label>
+              <input type="text" class="debt-name-input currency-select" value="${debt.name}" style="height:38px; padding:0 12px; width:100%; border-radius:var(--radius-md); border:1px solid var(--color-border);" />
+            </div>
+            <div style="display:flex; flex-direction:column; justify-content:flex-end;">
+              <span style="font-size:0.75rem; font-weight:700; visibility:hidden; margin-bottom:4px;">Delete</span>
+              <button class="debt-delete-btn" style="height:38px; width:38px; border-radius:var(--radius-md); border:1px solid var(--color-border); background:var(--color-bg-base); color:var(--color-danger, #ef4444); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all var(--transition-fast);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom row: Balance, Rate, Min Payment -->
+          <div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--space-3);">
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Balance</label>
+              <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-md); height:38px; background:var(--color-bg-base); padding:0 10px;">
+                <span class="currency-symbol" style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-right:4px;">${currentSymbol}</span>
+                <input type="number" class="debt-balance-input" value="${debt.balance}" style="border:none; background:transparent; width:100%; text-align:right; font-weight:700; outline:none; font-family:var(--font-sans);" />
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Rate (%)</label>
+              <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-md); height:38px; background:var(--color-bg-base); padding:0 10px;">
+                <input type="number" class="debt-rate-input" value="${debt.rate}" step="0.1" style="border:none; background:transparent; width:100%; text-align:left; font-weight:700; outline:none; font-family:var(--font-sans);" />
+                <span style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-left:4px;">%</span>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; font-weight:700; color:var(--color-text-muted); display:block; margin-bottom:4px;">Min Pay</label>
+              <div style="position:relative; display:flex; align-items:center; border:1px solid var(--color-border); border-radius:var(--radius-md); height:38px; background:var(--color-bg-base); padding:0 10px;">
+                <span class="currency-symbol" style="font-size:0.8rem; font-weight:700; color:var(--color-text-light); margin-right:4px;">${currentSymbol}</span>
+                <input type="number" class="debt-min-input" value="${debt.min}" style="border:none; background:transparent; width:100%; text-align:right; font-weight:700; outline:none; font-family:var(--font-sans);" />
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Bind input update listeners
+        const nameIn = row.querySelector('.debt-name-input') as HTMLInputElement;
+        const balanceIn = row.querySelector('.debt-balance-input') as HTMLInputElement;
+        const rateIn = row.querySelector('.debt-rate-input') as HTMLInputElement;
+        const minIn = row.querySelector('.debt-min-input') as HTMLInputElement;
+        const delBtn = row.querySelector('.debt-delete-btn') as HTMLButtonElement;
+
+        nameIn.addEventListener('input', () => { debt.name = nameIn.value; });
+        balanceIn.addEventListener('input', () => { debt.balance = parseFloat(balanceIn.value) || 0; calculateAll(); });
+        rateIn.addEventListener('input', () => { debt.rate = parseFloat(rateIn.value) || 0; calculateAll(); });
+        minIn.addEventListener('input', () => { debt.min = parseFloat(minIn.value) || 0; calculateAll(); });
+        delBtn.addEventListener('click', () => {
+          userDebts.splice(index, 1);
+          renderList();
+          calculateAll();
+        });
+
+        listContainer.appendChild(row);
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function calculateAll() {
+      const extraBudget = parseFloat(extraBudgetInput.value) || 0;
+      const strategy = strategySelect.value;
+      const alertBox = document.getElementById('insufficient-budget-alert');
+
+      if (userDebts.length === 0) {
+        updateUiEmpty();
+        return;
+      }
+
+      // Check sum of minimum payments
+      const sumMinimums = userDebts.reduce((sum, d) => sum + d.min, 0);
+      const totalMonthlyBudget = sumMinimums + extraBudget;
+
+      if (extraBudget < 0 || totalMonthlyBudget < sumMinimums) {
+        alertBox?.classList.remove('hidden');
+        return;
+      } else {
+        alertBox?.classList.add('hidden');
+      }
+
+      // 1. Simulate using chosen strategy (Avalanche or Snowball)
+      const simulation = simulateDebtPayoff(userDebts, extraBudget, strategy);
+      // 2. Simulate paying only minimums (to find baseline interest/months)
+      const baseline = simulateDebtPayoff(userDebts, 0, 'minimums-only');
+
+      // Primary Outcomes
+      const resTimeToFree = document.getElementById('res-time-to-free');
+      const resVerdict = document.getElementById('res-payoff-verdict');
+      const resTotalOwed = document.getElementById('res-total-owed');
+      const resTotalInterest = document.getElementById('res-total-interest');
+      const resInterestSaved = document.getElementById('res-interest-saved');
+      const resTimeSaved = document.getElementById('res-time-saved');
+
+      const totalOwedInitial = userDebts.reduce((sum, d) => sum + d.balance, 0);
+      const avalancheMonths = simulation.monthsTotal;
+      const avalancheInterest = simulation.interestTotal;
+      const baselineMonths = baseline.monthsTotal;
+      const baselineInterest = baseline.interestTotal;
+
+      const interestSaved = Math.max(0, baselineInterest - avalancheInterest);
+      const timeSaved = Math.max(0, baselineMonths - avalancheMonths);
+
+      if (resTimeToFree) resTimeToFree.textContent = `${avalancheMonths} Months`;
+      if (resTotalOwed) resTotalOwed.textContent = formatCurrency(totalOwedInitial);
+      if (resTotalInterest) resTotalInterest.textContent = formatCurrency(avalancheInterest);
+      if (resInterestSaved) resInterestSaved.textContent = formatCurrency(interestSaved);
+      if (resTimeSaved) resTimeSaved.textContent = `${timeSaved} Months`;
+
+      const yearsToFree = (avalancheMonths / 12).toFixed(1);
+      if (resVerdict) {
+        resVerdict.innerHTML = `You will be debt-free in <strong>${yearsToFree} years</strong> (by month ${avalancheMonths}) by paying a total budget of <strong>${formatCurrency(totalMonthlyBudget)}</strong> monthly.`;
+      }
+
+      // 3. Draw SVG Progress Chart with Peak-Scaling Math
+      const chartWrapper = document.getElementById('debt-chart-wrapper');
+      const halfLabel = document.getElementById('chart-half-label');
+      const endLabel = document.getElementById('chart-end-label');
+
+      if (halfLabel) halfLabel.textContent = `Month ${Math.floor(avalancheMonths / 2)}`;
+      if (endLabel) endLabel.textContent = `Month ${avalancheMonths}`;
+
+      if (chartWrapper && simulation.schedule.length > 0) {
+        const wrapperWidth = chartWrapper.clientWidth || 360;
+        const wrapperHeight = 180;
+        const maxBalance = Math.max(totalOwedInitial, ...simulation.schedule.map(pt => pt.balance), 1);
+
+        const points = simulation.schedule.map((pt, idx) => {
+          const x = (pt.month / avalancheMonths) * wrapperWidth;
+          const y = wrapperHeight - (pt.balance / maxBalance) * (wrapperHeight - 20) - 10;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+
+        chartWrapper.innerHTML = `
+          <svg width="100%" height="100%" viewBox="0 0 ${wrapperWidth} ${wrapperHeight}" preserveAspectRatio="none" style="overflow: hidden;">
+            <defs>
+              <linearGradient id="debt-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Bottom axis line -->
+            <line x1="0" y1="${wrapperHeight - 10}" x2="${wrapperWidth}" y2="${wrapperHeight - 10}" stroke="var(--color-border)" stroke-width="1.5" />
+
+            <!-- Path Area -->
+            <path d="M 0,${wrapperHeight - 10} L ${points} L ${wrapperWidth},${wrapperHeight - 10} Z" fill="url(#debt-grad)" />
+
+            <!-- Path Line -->
+            <polyline points="${points}" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        `;
+      }
+
+      // 4. Populate Timeline Tiers (payoff sequence card list)
+      const timelineContainer = document.getElementById('timeline-tiers-container');
+      if (timelineContainer) {
+        timelineContainer.innerHTML = '';
+        simulation.payoffSequence.forEach((payoff, idx) => {
+          const item = document.createElement('div');
+          item.style.display = 'flex';
+          item.style.justifyContent = 'space-between';
+          item.style.alignItems = 'center';
+          item.style.padding = 'var(--space-3) var(--space-4)';
+          item.style.borderLeft = '4px solid var(--color-success)';
+          item.style.borderRadius = 'var(--radius-sm)';
+          item.style.background = 'var(--color-bg-base)';
+          item.style.border = '1px solid var(--color-border)';
+          item.style.borderLeftWidth = '4px';
+
+          item.innerHTML = `
+            <div>
+              <span style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--color-text-muted); display:block;">Paid Off #${idx + 1}</span>
+              <strong style="font-size:0.95rem; color:var(--color-text-base);">${payoff.name}</strong>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:0.85rem; font-weight:700; color:var(--color-success);">Month ${payoff.month}</span>
+              <span style="font-size:0.75rem; color:var(--color-text-light); display:block;">Total Interest Paid: ${formatCurrency(payoff.interestPaid)}</span>
+            </div>
+          `;
+          timelineContainer.appendChild(item);
+        });
+      }
+
+      // 5. Populate Monthly schedule table body
+      const tableBody = document.getElementById('debt-matrix-body');
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        const filterInterval = Math.max(1, Math.ceil(avalancheMonths / 30));
+        
+        simulation.schedule.forEach(pt => {
+          if (pt.month % filterInterval === 0 || pt.month === avalancheMonths) {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--color-border)';
+            tr.innerHTML = `
+              <td style="padding: var(--space-3) var(--space-3); font-weight:600;">Month ${pt.month}</td>
+              <td style="padding: var(--space-3) var(--space-3); text-align: right; font-weight:700;">${formatCurrency(pt.totalPaid)}</td>
+              <td style="padding: var(--space-3) var(--space-3); text-align: right; color: var(--color-danger, #ef4444);">${formatCurrency(pt.interestPaid)}</td>
+              <td style="padding: var(--space-3) var(--space-3); text-align: right; color: var(--color-primary);">${formatCurrency(pt.balance)}</td>
+            `;
+            tableBody.appendChild(tr);
+          }
+        });
+      }
+    }
+
+    function updateUiEmpty() {
+      const resTimeToFree = document.getElementById('res-time-to-free');
+      if (resTimeToFree) resTimeToFree.textContent = '0 Months';
+      const resTotalOwed = document.getElementById('res-total-owed');
+      if (resTotalOwed) resTotalOwed.textContent = '$0';
+      const resTotalInterest = document.getElementById('res-total-interest');
+      if (resTotalInterest) resTotalInterest.textContent = '$0';
+      const resInterestSaved = document.getElementById('res-interest-saved');
+      if (resInterestSaved) resInterestSaved.textContent = '$0';
+      const resTimeSaved = document.getElementById('res-time-saved');
+      if (resTimeSaved) resTimeSaved.textContent = '0 Months';
+      const resVerdict = document.getElementById('res-payoff-verdict');
+      if (resVerdict) resVerdict.textContent = 'Add some debts in the input panel to see projections.';
+    }
+
+    function simulateDebtPayoff(debtsList: any[], extraMonthly: number, strategy: string) {
+      const debts = debtsList.map(d => ({
+        ...d,
+        currentBalance: d.balance,
+        totalInterestPaid: 0,
+        paidOffMonth: 0
+      }));
+
+      let month = 0;
+      let interestAccumulatedTotal = 0;
+      let totalAmountPaidAccumulated = 0;
+      const schedule: { month: number; balance: number; totalPaid: number; interestPaid: number }[] = [];
+      const payoffSequence: { name: string; month: number; interestPaid: number }[] = [];
+
+      const sumInitialBalances = debts.reduce((sum, d) => sum + d.currentBalance, 0);
+      schedule.push({
+        month: 0,
+        balance: sumInitialBalances,
+        totalPaid: 0,
+        interestPaid: 0
+      });
+
+      const maxDuration = 600;
+
+      while (debts.some(d => d.currentBalance > 0) && month < maxDuration) {
+        month++;
+        let monthlyInterestThisMonth = 0;
+
+        debts.forEach(d => {
+          if (d.currentBalance > 0) {
+            const interest = d.currentBalance * (d.rate / 1200);
+            d.currentBalance += interest;
+            d.totalInterestPaid += interest;
+            monthlyInterestThisMonth += interest;
+            interestAccumulatedTotal += interest;
+          }
+        });
+
+        let sumActiveMinimumsPaid = 0;
+        let extraSnowballPot = extraMonthly;
+
+        let targetList = [...debts];
+        if (strategy === 'snowball') {
+          targetList.sort((a, b) => a.currentBalance - b.currentBalance);
+        } else if (strategy === 'avalanche') {
+          targetList.sort((a, b) => b.rate - a.rate);
+        }
+
+        debts.forEach(d => {
+          if (d.currentBalance > 0) {
+            let payment = Math.min(d.min, d.currentBalance);
+            d.currentBalance -= payment;
+            sumActiveMinimumsPaid += payment;
+            
+            if (d.currentBalance <= 0) {
+              const overshoot = d.min - payment;
+              extraSnowballPot += overshoot;
+              d.paidOffMonth = month;
+              payoffSequence.push({ name: d.name, month: month, interestPaid: d.totalInterestPaid });
+            }
+          }
+        });
+
+        let targetDebt = targetList.find(d => d.currentBalance > 0);
+        if (targetDebt && extraSnowballPot > 0) {
+          let payment = Math.min(extraSnowballPot, targetDebt.currentBalance);
+          targetDebt.currentBalance -= payment;
+          sumActiveMinimumsPaid += payment;
+          extraSnowballPot -= payment;
+
+          if (targetDebt.currentBalance <= 0) {
+            targetDebt.paidOffMonth = month;
+            payoffSequence.push({ name: targetDebt.name, month: month, interestPaid: targetDebt.totalInterestPaid });
+            
+            let nextTarget = targetList.find(d => d.currentBalance > 0);
+            if (nextTarget && extraSnowballPot > 0) {
+              let nextPayment = Math.min(extraSnowballPot, nextTarget.currentBalance);
+              nextTarget.currentBalance -= nextPayment;
+              sumActiveMinimumsPaid += nextPayment;
+            }
+          }
+        }
+
+        totalAmountPaidAccumulated += sumActiveMinimumsPaid;
+        const currentRemainingTotal = debts.reduce((sum, d) => sum + d.currentBalance, 0);
+
+        schedule.push({
+          month: month,
+          balance: currentRemainingTotal,
+          totalPaid: totalAmountPaidAccumulated,
+          interestPaid: interestAccumulatedTotal
+        });
+      }
+
+      const cleanPayoffSequence: { name: string; month: number; interestPaid: number }[] = [];
+      const seenNames = new Set<string>();
+      payoffSequence.forEach(p => {
+        if (!seenNames.has(p.name)) {
+          seenNames.add(p.name);
+          cleanPayoffSequence.push(p);
+        }
+      });
+
+      return {
+        monthsTotal: month,
+        interestTotal: interestAccumulatedTotal,
+        schedule: schedule,
+        payoffSequence: cleanPayoffSequence
+      };
+    }
+
+    renderList();
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initDebtCalculator);
+  document.addEventListener('astro:after-swap', initDebtCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

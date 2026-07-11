@@ -1,0 +1,656 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Reverse Tax Calculator"
+  description="Extract net pre-tax pricing and tax amounts from inclusive gross invoice totals, add taxes, or calculate tax percentages with regional presets."
+  category="Salary & Tax"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="revtax-calc">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="revtax-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="revtax-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="extract" selected>Extract Tax (Gross Price &rarr; Net Pre-Tax)</option>
+        <option value="add">Add Tax (Net Price &rarr; Gross Total)</option>
+        <option value="rate">Calculate Tax Rate (Net Price + Gross Price)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="revtax-currency-select">Currency</label>
+        <select id="revtax-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Regional Presets Selector -->
+    <div class="input-group" id="group-preset">
+      <div class="input-label-row">
+        <label for="revtax-preset-select">Region Tax Presets</label>
+        <select id="revtax-preset-select" class="currency-select" aria-label="Select Regional Tax Preset">
+          <option value="custom" selected>Custom Tax Rate (Enter Below)</option>
+          <option value="us-6">US Sales Tax (6.0%)</option>
+          <option value="us-825">US Sales Tax (8.25%)</option>
+          <option value="uk-20">UK/EU Standard VAT (20.0%)</option>
+          <option value="au-10">Australia GST (10.0%)</option>
+          <option value="in-18">India GST Standard (18.0%)</option>
+          <option value="ca-13">Canada GST/HST (13.0%)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Input: Gross Price (for extract/rate modes) -->
+    <div class="input-group" id="group-gross-price">
+      <div class="input-label-row">
+        <label for="revtax-gross-price">Gross Price (Tax Inclusive)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="revtax-gross-price" min="1" step="1" value="600" aria-label="Gross Price" />
+        </div>
+      </div>
+      <input type="range" id="revtax-gross-price-slider" min="5" max="5000" step="10" value="600" class="slider-range" aria-label="Gross Price Slider" />
+    </div>
+
+    <!-- Input: Net Price (for add/rate modes) -->
+    <div class="input-group hidden" id="group-net-price">
+      <div class="input-label-row">
+        <label for="revtax-net-price">Net Price (Pre-Tax)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="revtax-net-price" min="1" step="1" value="500" aria-label="Net Price" />
+        </div>
+      </div>
+      <input type="range" id="revtax-net-price-slider" min="5" max="5000" step="10" value="500" class="slider-range" aria-label="Net Price Slider" />
+    </div>
+
+    <!-- Input: Tax Rate (%) -->
+    <div class="input-group" id="group-tax-rate">
+      <div class="input-label-row">
+        <label for="revtax-tax-rate">Tax Rate</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="revtax-tax-rate" min="0.1" max="100" step="0.1" value="20" aria-label="Tax Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="revtax-tax-rate-slider" min="1" max="50" step="0.5" value="20" class="slider-range" aria-label="Tax Rate Slider" />
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="revtax-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Tax Extraction Summary</h3>
+
+    <!-- Summary Banner -->
+    <div id="results-banner-container" style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="revtax-banner-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);" id="res-banner-label">Pre-Tax Net Price</span>
+        <div id="res-primary-val" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px;">$500.00</div>
+        <p id="res-revtax-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          From a total gross price of $600.00, the pre-tax cost is $500.00 and the tax collected is $100.00 (20% VAT).
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="results-grid" style="margin-bottom: var(--space-6); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3);">
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
+        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Net Price</span>
+        <div class="tile-value" id="tile-net" style="font-size: 1.15rem; font-weight: 700; color: var(--color-success);">$500.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
+        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Tax Amount</span>
+        <div class="tile-value" id="tile-tax" style="font-size: 1.15rem; font-weight: 700; color: var(--color-warning);">$100.00</div>
+      </div>
+
+      <div class="result-tile" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);">
+        <span class="tile-label" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Gross Total</span>
+        <div class="tile-value" id="tile-gross" style="font-size: 1.15rem; font-weight: 700; color: var(--color-accent);">$600.00</div>
+      </div>
+    </div>
+
+    <!-- Price composition bar -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Price Composition</h4>
+      <div id="revtax-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-2); padding: 0 4px; text-align: center;">
+        <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-success);"></span>
+          Net Price: <strong id="chart-net-label">$500.00</strong>
+        </span>
+        <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-warning);"></span>
+          Tax Share: <strong id="chart-tax-label">$100.00</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Comparison matrix under standard tax tiers -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">International Tax Comparison</h4>
+    <div class="table-container" style="overflow-x: auto;">
+      <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+            <th style="padding: var(--space-2) var(--space-3);">Rate Type</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Tax Rate</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Net Pre-Tax</th>
+            <th style="padding: var(--space-2) var(--space-3); text-align: right;">Tax Paid</th>
+          </tr>
+        </thead>
+        <tbody id="revtax-matrix-body">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initReverseTaxCalculator() {
+    const modeSelect = document.getElementById('revtax-calc-mode') as HTMLSelectElement;
+    const presetSelect = document.getElementById('revtax-preset-select') as HTMLSelectElement;
+
+    // Input Groups
+    const grossGroup = document.getElementById('group-gross-price') as HTMLDivElement;
+    const netGroup = document.getElementById('group-net-price') as HTMLDivElement;
+    const rateGroup = document.getElementById('group-tax-rate') as HTMLDivElement;
+
+    // Inputs
+    const grossInput = document.getElementById('revtax-gross-price') as HTMLInputElement;
+    const grossSlider = document.getElementById('revtax-gross-price-slider') as HTMLInputElement;
+    const netInput = document.getElementById('revtax-net-price') as HTMLInputElement;
+    const netSlider = document.getElementById('revtax-net-price-slider') as HTMLInputElement;
+    const rateInput = document.getElementById('revtax-tax-rate') as HTMLInputElement;
+    const rateSlider = document.getElementById('revtax-tax-rate-slider') as HTMLInputElement;
+
+    if (!modeSelect || !presetSelect || !grossGroup || !netGroup || !rateGroup) return;
+
+    // Mode Toggle script
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      
+      grossGroup.classList.remove('hidden');
+      netGroup.classList.add('hidden');
+      rateGroup.classList.remove('hidden');
+
+      if (mode === 'add') {
+        grossGroup.classList.add('hidden');
+        netGroup.classList.remove('hidden');
+      } else if (mode === 'rate') {
+        netGroup.classList.remove('hidden');
+        rateGroup.classList.add('hidden');
+      }
+
+      calculateAll();
+    });
+
+    // Preset selection mapping
+    presetSelect.addEventListener('change', () => {
+      const val = presetSelect.value;
+      if (val === 'custom') return;
+
+      let rate = 20;
+      if (val === 'us-6') rate = 6.0;
+      else if (val === 'us-825') rate = 8.25;
+      else if (val === 'uk-20') rate = 20.0;
+      else if (val === 'au-10') rate = 10.0;
+      else if (val === 'in-18') rate = 18.0;
+      else if (val === 'ca-13') rate = 13.0;
+
+      rateInput.value = rate.toString();
+      rateSlider.value = rate.toString();
+      calculateAll();
+    });
+
+    // Custom slider override
+    rateInput.addEventListener('input', () => {
+      presetSelect.value = 'custom';
+    });
+    rateSlider.addEventListener('input', () => {
+      presetSelect.value = 'custom';
+    });
+
+    // Double slider bindings helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(grossInput, grossSlider);
+    bindSlider(netInput, netSlider);
+    bindSlider(rateInput, rateSlider);
+
+    // Watch all inputs for calculation
+    const allInputs = [grossInput, netInput, rateInput];
+    allInputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('revtax-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        grossInput.value = '600';
+        grossSlider.value = '600';
+        netInput.value = '500';
+        netSlider.value = '500';
+        rateInput.value = '20';
+        rateSlider.value = '20';
+
+        modeSelect.value = 'extract';
+        presetSelect.value = 'custom';
+        
+        grossGroup.classList.remove('hidden');
+        netGroup.classList.add('hidden');
+        rateGroup.classList.remove('hidden');
+
+        calculateAll();
+      });
+    }
+
+    // Currency selector
+    const currencySelect = document.getElementById('revtax-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toFixed(2);
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      
+      let grossPrice = 0;
+      let netPrice = 0;
+      let taxAmount = 0;
+      let taxRate = 0;
+
+      if (mode === 'extract') {
+        grossPrice = parseFloat(grossInput.value) || 0;
+        taxRate = parseFloat(rateInput.value) || 0;
+        
+        netPrice = grossPrice / (1 + taxRate / 100);
+        taxAmount = grossPrice - netPrice;
+      } else if (mode === 'add') {
+        netPrice = parseFloat(netInput.value) || 0;
+        taxRate = parseFloat(rateInput.value) || 0;
+        
+        taxAmount = netPrice * (taxRate / 100);
+        grossPrice = netPrice + taxAmount;
+      } else if (mode === 'rate') {
+        netPrice = parseFloat(netInput.value) || 0;
+        grossPrice = parseFloat(grossInput.value) || 0;
+        
+        if (netPrice > 0) {
+          taxAmount = grossPrice - netPrice;
+          taxRate = (taxAmount / netPrice) * 100;
+        } else {
+          taxRate = 0;
+          taxAmount = 0;
+        }
+      }
+
+      // Safeguard negative values
+      if (netPrice < 0) netPrice = 0;
+      if (taxAmount < 0) taxAmount = 0;
+      if (grossPrice < 0) grossPrice = 0;
+
+      // Update Tiles
+      const tileNet = document.getElementById('tile-net');
+      const tileTax = document.getElementById('tile-tax');
+      const tileGross = document.getElementById('tile-gross');
+      const resBannerLabel = document.getElementById('res-banner-label');
+      const resPrimaryVal = document.getElementById('res-primary-val');
+      const resVerdict = document.getElementById('res-revtax-verdict');
+
+      if (tileNet) tileNet.textContent = formatCurrency(netPrice);
+      if (tileTax) tileTax.textContent = formatCurrency(taxAmount);
+      if (tileGross) tileGross.textContent = formatCurrency(grossPrice);
+
+      if (resPrimaryVal) {
+        if (mode === 'add') {
+          resPrimaryVal.textContent = formatCurrency(grossPrice);
+        } else if (mode === 'rate') {
+          resPrimaryVal.textContent = `${taxRate.toFixed(2)}%`;
+        } else {
+          resPrimaryVal.textContent = formatCurrency(netPrice);
+        }
+      }
+
+      if (resBannerLabel) {
+        if (mode === 'add') {
+          resBannerLabel.textContent = 'Inclusive Gross Price';
+        } else if (mode === 'rate') {
+          resBannerLabel.textContent = 'Calculated Tax Rate';
+        } else {
+          resBannerLabel.textContent = 'Pre-Tax Net Price';
+        }
+      }
+
+      if (resVerdict) {
+        if (mode === 'rate') {
+          resVerdict.innerHTML = `At a pre-tax cost of **${formatCurrency(netPrice)}** and total cost of **${formatCurrency(grossPrice)}**, the tax paid is **${formatCurrency(taxAmount)}** (an effective tax rate of **${taxRate.toFixed(2)}%**).`;
+        } else {
+          resVerdict.innerHTML = `From a gross total of **${formatCurrency(grossPrice)}**, the pre-tax net cost is **${formatCurrency(netPrice)}** and the tax component represents **${formatCurrency(taxAmount)}** (${taxRate.toFixed(2)}% tax).`;
+        }
+      }
+
+      // Update stacked composition bar
+      const chartBar = document.getElementById('revtax-composition-bar');
+      const netLabel = document.getElementById('chart-net-label');
+      const taxLabel = document.getElementById('chart-tax-label');
+
+      if (netLabel) netLabel.textContent = formatCurrency(netPrice);
+      if (taxLabel) taxLabel.textContent = formatCurrency(taxAmount);
+
+      if (chartBar) {
+        const total = netPrice + taxAmount;
+        if (total > 0) {
+          const netPct = (netPrice / total) * 100;
+          const taxPct = (taxAmount / total) * 100;
+
+          chartBar.innerHTML = `
+            <div style="width: ${netPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+            <div style="width: ${taxPct.toFixed(1)}%; height: 100%; background: var(--color-warning, #f59e0b); transition: width 0.3s ease;"></div>
+          `;
+        } else {
+          chartBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+
+      // Populate comparison matrix
+      const tableBody = document.getElementById('revtax-matrix-body');
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        
+        // Define standard VAT/GST rates
+        const comparisonRates = [
+          { name: 'US Average Sales Tax', rate: 7.0 },
+          { name: 'Australia / Canada GST', rate: 10.0 },
+          { name: 'Canada Standard HST', rate: 13.0 },
+          { name: 'New Zealand / UK VAT', rate: 15.0 },
+          { name: 'India GST Standard', rate: 18.0 },
+          { name: 'Europe Standard VAT', rate: 20.0 }
+        ];
+
+        comparisonRates.forEach(item => {
+          let itemNet = 0;
+          let itemTax = 0;
+
+          if (mode === 'add') {
+            // If Net is fixed, compute what Gross/Tax would be under other rates
+            itemNet = netPrice;
+            itemTax = netPrice * (item.rate / 100);
+          } else {
+            // Gross is fixed, extract Net/Tax
+            itemNet = grossPrice / (1 + item.rate / 100);
+            itemTax = grossPrice - itemNet;
+          }
+
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid var(--color-border)';
+          tr.innerHTML = `
+            <td style="padding: var(--space-2.5) var(--space-3); font-weight:600;">${item.name}</td>
+            <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700;">${item.rate.toFixed(1)}%</td>
+            <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700;" class="currency-symbol-target">${formatCurrency(itemNet)}</td>
+            <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight:700; color: var(--color-warning);" class="currency-symbol-target">${formatCurrency(itemTax)}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+    }
+
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Reverse Tax Calculator Projections:\n` +
+                   `Gross Price (Inclusive): ${document.getElementById('tile-gross')?.textContent}\n` +
+                   `Net Price (Pre-Tax): ${document.getElementById('tile-net')?.textContent}\n` +
+                   `Tax Paid: ${document.getElementById('tile-tax')?.textContent}\n` +
+                   `Effective Tax Rate: ${rateInput.value}%`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initReverseTaxCalculator);
+  document.addEventListener('astro:after-swap', initReverseTaxCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 140px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

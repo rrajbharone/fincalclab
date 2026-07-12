@@ -1,0 +1,808 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Forex Position Size Calculator"
+  description="Calculate the exact lot sizes and units for your forex trades based on your account size, risk tolerance, stop loss, and currency pair."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="forex-calculator">
+    
+    <!-- Account Currency Selection -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="fx-acc-currency">Account Currency</label>
+        <select id="fx-acc-currency" class="currency-select" aria-label="Select Account Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Currency Pair Selection -->
+    <div class="input-group" id="group-pair">
+      <div class="input-label-row">
+        <label for="fx-pair">Currency Pair</label>
+        <select id="fx-pair" class="currency-select" aria-label="Select Currency Pair">
+          <option value="EUR/USD" selected>EUR/USD (Euro / US Dollar)</option>
+          <option value="GBP/USD">GBP/USD (British Pound / US Dollar)</option>
+          <option value="AUD/USD">AUD/USD (Australian Dollar / US Dollar)</option>
+          <option value="NZD/USD">NZD/USD (New Zealand Dollar / US Dollar)</option>
+          <option value="USD/JPY">USD/JPY (US Dollar / Japanese Yen)</option>
+          <option value="EUR/JPY">EUR/JPY (Euro / Japanese Yen)</option>
+          <option value="GBP/JPY">GBP/JPY (British Pound / Japanese Yen)</option>
+          <option value="USD/CAD">USD/CAD (US Dollar / Canadian Dollar)</option>
+          <option value="USD/CHF">USD/CHF (US Dollar / Swiss Franc)</option>
+          <option value="EUR/GBP">EUR/GBP (Euro / British Pound)</option>
+          <option value="EUR/CAD">EUR/CAD (Euro / Canadian Dollar)</option>
+          <option value="EUR/CHF">EUR/CHF (Euro / Swiss Franc)</option>
+          <option value="GBP/CHF">GBP/CHF (British Pound / Swiss Franc)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Account Balance -->
+    <div class="input-group" id="group-balance">
+      <div class="input-label-row">
+        <label for="fx-balance-input">Account Balance</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="fx-balance-input" min="10" step="100" value="10000" aria-label="Account Balance" />
+        </div>
+      </div>
+      <input type="range" id="fx-balance-slider" min="100" max="100000" step="100" value="10000" class="slider-range" aria-label="Account Balance Slider" />
+    </div>
+
+    <!-- Risk Percentage (%) -->
+    <div class="input-group" id="group-risk-pct">
+      <div class="input-label-row">
+        <label for="fx-risk-input">Risk Percentage (%)</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="fx-risk-input" min="0.1" max="20" step="0.1" value="1" aria-label="Risk Percentage" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="fx-risk-slider" min="0.1" max="10" step="0.1" value="1" class="slider-range" aria-label="Risk Percentage Slider" />
+    </div>
+
+    <!-- Stop Loss (Pips) -->
+    <div class="input-group" id="group-stoploss">
+      <div class="input-label-row">
+        <label for="fx-stoploss-input">Stop Loss (Pips)</label>
+        <div class="input-symbol-wrapper units-wrapper">
+          <input type="number" id="fx-stoploss-input" min="1" step="1" value="20" aria-label="Stop Loss in Pips" />
+          <span class="percent-symbol">pips</span>
+        </div>
+      </div>
+      <input type="range" id="fx-stoploss-slider" min="2" max="150" step="1" value="20" class="slider-range" aria-label="Stop Loss Slider" />
+    </div>
+
+    <!-- Leverage Selector (for Margin calculator) -->
+    <div class="input-group" id="group-leverage">
+      <div class="input-label-row">
+        <label for="fx-leverage-select">Account Leverage</label>
+        <select id="fx-leverage-select" class="currency-select" aria-label="Select Leverage" style="width: 145px; height: 38px; padding: 0 10px;">
+          <option value="100" selected>1:100</option>
+          <option value="500">1:500</option>
+          <option value="200">1:200</option>
+          <option value="50">1:50</option>
+          <option value="30">1:30</option>
+          <option value="10">1:10</option>
+          <option value="1">1:1</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- DYNAMIC EXCHANGE RATE INPUT (Shown only when quote currency != account currency) -->
+    <div id="fx-conversion-rate-container" class="hidden" style="border: 1.5px dashed var(--color-border); padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-bg-base); display: flex; flex-direction: column; gap: var(--space-3);">
+      <h4 style="margin: 0; font-size: 0.9rem; font-weight: 700; color: var(--color-primary);" id="fx-conv-title">Conversion Exchange Rate</h4>
+      
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="fx-conv-input" id="fx-conv-label">EUR/USD Exchange Rate</label>
+          <div class="input-symbol-wrapper units-wrapper">
+            <input type="number" id="fx-conv-input" min="0.0001" step="0.0001" value="1.0900" aria-label="Conversion Rate" />
+            <span class="percent-symbol">rate</span>
+          </div>
+        </div>
+      </div>
+      <p style="margin: 0; font-size: 0.75rem; color: var(--color-text-light); line-height: 1.4;">
+        Since your account currency differs from the currency pair's quote currency, this rate is required to calculate precise pip values.
+      </p>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="fx-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Risk & Position Summary</h3>
+
+    <!-- Summary Card -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Recommended Position Size</span>
+        <div id="res-fx-units" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-primary);">50,000 Units</div>
+        <p id="res-fx-details" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          To limit your risk to exactly <strong id="res-risk-amt">$100.00</strong> (1.0% of balance) with a 20 pip stop loss, open a trade size of <strong>50,000 units</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid (Lots Breakdown) -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Lot Size Equivalence</h4>
+    <div class="results-grid">
+      <div class="result-tile">
+        <span class="tile-label">Standard Lots</span>
+        <div class="tile-value" id="tile-std-lots" style="color: var(--color-primary);">0.50 Lots</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">100,000 units/lot</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Mini Lots</span>
+        <div class="tile-value" id="tile-mini-lots" style="color: var(--color-accent);">5.00 Lots</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">10,000 units/lot</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Micro Lots</span>
+        <div class="tile-value" id="tile-micro-lots" style="color: var(--color-success);">50.00 Lots</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">1,000 units/lot</span>
+      </div>
+    </div>
+
+    <!-- Margin Composition & Warning -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Account Margin Impact</h4>
+      <div id="fx-margin-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div class="chart-legend-grid">
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--color-primary);"></span>
+          Margin Required: <strong id="chart-fx-margin">$545.00</strong>
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--color-success);"></span>
+          Free Balance: <strong id="chart-fx-free">$9,455.00</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Leveraged trade details list -->
+    <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); background-color: var(--color-bg-base); padding: var(--space-4);">
+      <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: var(--space-3); color: var(--color-text-base);">Trade Value Specifications</h4>
+      
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2.5); font-size: 0.875rem;">
+        <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+          <span style="color: var(--color-text-muted);">Notional Contract Value:</span>
+          <strong id="spec-notional">$54,500.00</strong>
+        </li>
+        <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+          <span style="color: var(--color-text-muted);">Pip Value (per unit):</span>
+          <strong id="spec-pip-val">$0.00010 USD</strong>
+        </li>
+        <li style="display: flex; justify-content: space-between; padding-bottom: 0;">
+          <span style="color: var(--color-text-muted);">Total Pip Value (Trade size):</span>
+          <strong id="spec-tot-pip-val">$5.00 / pip</strong>
+        </li>
+      </ul>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Standard prices to auto-convert Margin/Exchange values
+  const defaultRates: Record<string, number> = {
+    'EUR/USD': 1.0900,
+    'GBP/USD': 1.2800,
+    'AUD/USD': 0.6700,
+    'NZD/USD': 0.6100,
+    'USD/JPY': 158.00,
+    'EUR/JPY': 172.00,
+    'GBP/JPY': 202.00,
+    'USD/CAD': 1.3600,
+    'USD/CHF': 0.8900,
+    'EUR/GBP': 0.8500,
+    'EUR/CAD': 1.4800,
+    'EUR/CHF': 0.9700,
+    'GBP/CHF': 1.1400
+  };
+
+  function initForexCalculator() {
+    const accCurrencySelect = document.getElementById('fx-acc-currency') as HTMLSelectElement;
+    const pairSelect = document.getElementById('fx-pair') as HTMLSelectElement;
+
+    // Inputs
+    const balanceInput = document.getElementById('fx-balance-input') as HTMLInputElement;
+    const balanceSlider = document.getElementById('fx-balance-slider') as HTMLInputElement;
+    const riskInput = document.getElementById('fx-risk-input') as HTMLInputElement;
+    const riskSlider = document.getElementById('fx-risk-slider') as HTMLInputElement;
+    const stoplossInput = document.getElementById('fx-stoploss-input') as HTMLInputElement;
+    const stoplossSlider = document.getElementById('fx-stoploss-slider') as HTMLInputElement;
+    const leverageSelect = document.getElementById('fx-leverage-select') as HTMLSelectElement;
+
+    // Conversion container elements
+    const conversionContainer = document.getElementById('fx-conversion-rate-container') as HTMLDivElement;
+    const convInput = document.getElementById('fx-conv-input') as HTMLInputElement;
+    const convLabel = document.getElementById('fx-conv-label') as HTMLLabelElement;
+
+    if (!accCurrencySelect || !pairSelect) return;
+
+    // Setup input watch triggers
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(balanceInput, balanceSlider);
+    bindSlider(riskInput, riskSlider);
+    bindSlider(stoplossInput, stoplossSlider);
+
+    accCurrencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(accCurrencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      checkConversionNeeded();
+      calculateAll();
+    });
+
+    pairSelect.addEventListener('change', () => {
+      checkConversionNeeded();
+      calculateAll();
+    });
+
+    convInput.addEventListener('input', calculateAll);
+    leverageSelect.addEventListener('change', calculateAll);
+
+    // Reset button
+    const resetBtn = document.getElementById('fx-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        balanceInput.value = '10000';
+        balanceSlider.value = '10000';
+        riskInput.value = '1';
+        riskSlider.value = '1';
+        stoplossInput.value = '20';
+        stoplossSlider.value = '20';
+        leverageSelect.value = '100';
+        accCurrencySelect.value = 'USD';
+        pairSelect.value = 'EUR/USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        checkConversionNeeded();
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'JPY': return '¥';
+        case 'CAD': return 'C$';
+        case 'AUD': return 'A$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(accCurrencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Identifies quote and base currency of a selected pair
+    function getPairCurrencies(pair: string) {
+      const parts = pair.split('/');
+      return { base: parts[0], quote: parts[1] };
+    }
+
+    function checkConversionNeeded() {
+      const pair = pairSelect.value;
+      const accCurr = accCurrencySelect.value;
+      const { quote } = getPairCurrencies(pair);
+
+      if (quote === accCurr) {
+        conversionContainer.classList.add('hidden');
+      } else {
+        conversionContainer.classList.remove('hidden');
+        
+        // Find which exchange rate standard quote to ask for
+        let labelText = '';
+        let defaultVal = 1.0000;
+
+        if (accCurr === 'USD') {
+          if (quote === 'JPY') { labelText = 'USD/JPY Exchange Rate'; defaultVal = defaultRates['USD/JPY']; }
+          else if (quote === 'CAD') { labelText = 'USD/CAD Exchange Rate'; defaultVal = defaultRates['USD/CAD']; }
+          else if (quote === 'CHF') { labelText = 'USD/CHF Exchange Rate'; defaultVal = defaultRates['USD/CHF']; }
+          else if (quote === 'GBP') { labelText = 'GBP/USD Exchange Rate'; defaultVal = defaultRates['GBP/USD']; }
+          else if (quote === 'EUR') { labelText = 'EUR/USD Exchange Rate'; defaultVal = defaultRates['EUR/USD']; }
+          else { labelText = `${quote}/USD Rate`; defaultVal = 1.0000; }
+        } else if (accCurr === 'EUR') {
+          if (quote === 'USD') { labelText = 'EUR/USD Exchange Rate'; defaultVal = defaultRates['EUR/USD']; }
+          else if (quote === 'JPY') { labelText = 'EUR/JPY Exchange Rate'; defaultVal = defaultRates['EUR/JPY']; }
+          else if (quote === 'GBP') { labelText = 'EUR/GBP Exchange Rate'; defaultVal = defaultRates['EUR/GBP']; }
+          else if (quote === 'CHF') { labelText = 'EUR/CHF Exchange Rate'; defaultVal = defaultRates['EUR/CHF']; }
+          else if (quote === 'CAD') { labelText = 'EUR/CAD Exchange Rate'; defaultVal = defaultRates['EUR/CAD']; }
+          else { labelText = `${quote}/EUR Rate`; defaultVal = 1.0000; }
+        } else if (accCurr === 'GBP') {
+          if (quote === 'USD') { labelText = 'GBP/USD Exchange Rate'; defaultVal = defaultRates['GBP/USD']; }
+          else if (quote === 'JPY') { labelText = 'GBP/JPY Exchange Rate'; defaultVal = defaultRates['GBP/JPY']; }
+          else if (quote === 'CHF') { labelText = 'GBP/CHF Exchange Rate'; defaultVal = defaultRates['GBP/CHF']; }
+          else if (quote === 'EUR') { labelText = 'EUR/GBP Exchange Rate'; defaultVal = defaultRates['EUR/GBP']; }
+          else { labelText = `${quote}/GBP Rate`; defaultVal = 1.0000; }
+        } else {
+          // Fallback conversion label
+          labelText = `${quote}/${accCurr} Exchange Rate`;
+          const key = `${quote}/${accCurr}`;
+          const keyRev = `${accCurr}/${quote}`;
+          defaultVal = defaultRates[key] || (defaultRates[keyRev] ? 1 / defaultRates[keyRev] : 1.0000);
+        }
+
+        if (convLabel) convLabel.textContent = labelText;
+        
+        // Only set default price if the user hasn't typed in custom rate yet
+        const isDefault = convInput.getAttribute('data-is-default') !== 'false';
+        if (isDefault) {
+          convInput.value = defaultVal.toFixed(4);
+        }
+      }
+    }
+
+    function calculateAll() {
+      const pair = pairSelect.value;
+      const accCurr = accCurrencySelect.value;
+      const balance = parseFloat(balanceInput.value) || 0;
+      const riskPct = parseFloat(riskInput.value) || 0;
+      const stopLoss = parseFloat(stoplossInput.value) || 0;
+      const leverage = parseFloat(leverageSelect.value) || 100;
+
+      const { base, quote } = getPairCurrencies(pair);
+      const isJpy = quote === 'JPY';
+      const basePipVal = isJpy ? 0.01 : 0.0001; // Pip standard size in Quote Currency
+
+      const riskAmt = balance * (riskPct / 100);
+
+      // 1. Calculate Pip Value per unit in Account Currency
+      let pipValInAcc = basePipVal;
+
+      if (quote !== accCurr) {
+        const rate = parseFloat(convInput.value) || 1.0000;
+        convInput.setAttribute('data-is-default', 'false'); // Mark as modified by user
+
+        // Convert quote currency pip to account currency
+        if (accCurr === 'USD') {
+          if (quote === 'JPY') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'CAD') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'CHF') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'GBP') { pipValInAcc = basePipVal * rate; }
+          else if (quote === 'EUR') { pipValInAcc = basePipVal * rate; }
+          else { pipValInAcc = basePipVal * rate; }
+        } else if (accCurr === 'EUR') {
+          if (quote === 'USD') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'JPY') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'GBP') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'CHF') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'CAD') { pipValInAcc = basePipVal / rate; }
+          else { pipValInAcc = basePipVal * rate; }
+        } else if (accCurr === 'GBP') {
+          if (quote === 'USD') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'JPY') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'CHF') { pipValInAcc = basePipVal / rate; }
+          else if (quote === 'EUR') { pipValInAcc = basePipVal * rate; }
+          else { pipValInAcc = basePipVal * rate; }
+        } else {
+          // Standard cross fallback: assumes rate entered is Quote/Account rate
+          pipValInAcc = basePipVal * rate;
+        }
+      }
+
+      // 2. Position Size in Units = Risk / (StopLoss * PipValPerUnit)
+      let units = 0;
+      if (stopLoss > 0 && pipValInAcc > 0) {
+        units = riskAmt / (stopLoss * pipValInAcc);
+      }
+
+      // Round units to nearest whole unit
+      units = Math.round(units);
+
+      // Lot equivalent breakdown
+      const stdLots = units / 100000;
+      const miniLots = units / 10000;
+      const microLots = units / 1000;
+
+      // 3. Margin requirement calculation
+      // Notional Value in Base Currency = Units.
+      // Margin = Units / Leverage (in Base Currency).
+      // We convert this Margin to Account Currency.
+      // Base-to-Account Rate:
+      let baseToAccRate = 1.0000;
+      if (base !== accCurr) {
+        // If quote matches account, the price of the pair is base-to-account rate!
+        if (quote === accCurr) {
+          baseToAccRate = defaultRates[pair] || 1.0000;
+        } else {
+          // Check standard conversion key
+          const key = `${base}/${accCurr}`;
+          const keyRev = `${accCurr}/${base}`;
+          baseToAccRate = defaultRates[key] || (defaultRates[keyRev] ? 1 / defaultRates[keyRev] : 1.0000);
+        }
+      }
+
+      const notionalValInAcc = units * baseToAccRate;
+      const marginRequired = notionalValInAcc / leverage;
+      const freeBalance = Math.max(0, balance - marginRequired);
+
+      // Update UI elements
+      const resUnits = document.getElementById('res-fx-units');
+      const resRisk = document.getElementById('res-risk-amt');
+      const resDetails = document.getElementById('res-fx-details');
+
+      const elStdLots = document.getElementById('tile-std-lots');
+      const elMiniLots = document.getElementById('tile-mini-lots');
+      const elMicroLots = document.getElementById('tile-micro-lots');
+
+      const elMargin = document.getElementById('chart-fx-margin');
+      const elFree = document.getElementById('chart-fx-free');
+      const marginBar = document.getElementById('fx-margin-bar');
+
+      const specNotional = document.getElementById('spec-notional');
+      const specPipVal = document.getElementById('spec-pip-val');
+      const specTotPipVal = document.getElementById('spec-tot-pip-val');
+
+      if (resUnits) resUnits.textContent = `${units.toLocaleString()} Units`;
+      if (resRisk) resRisk.textContent = formatCurrency(riskAmt);
+      if (resDetails) {
+        resDetails.innerHTML = `To limit your risk to exactly <strong>${formatCurrency(riskAmt)}</strong> (${riskPct.toFixed(1)}% of balance) with a ${stopLoss} pip stop loss, open a trade size of <strong>${units.toLocaleString()} units</strong>.`;
+      }
+
+      if (elStdLots) elStdLots.textContent = `${stdLots.toFixed(2)} Lots`;
+      if (elMiniLots) elMiniLots.textContent = `${miniLots.toFixed(2)} Lots`;
+      if (elMicroLots) elMicroLots.textContent = `${microLots.toFixed(2)} Lots`;
+
+      if (elMargin) elMargin.textContent = formatCurrency(marginRequired);
+      if (elFree) elFree.textContent = formatCurrency(freeBalance);
+
+      if (specNotional) specNotional.textContent = formatCurrency(notionalValInAcc);
+      if (specPipVal) {
+        specPipVal.textContent = `${pipValInAcc.toFixed(5)} ${accCurr}`;
+      }
+      if (specTotPipVal) {
+        specTotPipVal.textContent = `${formatCurrency(units * pipValInAcc)} / pip`;
+      }
+
+      if (marginBar) {
+        if (balance > 0) {
+          const marginPct = Math.min(100, (marginRequired / balance) * 100);
+          const freePct = Math.max(0, 100 - marginPct);
+
+          marginBar.innerHTML = `
+            <div style="width: ${marginPct.toFixed(1)}%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+            <div style="width: ${freePct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+          `;
+          
+          if (marginRequired > balance) {
+            marginBar.style.outline = '2px solid var(--color-error)';
+          } else {
+            marginBar.style.outline = 'none';
+          }
+        } else {
+          marginBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    checkConversionNeeded();
+    calculateAll();
+    
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Forex Position Size Summary:\n` +
+                   `Currency Pair: ${pairSelect.value}\n` +
+                   `Account Balance: ${formatCurrency(parseFloat(balanceInput.value))}\n` +
+                   `Risk Tolerance: ${riskInput.value}% (${formatCurrency(parseFloat(balanceInput.value) * (parseFloat(riskInput.value) / 100))})\n` +
+                   `Stop Loss: ${stoplossInput.value} pips\n` +
+                   `Trade Size: ${document.getElementById('res-fx-units')?.textContent}\n` +
+                   `Standard Lots: ${document.getElementById('tile-std-lots')?.textContent}\n` +
+                   `Margin Required: ${document.getElementById('chart-fx-margin')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initForexCalculator);
+  document.addEventListener('astro:after-swap', initForexCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input, .units-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .chart-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+    padding: 0 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chart-legend-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+      text-align: left;
+    }
+    .legend-item {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

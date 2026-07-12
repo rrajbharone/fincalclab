@@ -1,0 +1,1238 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Inventory Cost Calculator"
+  description="Optimize your retail or e-commerce business operations. Calculate carrying costs, find your Economic Order Quantity (EOQ), determine safety stocks, and compare FIFO vs LIFO side-by-side."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="inventory-calc">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="inventory-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="inventory-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="carrying-cost" selected>Inventory Carrying Costs (Annual Storage & Capital)</option>
+        <option value="eoq-rop">EOQ & Reorder Point (Optimal Order Size & Safety Stock)</option>
+        <option value="valuation">Inventory Valuation (FIFO vs LIFO vs Weighted Average)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector (Excluding Valuation where we compare ratios/numbers) -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="inventory-currency-select">Currency</label>
+        <select id="inventory-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ================= MODE 1: CARRYING COSTS INPUTS ================= -->
+    <div id="mode-carrying-inputs">
+      <!-- Input: Average Inventory Value -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inv-avg-value">Average Inventory Value</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="inv-avg-value" min="0" step="1000" value="50000" aria-label="Average Inventory Value" />
+          </div>
+        </div>
+        <input type="range" id="inv-avg-value-slider" min="1000" max="500000" step="1000" value="50000" class="slider-range" aria-label="Average Inventory Value Slider" />
+      </div>
+
+      <!-- Input: Annual Storage Costs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inv-storage-cost">Annual Storage Costs (Rent, Utilities, Staff)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="inv-storage-cost" min="0" step="100" value="6000" aria-label="Annual Storage Costs" />
+          </div>
+        </div>
+        <input type="range" id="inv-storage-cost-slider" min="0" max="100000" step="500" value="6000" class="slider-range" aria-label="Annual Storage Costs Slider" />
+      </div>
+
+      <!-- Input: Annual Service Costs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inv-service-cost">Annual Service Costs (Insurance, Tax, Software)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="inv-service-cost" min="0" step="100" value="2000" aria-label="Annual Service Costs" />
+          </div>
+        </div>
+        <input type="range" id="inv-service-cost-slider" min="0" max="50000" step="200" value="2000" class="slider-range" aria-label="Annual Service Costs Slider" />
+      </div>
+
+      <!-- Input: Annual Risk Costs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inv-risk-cost">Annual Risk Costs (Obsolescence, Shrink, Damage)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="inv-risk-cost" min="0" step="100" value="1500" aria-label="Annual Risk Costs" />
+          </div>
+        </div>
+        <input type="range" id="inv-risk-cost-slider" min="0" max="50000" step="200" value="1500" class="slider-range" aria-label="Annual Risk Costs Slider" />
+      </div>
+
+      <!-- Input: Capital Opportunity Rate (%) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inv-capital-rate">Capital Cost Rate (Opportunity Cost %)</label>
+          <div class="input-symbol-wrapper percent-wrapper">
+            <input type="number" id="inv-capital-rate" min="0" max="50" step="0.5" value="12" aria-label="Capital Cost Rate" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="inv-capital-rate-slider" min="0" max="40" step="0.5" value="12" class="slider-range" aria-label="Capital Cost Rate Slider" />
+      </div>
+    </div>
+
+    <!-- ================= MODE 2: EOQ & REORDER POINT INPUTS ================= -->
+    <div id="mode-eoq-inputs" class="hidden">
+      <!-- Input: Annual Demand (Units) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="eoq-demand">Annual Demand (Units Sold/Year)</label>
+          <div class="input-symbol-wrapper units-wrapper">
+            <input type="number" id="eoq-demand" min="10" step="100" value="10000" aria-label="Annual Demand" />
+            <span class="percent-symbol">units</span>
+          </div>
+        </div>
+        <input type="range" id="eoq-demand-slider" min="100" max="100000" step="100" value="10000" class="slider-range" aria-label="Annual Demand Slider" />
+      </div>
+
+      <!-- Input: Setup/Order Cost -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="eoq-order-cost">Cost Per Order (Setup, Shipping, Procurement)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="eoq-order-cost" min="1" step="5" value="50" aria-label="Order Cost" />
+          </div>
+        </div>
+        <input type="range" id="eoq-order-cost-slider" min="1" max="1000" step="5" value="50" class="slider-range" aria-label="Order Cost Slider" />
+      </div>
+
+      <!-- Input: Unit Cost -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="eoq-unit-cost">Cost Per Unit</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="eoq-unit-cost" min="1" step="1" value="20" aria-label="Unit Cost" />
+          </div>
+        </div>
+        <input type="range" id="eoq-unit-cost-slider" min="1" max="500" step="1" value="20" class="slider-range" aria-label="Unit Cost Slider" />
+      </div>
+
+      <!-- Input: Carrying Cost Rate (%) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="eoq-carrying-rate">Inventory Carrying Rate (%)</label>
+          <div class="input-symbol-wrapper percent-wrapper">
+            <input type="number" id="eoq-carrying-rate" min="1" max="100" step="1" value="20" aria-label="Carrying Cost Rate" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="eoq-carrying-rate-slider" min="1" max="100" step="1" value="20" class="slider-range" aria-label="Carrying Cost Rate Slider" />
+      </div>
+
+      <!-- Input: Supplier Lead Time -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="eoq-lead-time">Supplier Lead Time (Days)</label>
+          <div class="input-symbol-wrapper units-wrapper">
+            <input type="number" id="eoq-lead-time" min="1" step="1" value="14" aria-label="Supplier Lead Time" />
+            <span class="percent-symbol">days</span>
+          </div>
+        </div>
+        <input type="range" id="eoq-lead-time-slider" min="1" max="90" step="1" value="14" class="slider-range" aria-label="Supplier Lead Time Slider" />
+      </div>
+
+      <!-- Input: Safety Stock Calculation Options -->
+      <div class="input-group" style="margin-top: var(--space-2);">
+        <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base);">Safety Stock Option</label>
+        <div style="display: flex; gap: var(--space-4); margin-top: 4px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.875rem;">
+            <input type="radio" name="safety-stock-type" value="manual" checked /> Manual Entry
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.875rem;">
+            <input type="radio" name="safety-stock-type" value="calculate" /> Calculate Dynamic Safety Stock
+          </label>
+        </div>
+      </div>
+
+      <!-- Safety Stock Input: Manual -->
+      <div class="input-group" id="safety-manual-group">
+        <div class="input-label-row">
+          <label for="eoq-safety-stock">Safety Stock (Units)</label>
+          <div class="input-symbol-wrapper units-wrapper">
+            <input type="number" id="eoq-safety-stock" min="0" step="10" value="100" aria-label="Safety Stock" />
+            <span class="percent-symbol">units</span>
+          </div>
+        </div>
+        <input type="range" id="eoq-safety-stock-slider" min="0" max="2000" step="10" value="100" class="slider-range" aria-label="Safety Stock Slider" />
+      </div>
+
+      <!-- Safety Stock Input: Calculation Fields -->
+      <div id="safety-calc-fields" class="hidden" style="border: 1px solid var(--color-border); padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-bg-base); display: flex; flex-direction: column; gap: var(--space-3);">
+        <h4 style="margin: 0; font-size: 0.875rem; font-weight: 700; color: var(--color-primary);">Lead Time & Demand Variability</h4>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3);">
+          <div>
+            <label for="ss-avg-sales" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted);">Avg. Daily Sales</label>
+            <input type="number" id="ss-avg-sales" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; margin-top: 4px; font-size: 0.85rem;" value="27.4" step="0.1" />
+          </div>
+          <div>
+            <label for="ss-max-sales" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted);">Max Daily Sales</label>
+            <input type="number" id="ss-max-sales" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; margin-top: 4px; font-size: 0.85rem;" value="45" step="1" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3);">
+          <div>
+            <label for="ss-avg-lead" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted);">Avg. Lead Time (Days)</label>
+            <input type="number" id="ss-avg-lead" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; margin-top: 4px; font-size: 0.85rem;" value="14" step="1" />
+          </div>
+          <div>
+            <label for="ss-max-lead" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted);">Max Lead Time (Days)</label>
+            <input type="number" id="ss-max-lead" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; margin-top: 4px; font-size: 0.85rem;" value="20" step="1" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODE 3: VALUATION INPUTS ================= -->
+    <div id="mode-valuation-inputs" class="hidden">
+      <div style="border: 1px solid var(--color-border); padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-bg-base); display: flex; flex-direction: column; gap: var(--space-4);">
+        <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--color-text-base);">Inventory Transaction Ledger</h4>
+        <p style="margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--color-text-muted);">
+          Input your starting stock and purchase batches in chronological order, then define your unit sales volume to calculate COGS.
+        </p>
+
+        <!-- Beginning Stock -->
+        <div style="border-left: 3px solid var(--color-primary); padding-left: var(--space-3); display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">1. Beginning Inventory</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div>
+              <label for="val-beg-units" style="font-size: 0.75rem;">Units</label>
+              <input type="number" id="val-beg-units" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; font-size: 0.85rem;" value="100" />
+            </div>
+            <div>
+              <label for="val-beg-cost" style="font-size: 0.75rem;">Unit Cost (<span class="currency-symbol">$</span>)</label>
+              <input type="number" id="val-beg-cost" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; font-size: 0.85rem;" value="10.00" step="0.01" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Purchase 1 -->
+        <div style="border-left: 3px solid var(--color-accent); padding-left: var(--space-3); display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">2. Purchase Batch A (First)</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div>
+              <label for="val-p1-units" style="font-size: 0.75rem;">Units</label>
+              <input type="number" id="val-p1-units" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; font-size: 0.85rem;" value="150" />
+            </div>
+            <div>
+              <label for="val-p1-cost" style="font-size: 0.75rem;">Unit Cost (<span class="currency-symbol">$</span>)</label>
+              <input type="number" id="val-p1-cost" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; font-size: 0.85rem;" value="12.00" step="0.01" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Purchase 2 -->
+        <div style="border-left: 3px solid var(--color-success); padding-left: var(--space-3); display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">3. Purchase Batch B (Recent)</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div>
+              <label for="val-p2-units" style="font-size: 0.75rem;">Units</label>
+              <input type="number" id="val-p2-units" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; font-size: 0.85rem;" value="200" />
+            </div>
+            <div>
+              <label for="val-p2-cost" style="font-size: 0.75rem;">Unit Cost (<span class="currency-symbol">$</span>)</label>
+              <input type="number" id="val-p2-cost" class="currency-select" style="width: 100%; height: 36px; padding: 0 8px; font-size: 0.85rem;" value="15.00" step="0.01" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Sales Volume -->
+        <div style="border-top: 1px dashed var(--color-border); padding-top: var(--space-4); display: flex; flex-direction: column; gap: 4px;">
+          <div class="input-label-row">
+            <label for="val-units-sold" style="font-size: 0.9rem; font-weight: 700;">Total Units Sold</label>
+            <div class="input-symbol-wrapper units-wrapper" style="height: 36px; width: 120px;">
+              <input type="number" id="val-units-sold" min="0" value="300" aria-label="Units Sold" />
+              <span class="percent-symbol">units</span>
+            </div>
+          </div>
+          <input type="range" id="val-units-sold-slider" min="0" max="450" step="5" value="300" class="slider-range" aria-label="Units Sold Slider" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="inventory-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Calculation Summary</h3>
+
+    <!-- ================= RESULTS 1: CARRYING COSTS ================= -->
+    <div id="mode-carrying-results">
+      <!-- Summary Banner -->
+      <div style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Annual Carrying Cost</span>
+          <div id="res-carrying-total" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-primary);">$15,500.00</div>
+          <p id="res-carrying-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+            It costs you <strong>31.00%</strong> of your inventory value each year to hold stock.
+          </p>
+        </Card>
+      </div>
+
+      <!-- Key Metrics Grid -->
+      <div class="results-grid">
+        <div class="result-tile">
+          <span class="tile-label">Annual Cost</span>
+          <div class="tile-value" id="tile-carrying-annual" style="color: var(--color-primary);">$15,500</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Carrying Rate</span>
+          <div class="tile-value" id="tile-carrying-rate" style="color: var(--color-accent);">31.0%</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Daily Cost</span>
+          <div class="tile-value" id="tile-carrying-daily" style="color: var(--color-success);">$42.47</div>
+        </div>
+      </div>
+
+      <!-- Cost composition bar -->
+      <div class="chart-container" style="margin-bottom: var(--space-6);">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Carrying Cost Breakdown</h4>
+        <div id="carrying-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+          <!-- Injected via JS -->
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2) var(--space-4); font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-3); padding: 0 4px;">
+          <span style="display: flex; align-items: center; gap: 4px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6;"></span>
+            Opportunity: <strong id="chart-c-capital">$6,000</strong>
+          </span>
+          <span style="display: flex; align-items: center; gap: 4px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span>
+            Storage Rent: <strong id="chart-c-storage">$6,000</strong>
+          </span>
+          <span style="display: flex; align-items: center; gap: 4px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+            Service & Tech: <strong id="chart-c-service">$2,000</strong>
+          </span>
+          <span style="display: flex; align-items: center; gap: 4px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span>
+            Risk & Shrink: <strong id="chart-c-risk">$1,500</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= RESULTS 2: EOQ & REORDER POINT ================= -->
+    <div id="mode-eoq-results" class="hidden">
+      <!-- Summary Banner -->
+      <div style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Economic Order Quantity (EOQ)</span>
+          <div id="res-eoq-qty" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-success);">500 Units</div>
+          <p id="res-eoq-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+            Ordering <strong>500 units</strong> per batch minimizes your total annual procurement and holding costs.
+          </p>
+        </Card>
+      </div>
+
+      <!-- Key Metrics Grid -->
+      <div class="results-grid">
+        <div class="result-tile">
+          <span class="tile-label">Reorder Point</span>
+          <div class="tile-value" id="tile-eoq-rop" style="color: var(--color-primary);">484 Units</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Safety Stock</span>
+          <div class="tile-value" id="tile-eoq-safety" style="color: var(--color-accent);">100 Units</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Annual Cost</span>
+          <div class="tile-value" id="tile-eoq-cost" style="color: var(--color-success);">$2,000</div>
+        </div>
+      </div>
+
+      <!-- Detailed metrics breakdown -->
+      <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); background-color: var(--color-bg-base); padding: var(--space-4);">
+        <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: var(--space-3); color: var(--color-text-base);">Operations Calendar & Cost Breakdown</h4>
+        
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2.5); font-size: 0.875rem;">
+          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+            <span style="color: var(--color-text-muted);">Orders Per Year:</span>
+            <strong id="detail-orders-count">20.0 times</strong>
+          </li>
+          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+            <span style="color: var(--color-text-muted);">Order Frequency:</span>
+            <strong id="detail-order-days">Every 18.3 days</strong>
+          </li>
+          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+            <span style="color: var(--color-text-muted);">Annual Ordering Cost:</span>
+            <strong id="detail-annual-ordering">$1,000.00</strong>
+          </li>
+          <li style="display: flex; justify-content: space-between; padding-bottom: 0;">
+            <span style="color: var(--color-text-muted);">Annual Holding Cost:</span>
+            <strong id="detail-annual-holding">$1,000.00</strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ================= RESULTS 3: VALUATION COMPARISON ================= -->
+    <div id="mode-valuation-results" class="hidden">
+      <div style="margin-bottom: var(--space-4);">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Side-by-Side Methods Comparison</h4>
+        
+        <div class="table-container" style="overflow-x: auto;">
+          <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+                <th style="padding: var(--space-2) var(--space-3);">Financial Metric</th>
+                <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-primary);">FIFO</th>
+                <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-accent);">LIFO</th>
+                <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-success);">Average (WAC)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Cost of Goods Sold (COGS)</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700; color: var(--color-primary);" id="val-row-fifo-cogs">$3,550.00</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700; color: var(--color-accent);" id="val-row-lifo-cogs">$4,200.00</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700; color: var(--color-success);" id="val-row-wac-cogs">$3,866.67</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Ending Inventory Value</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700;" id="val-row-fifo-end">$2,250.00</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700;" id="val-row-lifo-end">$1,600.00</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700;" id="val-row-wac-end">$1,933.33</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Remaining Stock Units</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="val-row-fifo-units">150 units</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="val-row-lifo-units">150 units</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="val-row-wac-units">150 units</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Weighted Unit Cost</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="val-row-fifo-avg">-</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="val-row-lifo-avg">-</td>
+                <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700; color: var(--color-success);" id="val-row-wac-avg">$12.89</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div style="margin-top: var(--space-4); border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+          <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-primary);">Tax & Income Report Insight</span>
+          <p style="font-size: 0.8rem; line-height: 1.5; color: var(--color-text-muted); margin: var(--space-1) 0 0 0;" id="valuation-verdict-text">
+            Under inflationary batches, <strong>FIFO</strong> yields a lower COGS, reporting higher taxable profits. <strong>LIFO</strong> maximizes COGS, minimizing net reported taxable profit.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initInventoryCalculator() {
+    const modeSelect = document.getElementById('inventory-calc-mode') as HTMLSelectElement;
+
+    // Input Groups
+    const carryingInputs = document.getElementById('mode-carrying-inputs') as HTMLDivElement;
+    const eoqInputs = document.getElementById('mode-eoq-inputs') as HTMLDivElement;
+    const valuationInputs = document.getElementById('mode-valuation-inputs') as HTMLDivElement;
+    const currencyGroup = document.getElementById('group-currency') as HTMLDivElement;
+
+    // Result blocks
+    const carryingResults = document.getElementById('mode-carrying-results') as HTMLDivElement;
+    const eoqResults = document.getElementById('mode-eoq-results') as HTMLDivElement;
+    const valuationResults = document.getElementById('mode-valuation-results') as HTMLDivElement;
+
+    // Carrying Mode Inputs
+    const avgValueInput = document.getElementById('inv-avg-value') as HTMLInputElement;
+    const avgValueSlider = document.getElementById('inv-avg-value-slider') as HTMLInputElement;
+    const storageInput = document.getElementById('inv-storage-cost') as HTMLInputElement;
+    const storageSlider = document.getElementById('inv-storage-cost-slider') as HTMLInputElement;
+    const serviceInput = document.getElementById('inv-service-cost') as HTMLInputElement;
+    const serviceSlider = document.getElementById('inv-service-cost-slider') as HTMLInputElement;
+    const riskInput = document.getElementById('inv-risk-cost') as HTMLInputElement;
+    const riskSlider = document.getElementById('inv-risk-cost-slider') as HTMLInputElement;
+    const capitalInput = document.getElementById('inv-capital-rate') as HTMLInputElement;
+    const capitalSlider = document.getElementById('inv-capital-rate-slider') as HTMLInputElement;
+
+    // EOQ Mode Inputs
+    const demandInput = document.getElementById('eoq-demand') as HTMLInputElement;
+    const demandSlider = document.getElementById('eoq-demand-slider') as HTMLInputElement;
+    const orderCostInput = document.getElementById('eoq-order-cost') as HTMLInputElement;
+    const orderCostSlider = document.getElementById('eoq-order-cost-slider') as HTMLInputElement;
+    const unitCostInput = document.getElementById('eoq-unit-cost') as HTMLInputElement;
+    const unitCostSlider = document.getElementById('eoq-unit-cost-slider') as HTMLInputElement;
+    const carryingRateInput = document.getElementById('eoq-carrying-rate') as HTMLInputElement;
+    const carryingRateSlider = document.getElementById('eoq-carrying-rate-slider') as HTMLInputElement;
+    const leadTimeInput = document.getElementById('eoq-lead-time') as HTMLInputElement;
+    const leadTimeSlider = document.getElementById('eoq-lead-time-slider') as HTMLInputElement;
+    const safetyStockInput = document.getElementById('eoq-safety-stock') as HTMLInputElement;
+    const safetyStockSlider = document.getElementById('eoq-safety-stock-slider') as HTMLInputElement;
+
+    // Dynamic Safety Stock
+    const safetyTypeRadios = document.getElementsByName('safety-stock-type') as NodeListOf<HTMLInputElement>;
+    const safetyManualGroup = document.getElementById('safety-manual-group') as HTMLDivElement;
+    const safetyCalcFields = document.getElementById('safety-calc-fields') as HTMLDivElement;
+    const ssAvgSales = document.getElementById('ss-avg-sales') as HTMLInputElement;
+    const ssMaxSales = document.getElementById('ss-max-sales') as HTMLInputElement;
+    const ssAvgLead = document.getElementById('ss-avg-lead') as HTMLInputElement;
+    const ssMaxLead = document.getElementById('ss-max-lead') as HTMLInputElement;
+
+    // Valuation Inputs
+    const valBegUnits = document.getElementById('val-beg-units') as HTMLInputElement;
+    const valBegCost = document.getElementById('val-beg-cost') as HTMLInputElement;
+    const valP1Units = document.getElementById('val-p1-units') as HTMLInputElement;
+    const valP1Cost = document.getElementById('val-p1-cost') as HTMLInputElement;
+    const valP2Units = document.getElementById('val-p2-units') as HTMLInputElement;
+    const valP2Cost = document.getElementById('val-p2-cost') as HTMLInputElement;
+    const valUnitsSold = document.getElementById('val-units-sold') as HTMLInputElement;
+    const valUnitsSoldSlider = document.getElementById('val-units-sold-slider') as HTMLInputElement;
+
+    if (!modeSelect) return;
+
+    // Mode Toggle script
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      
+      // Hide all first
+      carryingInputs.classList.add('hidden');
+      eoqInputs.classList.add('hidden');
+      valuationInputs.classList.add('hidden');
+      currencyGroup.classList.remove('hidden');
+
+      carryingResults.classList.add('hidden');
+      eoqResults.classList.add('hidden');
+      valuationResults.classList.add('hidden');
+
+      if (mode === 'carrying-cost') {
+        carryingInputs.classList.remove('hidden');
+        carryingResults.classList.remove('hidden');
+      } else if (mode === 'eoq-rop') {
+        eoqInputs.classList.remove('hidden');
+        eoqResults.classList.remove('hidden');
+      } else if (mode === 'valuation') {
+        valuationInputs.classList.remove('hidden');
+        valuationResults.classList.remove('hidden');
+        currencyGroup.classList.add('hidden'); // Ledgers display inline currency labels
+      }
+
+      calculateAll();
+    });
+
+    // Double slider bindings helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(avgValueInput, avgValueSlider);
+    bindSlider(storageInput, storageSlider);
+    bindSlider(serviceInput, serviceSlider);
+    bindSlider(riskInput, riskSlider);
+    bindSlider(capitalInput, capitalSlider);
+
+    bindSlider(demandInput, demandSlider);
+    bindSlider(orderCostInput, orderCostSlider);
+    bindSlider(unitCostInput, unitCostSlider);
+    bindSlider(carryingRateInput, carryingRateSlider);
+    bindSlider(leadTimeInput, leadTimeSlider);
+    bindSlider(safetyStockInput, safetyStockSlider);
+
+    bindSlider(valUnitsSold, valUnitsSoldSlider);
+
+    // Watch all inputs for calculation
+    const inputsToWatch = [
+      avgValueInput, storageInput, serviceInput, riskInput, capitalInput,
+      demandInput, orderCostInput, unitCostInput, carryingRateInput, leadTimeInput, safetyStockInput,
+      ssAvgSales, ssMaxSales, ssAvgLead, ssMaxLead,
+      valBegUnits, valBegCost, valP1Units, valP1Cost, valP2Units, valP2Cost, valUnitsSold
+    ];
+
+    inputsToWatch.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Watch safety stock type radio toggle
+    safetyTypeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (radio.checked) {
+          if (radio.value === 'manual') {
+            safetyManualGroup.classList.remove('hidden');
+            safetyCalcFields.classList.add('hidden');
+          } else {
+            safetyManualGroup.classList.add('hidden');
+            safetyCalcFields.classList.remove('hidden');
+          }
+          calculateAll();
+        }
+      });
+    });
+
+    // Dynamic slider range adjustment for valuation sold units
+    function updateValuationSliderMax() {
+      const uBeg = parseFloat(valBegUnits.value) || 0;
+      const uP1 = parseFloat(valP1Units.value) || 0;
+      const uP2 = parseFloat(valP2Units.value) || 0;
+      const totalAvailable = uBeg + uP1 + uP2;
+      
+      valUnitsSoldSlider.max = totalAvailable.toString();
+      if (parseFloat(valUnitsSold.value) > totalAvailable) {
+        valUnitsSold.value = totalAvailable.toString();
+        valUnitsSoldSlider.value = totalAvailable.toString();
+      }
+    }
+    
+    [valBegUnits, valP1Units, valP2Units].forEach(input => {
+      input.addEventListener('input', () => {
+        updateValuationSliderMax();
+        calculateAll();
+      });
+    });
+
+    // Currency selector
+    const currencySelect = document.getElementById('inventory-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('inventory-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        // Reset carrying
+        avgValueInput.value = '50000';
+        avgValueSlider.value = '50000';
+        storageInput.value = '6000';
+        storageSlider.value = '6000';
+        serviceInput.value = '2000';
+        serviceSlider.value = '2000';
+        riskInput.value = '1500';
+        riskSlider.value = '1500';
+        capitalInput.value = '12';
+        capitalSlider.value = '12';
+
+        // Reset EOQ
+        demandInput.value = '10000';
+        demandSlider.value = '10000';
+        orderCostInput.value = '50';
+        orderCostSlider.value = '50';
+        unitCostInput.value = '20';
+        unitCostSlider.value = '20';
+        carryingRateInput.value = '20';
+        carryingRateSlider.value = '20';
+        leadTimeInput.value = '14';
+        leadTimeSlider.value = '14';
+        safetyStockInput.value = '100';
+        safetyStockSlider.value = '100';
+        
+        // Safety Radios
+        safetyTypeRadios[0].checked = true;
+        safetyManualGroup.classList.remove('hidden');
+        safetyCalcFields.classList.add('hidden');
+        ssAvgSales.value = '27.4';
+        ssMaxSales.value = '45';
+        ssAvgLead.value = '14';
+        ssMaxLead.value = '20';
+
+        // Reset Valuation
+        valBegUnits.value = '100';
+        valBegCost.value = '10.00';
+        valP1Units.value = '150';
+        valP1Cost.value = '12.00';
+        valP2Units.value = '200';
+        valP2Cost.value = '15.00';
+        valUnitsSold.value = '300';
+        valUnitsSoldSlider.value = '300';
+        valUnitsSoldSlider.max = '450';
+
+        // Reset Mode Select
+        modeSelect.value = 'carrying-cost';
+        carryingInputs.classList.remove('hidden');
+        eoqInputs.classList.add('hidden');
+        valuationInputs.classList.add('hidden');
+        currencyGroup.classList.remove('hidden');
+
+        carryingResults.classList.remove('hidden');
+        eoqResults.classList.add('hidden');
+        valuationResults.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+
+      if (mode === 'carrying-cost') {
+        const avgVal = parseFloat(avgValueInput.value) || 0;
+        const storage = parseFloat(storageInput.value) || 0;
+        const service = parseFloat(serviceInput.value) || 0;
+        const risk = parseFloat(riskInput.value) || 0;
+        const capRate = parseFloat(capitalInput.value) || 0;
+
+        const capitalCostAmount = avgVal * (capRate / 100);
+        const totalCarrying = storage + service + risk + capitalCostAmount;
+        const carryingRate = avgVal > 0 ? (totalCarrying / avgVal) * 100 : 0;
+        const dailyCarrying = totalCarrying / 365;
+
+        // Update UI Carrying Cost
+        const resCarryingTotal = document.getElementById('res-carrying-total');
+        const resCarryingVerdict = document.getElementById('res-carrying-verdict');
+        const tileAnnual = document.getElementById('tile-carrying-annual');
+        const tileRate = document.getElementById('tile-carrying-rate');
+        const tileDaily = document.getElementById('tile-carrying-daily');
+
+        if (resCarryingTotal) resCarryingTotal.textContent = formatCurrency(totalCarrying);
+        if (resCarryingVerdict) {
+          resCarryingVerdict.innerHTML = `It costs you <strong>${carryingRate.toFixed(2)}%</strong> of your inventory value each year to hold stock.`;
+        }
+        if (tileAnnual) tileAnnual.textContent = formatCurrency(totalCarrying).split('.')[0]; // Integer value for tile
+        if (tileRate) tileRate.textContent = `${carryingRate.toFixed(1)}%`;
+        if (tileDaily) tileDaily.textContent = formatCurrency(dailyCarrying);
+
+        // Update composition bar
+        const compBar = document.getElementById('carrying-composition-bar');
+        const chartCapital = document.getElementById('chart-c-capital');
+        const chartStorage = document.getElementById('chart-c-storage');
+        const chartService = document.getElementById('chart-c-service');
+        const chartRisk = document.getElementById('chart-c-risk');
+
+        if (chartCapital) chartCapital.textContent = formatCurrency(capitalCostAmount);
+        if (chartStorage) chartStorage.textContent = formatCurrency(storage);
+        if (chartService) chartService.textContent = formatCurrency(service);
+        if (chartRisk) chartRisk.textContent = formatCurrency(risk);
+
+        if (compBar) {
+          if (totalCarrying > 0) {
+            const capPct = (capitalCostAmount / totalCarrying) * 100;
+            const storePct = (storage / totalCarrying) * 100;
+            const servPct = (service / totalCarrying) * 100;
+            const riskPct = (risk / totalCarrying) * 100;
+
+            compBar.innerHTML = `
+              <div style="width: ${capPct.toFixed(1)}%; height: 100%; background: #3b82f6; transition: width 0.3s ease;" title="Opportunity Cost: ${capPct.toFixed(1)}%"></div>
+              <div style="width: ${storePct.toFixed(1)}%; height: 100%; background: #f59e0b; transition: width 0.3s ease;" title="Storage Rent: ${storePct.toFixed(1)}%"></div>
+              <div style="width: ${servPct.toFixed(1)}%; height: 100%; background: #10b981; transition: width 0.3s ease;" title="Service Costs: ${servPct.toFixed(1)}%"></div>
+              <div style="width: ${riskPct.toFixed(1)}%; height: 100%; background: #ef4444; transition: width 0.3s ease;" title="Risk Costs: ${riskPct.toFixed(1)}%"></div>
+            `;
+          } else {
+            compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+          }
+        }
+      }
+
+      else if (mode === 'eoq-rop') {
+        const demand = parseFloat(demandInput.value) || 0;
+        const orderCost = parseFloat(orderCostInput.value) || 0;
+        const unitCost = parseFloat(unitCostInput.value) || 0;
+        const carryingRate = parseFloat(carryingRateInput.value) || 0;
+        const leadTime = parseFloat(leadTimeInput.value) || 0;
+
+        // Calculate holding cost per unit per year: H = unitCost * carryingRate%
+        const H = unitCost * (carryingRate / 100);
+
+        // EOQ = sqrt((2 * Demand * OrderCost) / H)
+        let eoq = 0;
+        if (H > 0) {
+          eoq = Math.sqrt((2 * demand * orderCost) / H);
+        }
+
+        // Determine safety stock
+        let safetyStock = 0;
+        let isManualSS = true;
+        safetyTypeRadios.forEach(radio => {
+          if (radio.checked && radio.value === 'calculate') {
+            isManualSS = false;
+          }
+        });
+
+        if (isManualSS) {
+          safetyStock = parseFloat(safetyStockInput.value) || 0;
+        } else {
+          // Dynamic calculation: SS = (Max Daily Sales * Max Lead Time) - (Avg Daily Sales * Avg Lead Time)
+          const avgSales = parseFloat(ssAvgSales.value) || 0;
+          const maxSales = parseFloat(ssMaxSales.value) || 0;
+          const avgLead = parseFloat(ssAvgLead.value) || 0;
+          const maxLead = parseFloat(ssMaxLead.value) || 0;
+
+          safetyStock = (maxSales * maxLead) - (avgSales * avgLead);
+          if (safetyStock < 0) safetyStock = 0;
+        }
+
+        // Reorder Point = (Avg Daily Sales * Lead Time) + Safety Stock
+        // Calculate average daily sales from annual demand if manual is selected, or use the safety stock avg daily sales
+        const avgDailySales = isManualSS ? (demand / 365) : (parseFloat(ssAvgSales.value) || 0);
+        const rop = (avgDailySales * leadTime) + safetyStock;
+
+        // Costs at EOQ
+        let annualOrderingCost = 0;
+        let annualHoldingCost = 0;
+        if (eoq > 0) {
+          annualOrderingCost = (demand / eoq) * orderCost;
+          annualHoldingCost = (eoq / 2) * H; // Average cycle inventory * H
+        }
+        const totalAnnualEoqCost = annualOrderingCost + annualHoldingCost;
+        const ordersPerYear = eoq > 0 ? demand / eoq : 0;
+        const orderFrequencyDays = ordersPerYear > 0 ? 365 / ordersPerYear : 0;
+
+        // Update UI
+        const resEoqQty = document.getElementById('res-eoq-qty');
+        const resEoqVerdict = document.getElementById('res-eoq-verdict');
+        const tileRop = document.getElementById('tile-eoq-rop');
+        const tileSafety = document.getElementById('tile-eoq-safety');
+        const tileCost = document.getElementById('tile-eoq-cost');
+
+        const detailOrders = document.getElementById('detail-orders-count');
+        const detailDays = document.getElementById('detail-order-days');
+        const detailOrdering = document.getElementById('detail-annual-ordering');
+        const detailHolding = document.getElementById('detail-annual-holding');
+
+        if (resEoqQty) resEoqQty.textContent = `${Math.round(eoq).toLocaleString()} Units`;
+        if (resEoqVerdict) {
+          resEoqVerdict.innerHTML = `Ordering <strong>${Math.round(eoq).toLocaleString()} units</strong> per batch minimizes your total annual procurement and holding costs.`;
+        }
+        if (tileRop) tileRop.textContent = `${Math.round(rop).toLocaleString()} Units`;
+        if (tileSafety) tileSafety.textContent = `${Math.round(safetyStock).toLocaleString()} Units`;
+        if (tileCost) tileCost.textContent = formatCurrency(totalAnnualEoqCost).split('.')[0];
+
+        if (detailOrders) detailOrders.textContent = `${ordersPerYear.toFixed(1)} orders/yr`;
+        if (detailDays) detailDays.textContent = `Every ${orderFrequencyDays.toFixed(1)} days`;
+        if (detailOrdering) detailOrdering.textContent = formatCurrency(annualOrderingCost);
+        if (detailHolding) detailHolding.textContent = formatCurrency(annualHoldingCost);
+      }
+
+      else if (mode === 'valuation') {
+        const uBeg = parseFloat(valBegUnits.value) || 0;
+        const cBeg = parseFloat(valBegCost.value) || 0;
+        const uP1 = parseFloat(valP1Units.value) || 0;
+        const cP1 = parseFloat(valP1Cost.value) || 0;
+        const uP2 = parseFloat(valP2Units.value) || 0;
+        const cP2 = parseFloat(valP2Cost.value) || 0;
+        const sold = parseFloat(valUnitsSold.value) || 0;
+
+        const totalAvailableUnits = uBeg + uP1 + uP2;
+        const endingUnits = Math.max(0, totalAvailableUnits - sold);
+
+        // Chronological batches array: { units, cost }
+        const batches = [
+          { units: uBeg, cost: cBeg },
+          { units: uP1, cost: cP1 },
+          { units: uP2, cost: cP2 }
+        ];
+
+        // 1. FIFO (First In, First Out)
+        let fifoCOGS = 0;
+        let unitsToProcessFifo = sold;
+        for (let i = 0; i < batches.length; i++) {
+          if (unitsToProcessFifo <= 0) break;
+          const take = Math.min(unitsToProcessFifo, batches[i].units);
+          fifoCOGS += take * batches[i].cost;
+          unitsToProcessFifo -= take;
+        }
+        const totalGoodsValue = (uBeg * cBeg) + (uP1 * cP1) + (uP2 * cP2);
+        const fifoEndingVal = Math.max(0, totalGoodsValue - fifoCOGS);
+
+        // 2. LIFO (Last In, First Out)
+        let lifoCOGS = 0;
+        let unitsToProcessLifo = sold;
+        for (let i = batches.length - 1; i >= 0; i--) {
+          if (unitsToProcessLifo <= 0) break;
+          const take = Math.min(unitsToProcessLifo, batches[i].units);
+          lifoCOGS += take * batches[i].cost;
+          unitsToProcessLifo -= take;
+        }
+        const lifoEndingVal = Math.max(0, totalGoodsValue - lifoCOGS);
+
+        // 3. Weighted Average Cost (WAC)
+        let wacUnitCost = 0;
+        if (totalAvailableUnits > 0) {
+          wacUnitCost = totalGoodsValue / totalAvailableUnits;
+        }
+        const wacCOGS = sold * wacUnitCost;
+        const wacEndingVal = endingUnits * wacUnitCost;
+
+        // Update comparison UI elements
+        const cellFifoCogs = document.getElementById('val-row-fifo-cogs');
+        const cellLifoCogs = document.getElementById('val-row-lifo-cogs');
+        const cellWacCogs = document.getElementById('val-row-wac-cogs');
+
+        const cellFifoEnd = document.getElementById('val-row-fifo-end');
+        const cellLifoEnd = document.getElementById('val-row-lifo-end');
+        const cellWacEnd = document.getElementById('val-row-wac-end');
+
+        const cellFifoUnits = document.getElementById('val-row-fifo-units');
+        const cellLifoUnits = document.getElementById('val-row-lifo-units');
+        const cellWacUnits = document.getElementById('val-row-wac-units');
+
+        const cellWacAvg = document.getElementById('val-row-wac-avg');
+        const verdictText = document.getElementById('valuation-verdict-text');
+
+        if (cellFifoCogs) cellFifoCogs.textContent = formatCurrency(fifoCOGS);
+        if (cellLifoCogs) cellLifoCogs.textContent = formatCurrency(lifoCOGS);
+        if (cellWacCogs) cellWacCogs.textContent = formatCurrency(wacCOGS);
+
+        if (cellFifoEnd) cellFifoEnd.textContent = formatCurrency(fifoEndingVal);
+        if (cellLifoEnd) cellLifoEnd.textContent = formatCurrency(lifoEndingVal);
+        if (cellWacEnd) cellWacEnd.textContent = formatCurrency(wacEndingVal);
+
+        if (cellFifoUnits) cellFifoUnits.textContent = `${Math.round(endingUnits)} units`;
+        if (cellLifoUnits) cellLifoUnits.textContent = `${Math.round(endingUnits)} units`;
+        if (cellWacUnits) cellWacUnits.textContent = `${Math.round(endingUnits)} units`;
+
+        if (cellWacAvg) cellWacAvg.textContent = formatCurrency(wacUnitCost);
+
+        if (verdictText) {
+          const isInflationary = (cBeg <= cP1 && cP1 <= cP2);
+          const isDeflationary = (cBeg >= cP1 && cP1 >= cP2);
+          let insight = '';
+          
+          if (isInflationary) {
+            insight = `With rising supplier costs, <strong>FIFO</strong> reports the lowest COGS (${formatCurrency(fifoCOGS)}) and highest inventory value (${formatCurrency(fifoEndingVal)}), inflating taxable profits. <strong>LIFO</strong> yields a higher COGS (${formatCurrency(lifoCOGS)}), reducing reported profits and corporate tax liability.`;
+          } else if (isDeflationary) {
+            insight = `With falling supplier costs, <strong>FIFO</strong> reports a higher COGS (${formatCurrency(fifoCOGS)}) and lower ending inventory value (${formatCurrency(fifoEndingVal)}), reducing taxable profits. <strong>LIFO</strong> yields a lower COGS (${formatCurrency(lifoCOGS)}), increasing reported taxable profits.`;
+          } else {
+            insight = `Valuation methods distribute a total goods value of <strong>${formatCurrency(totalGoodsValue)}</strong>. Choosing a method affects your balance sheet asset values and income tax COGS calculations. Consult an accountant to select the best model.`;
+          }
+          verdictText.innerHTML = insight;
+        }
+      }
+    }
+
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const mode = modeSelect.value;
+      let text = '';
+      
+      if (mode === 'carrying-cost') {
+        text = `Inventory Carrying Cost Summary:\n` +
+               `Average Inventory Value: ${formatCurrency(parseFloat(avgValueInput.value) || 0)}\n` +
+               `Total Annual Carrying Cost: ${document.getElementById('res-carrying-total')?.textContent}\n` +
+               `Carrying Cost Percentage: ${document.getElementById('tile-carrying-rate')?.textContent}\n` +
+               `Daily Holding Cost: ${document.getElementById('tile-carrying-daily')?.textContent}`;
+      } else if (mode === 'eoq-rop') {
+        text = `EOQ & Reorder Point Summary:\n` +
+               `Optimal Order Quantity (EOQ): ${document.getElementById('res-eoq-qty')?.textContent}\n` +
+               `Reorder Point (ROP): ${document.getElementById('tile-eoq-rop')?.textContent}\n` +
+               `Safety Stock: ${document.getElementById('tile-eoq-safety')?.textContent}\n` +
+               `Annual Operations Cost: ${document.getElementById('tile-eoq-cost')?.textContent}`;
+      } else if (mode === 'valuation') {
+        text = `Inventory Valuation Summary (300 units sold):\n` +
+               `FIFO COGS: ${document.getElementById('val-row-fifo-cogs')?.textContent} | Ending Inv: ${document.getElementById('val-row-fifo-end')?.textContent}\n` +
+               `LIFO COGS: ${document.getElementById('val-row-lifo-cogs')?.textContent} | Ending Inv: ${document.getElementById('val-row-lifo-end')?.textContent}\n` +
+               `WAC COGS: ${document.getElementById('val-row-wac-cogs')?.textContent} | Ending Inv: ${document.getElementById('val-row-wac-end')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initInventoryCalculator);
+  document.addEventListener('astro:after-swap', initInventoryCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input, .units-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

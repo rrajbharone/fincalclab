@@ -1,0 +1,227 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EoqCalculator from '../../components/calculator/EoqCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Economic Order Quantity Calculator', path: '/calculator/economic-order-quantity-calculator' }
+];
+---
+
+<Layout
+  title="Economic Order Quantity Calculator - Optimize Order Size"
+  description="Free online Economic Order Quantity (EOQ) calculator. Find the optimal order size that minimizes inventory holding and ordering costs, and analyze quantity discounts."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <EoqCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Supply Chain Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Bulk Buying Delusion: How a 10% Discount Cost Us $18,000 in Profits</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person account of how a startup ordered a full shipping container of stock to lock in a wholesale price discount, only to discover that logistics demurrage and storage space rent destroyed their margins.
+            </p>
+            <a href="/blog/how-to-calculate-economic-order-quantity" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Economic Order Quantity (EOQ) & Analyze Bulk Pricing
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Economic Order Quantity (EOQ)?</h2>
+        <p>
+          In supply chain management and retail operations, the <strong>Economic Order Quantity (EOQ)</strong> is the mathematically optimal order size that minimizes a company's total annual inventory costs. These costs consist primarily of two competing forces: <strong>ordering costs</strong> (setup, freight, and procurement administration) and <strong>holding costs</strong> (warehouse storage, capital opportunity costs, insurance, and risk of obsolescence).
+        </p>
+        <p>
+          First developed in 1913 by Ford Whitman Harris and later popularized by consultant R. H. Wilson, the EOQ model remains a core pillar of operational logistics. By calculating your EOQ, you avoid the cash flow squeeze of overstocking (tying up capital in warehouse boxes) while preventing the sales disruption of understocking (stockouts and rush delivery charges).
+        </p>
+
+        <h2>The Balancing Act: Ordering vs. Holding Costs</h2>
+        <p>
+          To understand why the EOQ model is necessary, you must understand how inventory costs behave:
+        </p>
+        <ul>
+          <li>
+            <strong>Ordering Costs (Setup Costs):</strong> Every time you place an order with a supplier, you incur a cost. This includes factory setup fees, logistics management time, customs duties, and fixed shipping charges. If you order in small batches to keep stock levels low, you will have to place orders frequently, causing your annual ordering costs to spike.
+          </li>
+          <li>
+            <strong>Holding Costs (Carrying Costs):</strong> The longer inventory sits on your shelves, the more it costs. Holding costs include warehouse rent, utilities, staff labor, inventory insurance, product degradation, and the opportunity cost of tying up capital that could be invested elsewhere. If you order in massive batches to minimize orders, your warehouse stock levels will remain high, causing your annual holding costs to skyrocket.
+          </li>
+        </ul>
+        <p>
+          The EOQ formula identifies the exact inflection point where the sum of these two opposing costs is minimized. At the EOQ level, <strong>annual ordering costs are exactly equal to annual holding costs</strong>.
+        </p>
+
+        <h2>The Harris-Wilson EOQ Formula</h2>
+        <p>
+          The classic mathematical formula to determine the Economic Order Quantity is structured as follows:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{EOQ} = \\sqrt{\\frac{2 \\times D \\times S}{H}}\\)"}
+        </p>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li>
+            <strong>D is the Annual Demand:</strong> The total number of units your business sells or expects to sell over the course of a year.
+          </li>
+          <li>
+            <strong>S is the Setup or Ordering Cost:</strong> The fixed cost associated with placing a single order with a supplier, independent of the order size (e.g., a flat $150 freight fee).
+          </li>
+          <li>
+            <strong>H is the Holding Cost per Unit per Year:</strong> The cost to store one unit of stock for a full year. This is typically calculated as:
+            <br />
+            <code>Holding Cost (H) = Cost Per Unit &times; Carrying Cost Rate %</code> (e.g., if a unit costs $10.00 and your annual holding rate is 20%, then H = $2.00).
+          </li>
+        </ul>
+
+        <h2>Step-by-Step: Evaluating Supplier Quantity Discounts</h2>
+        <p>
+          Suppliers frequently offer volume discounts—for example, reducing the price per unit by 10% if you place an order of 3,000 units instead of your standard EOQ. While a lower purchase price sounds appealing, buying in bulk forces you to hold excess inventory, which increases carrying costs.
+        </p>
+        <p>
+          To evaluate if a bulk discount is financially beneficial, follow this step-by-step process:
+        </p>
+        <ol>
+          <li>
+            <strong>Calculate the Standard EOQ:</strong> Find your optimal order size using the standard formula.
+          </li>
+          <li>
+            <strong>Compute Total Cost at EOQ:</strong> Calculate the sum of annual product purchase cost, annual ordering cost, and annual holding cost:
+            <br />
+            <code>Total Cost = (D &times; Unit Cost) + ((D / EOQ) &times; S) + ((EOQ / 2) &times; H)</code>
+          </li>
+          <li>
+            <strong>Compute Total Cost at the Discount Tier:</strong> Use the discounted unit cost and the supplier's minimum discount order quantity (Q_disc):
+            <br />
+            <code>Total Cost (Discount) = (D &times; Discount Cost) + ((D / Q_disc) &times; S) + ((Q_disc / 2) &times; H_disc)</code>
+            <br />
+            *(Note: H_disc will be slightly lower because it is based on the discounted unit price: <code>Discount Cost &times; Carrying Rate %</code>).*
+          </li>
+          <li>
+            <strong>Compare the Totals:</strong> If the total cost at the discount quantity is lower than the total cost at EOQ, you should accept the deal. Otherwise, decline it to protect your margins. Our calculator's <strong>Quantity Discount Mode</strong> runs this entire comparison automatically.
+          </li>
+        </ol>
+
+        <h2>Assumptions and Limitations of the EOQ Model</h2>
+        <p>
+          While the classic EOQ model is highly valuable, it is based on several simplifying assumptions:
+        </p>
+        <ul>
+          <li>
+            <strong>Constant Demand:</strong> Assumes consumer demand remains uniform and known throughout the year (ignoring holiday season spikes or product cycles).
+          </li>
+          <li>
+            <strong>Fixed Lead Times:</strong> Assumes supplier shipping times are constant and guaranteed.
+          </li>
+          <li>
+            <strong>Instant Replenishment:</strong> Assumes that the entire order quantity arrives at the warehouse in a single batch.
+          </li>
+          <li>
+            <strong>No Quantity Limits:</strong> Assumes there are no storage capacity limits in your warehouse.
+          </li>
+        </ul>
+        <p>
+          Despite these constraints, the EOQ provides an excellent baseline for inventory optimization.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Economic Order Quantity Calculator FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the primary goal of the Economic Order Quantity (EOQ)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The primary goal of EOQ is to **minimize the total annual cost** of managing inventory by finding the perfect balance between ordering costs (which decrease when you buy larger batches) and holding costs (which increase when you buy larger batches).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do I estimate ordering cost per order?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Ordering cost is the total expense incurred to place and receive a single batch. It includes fixed freight/shipping charges, broker/customs duties, inspection labor, and the administrative cost of processing the procurement paperwork. It does **not** include the actual cost of the goods.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What carrying cost rate should I use?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              For most retail and e-commerce companies, standard annual inventory carrying rates fall between **15% and 30%** of the product's unit cost. If you don't know your exact rates, **20%** is a widely accepted industry average that accounts for capital opportunity costs, storage rent, utilities, insurance, and obsolescence risks.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Does the classic EOQ model factor in volume discounts?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              No. The classic Harris-Wilson EOQ formula assumes a constant unit price. However, our calculator features a dedicated **Quantity Discount Evaluation** mode that overrides this assumption, comparing total purchase and operational costs at standard EOQ versus bulk discount volumes to identify the cheapest path.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How often should I recalculate my EOQ?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You should recalculate your EOQ whenever there are significant shifts in your operational variables—such as changes in annual sales volumes (demand), shipping/freight rate updates, manufacturer product price adjustments, or increases in commercial warehouse storage rent. Most businesses review these parameters quarterly or semi-annually.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2.5);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,778 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Economic Order Quantity Calculator"
+  description="Determine the optimal inventory order size to minimize procurement and holding costs, or evaluate supplier volume discounts side-by-side."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="eoq-calculator">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="eoq-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="eoq-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="standard" selected>Standard EOQ (Optimize Order & Holding Costs)</option>
+        <option value="discount">Quantity Discount Evaluation (Bulk Discount Analysis)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="eoq-currency-select">Currency</label>
+        <select id="eoq-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Input: Annual Demand (Units) -->
+    <div class="input-group" id="group-demand">
+      <div class="input-label-row">
+        <label for="eoq-demand">Annual Demand (Units/Year)</label>
+        <div class="input-symbol-wrapper units-wrapper">
+          <input type="number" id="eoq-demand" min="10" step="100" value="10000" aria-label="Annual Demand" />
+          <span class="percent-symbol">units</span>
+        </div>
+      </div>
+      <input type="range" id="eoq-demand-slider" min="100" max="100000" step="100" value="10000" class="slider-range" aria-label="Annual Demand Slider" />
+    </div>
+
+    <!-- Input: Cost Per Order ($) -->
+    <div class="input-group" id="group-order-cost">
+      <div class="input-label-row">
+        <label for="eoq-order-cost">Cost Per Order (Setup & Shipping)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="eoq-order-cost" min="1" step="5" value="50" aria-label="Cost Per Order" />
+        </div>
+      </div>
+      <input type="range" id="eoq-order-cost-slider" min="1" max="1000" step="5" value="50" class="slider-range" aria-label="Cost Per Order Slider" />
+    </div>
+
+    <!-- Input: Unit Cost ($) -->
+    <div class="input-group" id="group-unit-cost">
+      <div class="input-label-row">
+        <label for="eoq-unit-cost">Standard Unit Cost</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="eoq-unit-cost" min="1" step="1" value="20" aria-label="Unit Cost" />
+        </div>
+      </div>
+      <input type="range" id="eoq-unit-cost-slider" min="1" max="500" step="1" value="20" class="slider-range" aria-label="Unit Cost Slider" />
+    </div>
+
+    <!-- Input: Carrying Cost Rate (%) -->
+    <div class="input-group" id="group-carrying-rate">
+      <div class="input-label-row">
+        <label for="eoq-carrying-rate">Carrying Cost Rate (%)</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="eoq-carrying-rate" min="1" max="100" step="1" value="20" aria-label="Carrying Cost Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="eoq-carrying-rate-slider" min="1" max="100" step="1" value="20" class="slider-range" aria-label="Carrying Cost Rate Slider" />
+    </div>
+
+    <!-- ================= DISCOUNT EVALUATION INPUTS ================= -->
+    <div id="discount-inputs" class="hidden" style="border: 1px solid var(--color-border); padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-bg-base); display: flex; flex-direction: column; gap: var(--space-4);">
+      <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">Bulk Discount Tier Info</h4>
+
+      <!-- Input: Discounted Unit Cost ($) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="eoq-discount-cost">Discounted Unit Cost</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="eoq-discount-cost" min="0.5" step="0.5" value="18" aria-label="Discounted Unit Cost" />
+          </div>
+        </div>
+        <input type="range" id="eoq-discount-cost-slider" min="1" max="500" step="0.5" value="18" class="slider-range" aria-label="Discounted Unit Cost Slider" />
+      </div>
+
+      <!-- Input: Minimum Discount Order Quantity -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="eoq-discount-qty">Min. Order Qty for Discount</label>
+          <div class="input-symbol-wrapper units-wrapper">
+            <input type="number" id="eoq-discount-qty" min="100" step="50" value="2000" aria-label="Discount Minimum Quantity" />
+            <span class="percent-symbol">units</span>
+          </div>
+        </div>
+        <input type="range" id="eoq-discount-qty-slider" min="100" max="10000" step="100" value="2000" class="slider-range" aria-label="Discount Minimum Quantity Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="eoq-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">EOQ Analysis Results</h3>
+
+    <!-- ================= STANDARD RESULTS ================= -->
+    <div id="standard-results">
+      <!-- Summary Card -->
+      <div style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Economic Order Quantity (EOQ)</span>
+          <div id="res-eoq" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-primary);">500 Units</div>
+          <p id="res-eoq-verdict" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+            Ordering <strong>500 units</strong> at a time minimizes total holding and setup costs.
+          </p>
+        </Card>
+      </div>
+
+      <!-- Key Metrics Grid -->
+      <div class="results-grid">
+        <div class="result-tile">
+          <span class="tile-label">Annual Cost</span>
+          <div class="tile-value" id="tile-std-cost" style="color: var(--color-primary);">$2,000</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Orders Per Year</span>
+          <div class="tile-value" id="tile-std-orders" style="color: var(--color-accent);">20.0</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Order Cycle</span>
+          <div class="tile-value" id="tile-std-cycle" style="color: var(--color-success);">18.3 Days</div>
+        </div>
+      </div>
+
+      <!-- Costs Composition Bar -->
+      <div class="chart-container" style="margin-bottom: var(--space-6);">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Operations Cost Composition</h4>
+        <div id="eoq-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+          <!-- Injected via JS -->
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-2); padding: 0 4px; text-align: center;">
+          <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary);"></span>
+            Ordering/Setup: <strong id="chart-order-label">$1,000.00</strong>
+          </span>
+          <span style="display: flex; align-items: center; gap: 4px; justify-content: center;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-success);"></span>
+            Holding/Carrying: <strong id="chart-holding-label">$1,000.00</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= DISCOUNT RESULTS ================= -->
+    <div id="discount-results" class="hidden">
+      <!-- Recommendation Box -->
+      <div style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" id="discount-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Discount Analysis Recommendation</span>
+          <div id="res-discount-rec" style="font-size: 1.5rem; font-weight: 800; line-height: 1.3; margin-top: 4px; color: var(--color-success);">Accept the Bulk Discount</div>
+          <p id="res-discount-details" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+            Taking the discount saves you <strong>$6,983.82</strong> per year compared to standard EOQ ordering.
+          </p>
+        </Card>
+      </div>
+
+      <!-- Comparative side-by-side Table -->
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Annual Cost Comparison</h4>
+      <div class="table-container" style="overflow-x: auto; margin-bottom: var(--space-4);">
+        <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--color-border); font-weight: 700;">
+              <th style="padding: var(--space-2) var(--space-3);">Annual Cost Element</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-primary);">Standard EOQ</th>
+              <th style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-accent);">Discount Tier</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Order Quantity</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="tbl-row-std-qty">500 units</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700;" id="tbl-row-disc-qty">2,000 units</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Unit Cost</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="tbl-row-std-price">$20.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700; color: var(--color-success);" id="tbl-row-disc-price">$18.00</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Product Purchase Cost</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="tbl-row-std-purchase">$200,000.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="tbl-row-disc-purchase">$180,000.00</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Ordering Costs</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="tbl-row-std-ordering">$1,000.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="tbl-row-disc-ordering">$250.00</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight: 600;">Holding/Carrying Costs</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right;" id="tbl-row-std-holding">$1,000.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; color: var(--color-error);" id="tbl-row-disc-holding">$3,600.00</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--color-border); background: rgba(59, 130, 246, 0.03);">
+              <td style="padding: var(--space-2.5) var(--space-3); font-weight: 700;">Total Annual Cost</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 700;" id="tbl-row-std-total">$202,000.00</td>
+              <td style="padding: var(--space-2.5) var(--space-3); text-align: right; font-weight: 800;" id="tbl-row-disc-total">$183,850.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initEoqCalculator() {
+    const modeSelect = document.getElementById('eoq-calc-mode') as HTMLSelectElement;
+
+    // Input elements
+    const demandInput = document.getElementById('eoq-demand') as HTMLInputElement;
+    const demandSlider = document.getElementById('eoq-demand-slider') as HTMLInputElement;
+    const orderCostInput = document.getElementById('eoq-order-cost') as HTMLInputElement;
+    const orderCostSlider = document.getElementById('eoq-order-cost-slider') as HTMLInputElement;
+    const unitCostInput = document.getElementById('eoq-unit-cost') as HTMLInputElement;
+    const unitCostSlider = document.getElementById('eoq-unit-cost-slider') as HTMLInputElement;
+    const carryingRateInput = document.getElementById('eoq-carrying-rate') as HTMLInputElement;
+    const carryingRateSlider = document.getElementById('eoq-carrying-rate-slider') as HTMLInputElement;
+
+    // Discount elements
+    const discountInputs = document.getElementById('discount-inputs') as HTMLDivElement;
+    const discountCostInput = document.getElementById('eoq-discount-cost') as HTMLInputElement;
+    const discountCostSlider = document.getElementById('eoq-discount-cost-slider') as HTMLInputElement;
+    const discountQtyInput = document.getElementById('eoq-discount-qty') as HTMLInputElement;
+    const discountQtySlider = document.getElementById('eoq-discount-qty-slider') as HTMLInputElement;
+
+    // Results container
+    const standardResults = document.getElementById('standard-results') as HTMLDivElement;
+    const discountResults = document.getElementById('discount-results') as HTMLDivElement;
+
+    if (!modeSelect) return;
+
+    // Toggle Modes
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      if (mode === 'standard') {
+        discountInputs.classList.add('hidden');
+        standardResults.classList.remove('hidden');
+        discountResults.classList.add('hidden');
+      } else {
+        discountInputs.classList.remove('hidden');
+        standardResults.classList.add('hidden');
+        discountResults.classList.remove('hidden');
+      }
+      calculateAll();
+    });
+
+    // Slider binding helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(demandInput, demandSlider);
+    bindSlider(orderCostInput, orderCostSlider);
+    bindSlider(unitCostInput, unitCostSlider);
+    bindSlider(carryingRateInput, carryingRateSlider);
+    bindSlider(discountCostInput, discountCostSlider);
+    bindSlider(discountQtyInput, discountQtySlider);
+
+    // Watch inputs
+    const inputs = [
+      demandInput, orderCostInput, unitCostInput, carryingRateInput,
+      discountCostInput, discountQtyInput
+    ];
+    inputs.forEach(input => {
+      if (input) input.addEventListener('input', calculateAll);
+    });
+
+    // Currency selector
+    const currencySelect = document.getElementById('eoq-currency-select') as HTMLSelectElement;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        currencySymbols.forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('eoq-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        demandInput.value = '10000';
+        demandSlider.value = '10000';
+        orderCostInput.value = '50';
+        orderCostSlider.value = '50';
+        unitCostInput.value = '20';
+        unitCostSlider.value = '20';
+        carryingRateInput.value = '20';
+        carryingRateSlider.value = '20';
+
+        discountCostInput.value = '18';
+        discountCostSlider.value = '18';
+        discountQtyInput.value = '2000';
+        discountQtySlider.value = '2000';
+
+        modeSelect.value = 'standard';
+        discountInputs.classList.add('hidden');
+        standardResults.classList.remove('hidden');
+        discountResults.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      const demand = parseFloat(demandInput.value) || 0;
+      const orderCost = parseFloat(orderCostInput.value) || 0;
+      const unitCost = parseFloat(unitCostInput.value) || 0;
+      const carryingRate = parseFloat(carryingRateInput.value) || 0;
+
+      // Standard Holding Cost Per Unit Per Year: H = unitCost * carryingRate %
+      const H = unitCost * (carryingRate / 100);
+
+      // EOQ = sqrt((2 * demand * orderCost) / H)
+      let eoq = 0;
+      if (H > 0) {
+        eoq = Math.sqrt((2 * demand * orderCost) / H);
+      }
+
+      if (mode === 'standard') {
+        let annualOrderingCost = 0;
+        let annualHoldingCost = 0;
+        if (eoq > 0) {
+          annualOrderingCost = (demand / eoq) * orderCost;
+          annualHoldingCost = (eoq / 2) * H;
+        }
+        const totalOpsCost = annualOrderingCost + annualHoldingCost;
+        const ordersPerYear = eoq > 0 ? demand / eoq : 0;
+        const orderCycleDays = ordersPerYear > 0 ? 365 / ordersPerYear : 0;
+
+        // Update UI
+        const resEoq = document.getElementById('res-eoq');
+        const resEoqVerdict = document.getElementById('res-eoq-verdict');
+        const tileCost = document.getElementById('tile-std-cost');
+        const tileOrders = document.getElementById('tile-std-orders');
+        const tileCycle = document.getElementById('tile-std-cycle');
+
+        if (resEoq) resEoq.textContent = `${Math.round(eoq).toLocaleString()} Units`;
+        if (resEoqVerdict) {
+          resEoqVerdict.innerHTML = `Ordering <strong>${Math.round(eoq).toLocaleString()} units</strong> at a time minimizes total holding and setup costs.`;
+        }
+        if (tileCost) tileCost.textContent = formatCurrency(totalOpsCost).split('.')[0];
+        if (tileOrders) tileOrders.textContent = ordersPerYear.toFixed(1);
+        if (tileCycle) tileCycle.textContent = `${orderCycleDays.toFixed(1)} Days`;
+
+        // Update Composition Bar Chart
+        const compBar = document.getElementById('eoq-composition-bar');
+        const orderLabel = document.getElementById('chart-order-label');
+        const holdingLabel = document.getElementById('chart-holding-label');
+
+        if (orderLabel) orderLabel.textContent = formatCurrency(annualOrderingCost);
+        if (holdingLabel) holdingLabel.textContent = formatCurrency(annualHoldingCost);
+
+        if (compBar) {
+          if (totalOpsCost > 0) {
+            const ordPct = (annualOrderingCost / totalOpsCost) * 100;
+            const holdPct = (annualHoldingCost / totalOpsCost) * 100;
+
+            compBar.innerHTML = `
+              <div style="width: ${ordPct.toFixed(1)}%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+              <div style="width: ${holdPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+            `;
+          } else {
+            compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+          }
+        }
+      }
+
+      else if (mode === 'discount') {
+        const discountCost = parseFloat(discountCostInput.value) || 0;
+        const discountQty = parseFloat(discountQtyInput.value) || 0;
+
+        // Standard EOQ variables
+        let stdOrdering = 0;
+        let stdHolding = 0;
+        if (eoq > 0) {
+          stdOrdering = (demand / eoq) * orderCost;
+          stdHolding = (eoq / 2) * H;
+        }
+        const stdPurchaseCost = demand * unitCost;
+        const stdTotal = stdPurchaseCost + stdOrdering + stdHolding;
+
+        // Discount variables
+        const H_disc = discountCost * (carryingRate / 100);
+        const discOrdering = (demand / discountQty) * orderCost;
+        const discHolding = (discountQty / 2) * H_disc;
+        const discPurchaseCost = demand * discountCost;
+        const discTotal = discPurchaseCost + discOrdering + discHolding;
+
+        // Calculate differences
+        const savings = stdTotal - discTotal;
+        const isAccept = savings > 0;
+
+        // Update Comparative UI
+        const resRec = document.getElementById('res-discount-rec');
+        const resDetails = document.getElementById('res-discount-details');
+        const cardVerdict = document.getElementById('discount-verdict-card');
+
+        if (resRec && cardVerdict) {
+          if (isAccept) {
+            resRec.textContent = 'Accept the Bulk Discount';
+            resRec.style.color = 'var(--color-success)';
+            cardVerdict.style.borderLeftColor = 'var(--color-success)';
+          } else {
+            resRec.textContent = 'Decline the Bulk Discount';
+            resRec.style.color = 'var(--color-error)';
+            cardVerdict.style.borderLeftColor = 'var(--color-error)';
+          }
+        }
+
+        if (resDetails) {
+          if (isAccept) {
+            resDetails.innerHTML = `Taking the discount saves you <strong>${formatCurrency(savings)}</strong> per year compared to standard EOQ ordering.`;
+          } else {
+            resDetails.innerHTML = `Decline this deal. High carrying costs make this discount cost you <strong>${formatCurrency(Math.abs(savings))}</strong> more per year.`;
+          }
+        }
+
+        // Update Table Rows
+        const elStdQty = document.getElementById('tbl-row-std-qty');
+        const elDiscQty = document.getElementById('tbl-row-disc-qty');
+        const elStdPrice = document.getElementById('tbl-row-std-price');
+        const elDiscPrice = document.getElementById('tbl-row-disc-price');
+        const elStdPurchase = document.getElementById('tbl-row-std-purchase');
+        const elDiscPurchase = document.getElementById('tbl-row-disc-purchase');
+        const elStdOrdering = document.getElementById('tbl-row-std-ordering');
+        const elDiscOrdering = document.getElementById('tbl-row-disc-ordering');
+        const elStdHolding = document.getElementById('tbl-row-std-holding');
+        const elDiscHolding = document.getElementById('tbl-row-disc-holding');
+        const elStdTotal = document.getElementById('tbl-row-std-total');
+        const elDiscTotal = document.getElementById('tbl-row-disc-total');
+
+        if (elStdQty) elStdQty.textContent = `${Math.round(eoq).toLocaleString()} units`;
+        if (elDiscQty) elDiscQty.textContent = `${Math.round(discountQty).toLocaleString()} units`;
+        if (elStdPrice) elStdPrice.textContent = formatCurrency(unitCost);
+        if (elDiscPrice) elDiscPrice.textContent = formatCurrency(discountCost);
+        if (elStdPurchase) elStdPurchase.textContent = formatCurrency(stdPurchaseCost);
+        if (elDiscPurchase) elDiscPurchase.textContent = formatCurrency(discPurchaseCost);
+        if (elStdOrdering) elStdOrdering.textContent = formatCurrency(stdOrdering);
+        if (elDiscOrdering) elDiscOrdering.textContent = formatCurrency(discOrdering);
+        if (elStdHolding) elStdHolding.textContent = formatCurrency(stdHolding);
+        if (elDiscHolding) elDiscHolding.textContent = formatCurrency(discHolding);
+        if (elStdTotal) elStdTotal.textContent = formatCurrency(stdTotal);
+        if (elDiscTotal) elDiscTotal.textContent = formatCurrency(discTotal);
+      }
+    }
+
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const mode = modeSelect.value;
+      let text = '';
+      
+      if (mode === 'standard') {
+        text = `Standard EOQ Calculator Summary:\n` +
+               `Optimal Order Size (EOQ): ${document.getElementById('res-eoq')?.textContent}\n` +
+               `Annual Operations Cost: ${document.getElementById('tile-std-cost')?.textContent}\n` +
+               `Orders Per Year: ${document.getElementById('tile-std-orders')?.textContent}\n` +
+               `Order Frequency Cycle: ${document.getElementById('tile-std-cycle')?.textContent}`;
+      } else if (mode === 'discount') {
+        text = `Quantity Discount Evaluation:\n` +
+               `Verdict: ${document.getElementById('res-discount-rec')?.textContent}\n` +
+               `Financial Impact: ${document.getElementById('res-discount-details')?.textContent?.replace(/<\/?[^>]+(>|$)/g, "")}\n` +
+               `Standard Total Cost: ${document.getElementById('tbl-row-std-total')?.textContent}\n` +
+               `Discount Total Cost: ${document.getElementById('tbl-row-disc-total')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initEoqCalculator);
+  document.addEventListener('astro:after-swap', initEoqCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input, .units-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

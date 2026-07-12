@@ -1,0 +1,224 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NominalInterestRateCalculator from '../../components/calculator/NominalInterestRateCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Nominal Interest Rate Calculator', path: '/calculator/nominal-interest-rate-calculator' }
+];
+---
+
+<Layout
+  title="Nominal Interest Rate Calculator - Fisher Equation & EAR"
+  description="Free online nominal interest rate calculator. Adjust stated interest rates for inflation using the Fisher Equation, or convert nominal APR to APY/EAR."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <NominalInterestRateCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Personal Yield Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The 6.5% Savings Illusion: How Inflation Ate My Guaranteed Returns</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person case study of a retirement saver who locked their savings into high-yield bank certificates of deposit, only to discover that rising inflation caused their true purchasing power to shrink.
+            </p>
+            <a href="/blog/how-to-calculate-nominal-interest-rate" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Nominal Interest Rates & Find Your True Real Yields
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Nominal Interest Rate?</h2>
+        <p>
+          In personal finance and economics, the <strong>nominal interest rate</strong> is the stated, face-value interest rate on an investment, savings account, or loan. It is the interest rate advertised by banks, credit card companies, and bond issuers. 
+        </p>
+        <p>
+          However, the nominal rate is an incomplete metric. It does not account for two critical forces:
+        </p>
+        <ol>
+          <li>
+            <strong>Inflation:</strong> Stated yields do not account for the rising cost of goods and services, which reduces the purchasing power of your money over time.
+          </li>
+          <li>
+            <strong>Compounding Frequency:</strong> Stated annual rates (APR) do not reflect the compound interest accumulated if interest is paid out monthly, daily, or quarterly.
+          </li>
+        </ol>
+        <p>
+          To understand your true financial returns or borrowing costs, you must know how to adjust nominal rates for inflation (yielding the <strong>real interest rate</strong>) and compounding frequencies (yielding the <strong>Effective Annual Rate or EAR</strong>).
+        </p>
+
+        <h2>Nominal vs. Real Interest Rate: The Fisher Equation</h2>
+        <p>
+          The <strong>real interest rate</strong> is the interest rate adjusted to remove the effects of inflation. It represents the actual growth in your purchasing power. If you earn 5% nominal interest on your savings, but inflation is 3%, your money doesn't buy 5% more goods; your true growth is much lower.
+        </p>
+        <p>
+          Economist Irving Fisher developed the <strong>Fisher Equation</strong> to describe this relationship. While many people use a simple approximation:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Rate} \\approx \\text{Nominal Rate} - \\text{Inflation Rate}\\)"}
+        </p>
+        <p>
+          This approximation is inaccurate for high interest rates or inflation planning. The exact Fisher Equation is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(1 + i = (1 + r) \\times (1 + \\pi)\\)"}
+        </p>
+        <p>
+          Which can be rearranged to solve for the exact real interest rate (r):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(r = \\frac{1 + i}{1 + \\pi} - 1\\)"}
+        </p>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>i</strong> is the nominal interest rate (in decimal format).</li>
+          <li><strong>r</strong> is the real interest rate (in decimal format).</li>
+          <li><strong>&pi; (pi)</strong> is the annual inflation rate (in decimal format).</li>
+        </ul>
+        <p>
+          For example, if a bond yields a 6% nominal interest rate (i = 0.06) and inflation is 4% (&pi; = 0.04), the exact real interest rate is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(r = \\frac{1.06}{1.04} - 1 = 0.01923\\text{ (or } 1.92\\%)\\)"}
+        </p>
+        <p>
+          *(Note: The simple approximation would suggest a 2.0% real return, overstating your purchasing power growth by 0.08%).*
+        </p>
+
+        <h2>Nominal vs. Effective Annual Rate (EAR / APY)</h2>
+        <p>
+          When you borrow or save money, interest is rarely calculated only once a year. If interest compounds monthly, daily, or quarterly, you accumulate interest on top of previously earned interest.
+        </p>
+        <p>
+          The nominal rate (often called the Annual Percentage Rate or APR) ignores this compounding growth. The <strong>Effective Annual Rate (EAR)</strong>, also known as the Annual Percentage Yield (APY), reflects the true annual rate by factoring in compounding.
+        </p>
+        <p>
+          The mathematical formula to calculate EAR from a nominal rate is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{EAR} = \\left(1 + \\frac{i}{m}\\right)^m - 1\\)"}
+        </p>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>i</strong> is the nominal annual rate (APR).</li>
+          <li><strong>m</strong> is the number of compounding periods per year (e.g., 12 for monthly, 365 for daily).</li>
+        </ul>
+        <p>
+          If interest compounding is continuous, the formula is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{EAR} = e^i - 1\\)"}
+        </p>
+        <p>
+          For a credit card or loan with a 15% nominal APR compounded monthly:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{EAR} = \\left(1 + \\frac{0.15}{12}\\right)^{12} - 1 = (1.0125)^{12} - 1 = 16.08\\%\\)"}
+        </p>
+        <p>
+          You are actually paying a true annual borrowing cost of <strong>16.08%</strong>, not 15%. This is why credit card companies advertise the lower nominal APR, while banks advertise the higher APY on savings accounts.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Nominal Interest Rate Calculator FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the main difference between nominal, real, and effective rates?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The **nominal rate** is the stated rate before adjusting for compounding or inflation. The **real rate** adjusts the nominal rate for inflation to show the true growth of your purchasing power. The **effective rate (EAR/APY)** adjusts the nominal rate (APR) for compounding intervals (such as monthly or daily compounding) to show the true annual interest earned or paid.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does the Fisher Equation work?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The Fisher Equation adjusts nominal yields for price inflation. It states that the nominal compounding factor is equal to the product of the real compounding factor and the inflation compounding factor: `\(1+i = (1+r)(1+\pi)\)`. Solving for the real rate `\(r\)`, we get `\(r = (1+i)/(1+\pi) - 1\)`.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Can a real interest rate be negative?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes. A negative real interest rate occurs when the inflation rate is higher than the nominal interest rate. For example, if your savings account earns 4% nominal interest, but price inflation is 6%, your purchasing power is actually shrinking by **1.89%** per year, even though your nominal balance is growing.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Is APR the same as the nominal interest rate?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes. In consumer finance, the Annual Percentage Rate (APR) on loans or credit cards is a nominal rate. It does not account for the compounding of interest during the year. The actual cost of borrowing is represented by the Effective Annual Rate (EAR), which incorporates compounding frequencies.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does compounding frequency affect the EAR?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The more frequently interest compounds, the higher the Effective Annual Rate (EAR) becomes. For example, a 10% nominal interest rate compounded annually results in a 10% EAR. Compounded semi-annually, it becomes 10.25%. Compounded monthly, it is 10.47%. Compounded daily, it reaches 10.52%, and continuous compounding yields 10.52%.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2.5);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

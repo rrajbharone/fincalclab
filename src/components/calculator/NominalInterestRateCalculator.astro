@@ -1,0 +1,879 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Nominal Interest Rate Calculator"
+  description="Convert nominal rates to effective annual yields (EAR / APY), or use the Fisher Equation to calculate real purchasing power after inflation."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="nominal-calculator">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="nom-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="nom-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="fisher" selected>Nominal vs. Real Rate (Fisher Inflation Equation)</option>
+        <option value="compounding">Nominal vs. Effective Rate (Compounding APR to APY)</option>
+      </select>
+    </div>
+
+    <!-- Direction Selector -->
+    <div class="input-group" id="group-direction">
+      <label for="nom-calc-direction">Calculation Direction</label>
+      <select id="nom-calc-direction" class="currency-select" aria-label="Select Calculation Direction" style="max-width: 100%; width: 100%;">
+        <!-- Fisher Options (default) -->
+        <option value="calc-real" class="dir-fisher" selected>Calculate Real Rate (Nominal Interest - Inflation)</option>
+        <option value="calc-nominal" class="dir-fisher">Calculate Nominal Rate (Real Interest + Inflation)</option>
+        <!-- Compounding Options (hidden initially) -->
+        <option value="calc-ear" class="dir-comp hidden">Convert Nominal APR &rarr; Effective APY / EAR</option>
+        <option value="calc-nom" class="dir-comp hidden">Convert Effective APY / EAR &rarr; Nominal APR</option>
+      </select>
+    </div>
+
+    <!-- ================= DYNAMIC INPUT GROUPS ================= -->
+    
+    <!-- Input: Stated Nominal Rate (%) -->
+    <div class="input-group" id="group-nom-rate">
+      <div class="input-label-row">
+        <label for="nom-rate-input">Stated Nominal Rate (APR)</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="nom-rate-input" min="0" max="100" step="0.1" value="6" aria-label="Nominal Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="nom-rate-slider" min="0" max="30" step="0.1" value="6" class="slider-range" aria-label="Nominal Rate Slider" />
+    </div>
+
+    <!-- Input: Inflation Rate (%) (Fisher mode only) -->
+    <div class="input-group" id="group-inflation">
+      <div class="input-label-row">
+        <label for="nom-inflation-input">Expected Annual Inflation Rate</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="nom-inflation-input" min="-10" max="100" step="0.1" value="3" aria-label="Inflation Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="nom-inflation-slider" min="-5" max="20" step="0.1" value="3" class="slider-range" aria-label="Inflation Rate Slider" />
+    </div>
+
+    <!-- Input: Real Interest Rate (%) (Fisher mode calc-nominal direction only) -->
+    <div class="input-group hidden" id="group-real-rate">
+      <div class="input-label-row">
+        <label for="nom-real-input">Target Real Interest Rate</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="nom-real-input" min="-20" max="100" step="0.1" value="3" aria-label="Real Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="nom-real-slider" min="-5" max="20" step="0.1" value="3" class="slider-range" aria-label="Real Rate Slider" />
+    </div>
+
+    <!-- Input: Effective Annual Rate / APY (%) (Compounding mode calc-nominal direction only) -->
+    <div class="input-group hidden" id="group-ear-rate">
+      <div class="input-label-row">
+        <label for="nom-ear-input">Effective Annual Yield (APY / EAR)</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="nom-ear-input" min="0" max="100" step="0.1" value="6.17" aria-label="Effective Annual Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="nom-ear-slider" min="0" max="30" step="0.1" value="6.17" class="slider-range" aria-label="Effective Annual Rate Slider" />
+    </div>
+
+    <!-- Input: Compounding Frequency (Compounding mode only) -->
+    <div class="input-group hidden" id="group-frequency">
+      <div class="input-label-row">
+        <label for="nom-frequency-select">Compounding Frequency</label>
+        <select id="nom-frequency-select" class="currency-select" aria-label="Select Compounding Frequency" style="width: 145px; height: 38px; padding: 0 10px;">
+          <option value="12" selected>Monthly (12)</option>
+          <option value="365">Daily (365)</option>
+          <option value="4">Quarterly (4)</option>
+          <option value="2">Semi-Annual (2)</option>
+          <option value="1">Annual (1)</option>
+          <option value="52">Weekly (52)</option>
+          <option value="36500">Continuous</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="nom-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Calculation Summary</h3>
+
+    <!-- ================= FISHER RESULTS ================= -->
+    <div id="fisher-results">
+      <!-- Summary Card -->
+      <div style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" id="fisher-verdict-card" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);" id="res-fisher-label">Real Interest Rate (Net Yield)</span>
+          <div id="res-fisher-primary" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-primary);">1.92%</div>
+          <p id="res-fisher-details" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+            Your purchasing power grows by <strong>1.92%</strong> per year after adjusting a 6.00% nominal return for a 3.00% inflation rate.
+          </p>
+        </Card>
+      </div>
+
+      <!-- Key Metrics Grid -->
+      <div class="results-grid">
+        <div class="result-tile">
+          <span class="tile-label" id="tile-f-l1">Nominal APR</span>
+          <div class="tile-value" id="tile-f-val1" style="color: var(--color-primary);">6.00%</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label" id="tile-f-l2">Inflation</span>
+          <div class="tile-value" id="tile-f-val2" style="color: var(--color-warning);">3.00%</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label" id="tile-f-l3">Real Rate</span>
+          <div class="tile-value" id="tile-f-val3" style="color: var(--color-success);">1.92%</div>
+        </div>
+      </div>
+
+      <!-- Composition bar -->
+      <div class="chart-container" style="margin-bottom: var(--space-6);">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Purchasing Power Composition</h4>
+        <div id="fisher-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+          <!-- Injected via JS -->
+        </div>
+        <div class="chart-legend-grid">
+          <span class="legend-item">
+            <span class="legend-dot" style="background: var(--color-success);"></span>
+            Real Return: <strong id="chart-f-real">1.92%</strong>
+          </span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background: var(--color-warning);"></span>
+            Inflation Loss: <strong id="chart-f-inflation">3.00%</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= APY/EAR COMPOUNDING RESULTS ================= -->
+    <div id="compounding-results" class="hidden">
+      <!-- Summary Card -->
+      <div style="margin-bottom: var(--space-6);">
+        <Card elevation="sm" style="border-left: 4px solid var(--color-accent); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);" id="res-comp-label">Effective Annual Yield (APY)</span>
+          <div id="res-comp-primary" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-accent);">6.17%</div>
+          <p id="res-comp-details" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+            A 6.00% nominal annual rate compounded monthly results in an effective APY of <strong>6.17%</strong>.
+          </p>
+        </Card>
+      </div>
+
+      <!-- Key Metrics Grid -->
+      <div class="results-grid">
+        <div class="result-tile">
+          <span class="tile-label" id="tile-c-l1">Nominal APR</span>
+          <div class="tile-value" id="tile-c-val1" style="color: var(--color-primary);">6.00%</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label" id="tile-c-l2">Effective APY</span>
+          <div class="tile-value" id="tile-c-val2" style="color: var(--color-accent);">6.17%</div>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label" id="tile-c-l3">Intervals/Yr</span>
+          <div class="tile-value" id="tile-c-val3" style="color: var(--color-success);">12</div>
+        </div>
+      </div>
+
+      <!-- Compounding earnings simulation -->
+      <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); background-color: var(--color-bg-base); padding: var(--space-4);">
+        <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: var(--space-3); color: var(--color-text-base);">Simulated Return on $10,000 Principal</h4>
+        
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2.5); font-size: 0.875rem;">
+          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+            <span style="color: var(--color-text-muted);">Interest Without Compounding:</span>
+            <strong id="sim-no-compound">$600.00</strong>
+          </li>
+          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+            <span style="color: var(--color-text-muted);">Interest With Compounding:</span>
+            <strong id="sim-with-compound">$616.78</strong>
+          </li>
+          <li style="display: flex; justify-content: space-between; padding-bottom: 0;">
+            <span style="color: var(--color-primary); font-weight:700;">Compounding Bonus Growth:</span>
+            <strong id="sim-bonus-compound" style="color: var(--color-success);">+$16.78</strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initNominalCalculator() {
+    const modeSelect = document.getElementById('nom-calc-mode') as HTMLSelectElement;
+    const directionSelect = document.getElementById('nom-calc-direction') as HTMLSelectElement;
+
+    // Input Groups
+    const groupNomRate = document.getElementById('group-nom-rate') as HTMLDivElement;
+    const groupInflation = document.getElementById('group-inflation') as HTMLDivElement;
+    const groupRealRate = document.getElementById('group-real-rate') as HTMLDivElement;
+    const groupEarRate = document.getElementById('group-ear-rate') as HTMLDivElement;
+    const groupFrequency = document.getElementById('group-frequency') as HTMLDivElement;
+
+    // Result blocks
+    const fisherResults = document.getElementById('fisher-results') as HTMLDivElement;
+    const compoundingResults = document.getElementById('compounding-results') as HTMLDivElement;
+
+    // Inputs & Sliders
+    const nomRateInput = document.getElementById('nom-rate-input') as HTMLInputElement;
+    const nomRateSlider = document.getElementById('nom-rate-slider') as HTMLInputElement;
+    const inflationInput = document.getElementById('nom-inflation-input') as HTMLInputElement;
+    const inflationSlider = document.getElementById('nom-inflation-slider') as HTMLInputElement;
+    const realInput = document.getElementById('nom-real-input') as HTMLInputElement;
+    const realSlider = document.getElementById('nom-real-slider') as HTMLInputElement;
+    const earInput = document.getElementById('nom-ear-input') as HTMLInputElement;
+    const earSlider = document.getElementById('nom-ear-slider') as HTMLInputElement;
+    const freqSelect = document.getElementById('nom-frequency-select') as HTMLSelectElement;
+
+    if (!modeSelect || !directionSelect) return;
+
+    // Mode selection handler
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+
+      // Update directions list
+      const dirsFisher = document.querySelectorAll('.dir-fisher');
+      const dirsComp = document.querySelectorAll('.dir-comp');
+
+      if (mode === 'fisher') {
+        dirsFisher.forEach(el => el.classList.remove('hidden'));
+        dirsComp.forEach(el => el.classList.add('hidden'));
+        directionSelect.value = 'calc-real';
+        
+        fisherResults.classList.remove('hidden');
+        compoundingResults.classList.add('hidden');
+      } else {
+        dirsFisher.forEach(el => el.classList.add('hidden'));
+        dirsComp.forEach(el => el.classList.remove('hidden'));
+        directionSelect.value = 'calc-ear';
+
+        fisherResults.classList.add('hidden');
+        compoundingResults.classList.remove('hidden');
+      }
+
+      updateInputVisibility();
+      calculateAll();
+    });
+
+    // Direction handler
+    directionSelect.addEventListener('change', () => {
+      updateInputVisibility();
+      calculateAll();
+    });
+
+    function updateInputVisibility() {
+      const mode = modeSelect.value;
+      const dir = directionSelect.value;
+
+      // Hide all first
+      groupNomRate.classList.add('hidden');
+      groupInflation.classList.add('hidden');
+      groupRealRate.classList.add('hidden');
+      groupEarRate.classList.add('hidden');
+      groupFrequency.classList.add('hidden');
+
+      if (mode === 'fisher') {
+        if (dir === 'calc-real') {
+          groupNomRate.classList.remove('hidden');
+          groupInflation.classList.remove('hidden');
+        } else {
+          groupRealRate.classList.remove('hidden');
+          groupInflation.classList.remove('hidden');
+        }
+      } else {
+        groupFrequency.classList.remove('hidden');
+        if (dir === 'calc-ear') {
+          groupNomRate.classList.remove('hidden');
+        } else {
+          groupEarRate.classList.remove('hidden');
+        }
+      }
+    }
+
+    // Double slider bindings helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(nomRateInput, nomRateSlider);
+    bindSlider(inflationInput, inflationSlider);
+    bindSlider(realInput, realSlider);
+    bindSlider(earInput, earSlider);
+
+    freqSelect.addEventListener('change', calculateAll);
+
+    // Reset button
+    const resetBtn = document.getElementById('nom-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        nomRateInput.value = '6';
+        nomRateSlider.value = '6';
+        inflationInput.value = '3';
+        inflationSlider.value = '3';
+        realInput.value = '3';
+        realSlider.value = '3';
+        earInput.value = '6.17';
+        earSlider.value = '6.17';
+        freqSelect.value = '12';
+
+        modeSelect.value = 'fisher';
+        
+        const dirsFisher = document.querySelectorAll('.dir-fisher');
+        const dirsComp = document.querySelectorAll('.dir-comp');
+        dirsFisher.forEach(el => el.classList.remove('hidden'));
+        dirsComp.forEach(el => el.classList.add('hidden'));
+        directionSelect.value = 'calc-real';
+
+        fisherResults.classList.remove('hidden');
+        compoundingResults.classList.add('hidden');
+
+        updateInputVisibility();
+        calculateAll();
+      });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      const dir = directionSelect.value;
+
+      if (mode === 'fisher') {
+        let nominalRate = 0;
+        let inflationRate = 0;
+        let realRate = 0;
+
+        if (dir === 'calc-real') {
+          nominalRate = parseFloat(nomRateInput.value) || 0;
+          inflationRate = parseFloat(inflationInput.value) || 0;
+
+          // Fisher Exact Formula: Real = (1 + Nom) / (1 + Inflation) - 1
+          const nomDec = nominalRate / 100;
+          const infDec = inflationRate / 100;
+          realRate = ((1 + nomDec) / (1 + infDec) - 1) * 100;
+        } else {
+          realRate = parseFloat(realInput.value) || 0;
+          inflationRate = parseFloat(inflationInput.value) || 0;
+
+          // Fisher Exact Formula: Nominal = (1 + Real) * (1 + Inflation) - 1
+          const realDec = realRate / 100;
+          const infDec = inflationRate / 100;
+          nominalRate = ((1 + realDec) * (1 + infDec) - 1) * 100;
+        }
+
+        // Update Fisher UI
+        const resFisherLabel = document.getElementById('res-fisher-label');
+        const resFisherPrimary = document.getElementById('res-fisher-primary');
+        const resFisherDetails = document.getElementById('res-fisher-details');
+        const cardFisher = document.getElementById('fisher-verdict-card');
+
+        const tileFVal1 = document.getElementById('tile-f-val1');
+        const tileFVal2 = document.getElementById('tile-f-val2');
+        const tileFVal3 = document.getElementById('tile-f-val3');
+
+        const tileFL1 = document.getElementById('tile-f-l1');
+        const tileFL2 = document.getElementById('tile-f-l2');
+        const tileFL3 = document.getElementById('tile-f-l3');
+
+        if (dir === 'calc-real') {
+          if (resFisherLabel) resFisherLabel.textContent = 'Real Interest Rate (Net Yield)';
+          if (resFisherPrimary) resFisherPrimary.textContent = `${realRate.toFixed(2)}%`;
+          
+          if (realRate < 0) {
+            if (cardFisher) cardFisher.style.borderLeftColor = 'var(--color-error)';
+            if (resFisherPrimary) resFisherPrimary.style.color = 'var(--color-error)';
+            if (resFisherDetails) {
+              resFisherDetails.innerHTML = `Your purchasing power is **shrinking** by <strong>${Math.abs(realRate).toFixed(2)}%</strong> per year. Inflation (${inflationRate.toFixed(2)}%) is exceeding your nominal growth (${nominalRate.toFixed(2)}%).`;
+            }
+          } else {
+            if (cardFisher) cardFisher.style.borderLeftColor = 'var(--color-primary)';
+            if (resFisherPrimary) resFisherPrimary.style.color = 'var(--color-primary)';
+            if (resFisherDetails) {
+              resFisherDetails.innerHTML = `Your purchasing power grows by <strong>${realRate.toFixed(2)}%</strong> per year after adjusting a ${nominalRate.toFixed(2)}% nominal return for a ${inflationRate.toFixed(2)}% inflation rate.`;
+            }
+          }
+
+          if (tileFL1) tileFL1.textContent = 'Nominal APR';
+          if (tileFL3) tileFL3.textContent = 'Real Rate';
+          if (tileFVal1) tileFVal1.textContent = `${nominalRate.toFixed(2)}%`;
+          if (tileFVal3) tileFVal3.textContent = `${realRate.toFixed(2)}%`;
+        } else {
+          if (resFisherLabel) resFisherLabel.textContent = 'Required Nominal Rate';
+          if (resFisherPrimary) resFisherPrimary.textContent = `${nominalRate.toFixed(2)}%`;
+          if (cardFisher) cardFisher.style.borderLeftColor = 'var(--color-primary)';
+          if (resFisherPrimary) resFisherPrimary.style.color = 'var(--color-primary)';
+          if (resFisherDetails) {
+            resFisherDetails.innerHTML = `You need a nominal rate of <strong>${nominalRate.toFixed(2)}%</strong> to secure a ${realRate.toFixed(2)}% real purchasing yield under ${inflationRate.toFixed(2)}% annual inflation.`;
+          }
+
+          if (tileFL1) tileFL1.textContent = 'Target Real';
+          if (tileFL3) tileFL3.textContent = 'Nominal APR';
+          if (tileFVal1) tileFVal1.textContent = `${realRate.toFixed(2)}%`;
+          if (tileFVal3) tileFVal3.textContent = `${nominalRate.toFixed(2)}%`;
+        }
+
+        if (tileFVal2) tileFVal2.textContent = `${inflationRate.toFixed(2)}%`;
+
+        // Update Fisher yield bar composition
+        const compBar = document.getElementById('fisher-composition-bar');
+        const chartReal = document.getElementById('chart-f-real');
+        const chartInflation = document.getElementById('chart-f-inflation');
+
+        if (chartReal) chartReal.textContent = `${realRate.toFixed(2)}%`;
+        if (chartInflation) chartInflation.textContent = `${inflationRate.toFixed(2)}%`;
+
+        if (compBar) {
+          if (nominalRate > 0) {
+            const realPct = Math.max(0, (realRate / nominalRate) * 100);
+            const infPct = Math.min(100, (inflationRate / nominalRate) * 100);
+
+            compBar.innerHTML = `
+              <div style="width: ${realPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+              <div style="width: ${infPct.toFixed(1)}%; height: 100%; background: var(--color-warning); transition: width 0.3s ease;"></div>
+            `;
+          } else {
+            compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+          }
+        }
+      }
+
+      else if (mode === 'compounding') {
+        const freq = parseFloat(freqSelect.value); // Compounding periods per year
+        let nominalRate = 0;
+        let earRate = 0;
+
+        if (dir === 'calc-ear') {
+          nominalRate = parseFloat(nomRateInput.value) || 0;
+          const r = nominalRate / 100;
+
+          if (freq === 36500) {
+            // Continuous Compounding: EAR = e^r - 1
+            earRate = (Math.exp(r) - 1) * 100;
+          } else {
+            // Periodic Compounding: EAR = (1 + r/m)^m - 1
+            earRate = (Math.pow(1 + r / freq, freq) - 1) * 100;
+          }
+        } else {
+          earRate = parseFloat(earInput.value) || 0;
+          const EAR = earRate / 100;
+
+          if (freq === 36500) {
+            // Continuous: Nominal = ln(1 + EAR)
+            nominalRate = Math.log(1 + EAR) * 100;
+          } else {
+            // Periodic: Nominal = m * ((1 + EAR)^(1/m) - 1)
+            nominalRate = freq * (Math.pow(1 + EAR, 1 / freq) - 1) * 100;
+          }
+        }
+
+        // Update Compounding UI
+        const resCompLabel = document.getElementById('res-comp-label');
+        const resCompPrimary = document.getElementById('res-comp-primary');
+        const resCompDetails = document.getElementById('res-comp-details');
+
+        const tileCVal1 = document.getElementById('tile-c-val1');
+        const tileCVal2 = document.getElementById('tile-c-val2');
+        const tileCVal3 = document.getElementById('tile-c-val3');
+
+        const tileCL1 = document.getElementById('tile-c-l1');
+        const tileCL2 = document.getElementById('tile-c-l2');
+
+        const simNoCompound = document.getElementById('sim-no-compound');
+        const simWithCompound = document.getElementById('sim-with-compound');
+        const simBonus = document.getElementById('sim-bonus-compound');
+
+        const freqLabel = getFrequencyLabel(freq);
+
+        if (dir === 'calc-ear') {
+          if (resCompLabel) resCompLabel.textContent = 'Effective Annual Yield (APY)';
+          if (resCompPrimary) resCompPrimary.textContent = `${earRate.toFixed(2)}%`;
+          if (resCompDetails) {
+            resCompDetails.innerHTML = `A ${nominalRate.toFixed(2)}% nominal rate compounded **${freqLabel.toLowerCase()}** results in an effective APY of <strong>${earRate.toFixed(2)}%</strong>.`;
+          }
+
+          if (tileCL1) tileCL1.textContent = 'Nominal APR';
+          if (tileCL2) tileCL2.textContent = 'Effective APY';
+          if (tileCVal1) tileCVal1.textContent = `${nominalRate.toFixed(2)}%`;
+          if (tileCVal2) tileCVal2.textContent = `${earRate.toFixed(2)}%`;
+        } else {
+          if (resCompLabel) resCompLabel.textContent = 'Stated Nominal Rate (APR)';
+          if (resCompPrimary) resCompPrimary.textContent = `${nominalRate.toFixed(2)}%`;
+          if (resCompDetails) {
+            resCompDetails.innerHTML = `To earn an effective yield of ${earRate.toFixed(2)}% APY under **${freqLabel.toLowerCase()}** compounding, you need a nominal APR of <strong>${nominalRate.toFixed(2)}%</strong>.`;
+          }
+
+          if (tileCL1) tileCL1.textContent = 'Target APY';
+          if (tileCL2) tileCL2.textContent = 'Required APR';
+          if (tileCVal1) tileCVal1.textContent = `${earRate.toFixed(2)}%`;
+          if (tileCVal2) tileCVal2.textContent = `${nominalRate.toFixed(2)}%`;
+        }
+
+        if (tileCVal3) {
+          tileCVal3.textContent = freq === 36500 ? '∞' : freq.toString();
+        }
+
+        // Simulate yields on $10,000
+        const principal = 10000;
+        const interestNoComp = principal * (nominalRate / 100);
+        const interestWithComp = principal * (earRate / 100);
+        const compoundBonus = interestWithComp - interestNoComp;
+
+        if (simNoCompound) simNoCompound.textContent = `$${interestNoComp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (simWithCompound) simWithCompound.textContent = `$${interestWithComp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (simBonus) simBonus.textContent = `+$${compoundBonus.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+    }
+
+    function getFrequencyLabel(m: number) {
+      switch (m) {
+        case 36500: return 'Continuously';
+        case 365: return 'Daily';
+        case 52: return 'Weekly';
+        case 12: return 'Monthly';
+        case 4: return 'Quarterly';
+        case 2: return 'Semi-Annually';
+        default: return 'Annually';
+      }
+    }
+
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const mode = modeSelect.value;
+      const dir = directionSelect.value;
+      let text = '';
+      
+      if (mode === 'fisher') {
+        if (dir === 'calc-real') {
+          text = `Fisher Inflation Analysis Summary:\n` +
+                 `Nominal Interest Rate: ${nomRateInput.value}%\n` +
+                 `Inflation Rate: ${inflationInput.value}%\n` +
+                 `Real Interest Rate (Net Yield): ${document.getElementById('res-fisher-primary')?.textContent}`;
+        } else {
+          text = `Fisher Inflation Analysis Summary:\n` +
+                 `Target Real Rate: ${realInput.value}%\n` +
+                 `Inflation Rate: ${inflationInput.value}%\n` +
+                 `Required Stated Rate (Nominal): ${document.getElementById('res-fisher-primary')?.textContent}`;
+        }
+      } else if (mode === 'compounding') {
+        const freqLabel = getFrequencyLabel(parseFloat(freqSelect.value));
+        if (dir === 'calc-ear') {
+          text = `Compounding Rate Analysis Summary:\n` +
+                 `Stated APR (Nominal): ${nomRateInput.value}%\n` +
+                 `Compounding Interval: ${freqLabel}\n` +
+                 `Effective annual APY (EAR): ${document.getElementById('res-comp-primary')?.textContent}\n` +
+                 `Compounding Bonus on $10k: ${document.getElementById('sim-bonus-compound')?.textContent}`;
+        } else {
+          text = `Compounding Rate Analysis Summary:\n` +
+                 `Target annual APY: ${earInput.value}%\n` +
+                 `Compounding Interval: ${freqLabel}\n` +
+                 `Stated APR required (Nominal): ${document.getElementById('res-comp-primary')?.textContent}\n` +
+                 `Compounding Bonus on $10k: ${document.getElementById('sim-bonus-compound')?.textContent}`;
+        }
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Initial input display setups
+    updateInputVisibility();
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initNominalCalculator);
+  document.addEventListener('astro:after-swap', initNominalCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input, .units-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .chart-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+    padding: 0 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chart-legend-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+      text-align: left;
+    }
+    .legend-item {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

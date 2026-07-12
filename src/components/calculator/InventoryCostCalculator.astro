@@ -335,21 +335,21 @@ import Card from '../ui/Card.astro';
         <div id="carrying-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
           <!-- Injected via JS -->
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2) var(--space-4); font-size: 0.75rem; color: var(--color-text-light); margin-top: var(--space-3); padding: 0 4px;">
-          <span style="display: flex; align-items: center; gap: 4px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6;"></span>
+        <div class="chart-legend-grid">
+          <span class="legend-item">
+            <span class="legend-dot" style="background: #3b82f6;"></span>
             Opportunity: <strong id="chart-c-capital">$6,000</strong>
           </span>
-          <span style="display: flex; align-items: center; gap: 4px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background: #f59e0b;"></span>
             Storage Rent: <strong id="chart-c-storage">$6,000</strong>
           </span>
-          <span style="display: flex; align-items: center; gap: 4px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background: #10b981;"></span>
             Service & Tech: <strong id="chart-c-service">$2,000</strong>
           </span>
-          <span style="display: flex; align-items: center; gap: 4px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span>
+          <span class="legend-item">
+            <span class="legend-dot" style="background: #ef4444;"></span>
             Risk & Shrink: <strong id="chart-c-risk">$1,500</strong>
           </span>
         </div>
@@ -1010,6 +1010,41 @@ import Card from '../ui/Card.astro';
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
+  }
+
+  .chart-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+    padding: 0 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chart-legend-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+      text-align: left;
+    }
+    .legend-item {
+      justify-content: flex-start;
+    }
   }
 
   .hidden {

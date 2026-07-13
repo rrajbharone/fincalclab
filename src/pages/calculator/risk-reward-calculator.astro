@@ -1,0 +1,228 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RiskRewardCalculator from '../../components/calculator/RiskRewardCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Risk Reward Calculator', path: '/calculator/risk-reward-calculator' }
+];
+---
+
+<Layout
+  title="Risk Reward Calculator - Find Your Trading Expectancy"
+  description="Free online Risk Reward Calculator. Calculate the risk-reward ratio, position size in shares, breakeven win rate, and strategy expectancy."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <RiskRewardCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Trading Expectancy Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The 70% Win Rate Trap: How We Lost $10,000 on a Profitable Strategy</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person case study of a stock trader who was right 70% of the time, yet still blew their account because their average loss was five times larger than their average win. Learn how to calculate expectancy.
+            </p>
+            <a href="/blog/how-to-calculate-risk-reward-ratio" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Risk-Reward Ratios & Develop a Positive Edge
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Risk-Reward Ratio (R:R)?</h2>
+        <p>
+          In financial markets, the <strong>risk-reward ratio (R:R)</strong> is a metric used by traders to compare the potential profit of a trade setup against its potential loss. If you place a trade with a potential loss of $100 and a potential profit of $300, your risk-reward ratio is 1:3. 
+        </p>
+        <p>
+          By calculating your risk-reward ratio before clicking "buy" or "sell," you ensure that the profit potential of your winning trades is large enough to cover the inevitable losses that occur in trading. R:R is calculated as:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Risk-Reward Ratio} = \\frac{\\text{Take Profit Price} - \\text{Entry Price}}{\\text{Entry Price} - \\text{Stop Loss Price}}\\)"}
+        </p>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>Entry Price:</strong> The price at which you buy or sell a security.</li>
+          <li><strong>Stop Loss Price:</strong> The price at which you will close the trade to limit your loss. The difference between entry and stop loss defines your <strong>unit risk</strong>.</li>
+          <li><strong>Take Profit Price (Target):</strong> The price at which you will close the trade to lock in your profit. The difference between target and entry defines your <strong>unit reward</strong>.</li>
+        </ul>
+
+        <h2>The Inverse Relationship: Win Rate vs. Risk-Reward Ratio</h2>
+        <p>
+          Many beginner traders believe they need a high win rate (e.g. 70% or 80%) to make money. In reality, your win rate is only half of the equation. Your profitability is dictated by the relationship between your win rate and your risk-reward ratio.
+        </p>
+        <p>
+          The higher your risk-reward ratio, the lower your win rate needs to be to break even. You can calculate your <strong>breakeven win rate</strong> using this formula:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Breakeven Win Rate (\\%)} = \\frac{\\text{Risk}}{\\text{Risk} + \text{Reward}} \\times 100 = \\frac{1}{1 + R} \\times 100\\)"}
+        </p>
+        <p>
+          Where <strong>R</strong> is the reward multiple (e.g. if the ratio is 1:3, then R = 3).
+        </p>
+        <p>
+          Let's look at how the breakeven win rate shifts across different R:R setups:
+        </p>
+        <ul>
+          <li>
+            <strong>1:1 Ratio:</strong> You need a <strong>50.0%</strong> win rate to break even. If you win 51% of your trades, you make money.
+          </li>
+          <li>
+            <strong>1:2 Ratio:</strong> You need a <strong>33.3%</strong> win rate to break even. You can lose two-thirds of your trades and still not lose money.
+          </li>
+          <li>
+            <strong>1:3 Ratio:</strong> You need a <strong>25.0%</strong> win rate to break even. Losing 75% of your trades will keep your account at break-even.
+          </li>
+          <li>
+            <strong>1:5 Ratio:</strong> You need a <strong>16.7%</strong> win rate to break even.
+          </li>
+        </ul>
+        <p>
+          By selecting trades with high R:R ratios, you take the pressure off your win rate, allowing your account to survive extended periods of low accuracy.
+        </p>
+
+        <h2>Calculating Trading Expectancy (Expected Value)</h2>
+        <p>
+          <strong>Expectancy</strong> is the single most important mathematical metric in trading. It represents the average dollar amount you expect to win or lose per trade over the long run, based on your strategy's win rate and average risk/reward sizes.
+        </p>
+        <p>
+          The formula to calculate expectancy is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Expectancy} = (\\text{Win Rate} \\times \\text{Average Reward}) - (\\text{Loss Rate} \\times \\text{Average Risk})\\)"}
+        </p>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>Win Rate:</strong> The percentage of winning trades (expressed as a decimal).</li>
+          <li><strong>Loss Rate:</strong> Calculated as <code>1 - Win Rate</code>.</li>
+          <li><strong>Average Reward:</strong> The average dollar profit of your winning trades.</li>
+          <li><strong>Average Risk:</strong> The average dollar loss of your losing trades.</li>
+        </ul>
+        <p>
+          If your expectancy is **positive** (e.g. +$50.00 per trade), your strategy has a "positive edge." Over 100 trades, you can expect to make $5,000. If your expectancy is **negative** (e.g. -$20.00 per trade), you have a "negative edge," and you are mathematically guaranteed to lose money over time, no matter how many winning streaks you experience.
+        </p>
+
+        <h2>Position Sizing: Linking R:R to Your Account Balance</h2>
+        <p>
+          A risk-reward ratio is only useful if you calculate your **position size** (how many shares or units to trade) based on a consistent account risk model. 
+        </p>
+        <p>
+          If you risk $500 on one trade (with a wide stop loss) and only make $200 on another (with a tight stop loss), your risk-reward math breaks down because your risk sizes are inconsistent. 
+        </p>
+        <p>
+          To protect your capital, always calculate your position size using:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Shares/Units} = \\frac{\\text{Account Balance} \\times (\\text{Risk \\%} / 100)}{\\text{Entry Price} - \\text{Stop Loss Price}}\\)"}
+        </p>
+        <p>
+          For example, if you have a $10,000 account and want to risk 1.5% ($150 risk amount) on a stock with a $100 entry price and a $95 stop loss (risk per share = $5):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Shares} = \\frac{\\$150.00}{\\$5.00} = 30\\text{ shares}\\)"}
+        </p>
+        <p>
+          Our calculator handles this entire calculation automatically, giving you the exact position size, risk-reward ratio, breakeven win rate, and expectancy in real time.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Risk Reward Calculator FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why is a high win rate alone not enough to be profitable?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A high win rate is meaningless without factoring in the size of your wins versus your losses. For example, if you win 80% of your trades earning $10 per trade, but lose $100 on the other 20% of your trades, you will lose $1,200 for every $800 you earn. Expectancy is the only metric that combines win rate and R:R to confirm profitability.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a good risk-reward ratio for day trading?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Most professional day traders target a risk-reward ratio of at least **1:2 or higher**. This allows them to remain profitable even if their win rate drops to 40%. While 1:1 ratios are sometimes used, they require a very high win rate (greater than 50%) to be profitable after factoring in broker commissions and fees.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does stop loss slip affect my risk-reward ratio?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Stop loss slip (slippage) occurs during high volatility when your broker cannot execute your stop loss at the exact target price, resulting in a larger loss. Slippage increases your average risk, which lowers your actual risk-reward ratio and raises your required breakeven win rate. Traders should add a buffer to their risk calculations to account for slippage.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between R:R and Risk-Multiple (R)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              They represent the same concept. Risk-Reward Ratio compares risk to reward (e.g. 1:3). In risk-multiple terminology, your risk is designated as "1R" and your profit is expressed as a multiple of that risk. A trade that hits a 1:3 profit target is described as a "3R gain," whereas a trade that hits a stop loss is a "1R loss."
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How often should I review my trading expectancy?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You should calculate your realized expectancy monthly or quarterly by reviewing your actual trade logs (using your average winning trade amount and average losing trade amount, along with realized win rates). This confirms whether your actual trading matches your theoretical strategy parameters.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2.5);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

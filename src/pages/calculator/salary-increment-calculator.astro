@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalaryIncrementCalculator from '../../components/calculator/SalaryIncrementCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Salary Increment Calculator', path: '/calculator/salary-increment-calculator' }
+];
+---
+
+<Layout
+  title="Salary Increment Calculator - Calculate Your Raise & Real Yield"
+  description="Free online Salary Increment Calculator. Calculate your new annual salary, find hike percentages, and adjust for inflation using the Fisher Equation."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <SalaryIncrementCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Career Growth Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The 5% Raise Illusion: How Inflation and Taxes Made Me Poorer</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person case study of a corporate professional who celebrated a $3,000 raise, only to discover that rising living costs and a higher tax bracket resulted in a net loss of purchasing power.
+            </p>
+            <a href="/blog/how-to-calculate-salary-increase" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Salary Hike Percentages & Check Inflation Impact
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Salary Increment?</h2>
+        <p>
+          A <strong>salary increment</strong> is an increase in your base salary or total compensation, typically expressed as a percentage of your current earnings. Increments are usually awarded annually as part of performance reviews, job promotions, or cost-of-living adjustments.
+        </p>
+        <p>
+          While receiving any raise is positive, understanding the mathematics behind your increment is vital for long-term career planning. A nominal raise does not tell the whole story. You must account for how your raise compares to inflation and how taxes will impact your net take-home salary.
+        </p>
+
+        <h2>How to Calculate Your Salary Hike Percentage</h2>
+        <p>
+          If you have been offered a new salary and want to find the exact percentage increase, you can use the following formula:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Salary Hike \\%} = \\frac{\\text{New Salary} - \\text{Current Salary}}{\\text{Current Salary}} \\times 100\\)"}
+        </p>
+        <p>
+          For example, if your annual salary is increasing from $60,000 to $63,000:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Salary Hike \\%} = \\frac{\\$63,000 - \\$60,000}{\\$60,000} \\times 100 = \\frac{\\$3,000}{\\$60,000} \\times 100 = 5.00\\%\\)"}
+        </p>
+        <p>
+          This is a **5.00% gross salary hike**. To calculate your new salary when a percentage hike is offered, use this formula:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{New Salary} = \\text{Current Salary} \\times \\left(1 + \\frac{\\text{Hike \\%}}{100}\\right)\\)"}
+        </p>
+
+        <h2>Nominal vs. Real Salary Raises: The Inflation Factor</h2>
+        <p>
+          The most critical trap in career compensation is ignoring inflation. Your stated raise is a <strong>nominal raise</strong>. However, because price inflation increases the cost of housing, food, energy, and transportation, the value of each dollar you earn declines over the year.
+        </p>
+        <p>
+          To find if your standard of living is actually improving, you must calculate your <strong>real salary growth rate</strong>. This is done by adjusting your nominal raise for inflation using the exact **Fisher Equation**:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Salary Growth \\%} = \\left( \\frac{1 + \\text{Nominal Hike \\%} / 100}{1 + \\text{Inflation Rate \\%} / 100} - 1 \\right) \times 100\\)"}
+        </p>
+        <p>
+          Let's see what happens to a **5.00% raise** during a year when price inflation is **3.00%**:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Growth \\%} = \\left( \\frac{1.05}{1.03} - 1 \\right) \\times 100 = 1.942\\%\\)"}
+        </p>
+        <p>
+          Even though your paycheck is 5% larger, your actual purchasing power (real standard of living) has only grown by <strong>1.94%</strong>. 
+        </p>
+        <p>
+          If inflation was **6.00%**, then:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Growth \\%} = \\left( \\frac{1.05}{1.06} - 1 \\right) \\times 100 = -0.943\\%\\)"}
+        </p>
+        <p>
+          In real terms, you are **0.94% poorer** than the previous year. You are taking a pay cut in terms of purchasing power, despite receiving a nominal raise.
+        </p>
+
+        <h2>The Tax Bracket Creep (Fiscal Drag)</h2>
+        <p>
+          Another factor that reduces the impact of a salary raise is progressive income tax. In most countries, tax rates increase as your income crosses specific thresholds (tax brackets). 
+        </p>
+        <p>
+          If your nominal raise pushes a portion of your income into a higher tax bracket, that portion will be taxed at a higher rate. This phenomenon, known as **bracket creep**, can make your net take-home raise percentage smaller than your gross raise percentage. Always calculate your estimated tax liabilities to see the true take-home value of your salary increment.
+        </p>
+
+        <h2>Types of Salary Increases</h2>
+        <ul>
+          <li>
+            <strong>Merit-Based Raise:</strong> Tied directly to your performance, achievements, and contributions to the company's success.
+          </li>
+          <li>
+            <strong>Cost-of-Living Adjustment (COLA):</strong> A company-wide salary increase designed to match price inflation in your region, ensuring employees do not suffer a decrease in purchasing power.
+          </li>
+          <li>
+            <strong>Promotion-Based Hike:</strong> Awarded when you transition to a role with higher responsibilities, typically yielding a much larger percentage increase (e.g. 10% to 20%) compared to annual reviews (e.g. 3% to 5%).
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Salary Increment Calculator FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is a salary hike percentage calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A salary hike percentage is calculated by dividing the salary increase amount (New Salary minus Current Salary) by your Current Salary, then multiplying by 100: <strong>{"\\(Hike\\% = \\frac{New - Old}{Old} \\times 100\\)"}</strong>.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why does a 5% raise not result in a 5% take-home pay increase?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A raise is calculated on your gross salary. Your net take-home pay is affected by deductions like income tax, social security contributions, retirement savings (such as 401k or PF), and health insurance. If your raise pushes you into a higher tax bracket, the incremental earnings will be taxed at a higher marginal rate, reducing the net percentage gain.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a standard annual salary increment percentage?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              In corporate industries, average annual merit raises typically range from **3% to 5%** during normal economic periods. Promotive hikes or job shifts usually result in larger adjustments, typically ranging from **10% to 20%** depending on the industry and role.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Should my raise always match or beat inflation?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Ideally, yes. If your raise does not match inflation, your real salary decreases because your money loses purchasing power. However, companies are not legally obligated to match inflation and will base increments on company profits and individual performance.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How should I prepare for a salary review or negotiation?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Prepare a list of your achievements, projects completed, and quantifiable impact (KPI targets reached). Research market benchmarks for your role in your city. Instead of focusing on personal financial needs, frame the request around the value you have delivered and the market rates for your skills.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2.5);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

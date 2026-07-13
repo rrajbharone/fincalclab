@@ -1,0 +1,792 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Revenue Growth Calculator"
+  description="Calculate your company's revenue growth rate, estimate compound annual growth rate (CAGR), and project annualized run rates."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="revenue-growth-calculator">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="revg-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="revg-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="period" selected>Period-over-Period Growth (YoY / MoM)</option>
+        <option value="cagr">Compound Annual Growth Rate (CAGR)</option>
+        <option value="runrate">Annualized Revenue Run Rate (ARR)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="revg-currency-select">Currency</label>
+        <select id="revg-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Input: Starting Value (Mode 1 & 2 only) -->
+    <div class="input-group" id="group-start-val">
+      <div class="input-label-row">
+        <label for="revg-start-input">Starting Period Revenue</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="revg-start-input" min="100" step="1000" value="10000" aria-label="Starting Revenue" />
+        </div>
+      </div>
+      <input type="range" id="revg-start-slider" min="100" max="250000" step="1000" value="10000" class="slider-range" aria-label="Starting Revenue Slider" />
+    </div>
+
+    <!-- Input: Ending Value (Mode 1 & 2 only) -->
+    <div class="input-group" id="group-end-val">
+      <div class="input-label-row">
+        <label for="revg-end-input">Ending Period Revenue</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="revg-end-input" min="100" step="1000" value="15000" aria-label="Ending Revenue" />
+        </div>
+      </div>
+      <input type="range" id="revg-end-slider" min="100" max="500000" step="1000" value="15000" class="slider-range" aria-label="Ending Revenue Slider" />
+    </div>
+
+    <!-- Input: Number of Years (Mode 2 only) -->
+    <div class="input-group hidden" id="group-years">
+      <div class="input-label-row">
+        <label for="revg-years-input">Number of Years (Periods)</label>
+        <div class="input-symbol-wrapper units-wrapper">
+          <input type="number" id="revg-years-input" min="1" max="50" step="1" value="3" aria-label="Number of Years" />
+          <span class="percent-symbol">years</span>
+        </div>
+      </div>
+      <input type="range" id="revg-years-slider" min="1" max="20" step="1" value="3" class="slider-range" aria-label="Number of Years Slider" />
+    </div>
+
+    <!-- Input: Recent Period Revenue (Mode 3 only) -->
+    <div class="input-group hidden" id="group-recent-rev">
+      <div class="input-label-row">
+        <label for="revg-recent-input">Recent Period Revenue</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="revg-recent-input" min="100" step="500" value="10000" aria-label="Recent Revenue" />
+        </div>
+      </div>
+      <input type="range" id="revg-recent-slider" min="100" max="100000" step="500" value="10000" class="slider-range" aria-label="Recent Revenue Slider" />
+    </div>
+
+    <!-- Input: Period Interval (Mode 3 only) -->
+    <div class="input-group hidden" id="group-interval">
+      <div class="input-label-row">
+        <label for="revg-interval-select">Recent Period Interval</label>
+        <select id="revg-interval-select" class="currency-select" aria-label="Select Interval" style="width: 145px; height: 38px; padding: 0 10px;">
+          <option value="12" selected>Monthly</option>
+          <option value="4">Quarterly</option>
+          <option value="2">Semi-Annual</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="revg-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Revenue Growth Metrics</h3>
+
+    <!-- Summary Card -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="revg-verdict-card" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);" id="res-revg-label">Revenue Growth Rate</span>
+        <div id="res-revg-primary" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-primary);">+50.00%</div>
+        <p id="res-revg-details" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your revenue increased by <strong>+$5,000.00</strong> relative to your starting base of <strong>$10,000.00</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="results-grid">
+      <div class="result-tile">
+        <span class="tile-label" id="tile-r-l1">Starting Base</span>
+        <div class="tile-value" id="tile-r-val1" style="color: var(--color-primary);">$10,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-r-sub1">Prior Period</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-r-l2">Revenue Change</span>
+        <div class="tile-value" id="tile-r-val2" style="color: var(--color-success);">+$5,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-r-sub2">Net increase</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-r-l3">Ending Revenue</span>
+        <div class="tile-value" id="tile-r-val3" style="color: var(--color-accent);">$15,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-r-sub3">Current Period</span>
+      </div>
+    </div>
+
+    <!-- Growth Composition Bar Chart -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);" id="chart-revg-container">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Base Revenue vs. Net Growth Share</h4>
+      <div id="revg-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div class="chart-legend-grid">
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--color-primary);"></span>
+          Starting Base: <strong id="chart-revg-start">66.7%</strong>
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--color-success);"></span>
+          Net Hike Growth: <strong id="chart-revg-growth">33.3%</strong>
+        </span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initRevenueGrowthCalculator() {
+    const modeSelect = document.getElementById('revg-calc-mode') as HTMLSelectElement;
+
+    // Inputs & Sliders
+    const startInput = document.getElementById('revg-start-input') as HTMLInputElement;
+    const startSlider = document.getElementById('revg-start-slider') as HTMLInputElement;
+    const endInput = document.getElementById('revg-end-input') as HTMLInputElement;
+    const endSlider = document.getElementById('revg-end-slider') as HTMLInputElement;
+    const yearsInput = document.getElementById('revg-years-input') as HTMLInputElement;
+    const yearsSlider = document.getElementById('revg-years-slider') as HTMLInputElement;
+    const recentInput = document.getElementById('revg-recent-input') as HTMLInputElement;
+    const recentSlider = document.getElementById('revg-recent-slider') as HTMLInputElement;
+    const intervalSelect = document.getElementById('revg-interval-select') as HTMLSelectElement;
+
+    // Currency selector
+    const currencySelect = document.getElementById('revg-currency-select') as HTMLSelectElement;
+
+    // Input containers to hide/show
+    const groupStart = document.getElementById('group-start-val') as HTMLDivElement;
+    const groupEnd = document.getElementById('group-end-val') as HTMLDivElement;
+    const groupYears = document.getElementById('group-years') as HTMLDivElement;
+    const groupRecent = document.getElementById('group-recent-rev') as HTMLDivElement;
+    const groupInterval = document.getElementById('group-interval') as HTMLDivElement;
+
+    const chartContainer = document.getElementById('chart-revg-container') as HTMLDivElement;
+
+    if (!modeSelect || !startInput || !endInput || !recentInput) return;
+
+    // Toggle calculation modes
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      
+      // Hide all first
+      groupStart.classList.add('hidden');
+      groupEnd.classList.add('hidden');
+      groupYears.classList.add('hidden');
+      groupRecent.classList.add('hidden');
+      groupInterval.classList.add('hidden');
+      chartContainer.classList.remove('hidden');
+
+      if (mode === 'period') {
+        groupStart.classList.remove('hidden');
+        groupEnd.classList.remove('hidden');
+      } else if (mode === 'cagr') {
+        groupStart.classList.remove('hidden');
+        groupEnd.classList.remove('hidden');
+        groupYears.classList.remove('hidden');
+      } else if (mode === 'runrate') {
+        groupRecent.classList.remove('hidden');
+        groupInterval.classList.remove('hidden');
+        chartContainer.classList.add('hidden'); // No bar chart in runrate mode
+      }
+
+      calculateAll();
+    });
+
+    // Double slider bindings helper
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(startInput, startSlider);
+    bindSlider(endInput, endSlider);
+    bindSlider(yearsInput, yearsSlider);
+    bindSlider(recentInput, recentSlider);
+
+    intervalSelect.addEventListener('change', calculateAll);
+
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('revg-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        startInput.value = '10000';
+        startSlider.value = '10000';
+        endInput.value = '15000';
+        endSlider.value = '15000';
+        yearsInput.value = '3';
+        yearsSlider.value = '3';
+        recentInput.value = '10000';
+        recentSlider.value = '10000';
+        intervalSelect.value = '12';
+        currencySelect.value = 'USD';
+        modeSelect.value = 'period';
+
+        groupStart.classList.remove('hidden');
+        groupEnd.classList.remove('hidden');
+        groupYears.classList.add('hidden');
+        groupRecent.classList.add('hidden');
+        groupInterval.classList.add('hidden');
+        chartContainer.classList.remove('hidden');
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+
+      // Outputs selectors
+      const resLabel = document.getElementById('res-revg-label');
+      const resPrimary = document.getElementById('res-revg-primary');
+      const resDetails = document.getElementById('res-revg-details');
+      const cardVerdict = document.getElementById('revg-verdict-card');
+
+      const tileL1 = document.getElementById('tile-r-l1');
+      const tileL2 = document.getElementById('tile-r-l2');
+      const tileL3 = document.getElementById('tile-r-l3');
+
+      const tileVal1 = document.getElementById('tile-r-val1');
+      const tileVal2 = document.getElementById('tile-r-val2');
+      const tileVal3 = document.getElementById('tile-r-val3');
+
+      const tileSub1 = document.getElementById('tile-r-sub1');
+      const tileSub2 = document.getElementById('tile-r-sub2');
+      const tileSub3 = document.getElementById('tile-r-sub3');
+
+      const compBar = document.getElementById('revg-composition-bar');
+      const chartStart = document.getElementById('chart-revg-start');
+      const chartGrowth = document.getElementById('chart-revg-growth');
+
+      if (mode === 'period') {
+        const start = parseFloat(startInput.value) || 0;
+        const end = parseFloat(endInput.value) || 0;
+
+        const delta = end - start;
+        let growthRate = 0;
+        if (start > 0) {
+          growthRate = (delta / start) * 100;
+        }
+
+        // Update main result
+        if (resLabel) resLabel.textContent = 'Revenue Growth Rate';
+        if (resPrimary) {
+          resPrimary.textContent = (growthRate >= 0 ? '+' : '') + growthRate.toFixed(2) + '%';
+          resPrimary.style.color = growthRate >= 0 ? 'var(--color-primary)' : 'var(--color-error)';
+        }
+        if (cardVerdict) {
+          cardVerdict.style.borderLeftColor = growthRate >= 0 ? 'var(--color-primary)' : 'var(--color-error)';
+        }
+        if (resDetails) {
+          resDetails.innerHTML = `Your revenue increased by <strong>${formatCurrency(delta)}</strong> relative to your starting base of <strong>${formatCurrency(start)}</strong>.`;
+        }
+
+        // Tiles
+        if (tileL1) tileL1.textContent = 'Starting Base';
+        if (tileL2) tileL2.textContent = 'Revenue Change';
+        if (tileL3) tileL3.textContent = 'Ending Revenue';
+
+        if (tileVal1) tileVal1.textContent = formatCurrency(start).split('.')[0];
+        if (tileVal2) {
+          tileVal2.textContent = (delta >= 0 ? '+' : '') + formatCurrency(delta).split('.')[0];
+          tileVal2.style.color = delta >= 0 ? 'var(--color-success)' : 'var(--color-error)';
+        }
+        if (tileVal3) tileVal3.textContent = formatCurrency(end).split('.')[0];
+
+        if (tileSub1) tileSub1.textContent = 'Prior Period';
+        if (tileSub2) tileSub2.textContent = 'Absolute change';
+        if (tileSub3) tileSub3.textContent = 'Current Period';
+
+        // Chart
+        if (compBar) {
+          if (end > 0) {
+            const startPct = Math.max(0, (start / end) * 100);
+            const growthPct = Math.max(0, (delta / end) * 100);
+
+            if (chartStart) chartStart.textContent = `${startPct.toFixed(1)}%`;
+            if (chartGrowth) chartGrowth.textContent = `${growthPct.toFixed(1)}%`;
+
+            compBar.innerHTML = `
+              <div style="width: ${startPct.toFixed(1)}%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+              <div style="width: ${growthPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+            `;
+          } else {
+            compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+          }
+        }
+      }
+
+      else if (mode === 'cagr') {
+        const start = parseFloat(startInput.value) || 0;
+        const end = parseFloat(endInput.value) || 0;
+        const years = parseFloat(yearsInput.value) || 1;
+
+        let cagr = 0;
+        let cumulative = 0;
+
+        if (start > 0 && end > 0) {
+          cagr = (Math.pow(end / start, 1 / years) - 1) * 100;
+          cumulative = ((end - start) / start) * 100;
+        }
+
+        // Update main result
+        if (resLabel) resLabel.textContent = 'Compound Annual Growth Rate';
+        if (resPrimary) {
+          resPrimary.textContent = (cagr >= 0 ? '+' : '') + cagr.toFixed(2) + '% CAGR';
+          resPrimary.style.color = cagr >= 0 ? 'var(--color-primary)' : 'var(--color-error)';
+        }
+        if (cardVerdict) {
+          cardVerdict.style.borderLeftColor = cagr >= 0 ? 'var(--color-primary)' : 'var(--color-error)';
+        }
+        if (resDetails) {
+          resDetails.innerHTML = `Over a <strong>${years} year</strong> period, your annual revenue compounded at a smoothed rate of <strong>${cagr.toFixed(2)}%</strong> per year.`;
+        }
+
+        // Tiles
+        if (tileL1) tileL1.textContent = 'Starting Base';
+        if (tileL2) tileL2.textContent = 'Cumulative Growth';
+        if (tileL3) tileL3.textContent = 'Ending Revenue';
+
+        if (tileVal1) tileVal1.textContent = formatCurrency(start).split('.')[0];
+        if (tileVal2) {
+          tileVal2.textContent = (cumulative >= 0 ? '+' : '') + cumulative.toFixed(1) + '%';
+          tileVal2.style.color = cumulative >= 0 ? 'var(--color-success)' : 'var(--color-error)';
+        }
+        if (tileVal3) tileVal3.textContent = formatCurrency(end).split('.')[0];
+
+        if (tileSub1) tileSub1.textContent = 'Year 0 Revenue';
+        if (tileSub2) tileSub2.textContent = 'Total change';
+        if (tileSub3) tileSub3.textContent = `Year ${years} Revenue`;
+
+        // Chart
+        if (compBar) {
+          if (end > 0) {
+            const startPct = Math.max(0, (start / end) * 100);
+            const growthPct = Math.max(0, ((end - start) / end) * 100);
+
+            if (chartStart) chartStart.textContent = `${startPct.toFixed(1)}%`;
+            if (chartGrowth) chartGrowth.textContent = `${growthPct.toFixed(1)}%`;
+
+            compBar.innerHTML = `
+              <div style="width: ${startPct.toFixed(1)}%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+              <div style="width: ${growthPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+            `;
+          } else {
+            compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+          }
+        }
+      }
+
+      else if (mode === 'runrate') {
+        const recent = parseFloat(recentInput.value) || 0;
+        const interval = parseFloat(intervalSelect.value);
+
+        const annualRunRate = recent * interval;
+        const monthlyAverage = annualRunRate / 12;
+        const quarterlyAverage = annualRunRate / 4;
+
+        // Update main result
+        if (resLabel) resLabel.textContent = 'Annualized Revenue Run Rate';
+        if (resPrimary) {
+          resPrimary.textContent = formatCurrency(annualRunRate).split('.')[0];
+          resPrimary.style.color = 'var(--color-primary)';
+        }
+        if (cardVerdict) {
+          cardVerdict.style.borderLeftColor = 'var(--color-primary)';
+        }
+        
+        let intervalLabel = 'monthly';
+        if (interval === 4) intervalLabel = 'quarterly';
+        if (interval === 2) intervalLabel = 'semi-annual';
+
+        if (resDetails) {
+          resDetails.innerHTML = `Extrapolating your recent ${intervalLabel} revenue of <strong>${formatCurrency(recent)}</strong> suggests an annualized run rate (ARR) of <strong>${formatCurrency(annualRunRate)}</strong>.`;
+        }
+
+        // Tiles
+        if (tileL1) tileL1.textContent = 'Period Revenue';
+        if (tileL2) tileL2.textContent = 'Monthly Run Rate';
+        if (tileL3) tileL3.textContent = 'Quarterly Run Rate';
+
+        if (tileVal1) tileVal1.textContent = formatCurrency(recent).split('.')[0];
+        if (tileVal2) {
+          tileVal2.textContent = formatCurrency(monthlyAverage).split('.')[0];
+          tileVal2.style.color = 'var(--color-success)';
+        }
+        if (tileVal3) tileVal3.textContent = formatCurrency(quarterlyAverage).split('.')[0];
+
+        if (tileSub1) tileSub1.textContent = 'Recent snapshot';
+        if (tileSub2) tileSub2.textContent = 'ARR / 12 months';
+        if (tileSub3) tileSub3.textContent = 'ARR / 4 quarters';
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+    
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const mode = modeSelect.value;
+      let text = '';
+      
+      if (mode === 'period') {
+        text = `Revenue Growth Analysis Summary:\n` +
+               `Starting Revenue: ${formatCurrency(parseFloat(startInput.value))}\n` +
+               `Ending Revenue: ${formatCurrency(parseFloat(endInput.value))}\n` +
+               `Growth Rate: ${document.getElementById('res-revg-primary')?.textContent}\n` +
+               `Stated Increase: ${document.getElementById('res-revg-details')?.querySelector('strong:first-child')?.textContent}`;
+      } else if (mode === 'cagr') {
+        text = `Revenue CAGR Analysis Summary:\n` +
+               `Starting Revenue: ${formatCurrency(parseFloat(startInput.value))}\n` +
+               `Ending Revenue: ${formatCurrency(parseFloat(endInput.value))}\n` +
+               `Period: ${yearsInput.value} years\n` +
+               `Compound Annual Growth Rate (CAGR): ${document.getElementById('res-revg-primary')?.textContent}\n` +
+               `Cumulative Growth %: ${document.getElementById('tile-r-val2')?.textContent}`;
+      } else if (mode === 'runrate') {
+        text = `Revenue Run Rate Analysis Summary:\n` +
+               `Recent Period Revenue: ${formatCurrency(parseFloat(recentInput.value))}\n` +
+               `Annualized Revenue Run Rate: ${document.getElementById('res-revg-primary')?.textContent}\n` +
+               `Projected Monthly Average: ${document.getElementById('tile-r-val2')?.textContent}\n` +
+               `Projected Quarterly Average: ${document.getElementById('tile-r-val3')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initRevenueGrowthCalculator);
+  document.addEventListener('astro:after-swap', initRevenueGrowthCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input, .units-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .chart-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+    padding: 0 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chart-legend-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+      text-align: left;
+    }
+    .legend-item {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

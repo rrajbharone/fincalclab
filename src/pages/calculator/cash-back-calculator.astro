@@ -1,0 +1,225 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CashBackCalculator from '../../components/calculator/CashBackCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Cash Back Calculator', path: '/calculator/cash-back-calculator' }
+];
+---
+
+<Layout
+  title="Cash Back Calculator - Side-by-Side Credit Card Rewards Optimizer"
+  description="Free online Cash Back Calculator. Compare two cards side-by-side. Calculate net annual rewards, break-even spending points, and crossover thresholds."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <CashBackCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Rewards Optimization Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The 6% Cash Back Trap: How Chasing Credit Card Rewards Cost Me $1,200</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person case study of a personal finance enthusiast who overspent on premium categories to chase cashback bonuses, ending up with interest fees that completely wiped out their earnings.
+            </p>
+            <a href="/blog/how-to-calculate-cash-back" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Credit Card Cashback & Avoid Overspending Traps
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Cash Back?</h2>
+        <p>
+          In personal finance, <strong>cash back</strong> is an incentive program offered by credit card issuers and retailers that refunds cardholders a small percentage of the amount spent on purchases. It is essentially a discount on everything you buy, returned to you in the form of statement credits, direct deposits, or gift cards.
+        </p>
+        <p>
+          While cash back is an excellent way to earn passive value on daily spending, optimizing rewards is a mathematical game. You must evaluate rewards structures against annual fees and your actual spending habits to find your true net yield.
+        </p>
+
+        <h2>Flat-Rate vs. Tiered Cash Back Cards</h2>
+        <p>
+          Most cash back credit cards fall into one of two reward structures:
+        </p>
+        <ul>
+          <li>
+            <strong>Flat-Rate Cards:</strong> Earning a fixed percentage on all purchases, regardless of category (typically 1.5% to 2% cash back). These are simple, do not require category tracking, and are best for users with distributed spending.
+          </li>
+          <li>
+            <strong>Tiered Cards:</strong> Offering higher percentages on specific categories (e.g. 6% on groceries, 3% on gas) while dropping to 1% on general spending. These are excellent for individuals with heavy category-specific budgets, but they often carry annual fees.
+          </li>
+        </ul>
+
+        <h2>Calculating Net Annual Rewards</h2>
+        <p>
+          To compare cards side-by-side, you cannot simply look at the higher category percentages. You must calculate the <strong>Net Annual Rewards Value</strong> by subtracting the annual fee from your total projected cashback:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Annual Value} = \\text{Projected Annual Cashback} - \\text{Annual Fee}\\)"}
+        </p>
+        <p>
+          For example, if you spend <strong>$400 a month ($4,800 a year)</strong> on groceries, let's compare:
+        </p>
+        <ul>
+          <li>
+            <strong>Card A (Flat 1.5% - No Fee):</strong> 
+            {"\\(\\text{Net Cashback} = \\$4,800 \\times 0.015 = \\mathbf{\\$72.00}\\)"}
+          </li>
+          <li>
+            <strong>Card B (6% on Groceries - $95 Annual Fee):</strong>
+            {"\\(\\text{Gross Cashback} = \\$4,800 \\times 0.06 = \\$288.00\\)"}
+            {"\\(\\text{Net Cashback} = \\$288.00 - \\$95.00 = \\mathbf{\\$193.00}\\)"}
+          </li>
+        </ul>
+        <p>
+          Even with the $95 annual fee, Card B earns you an extra <strong>$121.00</strong> net rewards per year on groceries alone.
+        </p>
+
+        <h2>The Break-Even Spend Calculation</h2>
+        <p>
+          If you are considering a card with an annual fee, you must calculate your <strong>break-even spend threshold</strong>. This is the dollar amount you must spend annually on the card just to earn rewards equal to the annual fee:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Break-Even Spend} = \\frac{\\text{Annual Fee}}{\\text{Average Cash Back \\%} / 100}\\)"}
+        </p>
+        <p>
+          If a card has a $95 fee and your spending distribution yields an average cash back rate of <strong>2.80%</strong> (0.028):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Break-Even Spend} = \\frac{\\$95.00}{0.028} = \\mathbf{\\$3,392.86}\\)"}
+        </p>
+        <p>
+          You must spend at least $3,393 per year on this card to justify its fee. Any spend below this amount results in a net financial loss compared to using cash or debit.
+        </p>
+
+        <h2>The Crossover Spend Threshold</h2>
+        <p>
+          When comparing a premium card (with a fee) to a free flat-rate card, the question is not just "Do I break even?" but "At what spend level does the premium card beat the free card?"
+        </p>
+        <p>
+          This is called the <strong>crossover spend threshold</strong>, calculated as:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Crossover Spend} = \\frac{\\text{Fee}_B - \\text{Fee}_A}{\\text{Average Rate}_B - \\text{Average Rate}_A}\\)"}
+        </p>
+        <p>
+          Using our standard comparison: Card B ($95 fee, average rate 2.80%) vs. Card A ($0 fee, average rate 1.50%):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Crossover Spend} = \\frac{\\$95.00 - \\$0.00}{0.028 - 0.015} = \\frac{\\$95.00}{0.013} = \\mathbf{\\$7,307.69}\\)"}
+        </p>
+        <p>
+          If your annual spend is less than $7,308, you should use the free flat-rate Card A. If your annual spend exceeds $7,308, Card B becomes the superior option.
+        </p>
+
+        <h2>Avoiding the Cash Back Traps</h2>
+        <p>
+          To make cash back work for you, avoid these two major psychological traps:
+        </p>
+        <ol>
+          <li>
+            <strong>Rewards-Driven Spending:</strong> Never buy something you wouldn't otherwise buy just to "earn" cash back. Earning 2% cashback on a $100 purchase you don't need is not "saving $2"; it is spending $98.
+          </li>
+          <li>
+            <strong>Interest Fees:</strong> Credit card interest rates typically range from <strong>18% to 30%</strong>. If you carry a balance month-to-month, the interest fees will instantly wipe out your 1.5% to 6% cashback rewards. Always pay your statement balance in full every month.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Cash Back Calculator FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is credit card cash back calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Credit card cash back is calculated by multiplying your total spending in a category by that category's reward rate: <strong>{"\\(Cashback = Spend \\times Rate\\)"}</strong>. For example, spending $500 on groceries with a 3% cash back rate yields $15.00 in cashback.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Is it worth paying an annual fee for a rewards credit card?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes, but only if your spending is high enough that the higher rewards rate generates more value than the annual fee. If you spend enough in premium categories (like groceries or travel) to beat a free flat-rate card after subtracting the fee, the card is worth it.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a crossover spend threshold?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The crossover spend threshold is the specific spending volume where a premium credit card with an annual fee becomes more profitable than a free flat-rate credit card. It is the mathematical tipping point where the extra rewards earned from higher category percentages outweigh the annual fee cost.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Are cash back rewards taxable under income tax laws?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              In most countries (including the US and India), cash back rewards earned on credit card purchases are considered a <strong>rebate</strong> or discount on spending rather than taxable income. Consequently, you do not have to report or pay taxes on standard credit card cash back. However, referral bonuses or sign-up bonuses that do not require spending may be considered taxable.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Do credit card cash back rewards expire?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              On most modern rewards cards, cash back rewards do not expire as long as your credit card account remains open and active. However, if your account is closed due to inactivity, or if you miss multiple payments resulting in account default, the credit card issuer may forfeit your accumulated rewards.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2.5);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

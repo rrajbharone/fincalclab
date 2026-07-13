@@ -1,0 +1,670 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Salary Increment Calculator"
+  description="Calculate your new salary after a hike, find your exact increment percentage, and adjust for inflation to see your real purchasing power growth."
+  category="Salary & Tax"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="salary-increment-calculator">
+    
+    <!-- Mode selector -->
+    <div class="calculator-mode-selector">
+      <label for="sinc-calc-mode" class="sr-only">Choose Calculation Mode</label>
+      <select id="sinc-calc-mode" class="currency-select" aria-label="Select Calculation Mode" style="max-width: 100%; width: 100%; margin-bottom: var(--space-3);">
+        <option value="new-salary" selected>Calculate New Salary (based on % hike)</option>
+        <option value="hike-pct">Calculate Hike Percentage (based on new salary)</option>
+      </select>
+    </div>
+
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency">
+      <div class="input-label-row">
+        <label for="sinc-currency-select">Currency</label>
+        <select id="sinc-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Input: Current Salary -->
+    <div class="input-group" id="group-salary">
+      <div class="input-label-row">
+        <label for="sinc-salary-input">Current Annual Salary</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="sinc-salary-input" min="1000" step="1000" value="50000" aria-label="Current Salary" />
+        </div>
+      </div>
+      <input type="range" id="sinc-salary-slider" min="1000" max="250000" step="1000" value="50000" class="slider-range" aria-label="Current Salary Slider" />
+    </div>
+
+    <!-- Input: Hike Percentage (%) (Visible in new-salary mode only) -->
+    <div class="input-group" id="group-hike-pct">
+      <div class="input-label-row">
+        <label for="sinc-hike-input">Hike Percentage</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="sinc-hike-input" min="0.1" max="100" step="0.1" value="5" aria-label="Hike Percentage" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="sinc-hike-slider" min="1" max="50" step="0.5" value="5" class="slider-range" aria-label="Hike Percentage Slider" />
+    </div>
+
+    <!-- Input: New Salary (Visible in hike-pct mode only) -->
+    <div class="input-group hidden" id="group-new-salary">
+      <div class="input-label-row">
+        <label for="sinc-new-salary-input">New Annual Salary</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="sinc-new-salary-input" min="1000" step="1000" value="52500" aria-label="New Salary" />
+        </div>
+      </div>
+      <input type="range" id="sinc-new-salary-slider" min="1000" max="300000" step="1000" value="52500" class="slider-range" aria-label="New Salary Slider" />
+    </div>
+
+    <!-- Input: Inflation Rate (%) -->
+    <div class="input-group" id="group-inflation">
+      <div class="input-label-row">
+        <label for="sinc-inflation-input">Annual Inflation Rate</label>
+        <div class="input-symbol-wrapper percent-wrapper">
+          <input type="number" id="sinc-inflation-input" min="0" max="100" step="0.1" value="3" aria-label="Inflation Rate" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="sinc-inflation-slider" min="0" max="20" step="0.1" value="3" class="slider-range" aria-label="Inflation Rate Slider" />
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-4);">
+      <Button id="sinc-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Increment Analysis Results</h3>
+
+    <!-- Summary Card -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="sinc-verdict-card" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Annual Increment Amount</span>
+        <div id="res-sinc-hike-amt" style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-top: 2px; color: var(--color-primary);">$2,500.00</div>
+        <p id="res-sinc-details" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your salary increases by <strong>5.00%</strong> to a new total of <strong>$52,500.00</strong> per year.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid (Breakdowns) -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Hike Breakdown Periods</h4>
+    <div class="results-grid">
+      <div class="result-tile">
+        <span class="tile-label">Per Month</span>
+        <div class="tile-value" id="tile-sinc-month" style="color: var(--color-primary);">$208.33</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Increase amount</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Per Week</span>
+        <div class="tile-value" id="tile-sinc-week" style="color: var(--color-accent);">$48.08</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Increase amount</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Per Hour</span>
+        <div class="tile-value" id="tile-sinc-hour" style="color: var(--color-success);">$1.20</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Based on 2,080 hrs</span>
+      </div>
+    </div>
+
+    <!-- Cost Composition Chart (Fisher Yield) -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Salary Hike vs. Inflation Loss Share</h4>
+      <div id="sinc-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div class="chart-legend-grid">
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--color-success);"></span>
+          Real Growth: <strong id="chart-sinc-real">1.94%</strong>
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--color-warning);"></span>
+          Inflation Loss: <strong id="chart-sinc-inflation">3.00%</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Expectancy / Inflation Warning Card -->
+    <div style="margin-top: var(--space-6);">
+      <Card elevation="sm" id="sinc-inflation-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Real Purchasing Power Growth</span>
+        <div id="res-sinc-real-growth" style="font-size: 1.5rem; font-weight: 800; line-height: 1.3; margin-top: 2px; color: var(--color-success);">+1.94% (Real Hike)</div>
+        <p id="res-sinc-real-details" style="margin: 6px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Adjusted for a 3.00% inflation rate, your true salary purchasing power grew by <strong>1.94%</strong>.
+        </p>
+      </Card>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSalaryIncrementCalculator() {
+    const modeSelect = document.getElementById('sinc-calc-mode') as HTMLSelectElement;
+
+    // Inputs & Sliders
+    const salaryInput = document.getElementById('sinc-salary-input') as HTMLInputElement;
+    const salarySlider = document.getElementById('sinc-salary-slider') as HTMLInputElement;
+    const hikeInput = document.getElementById('sinc-hike-input') as HTMLInputElement;
+    const hikeSlider = document.getElementById('sinc-hike-slider') as HTMLInputElement;
+    const newSalaryInput = document.getElementById('sinc-new-salary-input') as HTMLInputElement;
+    const newSalarySlider = document.getElementById('sinc-new-salary-slider') as HTMLInputElement;
+    const inflationInput = document.getElementById('sinc-inflation-input') as HTMLInputElement;
+    const inflationSlider = document.getElementById('sinc-inflation-slider') as HTMLInputElement;
+
+    // Currency selector
+    const currencySelect = document.getElementById('sinc-currency-select') as HTMLSelectElement;
+
+    // Input wrappers to hide/show
+    const groupHikePct = document.getElementById('group-hike-pct') as HTMLDivElement;
+    const groupNewSalary = document.getElementById('group-new-salary') as HTMLDivElement;
+
+    if (!modeSelect || !salaryInput || !hikeInput || !newSalaryInput) return;
+
+    // Toggle Modes
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      if (mode === 'new-salary') {
+        groupHikePct.classList.remove('hidden');
+        groupNewSalary.classList.add('hidden');
+      } else {
+        groupHikePct.classList.add('hidden');
+        groupNewSalary.classList.remove('hidden');
+      }
+      calculateAll();
+    });
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(salaryInput, salarySlider);
+    bindSlider(hikeInput, hikeSlider);
+    bindSlider(newSalaryInput, newSalarySlider);
+    bindSlider(inflationInput, inflationSlider);
+
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('sinc-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        salaryInput.value = '50000';
+        salarySlider.value = '50000';
+        hikeInput.value = '5';
+        hikeSlider.value = '5';
+        newSalaryInput.value = '52500';
+        newSalarySlider.value = '52500';
+        inflationInput.value = '3';
+        inflationSlider.value = '3';
+        currencySelect.value = 'USD';
+        modeSelect.value = 'new-salary';
+
+        groupHikePct.classList.remove('hidden');
+        groupNewSalary.classList.add('hidden');
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function calculateAll() {
+      const mode = modeSelect.value;
+      const salary = parseFloat(salaryInput.value) || 0;
+      const inflation = parseFloat(inflationInput.value) || 0;
+
+      let hikePct = 0;
+      let newSalary = 0;
+      let raiseAmt = 0;
+
+      if (mode === 'new-salary') {
+        hikePct = parseFloat(hikeInput.value) || 0;
+        raiseAmt = salary * (hikePct / 100);
+        newSalary = salary + raiseAmt;
+      } else {
+        newSalary = parseFloat(newSalaryInput.value) || 0;
+        if (newSalary < salary) {
+          newSalary = salary;
+          newSalaryInput.value = salary.toString();
+          newSalarySlider.value = salary.toString();
+        }
+        raiseAmt = newSalary - salary;
+        hikePct = salary > 0 ? (raiseAmt / salary) * 100 : 0;
+      }
+
+      // Time breakdowns (Assuming 52 weeks/year, 2080 working hours/year)
+      const monthlyRaise = raiseAmt / 12;
+      const weeklyRaise = raiseAmt / 52;
+      const hourlyRaise = raiseAmt / 2080;
+
+      // Real salary growth rate after inflation (Fisher Formula)
+      const hikeDec = hikePct / 100;
+      const infDec = inflation / 100;
+      const realGrowthRate = ((1 + hikeDec) / (1 + infDec) - 1) * 100;
+
+      // Update UI elements
+      const resHikeAmt = document.getElementById('res-sinc-hike-amt');
+      const resDetails = document.getElementById('res-sinc-details');
+      const cardVerdict = document.getElementById('sinc-verdict-card');
+
+      const tileMonth = document.getElementById('tile-sinc-month');
+      const tileWeek = document.getElementById('tile-sinc-week');
+      const tileHour = document.getElementById('tile-sinc-hour');
+
+      const resRealGrowth = document.getElementById('res-sinc-real-growth');
+      const resRealDetails = document.getElementById('res-sinc-real-details');
+      const cardInflation = document.getElementById('sinc-inflation-card');
+
+      const compBar = document.getElementById('sinc-composition-bar');
+      const chartReal = document.getElementById('chart-sinc-real');
+      const chartInflation = document.getElementById('chart-sinc-inflation');
+
+      if (resHikeAmt) resHikeAmt.textContent = formatCurrency(raiseAmt);
+      if (resDetails) {
+        resDetails.innerHTML = `Your salary increases by <strong>${hikePct.toFixed(2)}%</strong> to a new total of <strong>${formatCurrency(newSalary)}</strong> per year.`;
+      }
+
+      if (tileMonth) tileMonth.textContent = formatCurrency(monthlyRaise);
+      if (tileWeek) tileWeek.textContent = formatCurrency(weeklyRaise);
+      if (tileHour) tileHour.textContent = formatCurrency(hourlyRaise);
+
+      if (resRealGrowth) {
+        if (realGrowthRate >= 0) {
+          resRealGrowth.textContent = `+${realGrowthRate.toFixed(2)}% (Real Hike)`;
+          resRealGrowth.style.color = 'var(--color-success)';
+          if (cardInflation) cardInflation.style.borderLeftColor = 'var(--color-success)';
+        } else {
+          resRealGrowth.textContent = `${realGrowthRate.toFixed(2)}% (Real Loss)`;
+          resRealGrowth.style.color = 'var(--color-error)';
+          if (cardInflation) cardInflation.style.borderLeftColor = 'var(--color-error)';
+        }
+      }
+
+      if (resRealDetails) {
+        if (realGrowthRate >= 0) {
+          resRealDetails.innerHTML = `Adjusted for a ${inflation.toFixed(2)}% inflation rate, your true salary purchasing power grew by <strong>${realGrowthRate.toFixed(2)}%</strong>.`;
+        } else {
+          resRealDetails.innerHTML = `Adjusted for a ${inflation.toFixed(2)}% inflation rate, your purchasing power has **shrunk** by <strong style="color: var(--color-error);">${Math.abs(realGrowthRate).toFixed(2)}%</strong>. Your raise did not keep up with inflation.`;
+        }
+      }
+
+      if (chartReal) chartReal.textContent = `${Math.max(0, realGrowthRate).toFixed(2)}%`;
+      if (chartInflation) chartInflation.textContent = `${inflation.toFixed(2)}%`;
+
+      if (compBar) {
+        if (hikePct > 0) {
+          const realPct = Math.max(0, (realGrowthRate / hikePct) * 100);
+          const infPct = Math.min(100, (inflation / hikePct) * 100);
+
+          compBar.innerHTML = `
+            <div style="width: ${realPct.toFixed(1)}%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+            <div style="width: ${infPct.toFixed(1)}%; height: 100%; background: var(--color-warning); transition: width 0.3s ease;"></div>
+          `;
+        } else {
+          compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+    
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const mode = modeSelect.value;
+      let text = '';
+      
+      if (mode === 'new-salary') {
+        text = `Salary Hike Summary:\n` +
+               `Current Salary: ${formatCurrency(parseFloat(salaryInput.value))}\n` +
+               `Stated Hike: ${hikeInput.value}%\n` +
+               `New Annual Salary: ${document.getElementById('res-sinc-details')?.querySelector('strong:last-child')?.textContent}\n` +
+               `Increment Amount: ${document.getElementById('res-sinc-hike-amt')?.textContent}\n` +
+               `Monthly Increase: ${document.getElementById('tile-sinc-month')?.textContent}\n` +
+               `Real Growth Rate (Adjusted for Inflation): ${document.getElementById('res-sinc-real-growth')?.textContent}`;
+      } else {
+        text = `Salary Hike Summary:\n` +
+               `Current Salary: ${formatCurrency(parseFloat(salaryInput.value))}\n` +
+               `New Annual Salary: ${formatCurrency(parseFloat(newSalaryInput.value))}\n` +
+               `Calculated Hike %: ${document.getElementById('res-sinc-details')?.querySelector('strong:first-child')?.textContent}\n` +
+               `Increment Amount: ${document.getElementById('res-sinc-hike-amt')?.textContent}\n` +
+               `Monthly Increase: ${document.getElementById('tile-sinc-month')?.textContent}\n` +
+               `Real Growth Rate (Adjusted for Inflation): ${document.getElementById('res-sinc-real-growth')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSalaryIncrementCalculator);
+  document.addEventListener('astro:after-swap', initSalaryIncrementCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #group-currency {
+    margin-bottom: var(--space-3);
+  }
+
+  .calculator-mode-selector {
+    margin-bottom: var(--space-2);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input, .units-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .currency-select {
+    height: 44px;
+    padding: 0 var(--space-3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .table-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+  }
+
+  .results-table th, .results-table td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .chart-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+    padding: 0 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chart-legend-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+      text-align: left;
+    }
+    .legend-item {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+</style>

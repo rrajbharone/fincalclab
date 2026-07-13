@@ -1,0 +1,848 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Cash Back Calculator"
+  description="Compare credit cards side-by-side. Calculate net annual rewards after fees, find break-even spending points, and optimize category rewards."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="cash-back-calculator">
+    
+    <!-- Step 1: Monthly Spend Profiles -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Enter Monthly Expenses</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group" id="group-currency" style="margin-bottom: var(--space-3);">
+      <div class="input-label-row">
+        <label for="cbc-currency-select">Currency</label>
+        <select id="cbc-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Groceries Spend -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cbc-spend-groceries-input">Groceries</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="cbc-spend-groceries-input" min="0" step="25" value="400" aria-label="Monthly Groceries Spend" />
+        </div>
+      </div>
+      <input type="range" id="cbc-spend-groceries-slider" min="0" max="1500" step="25" value="400" class="slider-range" aria-label="Groceries Slider" />
+    </div>
+
+    <!-- Gas Spend -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cbc-spend-gas-input">Gas & Transportation</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="cbc-spend-gas-input" min="0" step="25" value="150" aria-label="Monthly Gas Spend" />
+        </div>
+      </div>
+      <input type="range" id="cbc-spend-gas-slider" min="0" max="800" step="25" value="150" class="slider-range" aria-label="Gas Slider" />
+    </div>
+
+    <!-- Dining Spend -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cbc-spend-dining-input">Dining & Restaurants</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="cbc-spend-dining-input" min="0" step="25" value="200" aria-label="Monthly Dining Spend" />
+        </div>
+      </div>
+      <input type="range" id="cbc-spend-dining-slider" min="0" max="1200" step="25" value="200" class="slider-range" aria-label="Dining Slider" />
+    </div>
+
+    <!-- Utilities Spend -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cbc-spend-utilities-input">Utilities & Bills</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="cbc-spend-utilities-input" min="0" step="25" value="250" aria-label="Monthly Utilities Spend" />
+        </div>
+      </div>
+      <input type="range" id="cbc-spend-utilities-slider" min="0" max="1500" step="25" value="250" class="slider-range" aria-label="Utilities Slider" />
+    </div>
+
+    <!-- Other Spend -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cbc-spend-other-input">Other Spend</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="cbc-spend-other-input" min="0" step="50" value="500" aria-label="Monthly Other Spend" />
+        </div>
+      </div>
+      <input type="range" id="cbc-spend-other-slider" min="0" max="3000" step="50" value="500" class="slider-range" aria-label="Other Spend Slider" />
+    </div>
+
+    <!-- Step 2: Card Comparison Parameters -->
+    <div style="margin-top: var(--space-6);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Configure Cards Settings</h3>
+      
+      <div class="cards-side-by-side-config">
+        <!-- Card A Config -->
+        <div class="card-config-block">
+          <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--color-primary); margin-bottom: var(--space-3);">Card A (Flat / Basic)</h4>
+          
+          <div class="input-group compact-input">
+            <label for="cbc-fee-a">Annual Fee</label>
+            <div class="input-symbol-wrapper compact-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="cbc-fee-a" min="0" step="5" value="0" aria-label="Card A Annual Fee" />
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-groceries-a">Groceries Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-groceries-a" min="0" max="10" step="0.1" value="1.5" aria-label="Card A Groceries Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-gas-a">Gas Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-gas-a" min="0" max="10" step="0.1" value="1.5" aria-label="Card A Gas Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-dining-a">Dining Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-dining-a" min="0" max="10" step="0.1" value="1.5" aria-label="Card A Dining Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-utilities-a">Utilities Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-utilities-a" min="0" max="10" step="0.1" value="1.5" aria-label="Card A Utilities Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-other-a">Other Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-other-a" min="0" max="10" step="0.1" value="1.5" aria-label="Card A Other Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card B Config -->
+        <div class="card-config-block">
+          <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--color-accent); margin-bottom: var(--space-3);">Card B (Premium / Tiered)</h4>
+          
+          <div class="input-group compact-input">
+            <label for="cbc-fee-b">Annual Fee</label>
+            <div class="input-symbol-wrapper compact-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="cbc-fee-b" min="0" step="5" value="95" aria-label="Card B Annual Fee" />
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-groceries-b">Groceries Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-groceries-b" min="0" max="10" step="0.1" value="6" aria-label="Card B Groceries Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-gas-b">Gas Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-gas-b" min="0" max="10" step="0.1" value="3" aria-label="Card B Gas Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-dining-b">Dining Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-dining-b" min="0" max="10" step="0.1" value="3" aria-label="Card B Dining Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-utilities-b">Utilities Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-utilities-b" min="0" max="10" step="0.1" value="1" aria-label="Card B Utilities Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+
+          <div class="input-group compact-input">
+            <label for="cbc-rate-other-b">Other Reward</label>
+            <div class="input-symbol-wrapper percent-wrapper compact-wrapper">
+              <input type="number" id="cbc-rate-other-b" min="0" max="10" step="0.1" value="1" aria-label="Card B Other Reward %" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Trigger Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="cbc-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Rewards Optimization Summary</h3>
+
+    <!-- Side-by-Side Value Display -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Card A Net Rewards</span>
+        <div id="res-cbc-net-a" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$270.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cbc-gross-a">Gross rewards: $270.00</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-accent);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Card B Net Rewards</span>
+        <div id="res-cbc-net-b" style="font-size: 1.75rem; font-weight: 800; color: var(--color-accent); margin-top: 4px;">$409.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cbc-gross-b">Gross rewards: $504.00</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="cbc-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Rewards Verdict</span>
+        <p id="res-cbc-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Card B is superior: earns you a net <strong>$409.00</strong> per year (after fees) compared to Card A's <strong>$270.00</strong> net earnings.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Rewards Analytics</h4>
+    <div class="results-grid">
+      <div class="result-tile">
+        <span class="tile-label">Total Annual Spend</span>
+        <div class="tile-value" id="tile-cbc-spend" style="color: var(--color-primary);">$18,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">$1,500 / month</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Card B Break-Even</span>
+        <div class="tile-value" id="tile-cbc-breakeven" style="color: var(--color-success);">$3,393</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Spend to offset fee</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Crossover Spend</span>
+        <div class="tile-value" id="tile-cbc-crossover" style="color: var(--color-accent);">$7,308</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Spend to beat Card A</span>
+      </div>
+    </div>
+
+    <!-- Category Contribution Bar -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Card B Cashback Share by Category</h4>
+      <div id="cbc-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div class="chart-legend-grid cbc-legend-grid">
+        <span class="legend-item"><span class="legend-dot" style="background: #3b82f6;"></span>Groceries: <strong id="lbl-c-groceries">$0</strong></span>
+        <span class="legend-item"><span class="legend-dot" style="background: #eab308;"></span>Gas: <strong id="lbl-c-gas">$0</strong></span>
+        <span class="legend-item"><span class="legend-dot" style="background: #ef4444;"></span>Dining: <strong id="lbl-c-dining">$0</strong></span>
+        <span class="legend-item"><span class="legend-dot" style="background: #10b981;"></span>Utilities: <strong id="lbl-c-utilities">$0</strong></span>
+        <span class="legend-item"><span class="legend-dot" style="background: #a855f7;"></span>Other: <strong id="lbl-c-other">$0</strong></span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initCashBackCalculator() {
+    // Currency selector
+    const currencySelect = document.getElementById('cbc-currency-select') as HTMLSelectElement;
+
+    // Spending inputs
+    const groceriesSpendInput = document.getElementById('cbc-spend-groceries-input') as HTMLInputElement;
+    const groceriesSpendSlider = document.getElementById('cbc-spend-groceries-slider') as HTMLInputElement;
+    const gasSpendInput = document.getElementById('cbc-spend-gas-input') as HTMLInputElement;
+    const gasSpendSlider = document.getElementById('cbc-spend-gas-slider') as HTMLInputElement;
+    const diningSpendInput = document.getElementById('cbc-spend-dining-input') as HTMLInputElement;
+    const diningSpendSlider = document.getElementById('cbc-spend-dining-slider') as HTMLInputElement;
+    const utilitiesSpendInput = document.getElementById('cbc-spend-utilities-input') as HTMLInputElement;
+    const utilitiesSpendSlider = document.getElementById('cbc-spend-utilities-slider') as HTMLInputElement;
+    const otherSpendInput = document.getElementById('cbc-spend-other-input') as HTMLInputElement;
+    const otherSpendSlider = document.getElementById('cbc-spend-other-slider') as HTMLInputElement;
+
+    // Card A configs
+    const feeAInput = document.getElementById('cbc-fee-a') as HTMLInputElement;
+    const rateGroceriesAInput = document.getElementById('cbc-rate-groceries-a') as HTMLInputElement;
+    const rateGasAInput = document.getElementById('cbc-rate-gas-a') as HTMLInputElement;
+    const rateDiningAInput = document.getElementById('cbc-rate-dining-a') as HTMLInputElement;
+    const rateUtilitiesAInput = document.getElementById('cbc-rate-utilities-a') as HTMLInputElement;
+    const rateOtherAInput = document.getElementById('cbc-rate-other-a') as HTMLInputElement;
+
+    // Card B configs
+    const feeBInput = document.getElementById('cbc-fee-b') as HTMLInputElement;
+    const rateGroceriesBInput = document.getElementById('cbc-rate-groceries-b') as HTMLInputElement;
+    const rateGasBInput = document.getElementById('cbc-rate-gas-b') as HTMLInputElement;
+    const rateDiningBInput = document.getElementById('cbc-rate-dining-b') as HTMLInputElement;
+    const rateUtilitiesBInput = document.getElementById('cbc-rate-utilities-b') as HTMLInputElement;
+    const rateOtherBInput = document.getElementById('cbc-rate-other-b') as HTMLInputElement;
+
+    if (!groceriesSpendInput || !feeAInput || !feeBInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(groceriesSpendInput, groceriesSpendSlider);
+    bindSlider(gasSpendInput, gasSpendSlider);
+    bindSlider(diningSpendInput, diningSpendSlider);
+    bindSlider(utilitiesSpendInput, utilitiesSpendSlider);
+    bindSlider(otherSpendInput, otherSpendSlider);
+
+    // Bind inputs changes
+    const allInputs = [
+      feeAInput, rateGroceriesAInput, rateGasAInput, rateDiningAInput, rateUtilitiesAInput, rateOtherAInput,
+      feeBInput, rateGroceriesBInput, rateGasBInput, rateDiningBInput, rateUtilitiesBInput, rateOtherBInput
+    ];
+    allInputs.forEach(input => input.addEventListener('input', calculateAll));
+
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+        calculateAll();
+      });
+    }
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('cbc-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        groceriesSpendInput.value = '400';
+        groceriesSpendSlider.value = '400';
+        gasSpendInput.value = '150';
+        gasSpendSlider.value = '150';
+        diningSpendInput.value = '200';
+        diningSpendSlider.value = '200';
+        utilitiesSpendInput.value = '250';
+        utilitiesSpendSlider.value = '250';
+        otherSpendInput.value = '500';
+        otherSpendSlider.value = '500';
+
+        feeAInput.value = '0';
+        rateGroceriesAInput.value = '1.5';
+        rateGasAInput.value = '1.5';
+        rateDiningAInput.value = '1.5';
+        rateUtilitiesAInput.value = '1.5';
+        rateOtherAInput.value = '1.5';
+
+        feeBInput.value = '95';
+        rateGroceriesBInput.value = '6';
+        rateGasBInput.value = '3';
+        rateDiningBInput.value = '3';
+        rateUtilitiesBInput.value = '1';
+        rateOtherBInput.value = '1';
+        
+        if (currencySelect) {
+          currencySelect.value = 'USD';
+        }
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect?.value || 'USD');
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Spend amounts
+      const gSpend = (parseFloat(groceriesSpendInput.value) || 0) * 12;
+      const gasSpend = (parseFloat(gasSpendInput.value) || 0) * 12;
+      const dSpend = (parseFloat(diningSpendInput.value) || 0) * 12;
+      const uSpend = (parseFloat(utilitiesSpendInput.value) || 0) * 12;
+      const oSpend = (parseFloat(otherSpendInput.value) || 0) * 12;
+
+      const totalAnnualSpend = gSpend + gasSpend + dSpend + uSpend + oSpend;
+
+      // Fees
+      const feeA = parseFloat(feeAInput.value) || 0;
+      const feeB = parseFloat(feeBInput.value) || 0;
+
+      // Card A Rates
+      const rGA = (parseFloat(rateGroceriesAInput.value) || 0) / 100;
+      const rGasA = (parseFloat(rateGasAInput.value) || 0) / 100;
+      const rDA = (parseFloat(rateDiningAInput.value) || 0) / 100;
+      const rUA = (parseFloat(rateUtilitiesAInput.value) || 0) / 100;
+      const rOA = (parseFloat(rateOtherAInput.value) || 0) / 100;
+
+      // Card B Rates
+      const rGB = (parseFloat(rateGroceriesBInput.value) || 0) / 100;
+      const rGasB = (parseFloat(rateGasBInput.value) || 0) / 100;
+      const rDB = (parseFloat(rateDiningBInput.value) || 0) / 100;
+      const rUB = (parseFloat(rateUtilitiesBInput.value) || 0) / 100;
+      const rOB = (parseFloat(rateOtherBInput.value) || 0) / 100;
+
+      // Card A Cashback earnings
+      const cbGA = gSpend * rGA;
+      const cbGasA = gasSpend * rGasA;
+      const cbDA = dSpend * rDA;
+      const cbUA = uSpend * rUA;
+      const cbOA = oSpend * rOA;
+      const grossCBA = cbGA + cbGasA + cbDA + cbUA + cbOA;
+      const netCBA = grossCBA - feeA;
+
+      // Card B Cashback earnings
+      const cbGB = gSpend * rGB;
+      const cbGasB = gasSpend * rGasB;
+      const cbDB = dSpend * rDB;
+      const cbUB = uSpend * rUB;
+      const cbOB = oSpend * rOB;
+      const grossCBB = cbGB + cbGasB + cbDB + cbUB + cbOB;
+      const netCBB = grossCBB - feeB;
+
+      // Update values
+      const resNetA = document.getElementById('res-cbc-net-a');
+      const resNetB = document.getElementById('res-cbc-net-b');
+      const lblGrossA = document.getElementById('lbl-cbc-gross-a');
+      const lblGrossB = document.getElementById('lbl-cbc-gross-b');
+
+      if (resNetA) resNetA.textContent = formatCurrency(netCBA);
+      if (resNetB) resNetB.textContent = formatCurrency(netCBB);
+      if (lblGrossA) lblGrossA.textContent = `Gross rewards: ${formatCurrency(grossCBA)}`;
+      if (lblGrossB) lblGrossB.textContent = `Gross rewards: ${formatCurrency(grossCBB)}`;
+
+      // Verdict
+      const verdictCard = document.getElementById('cbc-verdict-card');
+      const verdictText = document.getElementById('res-cbc-verdict-text');
+      if (verdictText && verdictCard) {
+        if (netCBB > netCBA) {
+          const delta = netCBB - netCBA;
+          verdictText.innerHTML = `Card B is superior: earns you a net <strong>${formatCurrency(netCBB)}</strong> per year (after fees) compared to Card A's <strong>${formatCurrency(netCBA)}</strong> net earnings (a gain of <strong>${formatCurrency(delta)}</strong>).`;
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+        } else if (netCBA > netCBB) {
+          const delta = netCBA - netCBB;
+          verdictText.innerHTML = `Card A is superior: earns you a net <strong>${formatCurrency(netCBA)}</strong> per year (after fees) compared to Card B's <strong>${formatCurrency(netCBB)}</strong> net earnings (a gain of <strong>${formatCurrency(delta)}</strong>). Card B's annual fee wipes out its reward gains.`;
+          verdictCard.style.borderLeftColor = 'var(--color-primary)';
+        } else {
+          verdictText.innerHTML = `Both cards provide the exact same net annual rewards value of <strong>${formatCurrency(netCBA)}</strong>.`;
+          verdictCard.style.borderLeftColor = 'var(--color-border)';
+        }
+      }
+
+      // Metrics Grid
+      const tileSpend = document.getElementById('tile-cbc-spend');
+      const tileBreakeven = document.getElementById('tile-cbc-breakeven');
+      const tileCrossover = document.getElementById('tile-cbc-crossover');
+
+      if (tileSpend) tileSpend.textContent = formatCurrency(totalAnnualSpend).split('.')[0];
+
+      // Break-Even Spend on Card B (gross rewards cover fee B)
+      let breakevenSpend = 0;
+      if (totalAnnualSpend > 0 && grossCBB > 0) {
+        const averageRateB = grossCBB / totalAnnualSpend;
+        if (averageRateB > 0) {
+          breakevenSpend = feeB / averageRateB;
+        }
+      }
+      if (tileBreakeven) tileBreakeven.textContent = formatCurrency(breakevenSpend).split('.')[0];
+
+      // Crossover Spend (Card B Net Rewards equals Card A Net Rewards)
+      let crossoverSpend = 0;
+      if (totalAnnualSpend > 0) {
+        const avgRateB = grossCBB / totalAnnualSpend;
+        const avgRateA = grossCBA / totalAnnualSpend;
+        const rateDiff = avgRateB - avgRateA;
+        const feeDiff = feeB - feeA;
+        if (rateDiff > 0 && feeDiff > 0) {
+          crossoverSpend = feeDiff / rateDiff;
+        }
+      }
+      if (tileCrossover) {
+        if (crossoverSpend > 0) {
+          tileCrossover.textContent = formatCurrency(crossoverSpend).split('.')[0];
+        } else {
+          tileCrossover.textContent = 'N/A';
+        }
+      }
+
+      // Chart composition
+      const compBar = document.getElementById('cbc-composition-bar');
+      const cG = document.getElementById('lbl-c-groceries');
+      const cGas = document.getElementById('lbl-c-gas');
+      const cD = document.getElementById('lbl-c-dining');
+      const cU = document.getElementById('lbl-c-utilities');
+      const cO = document.getElementById('lbl-c-other');
+
+      if (cG) cG.textContent = formatCurrency(cbGB).split('.')[0];
+      if (cGas) cGas.textContent = formatCurrency(cbGasB).split('.')[0];
+      if (cD) cD.textContent = formatCurrency(cbDB).split('.')[0];
+      if (cU) cU.textContent = formatCurrency(cbUB).split('.')[0];
+      if (cO) cO.textContent = formatCurrency(cbOB).split('.')[0];
+
+      if (compBar) {
+        if (grossCBB > 0) {
+          const pG = (cbGB / grossCBB) * 100;
+          const pGas = (cbGasB / grossCBB) * 100;
+          const pD = (cbDB / grossCBB) * 100;
+          const pU = (cbUB / grossCBB) * 100;
+          const pO = (cbOB / grossCBB) * 100;
+
+          compBar.innerHTML = `
+            <div style="width: ${pG.toFixed(1)}%; height: 100%; background: #3b82f6; transition: width 0.3s ease;"></div>
+            <div style="width: ${pGas.toFixed(1)}%; height: 100%; background: #eab308; transition: width 0.3s ease;"></div>
+            <div style="width: ${pD.toFixed(1)}%; height: 100%; background: #ef4444; transition: width 0.3s ease;"></div>
+            <div style="width: ${pU.toFixed(1)}%; height: 100%; background: #10b981; transition: width 0.3s ease;"></div>
+            <div style="width: ${pO.toFixed(1)}%; height: 100%; background: #a855f7; transition: width 0.3s ease;"></div>
+          `;
+        } else {
+          compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+    
+    // Connect copy results button listener
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Credit Card Cash Back Analysis:\n` +
+                   `Total Annual Spend: ${document.getElementById('tile-cbc-spend')?.textContent}\n` +
+                   `Card A Net Rewards: ${document.getElementById('res-cbc-net-a')?.textContent}\n` +
+                   `Card B Net Rewards: ${document.getElementById('res-cbc-net-b')?.textContent}\n` +
+                   `Card B Break-Even Spend: ${document.getElementById('tile-cbc-breakeven')?.textContent}\n` +
+                   `Crossover Spend Threshold: ${document.getElementById('tile-cbc-crossover')?.textContent}\n` +
+                   `Verdict: ${document.getElementById('res-cbc-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCashBackCalculator);
+  document.addEventListener('astro:after-swap', initCashBackCalculator);
+</script>
+
+<style>
+  /* Inputs wrapper styling */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-wrapper input {
+    text-align: left;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .cards-side-by-side-config {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .card-config-block {
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .compact-input {
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .compact-input label {
+    font-size: 0.8rem !important;
+    font-weight: 600;
+  }
+
+  .compact-wrapper {
+    width: 90px !important;
+    height: 32px !important;
+  }
+
+  .compact-wrapper input {
+    font-size: 0.85rem !important;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .chart-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+    padding: 0 4px;
+  }
+
+  .cbc-legend-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chart-legend-grid {
+      grid-template-columns: 1fr !important;
+      gap: var(--space-2);
+      text-align: left;
+    }
+    .legend-item {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cards-side-by-side-config {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .input-symbol-wrapper input {
+      text-align: left;
+    }
+  }
+</style>

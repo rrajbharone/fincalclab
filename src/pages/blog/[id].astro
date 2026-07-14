@@ -20,17 +20,28 @@ const allPosts = await getCollection('blog');
 const relatedPosts = allPosts
   .filter((p) => p.id !== post.id && p.data.category === post.data.category)
   .slice(0, 2);
+
+// Fix breadcrumbs specifically for the target debt calculator blog posts to use absolute URLs
+const isTargetPost = post.id === 'how-to-use-debt-avalanche-calculator' || post.id === 'how-to-use-debt-snowball-calculator';
+
+const breadcrumbsData = isTargetPost
+  ? [
+      { name: 'Home', item: 'https://fincalclab.com/' },
+      { name: 'Blog', item: 'https://fincalclab.com/blog/' },
+      { name: post.data.title, item: `https://fincalclab.com/blog/${post.id}/` }
+    ]
+  : [
+      { name: 'Home', item: '/' },
+      { name: 'Blog', item: '/blog' },
+      { name: post.data.title, item: `/blog/${post.id}` }
+    ];
 ---
 
 <Layout
   title={post.data.title}
   description={post.data.description}
   ogType="article"
-  breadcrumbs={[
-    { name: 'Home', item: '/' },
-    { name: 'Blog', item: '/blog' },
-    { name: post.data.title, item: `/blog/${post.id}` }
-  ]}
+  breadcrumbs={breadcrumbsData}
 >
   <article class="blog-post-page">
     <div class="container article-container">

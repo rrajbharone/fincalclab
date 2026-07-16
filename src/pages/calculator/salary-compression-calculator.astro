@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalaryCompressionCalculator from '../../components/calculator/SalaryCompressionCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Salary Compression Calculator', path: '/calculator/salary-compression-calculator' }
+];
+---
+
+<Layout
+  title="Salary Compression Calculator - Diagnose Pay Gaps & Loyalty Tax"
+  description="Free online Salary Compression Calculator. Compare your salary to starting hires, calculate compression ratios, annual experience premiums, and your loyalty tax."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <SalaryCompressionCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Career & Pay Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Loyalty Tax: How Staying at My Company for 5 Years Cost Me $25,000</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person case study of a senior employee who discovered they made just 3% more than a newly hired junior colleague, explaining how they calculated their compression ratio and negotiated a $14,000 correction.
+            </p>
+            <a href="/blog/loyalty-tax-salary-compression" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Salary Compression & Prevent Loyalty Tax
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Salary Compression?</h2>
+        <p>
+          In corporate compensation, <strong>salary compression</strong> (also known as pay compression) occurs when there is a negligible difference in salary between employees who have different levels of experience, tenure, or responsibility in the same role.
+        </p>
+        <p>
+          This financial anomaly typically happens when starting market salaries for new hires increase at a faster rate than the annual merit increases or cost-of-living adjustments (COLA) awarded to existing staff. Over time, tenured workers find their salaries squeezed or "compressed" by incoming, less experienced peers.
+        </p>
+
+        <h2>Understanding the Salary Compression Ratio</h2>
+        <p>
+          To diagnose the severity of salary compression, human resource professionals and employees calculate the <strong>salary compression ratio</strong>. This ratio divides the new hire starting salary by the tenured employee's current salary:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Compression Ratio} = \\frac{\\text{New Hire Starting Salary}}{\\text{Tenured Employee Current Salary}} \\times 100\\)"}
+        </p>
+        <p>
+          Compensation diagnostics categorize this ratio into four bands:
+        </p>
+        <ul>
+          <li>
+            <strong>Ratio &lt; 80% (Healthy):</strong> Indicates a solid pay differential where tenured experience is rewarded with a significant pay premium.
+          </li>
+          <li>
+            <strong>Ratio 80% to 90% (Moderate Compression):</strong> A common corporate structure, but indicates your experience premium is starting to diminish.
+          </li>
+          <li>
+            <strong>Ratio 90% to 100% (High Compression):</strong> Minimal pay difference. A new hire with little tenure earns nearly identical wages.
+          </li>
+          <li>
+            <strong>Ratio &gt; 100% (Salary Inversion):</strong> An extreme form of compression where new hires are paid <strong>more</strong> than experienced tenured workers. This is a severe threat to retention and moral.
+          </li>
+        </ul>
+
+        <h2>Calculating the Experience Pay Premium</h2>
+        <p>
+          The <strong>experience pay premium</strong> measures how much a company financially values each year of additional experience or tenure. It is calculated by dividing the net pay gap between employees by their experience gap in years:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Experience Pay Premium} = \\frac{\\text{Tenured Salary} - \\text{New Hire Salary}}{\\text{Tenured Experience} - \\text{New Hire Experience}}\\)"}
+        </p>
+        <p>
+          For example, if a tenured employee makes $85,000 with 6 years of experience, and a new hire makes $80,000 with 1 year of experience:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Experience Pay Premium} = \\frac{\\$85,000 - \\$80,000}{6 \\text{ years} - 1 \\text{ year}} = \\frac{\\$5,000}{5 \\text{ years}} = \\mathbf{\\$1,000.00 \\text{ per year}}\\)"}
+        </p>
+        <p>
+          This means the company values each additional year of experience at exactly $1,000. Under high compression, this premium can drop below $100 per year, showing that experience has virtually no financial value in the company's current pay scale.
+        </p>
+
+        <h2>What is the Loyalty Tax?</h2>
+        <p>
+          In personal finance, the <strong>loyalty tax</strong> is the opportunity cost of staying with a single employer for a long period rather than changing jobs. Because external market starting salaries rise faster than internal merit pools, staying loyal often results in earning far less than your current market value.
+        </p>
+        <p>
+          The loyalty tax is calculated as:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Loyalty Tax} = \\text{Market Average Salary} - \\text{Current Salary}\\)"}
+        </p>
+        <p>
+          If the average market rate for your role is $98,000, and your current tenured salary is $85,000, your annual loyalty tax is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Loyalty Tax} = \\$98,000 - \\$85,000 = \\mathbf{\\$13,000.00 \\text{ per year}}\\)"}
+        </p>
+
+        <h2>How to Negotiate a Salary Compression Correction</h2>
+        <p>
+          If the calculator reveals high compression or inversion, you can take these steps to request a pay correction:
+        </p>
+        <ol>
+          <li>
+            <strong>Gather Market Data:</strong> Collect salary benchmarks from sites like Glassdoor, Payscale, and local job postings to document the market average for your role.
+          </li>
+          <li>
+            <strong>Present the Ratios:</strong> Highlight the compression ratio (e.g. "new hires are starting at 95% of my salary"). Frame the conversation around retention, equity, and market alignment rather than complaints.
+          </li>
+          <li>
+            <strong>Quantify Your Value:</strong> Compile your achievements, project outcomes, and history of positive performance reviews to justify why your experience pay premium should be higher.
+          </li>
+          <li>
+            <strong>Request a Compensation Review:</strong> Formally ask HR and your manager for a "salary adjustment" or "market correction" to align your compensation with internal equity standards.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Salary Compression FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is salary compression and what causes it?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Salary compression occurs when the pay difference between senior employees and newly hired junior employees is extremely small despite their experience gap. It is caused by external market factors forcing companies to offer high starting salaries to attract new talent, while internal budgets limit annual raises for existing staff to small percentages (typically 2% to 4%).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is salary inversion and how does it differ from compression?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Salary inversion is an extreme form of compression where new hires are paid **more** than existing, experienced employees in the same role. While compression narrows the pay gap, inversion completely reverses it, meaning a junior hire with 1 year of experience makes a higher salary than a senior worker with 5 years of tenure.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is the salary compression ratio calculated and what is a healthy ratio?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The salary compression ratio is calculated as: <strong>{"\\(Compression Ratio = \\frac{\\text{New Hire Salary}}{\\text{Tenured Salary}} \\times 100\\)"}</strong>. A healthy ratio is typically below **80%**, which maintains a clear pay gap. Ratios between 90% and 100% indicate severe compression, and ratios above 100% signify salary inversion.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a "loyalty tax" in employment, and how can I calculate it?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A loyalty tax is the amount of money you lose annually by staying with a single company instead of switching employers to secure market-rate starting salaries. It is calculated by subtracting your current salary from the average market rate for your role and experience level: `\(Loyalty Tax = Market Rate - Current Salary\)`.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can employees negotiate a correction for salary compression?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gather external market data and calculate your compression ratio compared to internal new hire averages. Schedule a meeting with your manager and HR to request a "salary adjustment" or "market equity correction" rather than a merit-based raise. Frame it as aligning your pay with the market to ensure internal pay equity.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

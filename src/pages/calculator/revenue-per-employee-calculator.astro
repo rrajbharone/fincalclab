@@ -1,0 +1,222 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RevenuePerEmployeeCalculator from '../../components/calculator/RevenuePerEmployeeCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Revenue Per Employee Calculator', path: '/calculator/revenue-per-employee-calculator' }
+];
+---
+
+<Layout
+  title="Revenue Per Employee Calculator - Measure Workforce Productivity"
+  description="Free online Revenue Per Employee Calculator. Convert part-time staff to FTEs, calculate revenue and profit per employee, and benchmark labor cost ratios."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <RevenuePerEmployeeCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Business Efficiency Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Headcount Trap: How Growing from 10 to 30 Staff Ruined My Business Margins</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read a first-person case study of a founder who scaled their service agency revenue to $2.5 million but went bankrupt by over-hiring, showing how declining revenue-per-employee ratios signal hidden operational distress.
+            </p>
+            <a href="/blog/calculate-revenue-per-employee" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Revenue Per Employee & Optimize Labor Allocation
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Revenue Per Employee?</h2>
+        <p>
+          In corporate finance and operational management, <strong>revenue per employee</strong> (RPE) is an efficiency ratio that measures the amount of gross revenue a business generates per worker. It serves as a vital indicator of labor productivity, operational efficiency, and staffing optimization.
+        </p>
+        <p>
+          RPE is especially valuable when comparing companies in the same industry. For example, software-as-a-service (SaaS) companies typically enjoy high RPE ratios due to scalability, whereas retail or hospitality businesses operate with much lower ratios because of their labor-intensive models.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To diagnose your company's workforce efficiency, follow these simple steps to enter your data into the calculator:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Enter Financial Parameters:</strong> Drag the sliders or type in your total annual gross sales, net annual profit (net income), and total labor expenses (including employee salaries, benefits, taxes, and overhead).
+          </li>
+          <li>
+            <strong>Input Staff Details:</strong> Set the sliders for your count of full-time employees and part-time workers. Additionally, input the average weekly hours worked by your part-time staff so the calculator can accurately compute your Full-Time Equivalents (FTEs).
+          </li>
+          <li>
+            <strong>Analyze the Outputs:</strong> The calculator instantly processes your metrics, outputting your total FTE count, revenue and profit generated per employee, and your labor cost-to-revenue ratio with a productivity diagnosis.
+          </li>
+        </ol>
+
+        <h2>Calculating Full-Time Equivalent (FTE) Employees</h2>
+        <p>
+          To perform an accurate calculation, a business must calculate its workforce size in terms of <strong>Full-Time Equivalents (FTEs)</strong> rather than a simple headcount. This ensures that part-time employees are factored in proportionally.
+        </p>
+        <p>
+          The standard corporate definition of one FTE is an employee who works 40 hours per week. The formula to convert part-time workers into FTEs and calculate total workforce size is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total FTE} = \\text{Full-Time Employees} + \\frac{\\text{Part-Time Employees} \\times \\text{Avg PT Weekly Hours}}{40}\\)"}
+        </p>
+        <p>
+          For example, if a business has 10 full-time employees and 4 part-time employees working 20 hours a week, their total FTE is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total FTE} = 10 + \\frac{4 \\times 20}{40} = 10 + 2.0 = \\mathbf{12.00 \\text{ FTE}}\\)"}
+        </p>
+
+        <h2>RPE and Net Profit Per Employee Formulas</h2>
+        <p>
+          Once your total FTE is established, you can calculate your primary productivity metrics:
+        </p>
+        <ol>
+          <li>
+            <strong>Revenue Per Employee (RPE):</strong>
+            <p style="text-align: center; font-weight: 700; margin: var(--space-2) 0;">{"\\(\\text{RPE} = \\frac{\\text{Total Annual Revenue}}{\\text{Total FTE}}\\)"}</p>
+          </li>
+          <li>
+            <strong>Net Profit Per Employee:</strong>
+            <p style="text-align: center; font-weight: 700; margin: var(--space-2) 0;">{"\\(\\text{Net Profit Per Employee} = \\frac{\\text{Total Annual Net Income}}{\\text{Total FTE}}\\)"}</p>
+          </li>
+        </ol>
+        <p>
+          With $2,500,000 in annual revenue and $500,000 in net profit across 12.00 FTEs:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{RPE} = \\frac{\\$2,500,000}{12} = \\mathbf{\\$208,333.33 \\text{ per employee}}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Profit Per Employee} = \\frac{\\$500,000}{12} = \\mathbf{\\$41,666.67 \\text{ per employee}}\\)"}
+        </p>
+
+        <h2>Analyzing Labor Cost-to-Revenue Ratio</h2>
+        <p>
+          High revenue per employee numbers can sometimes hide inefficiency if employee salaries are excessively high. To check this, evaluate your <strong>Labor Cost-to-Revenue Ratio</strong>, which calculates what percentage of your gross revenue is consumed by workforce compensation (salaries, taxes, bonuses, benefits):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Labor Cost-to-Revenue Ratio} = \\frac{\\text{Total Annual Labor Expenses}}{\\text{Total Annual Revenue}} \\times 100\\)"}
+        </p>
+        <p>
+          If your annual labor costs are $1,000,000 on $2.5 million in revenue:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Labor Cost-to-Revenue Ratio} = \\frac{\\$1,000,000}{\\$2,500,000} \\times 100 = \\mathbf{40.00\%}\\)"}
+        </p>
+        <p>
+          In professional services, a labor ratio below 40% is highly efficient, 40% to 50% is standard, and ratios exceeding 60% indicate operational stress or over-hiring.
+        </p>
+
+        <h2>Strategies to Optimize Revenue Per Employee</h2>
+        <p>
+          If your RPE falls below industry benchmarks, consider three optimization paths:
+        </p>
+        <ol>
+          <li>
+            <strong>Automate Workflows:</strong> Implement software solutions (CRMs, automated billing, booking platforms) to handle routine tasks, allowing your existing team to handle more clients without increasing headcount.
+          </li>
+          <li>
+            <strong>Outsource Non-Core Activities:</strong> Leverage freelancers or contract agencies for seasonal tasks, marketing, or IT support, avoiding the fixed salary overhead of full-time hires.
+          </li>
+          <li>
+            <strong>Improve Labor Allocation:</strong> Focus hiring efforts on revenue-generating roles (sales, product delivery) rather than expanding administrative layers.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Revenue Per Employee FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is revenue per employee and why is it a critical metric?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Revenue per employee is an efficiency ratio that measures the gross revenue generated per worker. It is critical because it indicates workforce productivity, operational health, and employee-cost leverage, showing whether a business is scaling efficiently.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is a part-time employee converted into a Full-Time Equivalent (FTE)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Convert a part-time employee to an FTE by dividing their weekly working hours by 40 (the standard full-time work week). For example, a part-time worker who works 20 hours a week is equivalent to exactly <strong>0.50 FTE</strong> (20 / 40).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a good or average revenue per employee ratio?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Average ratios vary significantly by sector. Retail and dining typically see averages between <strong>$50,000 and $100,000</strong> per employee. Service agencies average <strong>$150,000 to $250,000</strong>, while technology and SaaS firms often exceed <strong>$500,000</strong> per employee due to digital scale.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between revenue per employee and profit per employee?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Revenue per employee uses gross revenue (total sales), showing top-line productivity. Profit per employee uses net income (revenue minus all expenses, labor, and taxes), showing bottom-line operational efficiency. A company can have high revenue per employee but low profit per employee if expenses are too high.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can a business increase its revenue per employee?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A business can increase its RPE by implementing software automation to handle administrative tasks, training employees to increase task density, focusing sales efforts on high-margin products, or outsourcing non-essential processes to contractors.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

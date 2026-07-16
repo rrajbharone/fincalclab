@@ -1,0 +1,239 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LtvCacCalculator from '../../components/calculator/LtvCacCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'LTV:CAC Ratio Calculator', path: '/calculator/ltv-cac-ratio-calculator' }
+];
+---
+
+<Layout
+  title="LTV:CAC Ratio Calculator - Evaluate Unit Economics"
+  description="Free online LTV:CAC Ratio Calculator. Compute Customer Acquisition Cost (CAC), Customer Lifetime Value (LTV), LTV:CAC ratios, and CAC payback periods."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <LtvCacCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured SaaS Unit Economics Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Scaling Trap: How We Crossed $100k MRR but Still Ran Out of Money</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a tech founder who scaled their subscription software startup to $1.2 million in annual recurring revenue but went bankrupt because they ignored their declining LTV:CAC ratio and rising payback periods.
+            </p>
+            <a href="/blog/calculate-ltv-cac-ratio-guide" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate LTV:CAC Ratios & Avoid Cash Flow Collapses
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is the LTV:CAC Ratio?</h2>
+        <p>
+          In subscription-based businesses, software-as-a-service (SaaS) startups, and digital marketing, the <strong>LTV:CAC ratio</strong> is a metric that compares the lifetime value (LTV) of a customer to the cost of acquiring that customer (CAC). It serves as the ultimate diagnostic tool for measuring marketing efficiency, product monetization, and capital allocation scalability.
+        </p>
+        <p>
+          This ratio indicates whether your customer acquisition spend is driving profitable long-term returns or destroying business capital.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To evaluate your business's unit economics, follow these simple steps to input your data:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Customer Acquisition Cost (CAC) parameters:</strong> Enter your total Sales & Marketing Spend (including ad costs, sales salaries, and software tools) and the number of new customers acquired during that same period.
+          </li>
+          <li>
+            <strong>Input Customer Lifetime Value (LTV) parameters:</strong> Enter your Average Monthly Revenue per Customer (ARPU), your Gross Margin percentage, and your Monthly Churn Rate (the percentage of customers who cancel their subscription each month).
+          </li>
+          <li>
+            <strong>Review the Scalability Metrics:</strong> The calculator instantly outputs your exact CAC, your projected LTV, your LTV:CAC ratio, and your CAC Payback Period (the months required to recover your initial acquisition cost).
+          </li>
+        </ol>
+
+        <h2>The Mathematics of CAC and LTV</h2>
+        <p>
+          The calculator applies standard SaaS unit economics formulas to isolate your metrics:
+        </p>
+        
+        <h3>1. Customer Acquisition Cost (CAC) Formula</h3>
+        <p>
+          CAC measures the average expense incurred to convert a single prospect into a paying customer:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{CAC} = \\frac{\\text{Total Sales \\& Marketing Spend}}{\\text{Number of New Customers Acquired}}\\)"}
+        </p>
+
+        <h3>2. Customer Lifetime Value (LTV) Formula</h3>
+        <p>
+          LTV estimates the net profit a customer will generate throughout their relationship with your business. By factoring in gross margins and retention timelines (where customer lifespan is 1 / Churn Rate):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{LTV} = \\frac{\\text{ARPU} \\times \\text{Gross Margin \\%}}{\\text{Monthly Churn Rate \\%}}\\)"}
+        </p>
+
+        <h3>3. LTV:CAC Ratio Formula</h3>
+        <p>
+          Dividing your calculated LTV by your CAC yields your scalability multiplier:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{LTV:CAC Ratio} = \\frac{\\text{LTV}}{\\text{CAC}}\\)"}
+        </p>
+
+        <h2>Understanding the CAC Payback Period</h2>
+        <p>
+          Even if your LTV:CAC ratio is exceptionally high, your business can run out of cash if it takes too long to recover acquisition costs. The <strong>CAC Payback Period</strong> measures how many months a customer must remain subscribed before their gross profit contributions pay back their initial acquisition costs:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{CAC Payback Period} = \\frac{\\text{CAC}}{\\text{ARPU} \\times \\text{Gross Margin \\%}}\\)"}
+        </p>
+        <p>
+          For example, if you spend $50,000 on marketing to acquire 500 customers, your CAC is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{CAC} = \\frac{\\$50,000}{500} = \\mathbf{\\$100.00 \\text{ per customer}}\\)"}
+        </p>
+        <p>
+          If those customers pay $50 a month at an 80% gross margin with a 2% monthly churn rate, their projected LTV is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{LTV} = \\frac{\\$50 \\times 0.80}{0.02} = \\frac{\\$40}{0.02} = \\mathbf{\\$2,000.00 \\text{ per customer}}\\)"}
+        </p>
+        <p>
+          This yields an LTV:CAC ratio of:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{LTV:CAC Ratio} = \\frac{\\$2,000.00}{\\$100.00} = \\mathbf{20.00x}\\)"}
+        </p>
+        <p>
+          And the CAC Payback Period is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{CAC Payback Period} = \\frac{\\$100.00}{\\$50.00 \\times 0.80} = \\mathbf{2.50 \\text{ months}}\\)"}
+        </p>
+        <p>
+          This represents world-class unit economics. The acquisition cost is recovered in just 75 days, and the customer generates 20 times their acquisition cost over their lifetime.
+        </p>
+
+        <h2>Benchmarking Your LTV:CAC Ratio</h2>
+        <p>
+          Use these industry-accepted benchmarks to analyze your outputs:
+        </p>
+        <ul>
+          <li>
+            <strong>Below 1.0x (Value Destroyer):</strong> You are losing money on every customer acquired. Your business model is unsustainable.
+          </li>
+          <li>
+            <strong>1.0x to 2.9x (Underperforming):</strong> Your business is surviving but cannot scale efficiently. Payback periods are likely too long, leaving you vulnerable to cash flow crunches.
+          </li>
+          <li>
+            <strong>3.0x to 5.0x (SaaS Sweet Spot):</strong> The gold standard. Your business is highly efficient, scaling profitably, and recovering capital quickly.
+          </li>
+          <li>
+            <strong>Above 5.0x (Underinvesting):</strong> While highly efficient, a ratio this high indicates you are holding back. You should spend more on sales & marketing to grow faster and capture market share.
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">LTV:CAC Ratio FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the LTV:CAC ratio and why is it important?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The LTV:CAC ratio compares the lifetime value of a customer to the cost of acquiring them. It is important because it serves as the primary gauge of a business's unit economics, showing whether the marketing and sales machine generates profitable long-term returns.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a good LTV:CAC ratio for SaaS businesses?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              For SaaS and subscription businesses, an LTV:CAC ratio of <strong>3.0x to 5.0x</strong> is considered the industry sweet spot. A ratio below 3.0x indicates scaling inefficiencies, while a ratio above 5.0x suggests you are underinvesting in growth.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is Customer Acquisition Cost (CAC) calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              CAC is calculated by dividing total Sales & Marketing Expenses (salaries, advertising spend, tool licenses, and commissions) during a specific period by the number of new customers acquired during that same time frame.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is Customer Lifetime Value (LTV) calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              LTV is calculated by multiplying your average monthly revenue per customer (ARPU) by your gross margin percentage, and then dividing by your monthly churn rate. This accounts for the customer's average lifespan before canceling their subscription.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the CAC payback period and how does it relate to the LTV:CAC ratio?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The CAC payback period is the number of months required for a customer to generate enough gross profit to recover their acquisition cost. While LTV:CAC measures lifetime profitability multiplier, payback period measures cash flow speed. A healthy payback period is under 12 months.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

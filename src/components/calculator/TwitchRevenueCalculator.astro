@@ -1,0 +1,721 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Twitch Revenue Calculator"
+  description="Estimate your monthly and annual Twitch earnings. Calculate subscription splits, ad CPM revenue, bit payouts, and hourly rates dynamically."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="twitch-revenue-calculator">
+    
+    <!-- Step 1: Currency & Stream Metrics -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Stream Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="trc-currency-select">Currency</label>
+        <select id="trc-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Average Viewers -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="trc-viewers-input">Average Viewers</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="trc-viewers-input" min="0" step="50" value="300" aria-label="Average Viewers Count" style="text-align: left;" />
+        </div>
+      </div>
+      <input type="range" id="trc-viewers-slider" min="0" max="10000" step="50" value="300" class="slider-range" aria-label="Average Viewers Slider" />
+    </div>
+
+    <!-- Hours Streamed per Month -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="trc-hours-input">Hours Streamed / Month</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="trc-hours-input" min="0" step="5" value="80" aria-label="Hours Streamed per Month" style="text-align: left;" />
+          <span class="percent-symbol">hrs</span>
+        </div>
+      </div>
+      <input type="range" id="trc-hours-slider" min="0" max="300" step="5" value="80" class="slider-range" aria-label="Hours Streamed Slider" />
+    </div>
+
+    <!-- Step 2: Subscriptions -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Subscription Tiers</h3>
+      
+      <!-- Creator Split Dropdown -->
+      <div class="input-group" style="margin-bottom: var(--space-4);">
+        <div class="input-label-row">
+          <label for="trc-split">Twitch Payout Split</label>
+          <select id="trc-split" class="currency-select" aria-label="Twitch Payout Split">
+            <option value="50" selected>Standard (50/50 Split)</option>
+            <option value="70">Partner Premium (70/30 Split)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tier 1 / Prime Subs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="trc-subs-t1-input">Tier 1 & Prime Subs ($4.99)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="trc-subs-t1-input" min="0" step="25" value="200" aria-label="Tier 1 Subscribers" style="text-align: left;" />
+          </div>
+        </div>
+        <input type="range" id="trc-subs-t1-slider" min="0" max="5000" step="25" value="200" class="slider-range" aria-label="Tier 1 Slider" />
+      </div>
+
+      <!-- Tier 2 Subs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="trc-subs-t2-input">Tier 2 Subs ($9.99)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="trc-subs-t2-input" min="0" step="5" value="10" aria-label="Tier 2 Subscribers" style="text-align: left;" />
+          </div>
+        </div>
+        <input type="range" id="trc-subs-t2-slider" min="0" max="500" step="5" value="10" class="slider-range" aria-label="Tier 2 Slider" />
+      </div>
+
+      <!-- Tier 3 Subs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="trc-subs-t3-input">Tier 3 Subs ($24.99)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="trc-subs-t3-input" min="0" step="2" value="2" aria-label="Tier 3 Subscribers" style="text-align: left;" />
+          </div>
+        </div>
+        <input type="range" id="trc-subs-t3-slider" min="0" max="200" step="2" value="2" class="slider-range" aria-label="Tier 3 Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Ads, Bits & Tips -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Ads, Bits & Donations</h3>
+      
+      <!-- Ad Breaks per Hour -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="trc-ad-breaks-input">Ad Minutes / Hour</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="trc-ad-breaks-input" min="0" step="1" value="3" aria-label="Ad Breaks per Hour" style="text-align: left;" />
+            <span class="percent-symbol">min</span>
+          </div>
+        </div>
+        <input type="range" id="trc-ad-breaks-slider" min="0" max="8" step="1" value="3" class="slider-range" aria-label="Ad Breaks Slider" />
+      </div>
+
+      <!-- Average Ad CPM -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="trc-ad-cpm-input">Average Ad CPM ($)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="trc-ad-cpm-input" min="0" step="0.5" value="3.50" aria-label="Average Ad CPM" />
+          </div>
+        </div>
+        <input type="range" id="trc-ad-cpm-slider" min="0" max="15" step="0.5" value="3.5" class="slider-range" aria-label="Ad CPM Slider" />
+      </div>
+
+      <!-- Monthly Bits -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="trc-bits">Monthly Bits Cheered</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="trc-bits" min="0" step="500" value="10000" aria-label="Monthly Bits" style="text-align: left; padding-right: 4px;" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Donations -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="trc-tips">Monthly Tips & Donations</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="trc-tips" min="0" step="25" value="150" aria-label="Monthly Tips" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="trc-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Revenue Estimations Summary</h3>
+
+    <!-- Core Earnings Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Est. Monthly Revenue</span>
+        <div id="res-trc-monthly" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$1,075.94</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-trc-annual">Annual run-rate: $12,911.28</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Hourly Streaming Wage</span>
+        <div id="res-trc-hourly" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$13.45</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-trc-hours-total">Based on 80 hours / month</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="trc-verdict-card" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Income Profile Verdict</span>
+        <p id="res-trc-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your primary earnings driver is <strong>Subscriptions</strong> (representing <strong>53.3%</strong> of total monthly income).
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Detailed Channels Breakdown</h4>
+    <div class="results-grid trc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Net Subscriptions</span>
+        <div class="tile-value" id="tile-trc-subs" style="color: var(--color-primary);">$574</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-t-subs-split">50% creator split</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Ad Revenue</span>
+        <div class="tile-value" id="tile-trc-ads" style="color: var(--color-accent);">$252</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-t-ads-impressions">72,000 ad views</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Bits & Cheers</span>
+        <div class="tile-value" id="tile-trc-bits" style="color: var(--color-success);">$100</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">10,000 bits at $0.01</span>
+      </div>
+    </div>
+
+    <!-- Category Contribution Bar -->
+    <div class="chart-container" style="margin-bottom: var(--space-6);">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3); text-align: center;">Twitch Revenue Composition</h4>
+      <div id="trc-composition-bar" style="width: 100%; height: 28px; border-radius: var(--radius-md); overflow: hidden; display: flex; background: var(--color-border);">
+        <!-- Injected via JS -->
+      </div>
+      <div class="chart-legend-grid trc-legend-grid">
+        <span class="legend-item"><span class="legend-dot" style="background: #a855f7;"></span>Subs: <strong id="lbl-t-subs-val">$0</strong></span>
+        <span class="legend-item"><span class="legend-dot" style="background: #3b82f6;"></span>Ads: <strong id="lbl-t-ads-val">$0</strong></span>
+        <span class="legend-item"><span class="legend-dot" style="background: #10b981;"></span>Bits: <strong id="lbl-t-bits-val">$0</strong></span>
+        <span class="legend-item"><span class="legend-dot" style="background: #eab308;"></span>Tips: <strong id="lbl-t-tips-val">$0</strong></span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initTwitchCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('trc-currency-select') as HTMLSelectElement;
+    
+    const viewersInput = document.getElementById('trc-viewers-input') as HTMLInputElement;
+    const viewersSlider = document.getElementById('trc-viewers-slider') as HTMLInputElement;
+    const hoursInput = document.getElementById('trc-hours-input') as HTMLInputElement;
+    const hoursSlider = document.getElementById('trc-hours-slider') as HTMLInputElement;
+
+    const subsT1Input = document.getElementById('trc-subs-t1-input') as HTMLInputElement;
+    const subsT1Slider = document.getElementById('trc-subs-t1-slider') as HTMLInputElement;
+    const subsT2Input = document.getElementById('trc-subs-t2-input') as HTMLInputElement;
+    const subsT2Slider = document.getElementById('trc-subs-t2-slider') as HTMLInputElement;
+    const subsT3Input = document.getElementById('trc-subs-t3-input') as HTMLInputElement;
+    const subsT3Slider = document.getElementById('trc-subs-t3-slider') as HTMLInputElement;
+    const splitSelect = document.getElementById('trc-split') as HTMLSelectElement;
+
+    const adBreaksInput = document.getElementById('trc-ad-breaks-input') as HTMLInputElement;
+    const adBreaksSlider = document.getElementById('trc-ad-breaks-slider') as HTMLInputElement;
+    const adCpmInput = document.getElementById('trc-ad-cpm-input') as HTMLInputElement;
+    const adCpmSlider = document.getElementById('trc-ad-cpm-slider') as HTMLInputElement;
+
+    const bitsInput = document.getElementById('trc-bits') as HTMLInputElement;
+    const tipsInput = document.getElementById('trc-tips') as HTMLInputElement;
+
+    if (!viewersInput || !currencySelect || !splitSelect) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(viewersInput, viewersSlider);
+    bindSlider(hoursInput, hoursSlider);
+    bindSlider(subsT1Input, subsT1Slider);
+    bindSlider(subsT2Input, subsT2Slider);
+    bindSlider(subsT3Input, subsT3Slider);
+    bindSlider(adBreaksInput, adBreaksSlider);
+    bindSlider(adCpmInput, adCpmSlider);
+
+    // Bind other inputs
+    const inputsList = [splitSelect, bitsInput, tipsInput];
+    inputsList.forEach(input => input.addEventListener('input', calculateAll));
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('trc-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        viewersInput.value = '300';
+        viewersSlider.value = '300';
+        hoursInput.value = '80';
+        hoursSlider.value = '80';
+
+        subsT1Input.value = '200';
+        subsT1Slider.value = '200';
+        subsT2Input.value = '10';
+        subsT2Slider.value = '10';
+        subsT3Input.value = '2';
+        subsT3Slider.value = '2';
+        splitSelect.value = '50';
+
+        adBreaksInput.value = '3';
+        adBreaksSlider.value = '3';
+        adCpmInput.value = '3.50';
+        adCpmSlider.value = '3.5';
+
+        bitsInput.value = '10000';
+        tipsInput.value = '150';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const viewers = parseFloat(viewersInput.value) || 0;
+      const hours = parseFloat(hoursInput.value) || 0;
+
+      const t1Count = parseFloat(subsT1Input.value) || 0;
+      const t2Count = parseFloat(subsT2Input.value) || 0;
+      const t3Count = parseFloat(subsT3Input.value) || 0;
+      const split = (parseFloat(splitSelect.value) || 50) / 100;
+
+      const adBreaks = parseFloat(adBreaksInput.value) || 0;
+      const cpm = parseFloat(adCpmInput.value) || 0;
+
+      const bits = parseFloat(bitsInput.value) || 0;
+      const tips = parseFloat(tipsInput.value) || 0;
+
+      // Payouts calculations
+      // Subscriptions
+      const t1Earn = t1Count * 4.99 * split;
+      const t2Earn = t2Count * 9.99 * split;
+      const t3Earn = t3Count * 24.99 * split;
+      const subPayout = t1Earn + t2Earn + t3Earn;
+
+      // Ads Payout
+      // Total monthly ad views = viewers * adMinutesPerHour * hoursMonth
+      const totalAdViews = viewers * adBreaks * hours;
+      const adPayout = (totalAdViews * cpm) / 1000;
+
+      // Bits payout ($0.01 per bit)
+      const bitsPayout = bits * 0.01;
+
+      // Direct Donations
+      const tipsPayout = tips;
+
+      // Total monthly revenue
+      const totalMonthly = subPayout + adPayout + bitsPayout + tipsPayout;
+      const totalAnnual = totalMonthly * 12;
+      const hourlyWage = hours > 0 ? totalMonthly / hours : 0;
+
+      // DOM Updates
+      const resMonthly = document.getElementById('res-trc-monthly');
+      const lblAnnual = document.getElementById('lbl-trc-annual');
+      const resHourly = document.getElementById('res-trc-hourly');
+      const lblHoursTotal = document.getElementById('lbl-trc-hours-total');
+
+      if (resMonthly) resMonthly.textContent = formatCurrency(totalMonthly);
+      if (lblAnnual) lblAnnual.textContent = `Annual run-rate: ${formatCurrency(totalAnnual)}`;
+      if (resHourly) resHourly.textContent = formatCurrency(hourlyWage);
+      if (lblHoursTotal) lblHoursTotal.textContent = `Based on ${hours} hours / month`;
+
+      // Breakdown Metrics
+      const tileSubs = document.getElementById('tile-trc-subs');
+      const tileAds = document.getElementById('tile-trc-ads');
+      const tileBits = document.getElementById('tile-trc-bits');
+      const lblSubsSplit = document.getElementById('lbl-t-subs-split');
+      const lblAdsViews = document.getElementById('lbl-t-ads-impressions');
+
+      if (tileSubs) tileSubs.textContent = formatCurrency(subPayout).split('.')[0];
+      if (tileAds) tileAds.textContent = formatCurrency(adPayout).split('.')[0];
+      if (tileBits) tileBits.textContent = formatCurrency(bitsPayout).split('.')[0];
+      if (lblSubsSplit) lblSubsSplit.textContent = `${(split * 100).toFixed(0)}% creator split`;
+      if (lblAdsViews) lblAdsViews.textContent = `${totalAdViews.toLocaleString()} ad views`;
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-trc-verdict-text');
+      if (verdictText) {
+        let maxChannel = 'Subscriptions';
+        let maxVal = subPayout;
+        let percent = totalMonthly > 0 ? (subPayout / totalMonthly) * 100 : 0;
+
+        if (adPayout > maxVal) {
+          maxChannel = 'Ad Revenue';
+          maxVal = adPayout;
+          percent = (adPayout / totalMonthly) * 100;
+        }
+        if (bitsPayout > maxVal) {
+          maxChannel = 'Bits & Cheers';
+          maxVal = bitsPayout;
+          percent = (bitsPayout / totalMonthly) * 100;
+        }
+        if (tipsPayout > maxVal) {
+          maxChannel = 'Tips & Donations';
+          maxVal = tipsPayout;
+          percent = (tipsPayout / totalMonthly) * 100;
+        }
+
+        if (totalMonthly > 0) {
+          verdictText.innerHTML = `Your primary earnings driver is <strong>${maxChannel}</strong> (representing <strong>${percent.toFixed(1)}%</strong> of total monthly income). Focus on growing this channel to optimize yields.`;
+        } else {
+          verdictText.innerHTML = `Enter stream metrics above to estimate your monthly payouts structure.`;
+        }
+      }
+
+      // Chart Composition
+      const compBar = document.getElementById('trc-composition-bar');
+      const cSub = document.getElementById('lbl-t-subs-val');
+      const cAd = document.getElementById('lbl-t-ads-val');
+      const cBits = document.getElementById('lbl-t-bits-val');
+      const cTips = document.getElementById('lbl-t-tips-val');
+
+      if (cSub) cSub.textContent = formatCurrency(subPayout).split('.')[0];
+      if (cAd) cAd.textContent = formatCurrency(adPayout).split('.')[0];
+      if (cBits) cBits.textContent = formatCurrency(bitsPayout).split('.')[0];
+      if (cTips) cTips.textContent = formatCurrency(tipsPayout).split('.')[0];
+
+      if (compBar) {
+        if (totalMonthly > 0) {
+          const pSub = (subPayout / totalMonthly) * 100;
+          const pAd = (adPayout / totalMonthly) * 100;
+          const pBits = (bitsPayout / totalMonthly) * 100;
+          const pTips = (tipsPayout / totalMonthly) * 100;
+
+          compBar.innerHTML = `
+            <div style="width: ${pSub.toFixed(1)}%; height: 100%; background: #a855f7; transition: width 0.3s ease;"></div>
+            <div style="width: ${pAd.toFixed(1)}%; height: 100%; background: #3b82f6; transition: width 0.3s ease;"></div>
+            <div style="width: ${pBits.toFixed(1)}%; height: 100%; background: #10b981; transition: width 0.3s ease;"></div>
+            <div style="width: ${pTips.toFixed(1)}%; height: 100%; background: #eab308; transition: width 0.3s ease;"></div>
+          `;
+        } else {
+          compBar.innerHTML = `<div style="width: 100%; height: 100%; background: var(--color-border);"></div>`;
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Twitch Stream Earnings Analysis:\n` +
+                   `Est. Monthly Revenue: ${document.getElementById('res-trc-monthly')?.textContent}\n` +
+                   `Annualized Run-Rate: ${document.getElementById('lbl-trc-annual')?.textContent}\n` +
+                   `Hourly Streaming Wage: ${document.getElementById('res-trc-hourly')?.textContent}\n` +
+                   `Gross Channels Breakdown:\n` +
+                   ` - Net Subscriptions: ${document.getElementById('tile-trc-subs')?.textContent}\n` +
+                   ` - Ad Revenue: ${document.getElementById('tile-trc-ads')?.textContent}\n` +
+                   ` - Bits & Cheers: ${document.getElementById('tile-trc-bits')?.textContent}\n` +
+                   ` - Tips & Donations: ${document.getElementById('lbl-t-tips-val')?.textContent}\n` +
+                   `Verdict: ${document.getElementById('res-trc-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initTwitchCalculator);
+  document.addEventListener('astro:after-swap', initTwitchCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .chart-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    margin-top: var(--space-2);
+    padding: 0 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chart-legend-grid {
+      grid-template-columns: 1fr !important;
+      gap: var(--space-2);
+      text-align: left;
+    }
+    .legend-item {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

@@ -1,0 +1,553 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Revenue Per Employee Calculator"
+  description="Measure the operational efficiency and labor productivity of your business. Calculate total Full-Time Equivalent (FTE) employees, revenue and profit per employee, and labor cost ratios."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="revenue-per-employee-calculator">
+    
+    <!-- Step 1: Currency & Financial Profile -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Financial Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="rpe-currency-select">Currency</label>
+        <select id="rpe-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Annual Revenue -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="rpe-revenue-input">Total Annual Revenue</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="rpe-revenue-input" min="10000" step="10000" value="2500000" aria-label="Annual Revenue" />
+        </div>
+      </div>
+      <input type="range" id="rpe-revenue-slider" min="10000" max="10000000" step="50000" value="2500000" class="slider-range" aria-label="Revenue Slider" />
+    </div>
+
+    <!-- Annual Profit -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="rpe-profit-input">Annual Net Profit (Net Income)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="rpe-profit-input" min="0" step="5000" value="500000" aria-label="Annual Net Profit" />
+        </div>
+      </div>
+      <input type="range" id="rpe-profit-slider" min="0" max="5000000" step="25000" value="500000" class="slider-range" aria-label="Profit Slider" />
+    </div>
+
+    <!-- Annual Labor Costs -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="rpe-labor-input">Total Annual Labor Expenses</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="rpe-labor-input" min="10000" step="10000" value="1000000" aria-label="Annual Labor Expenses" />
+        </div>
+      </div>
+      <input type="range" id="rpe-labor-slider" min="10000" max="5000000" step="25000" value="1000000" class="slider-range" aria-label="Labor Cost Slider" />
+    </div>
+
+    <!-- Step 2: Workforce Details -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Workforce Details</h3>
+      
+      <!-- Full-time Employees -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="rpe-ft-input">Full-Time Employees</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="rpe-ft-input" min="1" step="1" value="10" aria-label="Full-Time Employees Count" style="text-align: left;" />
+            <span class="percent-symbol">staff</span>
+          </div>
+        </div>
+        <input type="range" id="rpe-ft-slider" min="1" max="250" step="1" value="10" class="slider-range" aria-label="Full-Time Employees Slider" />
+      </div>
+
+      <!-- Part-time Employees -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="rpe-pt-input">Part-Time Employees</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="rpe-pt-input" min="0" step="1" value="4" aria-label="Part-Time Employees Count" style="text-align: left;" />
+            <span class="percent-symbol">staff</span>
+          </div>
+        </div>
+        <input type="range" id="rpe-pt-slider" min="0" max="100" step="1" value="4" class="slider-range" aria-label="Part-Time Employees Slider" />
+      </div>
+
+      <!-- Part-time Hours -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="rpe-pt-hours-input">Avg Part-Time Hours / Week</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="rpe-pt-hours-input" min="5" max="40" step="1" value="20" aria-label="Part-Time Weekly Hours" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="rpe-pt-hours-slider" min="5" max="40" step="1" value="20" class="slider-range" aria-label="Part-Time Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="rpe-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Productivity Metrics Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Revenue Per Employee</span>
+        <div id="res-rpe-value" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$208,333.33</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-rpe-fte-total">Based on 12.00 FTE employees</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Labor Cost to Revenue</span>
+        <div id="res-rpe-labor-ratio" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">40.00%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-rpe-labor-fte">Labor cost per FTE: $83,333.33</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="rpe-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Efficiency Verdict</span>
+        <p id="res-rpe-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your labor expenses consume <strong>40.00%</strong> of gross revenue.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Workforce Productivity Breakdown</h4>
+    <div class="results-grid rpe-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Total FTE</span>
+        <div class="tile-value" id="tile-rpe-fte" style="color: var(--color-primary);">12.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-rpe-pt-fte">10 FT + 2.00 PT FTE</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Net Profit Per Employee</span>
+        <div class="tile-value" id="tile-rpe-profit" style="color: var(--color-accent);">$41,667</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Net profit yield per employee</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Labor Cost Per FTE</span>
+        <div class="tile-value" id="tile-rpe-labor-fte" style="color: var(--color-success);">$83,333</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Average staff cost rate</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initRpeCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('rpe-currency-select') as HTMLSelectElement;
+
+    const revenueInput = document.getElementById('rpe-revenue-input') as HTMLInputElement;
+    const revenueSlider = document.getElementById('rpe-revenue-slider') as HTMLInputElement;
+    const profitInput = document.getElementById('rpe-profit-input') as HTMLInputElement;
+    const profitSlider = document.getElementById('rpe-profit-slider') as HTMLInputElement;
+    const laborInput = document.getElementById('rpe-labor-input') as HTMLInputElement;
+    const laborSlider = document.getElementById('rpe-labor-slider') as HTMLInputElement;
+
+    const ftInput = document.getElementById('rpe-ft-input') as HTMLInputElement;
+    const ftSlider = document.getElementById('rpe-ft-slider') as HTMLInputElement;
+    const ptInput = document.getElementById('rpe-pt-input') as HTMLInputElement;
+    const ptSlider = document.getElementById('rpe-pt-slider') as HTMLInputElement;
+    const ptHoursInput = document.getElementById('rpe-pt-hours-input') as HTMLInputElement;
+    const ptHoursSlider = document.getElementById('rpe-pt-hours-slider') as HTMLInputElement;
+
+    if (!revenueInput || !currencySelect || !profitInput || !ftInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(revenueInput, revenueSlider);
+    bindSlider(profitInput, profitSlider);
+    bindSlider(laborInput, laborSlider);
+    bindSlider(ftInput, ftSlider);
+    bindSlider(ptInput, ptSlider);
+    bindSlider(ptHoursInput, ptHoursSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('rpe-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        revenueInput.value = '2500000';
+        revenueSlider.value = '2500000';
+        profitInput.value = '500000';
+        profitSlider.value = '500000';
+        laborInput.value = '1000000';
+        laborSlider.value = '1000000';
+
+        ftInput.value = '10';
+        ftSlider.value = '10';
+        ptInput.value = '4';
+        ptSlider.value = '4';
+        ptHoursInput.value = '20';
+        ptHoursSlider.value = '20';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const revenue = parseFloat(revenueInput.value) || 0;
+      const profit = parseFloat(profitInput.value) || 0;
+      const labor = parseFloat(laborInput.value) || 0;
+
+      const ftCount = parseFloat(ftInput.value) || 0;
+      const ptCount = parseFloat(ptInput.value) || 0;
+      const ptHours = parseFloat(ptHoursInput.value) || 0;
+
+      // FTE Calculations
+      // ptFte = ptCount * (ptHours / 40)
+      const ptFte = ptCount * (ptHours / 40);
+      const totalFte = ftCount + ptFte;
+
+      // Outputs calculations
+      const rpe = totalFte > 0 ? revenue / totalFte : 0;
+      const profitPerEmp = totalFte > 0 ? profit / totalFte : 0;
+      const laborPerFte = totalFte > 0 ? labor / totalFte : 0;
+
+      const laborRatio = revenue > 0 ? (labor / revenue) * 100 : 0;
+
+      // DOM Updates
+      const resRpe = document.getElementById('res-rpe-value');
+      const resLaborRatio = document.getElementById('res-rpe-labor-ratio');
+      const lblFteTotal = document.getElementById('lbl-rpe-fte-total');
+      const lblLaborFte = document.getElementById('lbl-rpe-labor-fte');
+
+      if (resRpe) resRpe.textContent = formatCurrency(rpe);
+      if (resLaborRatio) resLaborRatio.textContent = laborRatio.toFixed(2) + '%';
+      if (lblFteTotal) lblFteTotal.textContent = `Based on ${totalFte.toFixed(2)} FTE employees`;
+      if (lblLaborFte) lblLaborFte.textContent = `Labor cost per FTE: ${formatCurrency(laborPerFte)}`;
+
+      // Verdict card and text
+      const verdictCard = document.getElementById('rpe-verdict-card');
+      const verdictText = document.getElementById('res-rpe-verdict-text');
+      if (verdictText && verdictCard) {
+        let diagnosis = 'Healthy productivity ratios';
+        let color = 'var(--color-success)';
+
+        if (laborRatio > 60) {
+          diagnosis = 'High Labor overhead';
+          color = 'var(--color-danger)';
+          verdictText.innerHTML = `<strong>High Labor Overhead Warning!</strong> Your labor expenses consume <strong>${laborRatio.toFixed(2)}%</strong> of gross revenue. With an RPE of <strong>${formatCurrency(rpe)}</strong> and labor cost per FTE of <strong>${formatCurrency(laborPerFte)}</strong>, your operational margins are highly vulnerable. Consider optimizing staffing structures.`;
+        } else if (laborRatio > 45) {
+          diagnosis = 'Moderate Labor overhead';
+          color = 'var(--color-warning)';
+          verdictText.innerHTML = `Your labor costs consume <strong>${laborRatio.toFixed(2)}%</strong> of revenue. Your revenue per employee is <strong>${formatCurrency(rpe)}</strong>, and profit per employee is <strong>${formatCurrency(profitPerEmp)}</strong>. Metrics are within average tolerances, but monitoring efficiency is recommended.`;
+        } else {
+          diagnosis = 'Highly efficient labor yield';
+          color = 'var(--color-success)';
+          verdictText.innerHTML = `Your business has a <strong>Highly Efficient Labor Yield</strong>. Labor costs consume just <strong>${laborRatio.toFixed(2)}%</strong> of gross revenue, yielding a healthy profit of <strong>${formatCurrency(profitPerEmp)}</strong> per employee.`;
+        }
+
+        verdictCard.style.borderLeftColor = color;
+        resLaborRatio.style.color = color;
+      }
+
+      // Details Tiles Updates
+      const tileFte = document.getElementById('tile-rpe-fte');
+      const lblPtFte = document.getElementById('lbl-rpe-pt-fte');
+      const tileProfit = document.getElementById('tile-rpe-profit');
+      const tileLaborFte = document.getElementById('tile-rpe-labor-fte');
+
+      if (tileFte) tileFte.textContent = totalFte.toFixed(2);
+      if (lblPtFte) lblPtFte.textContent = `${ftCount} FT + ${ptFte.toFixed(2)} PT FTE`;
+      if (tileProfit) tileProfit.textContent = formatCurrency(profitPerEmp).split('.')[0];
+      if (tileLaborFte) tileLaborFte.textContent = formatCurrency(laborPerFte).split('.')[0];
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Revenue Per Employee & Productivity Analysis:\n` +
+                   `Annual Revenue: ${revenueInput.value} | Profit: ${profitInput.value}\n` +
+                   `Labor Costs: ${laborInput.value}\n` +
+                   `Staff: ${ftInput.value} FT | ${ptInput.value} PT (${ptHoursInput.value} hrs/wk)\n` +
+                   `Total FTE: ${document.getElementById('tile-rpe-fte')?.textContent}\n` +
+                   `Revenue Per Employee (RPE): ${document.getElementById('res-rpe-value')?.textContent}\n` +
+                   `Profit Per Employee: ${document.getElementById('tile-rpe-profit')?.textContent}\n` +
+                   `Labor Cost Ratio: ${document.getElementById('res-rpe-labor-ratio')?.textContent} (Cost per FTE: ${document.getElementById('tile-rpe-labor-fte')?.textContent})\n` +
+                   `Verdict: ${document.getElementById('res-rpe-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initRpeCalculator);
+  document.addEventListener('astro:after-swap', initRpeCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

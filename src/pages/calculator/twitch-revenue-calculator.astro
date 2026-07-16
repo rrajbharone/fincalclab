@@ -1,0 +1,217 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TwitchRevenueCalculator from '../../components/calculator/TwitchRevenueCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Twitch Revenue Calculator', path: '/calculator/twitch-revenue-calculator' }
+];
+---
+
+<Layout
+  title="Twitch Revenue Calculator - Estimate Streamer Payouts & Splits"
+  description="Free online Twitch Revenue Calculator. Estimate monthly subscription shares, ad CPM revenue, bit payouts, and direct tips. Optimize your streaming business."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <TwitchRevenueCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Streamer Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Affiliate Illusion: How My 'Successful' Twitch Channel Earned Less Than Minimum Wage</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the story of a passionate gamer who streamed 120 hours a month, achieved Twitch Affiliate status, and realized their net hourly earnings were just $1.54 after platform fee cuts and ad impressions traps.
+            </p>
+            <a href="/blog/how-much-do-twitch-streamers-make" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How Much Do Twitch Streamers Make & Stream Payout Strategies
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>How Do Twitch Streamers Make Money?</h2>
+        <p>
+          Streaming on Twitch has evolved from a gaming hobby into a multi-million dollar digital entertainment industry. However, behind the flashy layout overlays and high-energy broadcasts lies a highly structured business model. Twitch creators earn money through several primary monetization channels:
+        </p>
+        <ul>
+          <li>
+            <strong>Subscriptions (Subs):</strong> Viewers pay monthly recurring fees to support channels, unlocking custom emotes, badges, and ad-free viewing.
+          </li>
+          <li>
+            <strong>Bits & Cheers:</strong> Twitch's virtual goods that viewers buy and "cheer" in chat to show support.
+          </li>
+          <li>
+            <strong>Ad Revenue:</strong> Programmatic video ads (pre-rolls and mid-rolls) run during the stream, paying the creator based on views.
+          </li>
+          <li>
+            <strong>Direct Donations:</strong> Tips processed through third-party platforms (like Streamlabs, PayPal, or Ko-fi), bypassing Twitch's platform fees.
+          </li>
+        </ul>
+
+        <h2>Calculating Subscription Revenue Splits</h2>
+        <p>
+          Subscriptions represent the backbone of most streamers' monthly payouts. Twitch offers three subscription tiers:
+        </p>
+        <ul>
+          <li><strong>Tier 1 / Prime:</strong> $4.99 per month</li>
+          <li><strong>Tier 2:</strong> $9.99 per month</li>
+          <li><strong>Tier 3:</strong> $24.99 per month</li>
+        </ul>
+        <p>
+          The revenue split is the percentage of the subscription fee that goes to the streamer vs. Twitch. Under the standard program rules:
+        </p>
+        <ul>
+          <li>
+            <strong>Affiliates & Standard Partners:</strong> Receive a <strong>50/50 split</strong>. For a Tier 1 sub ($4.99), the streamer earns roughly <strong>$2.50</strong> (excluding payment processing and local tax deductions).
+          </li>
+          <li>
+            <strong>Premium Partners:</strong> Can qualify for a <strong>70/30 split</strong> on Tier 1 earnings (often capped at the first $100,000 annually), yielding roughly <strong>$3.50</strong> per Tier 1 sub.
+          </li>
+        </ul>
+        <p>
+          The formula to calculate monthly subscription earnings is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Subscription Revenue} = \\sum (\\text{Sub Count}_{Tier} \\times \\text{Tier Cost} \\times \\text{Creator Split})\\)"}
+        </p>
+
+        <h2>The Mathematics of Twitch Ad Revenue (CPM)</h2>
+        <p>
+          Twitch ad revenue is calculated based on <strong>CPM (Cost Per Mille)</strong>, which is the dollar rate paid to the streamer per 1,000 views of an ad. CPM rates typically range from <strong>$2.00 to $10.00</strong> depending on the viewer's geographic region, the season (Q4 ads pay higher), and the streamer's category.
+        </p>
+        <p>
+          If you have an average viewership of 300 users and run 3 ad breaks per hour, every hour you stream generates 900 ad views. Over an 80-hour streaming month, your channel generates 72,000 ad impressions.
+        </p>
+        <p>
+          The formula to calculate monthly ad payouts is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Monthly Ad Earnings} = \\frac{\\text{Average Viewers} \\times \\text{Ad Minutes / Hour} \\times \\text{CPM} \\times \\text{Hours Streamed / Month}}{1,000}\\)"}
+        </p>
+        <p>
+          With 72,000 monthly ad impressions at a $3.50 CPM:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Monthly Ad Payout} = \\frac{72,000 \\times \\$3.50}{1,000} = \\mathbf{\\$252.00}\\)"}
+        </p>
+
+        <h2>Bits and Cheers Conversions</h2>
+        <p>
+          Bits are Twitch's internal micro-transaction currency. Viewers buy Bits directly from Twitch (paying a markup to cover Twitch's processor fees) and then cheer them in the chat.
+        </p>
+        <p>
+          For every Bit cheered on a channel, Twitch pays the creator exactly <strong>$0.01 (one US cent)</strong>. Consequently, the math is simple:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Cheer Payout} = \\text{Bits Cheered} \\times \\$0.01\\)"}
+        </p>
+        <p>
+          If your community cheers 10,000 Bits in a month, you earn exactly <strong>$100.00</strong>.
+        </p>
+
+        <h2>Maximizing Your Streamer Income Profile</h2>
+        <p>
+          To move beyond a sub-minimum wage hourly rate, successful streamers utilize three optimization strategies:
+        </p>
+        <ol>
+          <li>
+            <strong>Encourage Direct Tips:</strong> Direct tips through PayPal or Ko-fi bypass Twitch's 50% split. A $5 donation yields roughly $4.70 to the creator, whereas a Tier 1 sub yields only $2.50.
+          </li>
+          <li>
+            <strong>Build Off-Platform Income:</strong> Sponsor integrations, YouTube ad revenue syndication, merchandise sales, and Patreon supporters offer much higher revenue margins than default Twitch ads.
+          </li>
+          <li>
+            <strong>Stream Smart:</strong> Focus on building community engagement during high-traffic hours rather than burning out streaming 60 hours a week to empty chats. Viewership density increases your ad impressions and attracts sponsors.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Twitch Revenue Calculator FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do Twitch streamers get paid and what are the payment terms?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Twitch pays creators monthly via direct deposit, wire transfer, PayPal, or check. Payments are processed on a <strong>Net-15</strong> basis, meaning earnings accumulated in a calendar month are paid out 15 days after the end of that month (e.g., January earnings are paid on February 15th).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference in payout split between a Twitch Affiliate and Partner?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Twitch Affiliates and standard Partners receive a 50/50 revenue split on all subscriptions. Premium Twitch Partners who reach specific audience size and consistency thresholds can negotiate a 70/30 split on subscription revenue (up to a cap of $100,000 per year, after which it reverts to 50/50).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is Twitch ad revenue calculated and what is CPM?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Ad revenue is calculated based on CPM (Cost Per Mille), which is the payout rate per 1,000 views of an ad. The total payout is calculated as: <strong>{"\\(Ad Payout = \\frac{\\text{Impressions} \\times \\text{CPM}}{1,000}\\)"}</strong>. Impressions depend on your average viewer count, hours streamed, and ad minutes run per hour.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How much is 1,000 Bits worth to a streamer?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Since Twitch pays creators exactly $0.01 per Bit cheered, 1,000 Bits is worth exactly <strong>$10.00</strong> to the streamer. Twitch takes its cut of the revenue when the viewer purchases the Bits, not when they cheer them.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the minimum payout threshold for Twitch earnings?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The minimum payout threshold for Twitch is <strong>$50</strong> for Affiliates and Partners (for payouts processed via ACH/Direct Deposit or PayPal). If your monthly earnings are less than $50, the balance rolls over to the next month until the cumulative total crosses the threshold.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

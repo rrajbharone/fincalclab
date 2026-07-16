@@ -21,20 +21,12 @@ const relatedPosts = allPosts
   .filter((p) => p.id !== post.id && p.data.category === post.data.category)
   .slice(0, 2);
 
-// Fix breadcrumbs specifically for the target debt calculator blog posts to use absolute URLs
-const isTargetPost = post.id === 'how-to-use-debt-avalanche-calculator' || post.id === 'how-to-use-debt-snowball-calculator';
-
-const breadcrumbsData = isTargetPost
-  ? [
-      { name: 'Home', item: 'https://fincalclab.com/' },
-      { name: 'Blog', item: 'https://fincalclab.com/blog/' },
-      { name: post.data.title, item: `https://fincalclab.com/blog/${post.id}/` }
-    ]
-  : [
-      { name: 'Home', item: '/' },
-      { name: 'Blog', item: '/blog' },
-      { name: post.data.title, item: `/blog/${post.id}` }
-    ];
+// Generate absolute URLs for breadcrumbs in all blog posts to comply with schema requirements
+const breadcrumbsData = [
+  { name: 'Home', item: 'https://fincalclab.com/' },
+  { name: 'Blog', item: 'https://fincalclab.com/blog/' },
+  { name: post.data.title, item: `https://fincalclab.com/blog/${post.id}/` }
+];
 ---
 
 <Layout

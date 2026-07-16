@@ -1,0 +1,540 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="LTV:CAC Ratio Calculator"
+  description="Determine the scalability and efficiency of your SaaS or subscription business. Calculate Customer Acquisition Cost (CAC), Customer Lifetime Value (LTV), LTV:CAC ratios, and CAC payback periods."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="ltvcac-calculator">
+    
+    <!-- Step 1: Currency & CAC Settings -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Customer Acquisition Cost (CAC)</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ltvcac-currency-select">Currency</label>
+        <select id="ltvcac-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- S&M Spend -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ltvcac-spend-input">Sales & Marketing Spend</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="ltvcac-spend-input" min="100" step="100" value="50000" aria-label="Sales & Marketing Spend" />
+        </div>
+      </div>
+      <input type="range" id="ltvcac-spend-slider" min="1000" max="250000" step="1000" value="50000" class="slider-range" aria-label="Spend Slider" />
+    </div>
+
+    <!-- Customers Acquired -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ltvcac-acquired-input">New Customers Acquired</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="ltvcac-acquired-input" min="1" step="1" value="500" aria-label="Customers Acquired Count" style="text-align: left;" />
+          <span class="percent-symbol">users</span>
+        </div>
+      </div>
+      <input type="range" id="ltvcac-acquired-slider" min="10" max="2500" step="10" value="500" class="slider-range" aria-label="Acquisitions Slider" />
+    </div>
+
+    <!-- Step 2: LTV Settings -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Customer Lifetime Value (LTV)</h3>
+      
+      <!-- ARPU -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ltvcac-arpu-input">Avg Monthly Revenue / Cust (ARPU)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="ltvcac-arpu-input" min="1" step="1" value="50" aria-label="Monthly ARPU" />
+          </div>
+        </div>
+        <input type="range" id="ltvcac-arpu-slider" min="5" max="500" step="5" value="50" class="slider-range" aria-label="ARPU Slider" />
+      </div>
+
+      <!-- Gross Margin -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ltvcac-margin-input">Gross Margin</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="ltvcac-margin-input" min="10" max="100" step="1" value="80" aria-label="Gross Margin Percentage" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="ltvcac-margin-slider" min="10" max="100" step="1" value="80" class="slider-range" aria-label="Gross Margin Slider" />
+      </div>
+
+      <!-- Churn Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ltvcac-churn-input">Monthly Churn Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="ltvcac-churn-input" min="0.1" max="30" step="0.1" value="2" aria-label="Monthly Churn Percentage" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="ltvcac-churn-slider" min="0.5" max="25" step="0.1" value="2" class="slider-range" aria-label="Churn Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="ltvcac-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Scaling Efficiency Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">LTV:CAC Ratio</span>
+        <div id="res-ltvcac-ratio" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">20.00x</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-ltvcac-target">Target: 3.0x to 5.0x for healthy scale</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">CAC Payback Period</span>
+        <div id="res-ltvcac-payback" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">2.5 months</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-ltvcac-payback-days">Recover acquisition cost in 75 days</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="ltvcac-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Scaling Diagnosis</span>
+        <p id="res-ltvcac-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your unit economics are highly efficient with an LTV:CAC ratio of <strong>20.00x</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Unit Economics Breakdown</h4>
+    <div class="results-grid ltvcac-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Acquisition Cost (CAC)</span>
+        <div class="tile-value" id="tile-ltvcac-cac" style="color: var(--color-danger);">$100.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Sales & Marketing cost per customer</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Lifetime Value (LTV)</span>
+        <div class="tile-value" id="tile-ltvcac-ltv" style="color: var(--color-success);">$2,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-ltvcac-lifespan">Customer Lifespan: 50 months</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Gross Lifetime Profit</span>
+        <div class="tile-value" id="tile-ltvcac-profit" style="color: var(--color-primary);">$1,900.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">LTV minus customer CAC</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initLtvCacCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('ltvcac-currency-select') as HTMLSelectElement;
+
+    const spendInput = document.getElementById('ltvcac-spend-input') as HTMLInputElement;
+    const spendSlider = document.getElementById('ltvcac-spend-slider') as HTMLInputElement;
+    const acquiredInput = document.getElementById('ltvcac-acquired-input') as HTMLInputElement;
+    const acquiredSlider = document.getElementById('ltvcac-acquired-slider') as HTMLInputElement;
+
+    const arpuInput = document.getElementById('ltvcac-arpu-input') as HTMLInputElement;
+    const arpuSlider = document.getElementById('ltvcac-arpu-slider') as HTMLInputElement;
+    const marginInput = document.getElementById('ltvcac-margin-input') as HTMLInputElement;
+    const marginSlider = document.getElementById('ltvcac-margin-slider') as HTMLInputElement;
+    const churnInput = document.getElementById('ltvcac-churn-input') as HTMLInputElement;
+    const churnSlider = document.getElementById('ltvcac-churn-slider') as HTMLInputElement;
+
+    if (!spendInput || !currencySelect || !arpuInput || !churnInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(spendInput, spendSlider);
+    bindSlider(acquiredInput, acquiredSlider);
+    bindSlider(arpuInput, arpuSlider);
+    bindSlider(marginInput, marginSlider);
+    bindSlider(churnInput, churnSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('ltvcac-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        spendInput.value = '50000';
+        spendSlider.value = '50000';
+        acquiredInput.value = '500';
+        acquiredSlider.value = '500';
+
+        arpuInput.value = '50';
+        arpuSlider.value = '50';
+        marginInput.value = '80';
+        marginSlider.value = '80';
+        churnInput.value = '2';
+        churnSlider.value = '2';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const spend = parseFloat(spendInput.value) || 0;
+      const acquired = parseFloat(acquiredInput.value) || 0;
+
+      const arpu = parseFloat(arpuInput.value) || 0;
+      const margin = parseFloat(marginInput.value) || 0;
+      const churn = parseFloat(churnInput.value) || 0;
+
+      // CAC Calculation
+      const cac = acquired > 0 ? spend / acquired : 0;
+
+      // LTV Calculation
+      // LTV = (ARPU * Gross Margin) / Churn
+      const churnRateFraction = (churn / 100);
+      const grossArpu = arpu * (margin / 100);
+      const ltv = churnRateFraction > 0 ? grossArpu / churnRateFraction : 0;
+      const customerLifespan = churnRateFraction > 0 ? 1 / churnRateFraction : 0; // in months
+
+      // LTV:CAC Ratio
+      const ltvCacRatio = cac > 0 ? ltv / cac : 0;
+
+      // CAC Payback Period (months) = CAC / (ARPU * Gross Margin)
+      const paybackPeriod = grossArpu > 0 ? cac / grossArpu : 0;
+      const paybackDays = paybackPeriod * 30;
+
+      const grossProfit = ltv - cac;
+
+      // DOM Updates
+      const resRatio = document.getElementById('res-ltvcac-ratio');
+      const resPayback = document.getElementById('res-ltvcac-payback');
+      const lblPaybackDays = document.getElementById('lbl-ltvcac-payback-days');
+
+      if (resRatio) resRatio.textContent = ltvCacRatio.toFixed(2) + 'x';
+      if (resPayback) resPayback.textContent = paybackPeriod.toFixed(2) + ' months';
+      if (lblPaybackDays) lblPaybackDays.textContent = `Recover acquisition cost in ${paybackDays.toFixed(0)} days`;
+
+      // Verdict card and text
+      const verdictCard = document.getElementById('ltvcac-verdict-card');
+      const verdictText = document.getElementById('res-ltvcac-verdict-text');
+      if (verdictText && verdictCard) {
+        let color = 'var(--color-success)';
+
+        if (ltvCacRatio < 1.0) {
+          color = 'var(--color-danger)';
+          verdictText.innerHTML = `<strong>Value Destroyer Alert!</strong> Your LTV:CAC ratio is extremely low (<strong>${ltvCacRatio.toFixed(2)}x</strong>). You are spending more to acquire customers than they are worth in gross margins. Focus on reducing churn or increasing pricing immediately.`;
+        } else if (ltvCacRatio < 3.0) {
+          color = 'var(--color-warning)';
+          verdictText.innerHTML = `<strong>Underperforming.</strong> Your ratio is <strong>${ltvCacRatio.toFixed(2)}x</strong>. While profitable on paper, high customer acquisition costs or churn rates are squeezing your scalability margins. CAC payback takes <strong>${paybackPeriod.toFixed(1)} months</strong>.`;
+        } else if (ltvCacRatio > 5.0) {
+          color = 'var(--color-primary)';
+          verdictText.innerHTML = `<strong>Underinvesting Opportunity.</strong> Your unit economics are exceptionally strong at <strong>${ltvCacRatio.toFixed(2)}x</strong>. Your CAC payback is fast (<strong>${paybackPeriod.toFixed(1)} months</strong>). You are under-spending on sales and marketing—consider investing more to capture market share!`;
+        } else {
+          color = 'var(--color-success)';
+          verdictText.innerHTML = `<strong>Healthy Sweet Spot!</strong> Your LTV:CAC ratio is in the ideal range of <strong>${ltvCacRatio.toFixed(2)}x</strong>. For every dollar spent on acquisition, you generate ${formatCurrency(ltv)} in lifetime customer value. Payback takes <strong>${paybackPeriod.toFixed(1)} months</strong>.`;
+        }
+
+        verdictCard.style.borderLeftColor = color;
+        resRatio.style.color = color;
+      }
+
+      // Details Tiles Updates
+      const tileCac = document.getElementById('tile-ltvcac-cac');
+      const tileLtv = document.getElementById('tile-ltvcac-ltv');
+      const lblLifespan = document.getElementById('lbl-ltvcac-lifespan');
+      const tileProfit = document.getElementById('tile-ltvcac-profit');
+
+      if (tileCac) tileCac.textContent = formatCurrency(cac);
+      if (tileLtv) tileLtv.textContent = formatCurrency(ltv);
+      if (lblLifespan) lblLifespan.textContent = `Customer Lifespan: ${customerLifespan.toFixed(1)} months`;
+      if (tileProfit) {
+        tileProfit.textContent = formatCurrency(grossProfit);
+        tileProfit.style.color = grossProfit >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Customer LTV:CAC Unit Economics Analysis:\n` +
+                   `CAC: Spend: ${spendInput.value} | Acquired: ${acquiredInput.value} -> CAC: ${document.getElementById('tile-ltvcac-cac')?.textContent}\n` +
+                   `LTV: ARPU: ${arpuInput.value} | Margin: ${marginInput.value}% | Churn: ${churnInput.value}% -> LTV: ${document.getElementById('tile-ltvcac-ltv')?.textContent} (${document.getElementById('lbl-ltvcac-lifespan')?.textContent})\n` +
+                   `LTV:CAC Ratio: ${document.getElementById('res-ltvcac-ratio')?.textContent}\n` +
+                   `CAC Payback Period: ${document.getElementById('res-ltvcac-payback')?.textContent} (${document.getElementById('lbl-ltvcac-payback-days')?.textContent})\n` +
+                   `Lifetime Profit: ${document.getElementById('tile-ltvcac-profit')?.textContent}\n` +
+                   `Verdict: ${document.getElementById('res-ltvcac-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initLtvCacCalculator);
+  document.addEventListener('astro:after-swap', initLtvCacCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

@@ -1,0 +1,567 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Cost of Delay Calculator"
+  description="Estimate the financial cost of delaying your retirement savings or investment goals. Calculate future values, lost compound growth, and catch-up monthly contributions."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="cost-of-delay-calculator">
+    
+    <!-- Step 1: Currency & Profile -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Savings Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cod-currency-select">Currency</label>
+        <select id="cod-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Current Age -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cod-age-current-input">Current Age</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="cod-age-current-input" min="18" step="1" value="25" aria-label="Current Age" style="text-align: left;" />
+          <span class="percent-symbol">yrs</span>
+        </div>
+      </div>
+      <input type="range" id="cod-age-current-slider" min="18" max="60" step="1" value="25" class="slider-range" aria-label="Current Age Slider" />
+    </div>
+
+    <!-- Target Age -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cod-age-target-input">Target Retirement Age</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="cod-age-target-input" min="50" step="1" value="65" aria-label="Target Retirement Age" style="text-align: left;" />
+          <span class="percent-symbol">yrs</span>
+        </div>
+      </div>
+      <input type="range" id="cod-age-target-slider" min="50" max="75" step="1" value="65" class="slider-range" aria-label="Target Age Slider" />
+    </div>
+
+    <!-- Delay Period -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Delay & Investments</h3>
+      
+      <!-- Delay Years -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cod-delay-input">Delay Period</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="cod-delay-input" min="1" step="1" value="10" aria-label="Delay Years" style="text-align: left;" />
+            <span class="percent-symbol">yrs</span>
+          </div>
+        </div>
+        <input type="range" id="cod-delay-slider" min="1" max="20" step="1" value="10" class="slider-range" aria-label="Delay Period Slider" />
+      </div>
+
+      <!-- Monthly Contribution -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cod-monthly-input">Planned Monthly Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="cod-monthly-input" min="50" step="50" value="500" aria-label="Monthly Savings Amount" />
+          </div>
+        </div>
+        <input type="range" id="cod-monthly-slider" min="50" max="5000" step="50" value="500" class="slider-range" aria-label="Monthly Contribution Slider" />
+      </div>
+
+      <!-- Return Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cod-rate-input">Expected Annual Return</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="cod-rate-input" min="2" step="0.5" value="8" aria-label="Expected Return Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="cod-rate-slider" min="2" max="15" step="0.5" value="8" class="slider-range" aria-label="Expected Return Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="cod-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Cost of Delay Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-danger);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Cost of Delay</span>
+        <div id="res-cod-total" style="font-size: 1.75rem; font-weight: 800; color: var(--color-danger); margin-top: 4px;">$1,002,085.68</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cod-percent-lost">57.35% of total nest egg lost</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Catch-Up Saving Rate</span>
+        <div id="res-cod-catchup" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$1,172.38</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cod-catchup-increase">+134.48% increase needed</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="cod-verdict-card" style="border-left: 4px solid var(--color-danger); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Procrastination Cost Diagnosis</span>
+        <p id="res-cod-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Delaying your investments by <strong>10 years</strong> costs you <strong>$1,002,085.68</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Comparative Analysis</h4>
+    <div class="results-grid cod-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Nest Egg (Started Now)</span>
+        <div class="tile-value" id="tile-cod-now" style="color: var(--color-success);">$1.75M</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cod-years-now">40 years of compounding</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Nest Egg (Delayed)</span>
+        <div class="tile-value" id="tile-cod-delayed" style="color: var(--color-text-base);">$745K</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cod-years-delayed">30 years of compounding</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Skipped Savings</span>
+        <div class="tile-value" id="tile-cod-skipped" style="color: var(--color-primary);">$60,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cod-skipped-desc">10 years of direct deposits</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initDelayCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('cod-currency-select') as HTMLSelectElement;
+
+    const ageCurrentInput = document.getElementById('cod-age-current-input') as HTMLInputElement;
+    const ageCurrentSlider = document.getElementById('cod-age-current-slider') as HTMLInputElement;
+    const ageTargetInput = document.getElementById('cod-age-target-input') as HTMLInputElement;
+    const ageTargetSlider = document.getElementById('cod-age-target-slider') as HTMLInputElement;
+
+    const delayInput = document.getElementById('cod-delay-input') as HTMLInputElement;
+    const delaySlider = document.getElementById('cod-delay-slider') as HTMLInputElement;
+    const monthlyInput = document.getElementById('cod-monthly-input') as HTMLInputElement;
+    const monthlySlider = document.getElementById('cod-monthly-slider') as HTMLInputElement;
+    const rateInput = document.getElementById('cod-rate-input') as HTMLInputElement;
+    const rateSlider = document.getElementById('cod-rate-slider') as HTMLInputElement;
+
+    if (!ageCurrentInput || !currencySelect || !ageTargetInput || !delayInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(ageCurrentInput, ageCurrentSlider);
+    bindSlider(ageTargetInput, ageTargetSlider);
+    bindSlider(delayInput, delaySlider);
+    bindSlider(monthlyInput, monthlySlider);
+    bindSlider(rateInput, rateSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('cod-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        ageCurrentInput.value = '25';
+        ageCurrentSlider.value = '25';
+        ageTargetInput.value = '65';
+        ageTargetSlider.value = '65';
+
+        delayInput.value = '10';
+        delaySlider.value = '10';
+        monthlyInput.value = '500';
+        monthlySlider.value = '500';
+        rateInput.value = '8';
+        rateSlider.value = '8';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const curAge = parseFloat(ageCurrentInput.value) || 0;
+      const targetAge = parseFloat(ageTargetInput.value) || 0;
+
+      const delay = parseFloat(delayInput.value) || 0;
+      const monthly = parseFloat(monthlyInput.value) || 0;
+      const annualRate = parseFloat(rateInput.value) || 0;
+
+      const yearsNow = targetAge - curAge;
+      const yearsDelayed = Math.max(0, yearsNow - delay);
+
+      // Future value calculations (Annuity compounding monthly)
+      const monthlyRate = (annualRate / 100) / 12;
+      const monthsNow = yearsNow * 12;
+      const monthsDelayed = yearsDelayed * 12;
+
+      let fvNow = 0;
+      let fvDelayed = 0;
+
+      if (monthlyRate > 0) {
+        fvNow = monthly * ((Math.pow(1 + monthlyRate, monthsNow) - 1) / monthlyRate);
+        if (monthsDelayed > 0) {
+          fvDelayed = monthly * ((Math.pow(1 + monthlyRate, monthsDelayed) - 1) / monthlyRate);
+        }
+      } else {
+        fvNow = monthly * monthsNow;
+        fvDelayed = monthly * monthsDelayed;
+      }
+
+      // Cost of Delay
+      const costOfDelay = fvNow - fvDelayed;
+      const percentLost = fvNow > 0 ? (costOfDelay / fvNow) * 100 : 0;
+
+      // Skipped Contributions
+      const skippedContributions = monthly * 12 * delay;
+      const lostGrowth = Math.max(0, costOfDelay - skippedContributions);
+
+      // Catch-up Monthly Contribution needed in the remaining years to reach fvNow
+      let catchupPMT = 0;
+      if (monthsDelayed > 0) {
+        if (monthlyRate > 0) {
+          catchupPMT = fvNow * (monthlyRate / (Math.pow(1 + monthlyRate, monthsDelayed) - 1));
+        } else {
+          catchupPMT = fvNow / monthsDelayed;
+        }
+      }
+
+      const catchupPctInc = monthly > 0 ? ((catchupPMT - monthly) / monthly) * 100 : 0;
+
+      // DOM Updates
+      const resTotal = document.getElementById('res-cod-total');
+      const resCatchup = document.getElementById('res-cod-catchup');
+      const lblPercentLost = document.getElementById('lbl-cod-percent-lost');
+      const lblCatchupInc = document.getElementById('lbl-cod-catchup-increase');
+
+      if (resTotal) resTotal.textContent = formatCurrency(costOfDelay);
+      if (resCatchup) resCatchup.textContent = formatCurrency(catchupPMT);
+      if (lblPercentLost) lblPercentLost.textContent = `${percentLost.toFixed(2)}% of total nest egg lost`;
+      if (lblCatchupInc) {
+        if (catchupPMT > monthly) {
+          lblCatchupInc.textContent = `+${catchupPctInc.toFixed(2)}% increase needed`;
+        } else {
+          lblCatchupInc.textContent = `No catchup needed`;
+        }
+      }
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-cod-verdict-text');
+      if (verdictText) {
+        if (costOfDelay > 0) {
+          verdictText.innerHTML = `Delaying your savings by <strong>${delay} years</strong> costs you <strong>${formatCurrency(costOfDelay)}</strong> by age ${targetAge}. Skipping <strong>${formatCurrency(skippedContributions)}</strong> in deposits costs you <strong>${formatCurrency(lostGrowth)}</strong> in lost compound growth.`;
+        } else {
+          verdictText.innerHTML = `Select your age profile to calculate your compound savings cost of delay.`;
+        }
+      }
+
+      // Details Tiles Updates
+      const tileNow = document.getElementById('tile-cod-now');
+      const tileDelayed = document.getElementById('tile-cod-delayed');
+      const tileSkipped = document.getElementById('tile-cod-skipped');
+      const lblYearsNow = document.getElementById('lbl-cod-years-now');
+      const lblYearsDelayed = document.getElementById('lbl-cod-years-delayed');
+      const lblSkippedDesc = document.getElementById('lbl-cod-skipped-desc');
+
+      if (tileNow) {
+        tileNow.textContent = fvNow >= 1000000 
+          ? (fvNow / 1000000).toFixed(2) + 'M' 
+          : (fvNow / 1000).toFixed(0) + 'K';
+      }
+      if (tileDelayed) {
+        tileDelayed.textContent = fvDelayed >= 1000000 
+          ? (fvDelayed / 1000000).toFixed(2) + 'M' 
+          : (fvDelayed / 1000).toFixed(0) + 'K';
+      }
+      if (tileSkipped) tileSkipped.textContent = formatCurrency(skippedContributions).split('.')[0];
+
+      if (lblYearsNow) lblYearsNow.textContent = `${yearsNow} years of compounding`;
+      if (lblYearsDelayed) lblYearsDelayed.textContent = `${yearsDelayed} years of compounding`;
+      if (lblSkippedDesc) lblSkippedDesc.textContent = `${delay} years of direct deposits`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Investment Cost of Delay Analysis:\n` +
+                   `Target Age: ${ageTargetInput.value} | Current Age: ${ageCurrentInput.value} | Delay: ${delayInput.value} yrs\n` +
+                   `Expected Return: ${rateInput.value}%\n` +
+                   `Total Cost of Delay: ${document.getElementById('res-cod-total')?.textContent} (${document.getElementById('lbl-cod-percent-lost')?.textContent})\n` +
+                   `Catch-Up Savings rate: ${document.getElementById('res-cod-catchup')?.textContent} (${document.getElementById('lbl-cod-catchup-increase')?.textContent})\n` +
+                   `Nest Egg Started Now: ${document.getElementById('tile-cod-now')?.textContent} vs Delayed: ${document.getElementById('tile-cod-delayed')?.textContent}\n` +
+                   `Skipped Direct Deposits: ${document.getElementById('tile-cod-skipped')?.textContent}\n` +
+                   `Verdict: ${document.getElementById('res-cod-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initDelayCalculator);
+  document.addEventListener('astro:after-swap', initDelayCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

@@ -1,0 +1,598 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Promotion Raise Calculator"
+  description="Evaluate your internal promotion offer. Calculate your gross and net salary increase, check your real hourly rate shift based on work hours, and compare your offer against market averages."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="promotion-raise-calculator">
+    
+    <!-- Step 1: Currency & Current Position -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Current Position Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="prc-currency-select">Currency</label>
+        <select id="prc-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Current Salary -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="prc-salary-current-input">Current Annual Salary</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="prc-salary-current-input" min="10000" step="1000" value="70000" aria-label="Current Salary" />
+        </div>
+      </div>
+      <input type="range" id="prc-salary-current-slider" min="10000" max="250000" step="1000" value="70000" class="slider-range" aria-label="Current Salary Slider" />
+    </div>
+
+    <!-- Current Hours -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="prc-hours-current-input">Average Weekly Work Hours</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="prc-hours-current-input" min="10" step="1" value="40" aria-label="Current Work Hours" style="text-align: left;" />
+          <span class="percent-symbol">hrs</span>
+        </div>
+      </div>
+      <input type="range" id="prc-hours-current-slider" min="10" max="80" step="1" value="40" class="slider-range" aria-label="Current Hours Slider" />
+    </div>
+
+    <!-- Step 2: Proposed Promoted Position -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Proposed Promoted Position</h3>
+      
+      <!-- Promoted Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="prc-salary-promoted-input">Proposed Promoted Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="prc-salary-promoted-input" min="10000" step="1000" value="80000" aria-label="Proposed Salary" />
+          </div>
+        </div>
+        <input type="range" id="prc-salary-promoted-slider" min="10000" max="250000" step="1000" value="80000" class="slider-range" aria-label="Proposed Salary Slider" />
+      </div>
+
+      <!-- Promoted Hours -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="prc-hours-promoted-input">Estimated Weekly Work Hours</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="prc-hours-promoted-input" min="10" step="1" value="45" aria-label="Promoted Work Hours" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="prc-hours-promoted-slider" min="10" max="80" step="1" value="45" class="slider-range" aria-label="Promoted Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Benchmarks & Tax Details -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Benchmarks & Tax Details</h3>
+      
+      <!-- Market Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="prc-salary-market-input">Market Average for New Title</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="prc-salary-market-input" min="10000" step="1000" value="90000" aria-label="Market Salary" />
+          </div>
+        </div>
+        <input type="range" id="prc-salary-market-slider" min="10000" max="300000" step="1000" value="90000" class="slider-range" aria-label="Market Salary Slider" />
+      </div>
+
+      <!-- Tax Rate -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="prc-tax-rate-input">Est. Effective Tax Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="prc-tax-rate-input" min="0" max="50" step="1" value="25" aria-label="Tax Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="prc-tax-rate-slider" min="0" max="50" step="1" value="25" class="slider-range" aria-label="Tax Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="prc-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Promotion Raise Summary</h3>
+
+    <!-- Core Earnings Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Est. Net Monthly Increase</span>
+        <div id="res-prc-net-monthly" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$625.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-prc-gross-annual">Gross annual increase: $10,000.00</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);" id="box-prc-hourly">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Real Hourly Wage Shift</span>
+        <div id="res-prc-hourly-shift" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">+$0.51/hr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-prc-hourly-pct">+1.5% hourly wage change</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="prc-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Promotion Offer Diagnosis</span>
+        <p id="res-prc-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your proposed promotion increases your gross salary by <strong>14.29%</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Detailed Pay Adjustments</h4>
+    <div class="results-grid prc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Current Hourly Rate</span>
+        <div class="tile-value" id="tile-prc-hourly-cur" style="color: var(--color-text-base);">$33.65</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Based on 40 hrs / week</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Promoted Hourly Rate</span>
+        <div class="tile-value" id="tile-prc-hourly-prom" style="color: var(--color-text-base);">$34.19</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Based on 45 hrs / week</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Internal Discount</span>
+        <div class="tile-value" id="tile-prc-market-gap" style="color: var(--color-danger);">$10,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-prc-market-pct">11.11% under market</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initPromotionCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('prc-currency-select') as HTMLSelectElement;
+
+    const salaryCurrentInput = document.getElementById('prc-salary-current-input') as HTMLInputElement;
+    const salaryCurrentSlider = document.getElementById('prc-salary-current-slider') as HTMLInputElement;
+    const hoursCurrentInput = document.getElementById('prc-hours-current-input') as HTMLInputElement;
+    const hoursCurrentSlider = document.getElementById('prc-hours-current-slider') as HTMLInputElement;
+
+    const salaryPromotedInput = document.getElementById('prc-salary-promoted-input') as HTMLInputElement;
+    const salaryPromotedSlider = document.getElementById('prc-salary-promoted-slider') as HTMLInputElement;
+    const hoursPromotedInput = document.getElementById('prc-hours-promoted-input') as HTMLInputElement;
+    const hoursPromotedSlider = document.getElementById('prc-hours-promoted-slider') as HTMLInputElement;
+
+    const salaryMarketInput = document.getElementById('prc-salary-market-input') as HTMLInputElement;
+    const salaryMarketSlider = document.getElementById('prc-salary-market-slider') as HTMLInputElement;
+
+    const taxRateInput = document.getElementById('prc-tax-rate-input') as HTMLInputElement;
+    const taxRateSlider = document.getElementById('prc-tax-rate-slider') as HTMLInputElement;
+
+    if (!salaryCurrentInput || !currencySelect || !salaryPromotedInput || !taxRateInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(salaryCurrentInput, salaryCurrentSlider);
+    bindSlider(hoursCurrentInput, hoursCurrentSlider);
+    bindSlider(salaryPromotedInput, salaryPromotedSlider);
+    bindSlider(hoursPromotedInput, hoursPromotedSlider);
+    bindSlider(salaryMarketInput, salaryMarketSlider);
+    bindSlider(taxRateInput, taxRateSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('prc-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        salaryCurrentInput.value = '70000';
+        salaryCurrentSlider.value = '70000';
+        hoursCurrentInput.value = '40';
+        hoursCurrentSlider.value = '40';
+
+        salaryPromotedInput.value = '80000';
+        salaryPromotedSlider.value = '80000';
+        hoursPromotedInput.value = '45';
+        hoursPromotedSlider.value = '45';
+
+        salaryMarketInput.value = '90000';
+        salaryMarketSlider.value = '90000';
+
+        taxRateInput.value = '25';
+        taxRateSlider.value = '25';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const curSalary = parseFloat(salaryCurrentInput.value) || 0;
+      const curHours = parseFloat(hoursCurrentInput.value) || 0;
+
+      const promSalary = parseFloat(salaryPromotedInput.value) || 0;
+      const promHours = parseFloat(hoursPromotedInput.value) || 0;
+
+      const marketSalary = parseFloat(salaryMarketInput.value) || 0;
+      const taxRate = (parseFloat(taxRateInput.value) || 0) / 100;
+
+      // Outputs calculations
+      // Gross Increase
+      const grossIncrease = promSalary - curSalary;
+      const grossIncreasePct = curSalary > 0 ? (grossIncrease / curSalary) * 100 : 0;
+
+      // Net Monthly Take-Home Increase
+      const monthlyGrossInc = grossIncrease / 12;
+      const monthlyNetInc = monthlyGrossInc * (1 - taxRate);
+
+      // Hourly wage shift
+      // Hourly rate = Salary / (Weekly Hours * 52)
+      const hourlyCur = curHours > 0 ? curSalary / (curHours * 52) : 0;
+      const hourlyProm = promHours > 0 ? promSalary / (promHours * 52) : 0;
+      const hourlyShift = hourlyProm - hourlyCur;
+      const hourlyShiftPct = hourlyCur > 0 ? (hourlyShift / hourlyCur) * 100 : 0;
+
+      // Internal Discount
+      const marketGap = marketSalary - promSalary;
+      const marketGapPct = marketSalary > 0 ? (marketGap / marketSalary) * 100 : 0;
+
+      // DOM Updates
+      const resNetMonthly = document.getElementById('res-prc-net-monthly');
+      const lblGrossAnnual = document.getElementById('lbl-prc-gross-annual');
+      const resHourlyShift = document.getElementById('res-prc-hourly-shift');
+      const lblHourlyPct = document.getElementById('lbl-prc-hourly-pct');
+
+      if (resNetMonthly) resNetMonthly.textContent = formatCurrency(monthlyNetInc);
+      if (lblGrossAnnual) lblGrossAnnual.textContent = `Gross annual increase: ${formatCurrency(grossIncrease)}`;
+      
+      if (resHourlyShift) {
+        if (hourlyShift >= 0) {
+          resHourlyShift.textContent = '+' + formatCurrency(hourlyShift) + '/hr';
+          resHourlyShift.style.color = 'var(--color-success)';
+        } else {
+          resHourlyShift.textContent = '-' + formatCurrency(Math.abs(hourlyShift)) + '/hr';
+          resHourlyShift.style.color = 'var(--color-danger)';
+        }
+      }
+      if (lblHourlyPct) {
+        lblHourlyPct.textContent = `${hourlyShift >= 0 ? '+' : ''}${hourlyShiftPct.toFixed(1)}% hourly wage change`;
+      }
+
+      // Verdict card styling & diagnosis text
+      const verdictCard = document.getElementById('prc-verdict-card');
+      const verdictText = document.getElementById('res-prc-verdict-text');
+      const hourlyBox = document.getElementById('box-prc-hourly');
+
+      if (verdictText && verdictCard && hourlyBox) {
+        let diagnosis = 'Healthy promotion raise';
+        let color = 'var(--color-success)';
+        
+        if (hourlyShift < 0) {
+          diagnosis = 'Hourly Rate reduction';
+          color = 'var(--color-danger)';
+          verdictText.innerHTML = `<strong>Hourly Wage Reduction Warning!</strong> While your gross salary increases by <strong>${grossIncreasePct.toFixed(2)}%</strong>, your hourly wage actually decreases by <strong>${Math.abs(hourlyShiftPct).toFixed(2)}%</strong> (from <strong>${formatCurrency(hourlyCur)}/hr</strong> to <strong>${formatCurrency(hourlyProm)}/hr</strong>) due to the work hours expansion. You are working more hours for less pay per hour.`;
+        } else if (marketGap > 0 && marketGapPct >= 10) {
+          diagnosis = 'Under Market Offer';
+          color = 'var(--color-warning)';
+          verdictText.innerHTML = `Your promotion offer yields a <strong>${grossIncreasePct.toFixed(2)}%</strong> salary raise and increases your hourly rate by <strong>${hourlyShiftPct.toFixed(1)}%</strong>. However, the offer is <strong>${marketGapPct.toFixed(1)}% below the average market starting rate</strong>, representing an internal discount of <strong>${formatCurrency(marketGap)}</strong>.`;
+        } else {
+          diagnosis = 'Healthy raise';
+          color = 'var(--color-success)';
+          verdictText.innerHTML = `This is a <strong>Healthy Promotion Offer</strong>. Your annual salary increases by <strong>${grossIncreasePct.toFixed(2)}%</strong>, your hourly rate increases by <strong>${hourlyShiftPct.toFixed(1)}%</strong>, and your compensation remains aligned with market averages (within ${Math.max(0, marketGapPct).toFixed(1)}% discrepancy).`;
+        }
+
+        verdictCard.style.borderLeftColor = color;
+        hourlyBox.style.borderTopColor = color;
+      }
+
+      // Details Tiles Updates
+      const tileHourlyCur = document.getElementById('tile-prc-hourly-cur');
+      const tileHourlyProm = document.getElementById('tile-prc-hourly-prom');
+      const tileMarketGap = document.getElementById('tile-prc-market-gap');
+      const lblMarketPct = document.getElementById('lbl-prc-market-pct');
+
+      if (tileHourlyCur) tileHourlyCur.textContent = formatCurrency(hourlyCur);
+      if (tileHourlyProm) tileHourlyProm.textContent = formatCurrency(hourlyProm);
+      if (tileMarketGap) {
+        if (marketGap >= 0) {
+          tileMarketGap.textContent = formatCurrency(marketGap).split('.')[0];
+          tileMarketGap.style.color = 'var(--color-danger)';
+        } else {
+          tileMarketGap.textContent = '+' + formatCurrency(Math.abs(marketGap)).split('.')[0];
+          tileMarketGap.style.color = 'var(--color-success)';
+        }
+      }
+      if (lblMarketPct) {
+        if (marketGap >= 0) {
+          lblMarketPct.textContent = `${marketGapPct.toFixed(2)}% under market average`;
+        } else {
+          lblMarketPct.textContent = `${Math.abs(marketGapPct).toFixed(2)}% above market average`;
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Promotion Raise Offer Analysis:\n` +
+                   `Current Salary: ${salaryCurrentInput.value} (${hoursCurrentInput.value} hrs/wk)\n` +
+                   `Proposed Salary: ${salaryPromotedInput.value} (${hoursPromotedInput.value} hrs/wk)\n` +
+                   `Market Rate Benchmark: ${salaryMarketInput.value}\n` +
+                   `Net Monthly Take-Home Increase: ${document.getElementById('res-prc-net-monthly')?.textContent}\n` +
+                   `Real Hourly Rate Shift: ${document.getElementById('res-prc-hourly-shift')?.textContent}\n` +
+                   `Current Hourly: ${document.getElementById('tile-prc-hourly-cur')?.textContent} vs Proposed: ${document.getElementById('tile-prc-hourly-prom')?.textContent}\n` +
+                   `Internal Market Discount: ${document.getElementById('tile-prc-market-gap')?.textContent} (${document.getElementById('lbl-prc-market-pct')?.textContent})\n` +
+                   `Diagnosis: ${document.getElementById('res-prc-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initPromotionCalculator);
+  document.addEventListener('astro:after-swap', initPromotionCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

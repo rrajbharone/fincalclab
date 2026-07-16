@@ -1,0 +1,596 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Salary Compression Calculator"
+  description="Determine if you are experiencing pay compression or inversion compared to new hires. Calculate your compression ratio, experience premium, and annual loyalty tax."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="salary-compression-calculator">
+    
+    <!-- Step 1: Currency & Tenured Employee -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Tenured Employee Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="scc-currency-select">Currency</label>
+        <select id="scc-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tenured Salary -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="scc-salary-tenured-input">Current Salary (Tenured Employee)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="scc-salary-tenured-input" min="10000" step="1000" value="85000" aria-label="Tenured Employee Salary" />
+        </div>
+      </div>
+      <input type="range" id="scc-salary-tenured-slider" min="10000" max="250000" step="1000" value="85000" class="slider-range" aria-label="Tenured Salary Slider" />
+    </div>
+
+    <!-- Tenured Experience -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="scc-exp-tenured-input">Total Relevant Experience (Years)</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="scc-exp-tenured-input" min="1" step="1" value="6" aria-label="Tenured Experience Years" style="text-align: left;" />
+          <span class="percent-symbol">yrs</span>
+        </div>
+      </div>
+      <input type="range" id="scc-exp-tenured-slider" min="1" max="25" step="1" value="6" class="slider-range" aria-label="Tenured Experience Slider" />
+    </div>
+
+    <!-- Step 2: New Hire Peer -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. New Hire Peer Profile</h3>
+      
+      <!-- New Hire Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="scc-salary-new-input">Starting Salary (New Hire)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="scc-salary-new-input" min="10000" step="1000" value="80000" aria-label="New Hire Salary" />
+          </div>
+        </div>
+        <input type="range" id="scc-salary-new-slider" min="10000" max="250000" step="1000" value="80000" class="slider-range" aria-label="New Hire Salary Slider" />
+      </div>
+
+      <!-- New Hire Experience -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="scc-exp-new-input">Relevant Experience (Years)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="scc-exp-new-input" min="0" step="1" value="1" aria-label="New Hire Experience Years" style="text-align: left;" />
+            <span class="percent-symbol">yrs</span>
+          </div>
+        </div>
+        <input type="range" id="scc-exp-new-slider" min="0" max="15" step="1" value="1" class="slider-range" aria-label="New Hire Experience Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Market Benchmarking -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Market Benchmarking</h3>
+      
+      <!-- Market Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="scc-salary-market-input">Average Market Rate for Role</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="scc-salary-market-input" min="10000" step="1000" value="98000" aria-label="Market Salary" />
+          </div>
+        </div>
+        <input type="range" id="scc-salary-market-slider" min="10000" max="300000" step="1000" value="98000" class="slider-range" aria-label="Market Salary Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="scc-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Compression Analytics Summary</h3>
+
+    <!-- Core Compression Metrics Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-warning);" id="box-scc-ratio">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Compression Ratio</span>
+        <div id="res-scc-ratio" style="font-size: 1.75rem; font-weight: 800; color: var(--color-warning); margin-top: 4px;">94.12%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-scc-ratio-desc">New hire starting salary split</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-danger);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Annual Loyalty Tax</span>
+        <div id="res-scc-tax" style="font-size: 1.75rem; font-weight: 800; color: var(--color-danger); margin-top: 4px;">$13,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-scc-tax-pct">13.27% under market rate</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="scc-verdict-card" style="border-left: 4px solid var(--color-warning); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Compression Diagnosis</span>
+        <p id="res-scc-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your pay structure shows **High Compression**. The starting salary of new peers is <strong>94.12%</strong> of your current tenured salary.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Detailed Pay Differentials</h4>
+    <div class="results-grid scc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Net Pay Gap</span>
+        <div class="tile-value" id="tile-scc-gap" style="color: var(--color-success);">$5,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-scc-gap-pct">5.88% pay premium</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Experience Gap</span>
+        <div class="tile-value" id="tile-scc-gap-yrs" style="color: var(--color-primary);">5 Years</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Tenured seniority lead</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Experience Premium</span>
+        <div class="tile-value" id="tile-scc-premium" style="color: var(--color-accent);">$1,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Paid per year of experience</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initCompressionCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('scc-currency-select') as HTMLSelectElement;
+
+    const salaryTenuredInput = document.getElementById('scc-salary-tenured-input') as HTMLInputElement;
+    const salaryTenuredSlider = document.getElementById('scc-salary-tenured-slider') as HTMLInputElement;
+    const expTenuredInput = document.getElementById('scc-exp-tenured-input') as HTMLInputElement;
+    const expTenuredSlider = document.getElementById('scc-exp-tenured-slider') as HTMLInputElement;
+
+    const salaryNewInput = document.getElementById('scc-salary-new-input') as HTMLInputElement;
+    const salaryNewSlider = document.getElementById('scc-salary-new-slider') as HTMLInputElement;
+    const expNewInput = document.getElementById('scc-exp-new-input') as HTMLInputElement;
+    const expNewSlider = document.getElementById('scc-exp-new-slider') as HTMLInputElement;
+
+    const salaryMarketInput = document.getElementById('scc-salary-market-input') as HTMLInputElement;
+    const salaryMarketSlider = document.getElementById('scc-salary-market-slider') as HTMLInputElement;
+
+    if (!salaryTenuredInput || !currencySelect || !salaryNewInput || !salaryMarketInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(salaryTenuredInput, salaryTenuredSlider);
+    bindSlider(expTenuredInput, expTenuredSlider);
+    bindSlider(salaryNewInput, salaryNewSlider);
+    bindSlider(expNewInput, expNewSlider);
+    bindSlider(salaryMarketInput, salaryMarketSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('scc-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        salaryTenuredInput.value = '85000';
+        salaryTenuredSlider.value = '85000';
+        expTenuredInput.value = '6';
+        expTenuredSlider.value = '6';
+
+        salaryNewInput.value = '80000';
+        salaryNewSlider.value = '80000';
+        expNewInput.value = '1';
+        expNewSlider.value = '1';
+
+        salaryMarketInput.value = '98000';
+        salaryMarketSlider.value = '98000';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const tenuredSalary = parseFloat(salaryTenuredInput.value) || 0;
+      const tenuredExp = parseFloat(expTenuredInput.value) || 0;
+
+      const newSalary = parseFloat(salaryNewInput.value) || 0;
+      const newExp = parseFloat(expNewInput.value) || 0;
+
+      const marketSalary = parseFloat(salaryMarketInput.value) || 0;
+
+      // Outputs calculations
+      // Net Pay Gap
+      const payGap = tenuredSalary - newSalary;
+      const payGapPct = tenuredSalary > 0 ? (payGap / tenuredSalary) * 100 : 0;
+
+      // Experience Gap
+      const expGap = tenuredExp - newExp;
+
+      // Compression Ratio
+      const ratio = tenuredSalary > 0 ? (newSalary / tenuredSalary) * 100 : 0;
+
+      // Experience Premium (per year)
+      const premium = expGap > 0 ? payGap / expGap : 0;
+
+      // Loyalty Tax
+      const loyaltyTax = marketSalary - tenuredSalary;
+      const loyaltyTaxPct = marketSalary > 0 ? (loyaltyTax / marketSalary) * 100 : 0;
+
+      // DOM Updates
+      const resRatio = document.getElementById('res-scc-ratio');
+      const resTax = document.getElementById('res-scc-tax');
+      const lblRatioDesc = document.getElementById('lbl-scc-ratio-desc');
+      const lblTaxPct = document.getElementById('lbl-scc-tax-pct');
+
+      if (resRatio) resRatio.textContent = ratio.toFixed(2) + '%';
+      if (resTax) resTax.textContent = formatCurrency(Math.max(0, loyaltyTax));
+      if (lblRatioDesc) {
+        if (ratio > 100) {
+          lblRatioDesc.textContent = 'Salary Inversion detected';
+        } else {
+          lblRatioDesc.textContent = `New starting salary is ${ratio.toFixed(1)}% of yours`;
+        }
+      }
+      if (lblTaxPct) {
+        if (loyaltyTax > 0) {
+          lblTaxPct.textContent = `${loyaltyTaxPct.toFixed(2)}% under market average`;
+        } else {
+          lblTaxPct.textContent = `Paid above market average`;
+        }
+      }
+
+      // Verdict card styling & diagnosis text
+      const verdictCard = document.getElementById('scc-verdict-card');
+      const verdictText = document.getElementById('res-scc-verdict-text');
+      const ratioBox = document.getElementById('box-scc-ratio');
+
+      if (verdictText && verdictCard && ratioBox) {
+        let diagnosis = 'Healthy pay differential';
+        let color = 'var(--color-success)';
+        
+        if (ratio > 100) {
+          diagnosis = 'Salary Inversion';
+          color = 'var(--color-danger)';
+          verdictText.innerHTML = `Your pay structure shows <strong>Salary Inversion</strong>! New starting hires are making more than you (ratio: <strong>${ratio.toFixed(2)}%</strong>), completely erasing your <strong>${expGap} years</strong> of experience advantage. Immediate correction is recommended.`;
+        } else if (ratio >= 90) {
+          diagnosis = 'High Compression';
+          color = 'var(--color-warning)';
+          verdictText.innerHTML = `Your pay structure shows <strong>High Compression</strong>. New starts earn <strong>${ratio.toFixed(2)}%</strong> of your current wage. Your experience premium is just <strong>${formatCurrency(premium)} per year</strong>.`;
+        } else if (ratio >= 80) {
+          diagnosis = 'Moderate Compression';
+          color = 'var(--color-primary)';
+          verdictText.innerHTML = `Your pay structure shows <strong>Moderate Compression</strong>. New starting peers earn <strong>${ratio.toFixed(2)}%</strong> of your current salary. Your annual experience premium is <strong>${formatCurrency(premium)}</strong>.`;
+        } else {
+          diagnosis = 'Healthy pay gap';
+          color = 'var(--color-success)';
+          verdictText.innerHTML = `Your pay structure is <strong>Healthy</strong>. There is a solid pay differential (new starting salary is <strong>${ratio.toFixed(2)}%</strong> of yours), resulting in an annual experience premium of <strong>${formatCurrency(premium)}</strong>.`;
+        }
+
+        verdictCard.style.borderLeftColor = color;
+        ratioBox.style.borderTopColor = color;
+        
+        const ratioTextEl = document.getElementById('res-scc-ratio');
+        if (ratioTextEl) ratioTextEl.style.color = color;
+      }
+
+      // Details Tiles Updates
+      const tileGap = document.getElementById('tile-scc-gap');
+      const tileGapPct = document.getElementById('lbl-scc-gap-pct');
+      const tileYrs = document.getElementById('tile-scc-gap-yrs');
+      const tilePremium = document.getElementById('tile-scc-premium');
+
+      if (tileGap) {
+        if (payGap >= 0) {
+          tileGap.textContent = formatCurrency(payGap).split('.')[0];
+          tileGap.style.color = 'var(--color-success)';
+        } else {
+          tileGap.textContent = '-' + formatCurrency(Math.abs(payGap)).split('.')[0];
+          tileGap.style.color = 'var(--color-danger)';
+        }
+      }
+      if (tileGapPct) {
+        if (payGap >= 0) {
+          tileGapPct.textContent = `${payGapPct.toFixed(2)}% seniority premium`;
+        } else {
+          tileGapPct.textContent = `${Math.abs(payGapPct).toFixed(2)}% under starting rate`;
+        }
+      }
+      if (tileYrs) {
+        if (expGap >= 0) {
+          tileYrs.textContent = `${expGap} Years`;
+        } else {
+          tileYrs.textContent = `N/A`;
+        }
+      }
+      if (tilePremium) {
+        if (expGap > 0 && payGap >= 0) {
+          tilePremium.textContent = formatCurrency(premium).split('.')[0];
+        } else {
+          tilePremium.textContent = 'N/A';
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Salary Compression & Loyalty Tax Analysis:\n` +
+                   `Tenured Salary: ${salaryTenuredInput.value} (${expTenuredInput.value} yrs exp)\n` +
+                   `New Hire Salary: ${salaryNewInput.value} (${expNewInput.value} yrs exp)\n` +
+                   `Market Average Salary: ${salaryMarketInput.value}\n` +
+                   `Compression Ratio: ${document.getElementById('res-scc-ratio')?.textContent}\n` +
+                   `Annual Loyalty Tax: ${document.getElementById('res-scc-tax')?.textContent}\n` +
+                   `Net Pay Gap: ${document.getElementById('tile-scc-gap')?.textContent} (${document.getElementById('lbl-scc-gap-pct')?.textContent})\n` +
+                   `Experience Premium: ${document.getElementById('tile-scc-premium')?.textContent} / year\n` +
+                   `Diagnosis: ${document.getElementById('res-scc-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCompressionCalculator);
+  document.addEventListener('astro:after-swap', initCompressionCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

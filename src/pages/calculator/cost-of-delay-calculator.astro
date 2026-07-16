@@ -1,0 +1,211 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CostOfDelayCalculator from '../../components/calculator/CostOfDelayCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Cost of Delay Calculator', path: '/calculator/cost-of-delay-calculator' }
+];
+---
+
+<Layout
+  title="Cost of Delay Calculator - Calculate Compound Savings Procrastination Cost"
+  description="Free online Cost of Delay Calculator. Calculate future value loss from delaying savings and retirement contributions, isolate opportunity cost, and check catch-up rates."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <CostOfDelayCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Personal Finance Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The $1,000,000 Procrastination Fee: How Delaying My Retirement Fund by 10 Years Cost Me a Fortune</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a saver who delayed their retirement contributions from age 22 to 32, discovering that a 10-year delay cost them over $1,000,000 in compound growth by age 65.
+            </p>
+            <a href="/blog/cost-of-delaying-retirement-savings" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Investment Delay Cost & Catch-Up Savings
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is the Cost of Delay in Finance?</h2>
+        <p>
+          In personal finance and investment theory, the <strong>cost of delay</strong> is the financial loss incurred by procrastinating on saving or investing goals. Because compound interest grows exponentially over time, delaying the start of your investment journey by even a few years significantly reduces your final nest egg.
+        </p>
+        <p>
+          The cost of delay is not just the sum of the deposits you skipped during the delay period. Rather, it is the lost opportunity of compound growth—the interest earning interest on those skipped deposits over decades.
+        </p>
+
+        <h2>The Mathematics of Compounding Annuities</h2>
+        <p>
+          To calculate the future value of a monthly investment plan (an ordinary annuity), we apply the future value of an annuity formula:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Future Value (FV)} = P \\times \\frac{(1 + r)^n - 1}{r}\\)"}
+        </p>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>P:</strong> Monthly contribution amount</li>
+          <li><strong>r:</strong> Monthly interest rate (annual return divided by 12)</li>
+          <li><strong>n:</strong> Total number of compounding periods (months)</li>
+        </ul>
+        <p>
+          The cost of delay is isolated by calculating the future value under two scenarios: starting immediately (at your current age) vs. starting later (after the delay period):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Cost of Delay} = \\text{FV}_{StartNow} - \\text{FV}_{Delayed}\\)"}
+        </p>
+
+        <h2>Isolating Skipped Deposits vs. Lost Interest</h2>
+        <p>
+          When you delay investing, your loss is composed of two variables:
+        </p>
+        <ol>
+          <li>
+            <strong>Skipped Contributions:</strong> The raw cash deposits you did not make during the delay:
+            <p style="text-align: center; font-weight: 700; margin: var(--space-2) 0;">{"\\(\\text{Skipped Deposits} = P \\times 12 \\times \\text{Delay Years}\\)"}</p>
+          </li>
+          <li>
+            <strong>Lost Compound Interest:</strong> The interest those skipped deposits would have generated over the remaining timeline:
+            <p style="text-align: center; font-weight: 700; margin: var(--space-2) 0;">{"\\(\\text{Lost Compound Interest} = \\text{Cost of Delay} - \\text{Skipped Deposits}\\)"}</p>
+          </li>
+        </ol>
+        <p>
+          For example, if you save $500 a month at an 8% expected return from age 25 to 65 (40 years), your future nest egg grows to <strong>$1,747,265.40</strong>. If you delay starting until age 35 (30 years remaining), your nest egg is only <strong>$745,179.72</strong>.
+        </p>
+        <p>
+          Your total cost of delay is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Cost of Delay} = \\$1,747,265.40 - \\$745,179.72 = \\mathbf{\\$1,002,085.68}\\)"}
+        </p>
+        <p>
+          Of this $1 million loss, the skipped contributions represent only <strong>$60,000</strong> ($500/mo × 120 months). The remaining <strong>$942,085.68</strong> is entirely lost compound interest. This demonstrates that over 94% of the cost of delay is a result of lost time, not saved money.
+        </p>
+
+        <h2>Calculating the Catch-Up Savings Rate</h2>
+        <p>
+          If you delay starting, you must save a significantly higher monthly amount during your remaining years to reach your original target. The formula to calculate this catch-up contribution is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(P_{Catch-up} = \\text{Target Future Value} \\times \\frac{r}{(1 + r)^{n_{delayed}} - 1}\\)"}
+        </p>
+        <p>
+          Using our example, to reach the $1.75 million target in 30 years (360 months) instead of 40:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(P_{Catch-up} = \\$1,747,265.40 \\times \\frac{0.006667}{(1.006667)^{360} - 1} = \\mathbf{\\$1,172.38 \\text{ / month}}\\)"}
+        </p>
+        <p>
+          You must increase your monthly savings rate by <strong>134.48%</strong> just to make up for a 10-year procrastination window.
+        </p>
+
+        <h2>Strategies to Avoid the Cost of Delay</h2>
+        <p>
+          To protect your future financial freedom, leverage these core wealth-building strategies:
+        </p>
+        <ol>
+          <li>
+            <strong>Start Small Immediately:</strong> Saving $50 a month at age 22 is worth more than saving $150 a month starting at age 32. Do not wait for a "perfect salary" to begin.
+          </li>
+          <li>
+            <strong>Automate Your Contributions:</strong> Set up automatic transfers to your investment accounts on the day you receive your paycheck. Removing decision friction prevents procrastination.
+          </li>
+          <li>
+            <strong>Capture Employer Matching:</strong> If your company offers a 401(k) match, contribute at least enough to secure the full match. This is instant, risk-free 100% returns that offsets any delay costs.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Cost of Delay FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the "cost of delay" in retirement planning?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              In retirement planning, the cost of delay is the difference in your final retirement nest egg between starting to save now vs. starting years in the future. It quantifies the financial penalty of procrastinating, showing how much compound growth is lost due to missed time.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does compound interest affect the cost of delaying savings?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Compound interest operates exponentially, meaning growth accelerates rapidly in the final years of an investment timeline. By delaying your start date, you cut off the final, most productive years of the compounding curve, resulting in a significantly lower final balance.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How much more do I need to save monthly if I delay my savings by 5 or 10 years?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Depending on your return rate, a 5-year delay typically requires a <strong>50% to 60%</strong> increase in monthly savings to reach the same target. A 10-year delay usually requires you to <strong>more than double</strong> (130%+ increase) your monthly savings rate to catch up.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Is it better to save a small amount early or a large amount later?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Saving a small amount early is almost always mathematically superior. For example, saving $100 a month for 40 years at an 8% return yields roughly <strong>$349,000</strong>, whereas saving $300 a month for only 20 years yields only <strong>$176,000</strong>. Time is a much more powerful multiplier than capital.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the opportunity cost of compound growth?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The opportunity cost of compound growth is the interest you could have earned on your deposits had you invested them earlier. Under long time horizons, the opportunity cost represents the vast majority (often over 90%) of your total cost of delay.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

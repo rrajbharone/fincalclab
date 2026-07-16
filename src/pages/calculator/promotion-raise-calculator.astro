@@ -1,0 +1,205 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PromotionRaiseCalculator from '../../components/calculator/PromotionRaiseCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Promotion Raise Calculator', path: '/calculator/promotion-raise-calculator' }
+];
+---
+
+<Layout
+  title="Promotion Raise Calculator - Evaluate Salary Increases & Hourly Shifts"
+  description="Free online Promotion Raise Calculator. Calculate gross and net salary increases, check real hourly rate shifts based on work hours, and compare your offer against market averages."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <PromotionRaiseCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Promotion Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Promotion Paradox: Why My 14% Raise Was Actually a Pay Cut</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a Senior Analyst who celebrated a promotion to Lead Analyst with a $10,000 raise, only to discover their real hourly rate dropped after their work week ballooned from 40 to 50 hours.
+            </p>
+            <a href="/blog/promotion-salary-increase-guide" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Promotion Raise Ratios & Hourly Rates
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>The Dynamics of a Promotion Raise</h2>
+        <p>
+          Securing a promotion is a major professional milestone, but it is also a critical negotiation window. An internal promotion is not just an award for past performance; it is a contract for a new role with higher responsibilities, increased expectations, and often, longer working hours.
+        </p>
+        <p>
+          To evaluate a proposed promotional raise, you must analyze it across three dimensions: gross salary growth, real hourly rate adjustments, and alignment with market value.
+        </p>
+
+        <h2>Calculating Gross and Net Salary Increases</h2>
+        <p>
+          The absolute change in compensation is the starting point. The formulas for gross raise metrics are straightforward:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Raise Amount} = \\text{Proposed Salary} - \\text{Current Salary}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Raise Percentage} = \\frac{\\text{Gross Raise Amount}}{\\text{Current Salary}} \\times 100\\)"}
+        </p>
+        <p>
+          However, because taxes consume a portion of any raise, calculating the net monthly take-home increase provides a more realistic picture of the impact on your household budget:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Monthly Take-Home Raise} = \\frac{\\text{Gross Raise Amount} \\times (1 - \\text{Effective Tax Rate})}{12}\\)"}
+        </p>
+
+        <h2>The Hourly Rate Trap: Factoring in Work Hours</h2>
+        <p>
+          Many promotions, especially those that transition an employee from hourly pay to a salaried manager position, come with an expansion of working hours. If your salary increases by 10% but your average work hours increase from 40 to 48 hours per week, your hourly rate actually decreases.
+        </p>
+        <p>
+          The formula to calculate your real hourly rate is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Hourly Rate} = \\frac{\\text{Annual Salary}}{\\text{Weekly Work Hours} \\times 52}\\)"}
+        </p>
+        <p>
+          For example, if you earn $70,000 at 40 hours a week, your rate is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Hourly Rate}_{Current} = \\frac{\\$70,000}{40 \\times 52} = \\mathbf{\\$33.65 \\text{ / hour}}\\)"}
+        </p>
+        <p>
+          If you are promoted to $80,000 but now work 48 hours a week (due to management expectations or longer meetings), your new hourly rate becomes:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Hourly Rate}_{Promoted} = \\frac{\\$80,000}{48 \\times 52} = \\mathbf{\\$32.05 \\text{ / hour}}\\)"}
+        </p>
+        <p>
+          In this scenario, despite earning $10,000 more per year, you are actually taking a <strong>4.76% pay cut</strong> on every hour of work you perform. This is a classic promotion paradox.
+        </p>
+
+        <h2>Isolating the Internal Promotion Discount</h2>
+        <p>
+          Employers often cap internal promotion raises to fixed percentages—typically between <strong>8% and 12%</strong>—to control labor costs. However, hiring a new employee from the external market for that same promoted title has no such restriction.
+        </p>
+        <p>
+          This mismatch creates an <strong>internal promotion discount</strong>, where you are paid less than a new external hire would receive for performing the exact same job:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Internal Promotion Discount} = \\text{Market Starting Salary} - \\text{Proposed Promoted Salary}\\)"}
+        </p>
+        <p>
+          If the market average starting salary for your new title is $90,000, and the company offers you an internal promotion salary of $80,000, your annual promotion discount is exactly <strong>$10,000 (11.11% under market average)</strong>.
+        </p>
+
+        <h2>How to Negotiate an Internal Promotion</h2>
+        <p>
+          When presented with a promotion offer, use these four strategies to negotiate a fair salary correction:
+        </p>
+        <ol>
+          <li>
+            <strong>Focus on the Role, Not the Cap:</strong> If HR tells you there is a "10% limit on internal promotion increases," request that the position be evaluated based on the external market rate rather than your previous salary. The job responsibilities have changed, so the pricing structure should change too.
+          </li>
+          <li>
+            <strong>Price the Hours Expansion:</strong> If the new role requires 5 to 10 more hours of work per week, present the hourly rate calculation. Explain that you want to ensure your hourly wage increases alongside your responsibilities.
+          </li>
+          <li>
+            <strong>Benchmark Market Data:</strong> Collect salary bands for the promoted title in your geographic area. Having clear, third-party data makes it easier for your manager to lobby HR for an out-of-cycle budget correction.
+          </li>
+          <li>
+            <strong>Consider Non-Salary Benefits:</strong> If the company cannot meet your salary expectations due to strict policy caps, negotiate for additional paid time off (PTO), flexible remote arrangements, performance bonuses, or faster review timelines.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Promotion Raise FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a typical salary increase for an internal promotion?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A typical internal promotion salary raise ranges from <strong>8% to 12%</strong>. In contrast, changing employers to secure a similar position in the external market often yields a raise of <strong>15% to 20%</strong>.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do I calculate the change in my hourly wage after a promotion?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Calculate your pre-promotion hourly wage by dividing your current salary by your total annual work hours (weekly hours multiplied by 52). Repeat the calculation for your proposed salary and estimated promoted hours. The difference between the two hourly rates shows your real hourly wage change.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is an "internal promotion discount" and why does it exist?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The internal promotion discount is the difference between what an employer pays an internally promoted employee and what they would have to pay a new external hire for the same role. It exists because companies impose caps on internal pay increases, whereas external hiring is driven by open market competition.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Should I accept a promotion with no salary increase (a dry promotion)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A "dry promotion" should generally be approached with caution. While it provides a better title for your resume, it increases workload and stress without compensation. If you accept, negotiate for a written agreement guaranteeing a salary review in 3 or 6 months, or seek additional non-monetary benefits like extra PTO or flexible hours.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can I negotiate a higher salary for an internal promotion?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Focus on the responsibilities of the new position rather than your current pay. Present external market salary data for the new title, factor in any expected increase in weekly work hours, and request a "market adjustment" rather than a merit increase to bypass internal percentage caps.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

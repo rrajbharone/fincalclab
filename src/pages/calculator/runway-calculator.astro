@@ -1,0 +1,237 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RunwayCalculator from '../../components/calculator/RunwayCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Runway Calculator', path: '/calculator/runway-calculator' }
+];
+---
+
+<Layout
+  title="Runway Calculator - Calculate Startup Cash Burn & Survival"
+  description="Free online Runway Calculator. Compute gross and net burn rates, runway duration in months, and check cash required to hit target funding goals."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <RunwayCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Startup Growth Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Burn Rate Blind Spot: How Our $500,000 Seed Round Vanished in 10 Months</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a tech co-founder who celebrated raising a half-million dollar seed round, only to watch it vanish in less than a year due to expanded payroll, ignored net burn rates, and a miscalculated cash runway.
+            </p>
+            <a href="/blog/calculate-startup-burn-rate-runway" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Monitor Burn Rates & Extend Cash Runway
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Cash Runway?</h2>
+        <p>
+          In business finance, corporate strategy, and startup management, <strong>cash runway</strong> represents the number of months a company can continue operating at its current spending rate before running out of money. It is a critical metric for early-stage companies that are not yet profitable, indicating how much time remains before they must secure new financing, achieve self-sustainability, or shut down.
+        </p>
+        <p>
+          Runway is directly tied to your <strong>burn rate</strong>—the rate at which your company consumes cash to support operations.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To diagnose your company's survival horizon, follow these simple steps to enter your data:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Capital Details:</strong> Enter your current Cash Balance (cash in checking accounts, savings, and liquid cash reserves).
+          </li>
+          <li>
+            <strong>Input Cash Flow Details:</strong> Enter your Monthly Gross Revenue (all sales cash receipts) and your Monthly Operating Expenses (gross monthly burn, including payroll, rent, server fees, and marketing).
+          </li>
+          <li>
+            <strong>Set Runway Goals:</strong> Drag the slider to set your Target Runway Goal in months. This is typically set to 18 months, which is the standard milestone duration expected between venture capital funding rounds.
+          </li>
+          <li>
+            <strong>Evaluate the Output Targets:</strong> The calculator instantly displays your net burn rate, remaining runway months, the cash balance required to reach your target runway, and the burn reduction (or revenue increase) needed to stay on target.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Runway and Burn Rates</h2>
+        <p>
+          The calculator applies standard corporate finance formulas to analyze your capital timeline:
+        </p>
+        
+        <h3>1. Net Burn Rate Formula</h3>
+        <p>
+          Your monthly net burn rate represents the net cash outflow from operations each month. It isolates how much cash you are losing:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Burn Rate} = \\text{Monthly Operating Expenses (Gross Burn)} - \\text{Monthly Gross Revenue}\\)"}
+        </p>
+
+        <h3>2. Cash Runway Formula</h3>
+        <p>
+          To calculate how many months of cash remain:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Cash Runway} = \\frac{\\text{Current Cash Balance}}{\\text{Net Burn Rate}}\\)"}
+        </p>
+        <p>
+          Note that if your net burn rate is negative (i.e. Monthly Revenue exceeds Monthly Expenses), your business is cash flow positive, resulting in an <strong>Infinite Runway</strong>.
+        </p>
+
+        <h3>3. Cash Required for Target Runway</h3>
+        <p>
+          To find out how much cash you need in the bank to survive a specific number of months (T):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Required Cash} = \\text{Net Burn Rate} \\times \\text{Target Months (T)}\\)"}
+        </p>
+
+        <h3>4. Max Allowable Burn Rate</h3>
+        <p>
+          If you have a fixed cash reserve and want to survive for T months, your maximum allowable monthly net burn is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Max Allowable Burn Rate} = \\frac{\\text{Current Cash Balance}}{\\text{Target Months (T)}}\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          For example, suppose a tech startup has $250,000 in the bank. They generate $20,000 a month in subscription revenue and spend $40,000 a month on payroll and servers. Their target runway goal is 18 months.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Net Burn Rate:</strong> {"\\(\\$40,000 - \\$20,000 = \\mathbf{\\$20,000.00 \\text{ / month}}\\)"}
+          </li>
+          <li>
+            <strong>Cash Runway:</strong> {"\\(\\frac{\\$250,000}{\\$20,000} = \\mathbf{12.50 \\text{ months}}\\)"}
+          </li>
+          <li>
+            <strong>Required Cash for 18 Months:</strong> {"\\(\\$20,000 \\times 18 = \\mathbf{\\$360,000.00}\\)"} (leaving a <strong>$110,000.00 funding gap</strong>).
+          </li>
+          <li>
+            <strong>Max Allowable Net Burn:</strong> {"\\(\\frac{\\$250,000}{18} = \\mathbf{\\$13,888.89 \\text{ / month}}\\)"} (requiring a <strong>$6,111.11 / month reduction</strong> in net burn to survive without raising money).
+          </li>
+        </ul>
+
+        <h2>Strategies to Extend Cash Runway</h2>
+        <p>
+          If your runway falls into the warning zone (less than 12 months), prioritize these capital protection strategies:
+        </p>
+        <ol>
+          <li>
+            <strong>Defer Non-Essential Spending:</strong> Postpone office upgrades, software switches, and non-core marketing campaigns. Focus cash strictly on revenue-generating activities.
+          </li>
+          <li>
+            <strong>Hiring Freezes or Variable Staffing:</strong> Avoid expanding full-time payroll. Instead, contract freelancers for urgent deliverables, converting fixed salary expenses into variable monthly costs.
+          </li>
+          <li>
+            <strong>Accelerate Receivables:</strong> Encourage clients to pay annually upfront by offering small discounts (e.g. 10% off). This deposits cash into your bank account immediately, extending your runway.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Runway & Burn Rate FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is cash runway and why is it crucial for startups?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Cash runway is the amount of time a business can survive before running out of cash, based on its current reserves and burn rate. It is crucial because it defines the survival timeline, showing how much time you have to build a profitable product or secure new investment.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between gross burn rate and net burn rate?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gross burn rate is the total amount of cash spent on operating expenses each month (e.g. $40,000). Net burn rate is the actual monthly cash loss, calculated by subtracting your monthly gross revenue from your gross burn rate (e.g. $40,000 spend minus $20,000 revenue = $20,000 net burn).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a healthy runway length for a startup?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Historically, a healthy runway length for venture-backed startups is <strong>18 to 24 months</strong>. This allows 12 months to execute and build product value, and 6 months to run a thorough fundraising campaign before running out of money.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you calculate cash runway?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Calculate cash runway by dividing your current total cash balance by your monthly net burn rate. For example, if you have $100,000 in cash and your net burn rate is $10,000 a month, your cash runway is exactly 10 months.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can a business extend its cash runway without raising capital?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A business can extend its runway by renegotiating vendor contracts, reducing payroll through headcount optimization, switching to annual client prepayments, halting non-essential marketing, or increasing pricing to boost organic revenues.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

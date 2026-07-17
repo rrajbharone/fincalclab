@@ -1,0 +1,238 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import OvertimePayCalculator from '../../components/calculator/OvertimePayCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Overtime Pay Calculator', path: '/calculator/overtime-pay-calculator' }
+];
+---
+
+<Layout
+  title="Overtime Pay Calculator - Calculate Extra Hours Pay & Taxes"
+  description="Free online Overtime Pay Calculator. Compute regular earnings, time-and-a-half (1.5x) overtime, double-time (2.0x) pay, tax deductions, and blended hourly rates."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <OvertimePayCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Overtime Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Overtime Tax Illusion: How Working 60-Hour Weeks Left Me with Smaller Paychecks</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of an hourly healthcare worker who worked 60 hours a week, earning huge overtime premiums only to watch their net take-home pay shrink due to aggressive IRS withholding rates on supplemental income.
+            </p>
+            <a href="/blog/calculate-overtime-pay-rates-laws" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Overtime Rates & Avoid Withholding Brackets
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Overtime Pay?</h2>
+        <p>
+          In employment economics, labor law, and personal finance, <strong>overtime pay</strong> is the premium compensation workers receive for performing duties beyond their standard weekly hours. In many countries, including the United States, overtime pay is legally protected under the Fair Labor Standards Act (FLSA), guaranteeing extra rewards for labor-intensive shifts.
+        </p>
+        <p>
+          Understanding how standard hours, time-and-a-half (1.5x), and double-time (2.0x) multipliers interact helps you budget your extra shifts and avoid tax withholding surprises.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To compute your total earnings and blended rates, follow these simple steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Regular Parameters:</strong> Enter your Regular Hourly Rate and the standard hours worked during your pay period (typically 40 hours).
+          </li>
+          <li>
+            <strong>Input Premium Hours:</strong> Drag the sliders to input any Overtime Hours (compensated at 1.5x your regular rate) and Double Time Hours (compensated at 2.0x your regular rate, standard for holidays or weekends).
+          </li>
+          <li>
+            <strong>Configure Taxes:</strong> Input your estimated tax rate (federal, state, and FICA combined) to isolate your net take-home pay.
+          </li>
+          <li>
+            <strong>Review the Outputs:</strong> The calculator instantly displays your total gross pay, net take-home earnings, blended effective hourly rate, and a detailed breakdown of your standard and premium earnings.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Overtime Pay</h2>
+        <p>
+          The calculator applies standard labor formulas to isolate your compensation metrics:
+        </p>
+        
+        <h3>1. Regular Earnings Formula</h3>
+        <p>
+          Your baseline compensation for standard contract hours:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Regular Earnings} = \\text{Regular Hourly Rate} \\times \\text{Regular Hours}\\)"}
+        </p>
+
+        <h3>2. Overtime Earnings Formula (Time-and-a-Half / 1.5x)</h3>
+        <p>
+          Under FLSA rules, hours worked beyond 40 per week are compensated at 1.5 times your regular rate:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Overtime Earnings} = \\text{Regular Hourly Rate} \\times 1.5 \\times \\text{Overtime Hours}\\)"}
+        </p>
+
+        <h3>3. Double Time Earnings Formula (2.0x)</h3>
+        <p>
+          Premium double-time pay typically applies to holiday shifts or hours worked beyond 12 in a single day:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Double Time Earnings} = \\text{Regular Hourly Rate} \\times 2.0 \\times \\text{Double Time Hours}\\)"}
+        </p>
+
+        <h3>4. Total Gross Earnings & Net Take-Home</h3>
+        <p>
+          Summing all standard and premium sources yields your gross pay:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total Gross Pay} = \\text{Regular Earnings} + \\text{Overtime Earnings} + \\text{Double Time Earnings}\\)"}
+        </p>
+        <p>
+          To find your actual take-home cash after tax withholdings (T%):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Take-Home Pay} = \\text{Total Gross Pay} \\times (1 - \\frac{\\text{Tax Rate (T)}}{100})\\)"}
+        </p>
+
+        <h3>5. Blended Effective Hourly Rate</h3>
+        <p>
+          Because you are earning different rates for different hours, your blended hourly rate indicates your average earning power per hour:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Blended Hourly Rate} = \\frac{\\text{Total Gross Pay}}{\\text{Regular Hours} + \\text{Overtime Hours} + \\text{Double Time Hours}}\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          For example, suppose you earn a regular rate of $25.00/hr. In one week, you work 40 standard hours, 10 overtime hours (at 1.5x), and 2 double-time hours. Your estimated tax rate is 20%.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Regular Earnings:</strong> {"\\(\\$25.00 \\times 40 = \\mathbf{\\$1,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Overtime Earnings (1.5x):</strong> {"\\(\\$25.00 \\times 1.5 \\times 10 = \\mathbf{\\$375.00}\\)"} (hourly rate: $37.50/hr)
+          </li>
+          <li>
+            <strong>Double Time Earnings (2.0x):</strong> {"\\(\\$25.00 \\times 2.0 \\times 2 = \\mathbf{\\$100.00}\\)"} (hourly rate: $50.00/hr)
+          </li>
+          <li>
+            <strong>Total Gross Pay:</strong> {"\\(\\$1,000 + \\$375 + \\$100 = \\mathbf{\\$1,475.00}\\)"}
+          </li>
+          <li>
+            <strong>Net Take-Home Pay:</strong> {"\\(\\$1,475.00 \\times (1 - 0.20) = \\mathbf{\\$1,180.00}\\)"} (Taxes: $295.00)
+          </li>
+          <li>
+            <strong>Blended Hourly Rate:</strong> {"\\(\\frac{\\$1,475.00}{52 \\text{ hours}} = \\mathbf{\\$28.37 \\text{ / hour}}\\)"} (a 13.48% increase over your regular hourly rate)
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Overtime Pay FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is overtime pay and how is it calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Overtime pay is the increased compensation hourly employees receive for working beyond standard weekly hours (usually 40 hours). It is calculated by multiplying your regular hourly rate by a premium multiplier (typically 1.5x) and the number of overtime hours worked.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the standard overtime rate (time-and-a-half)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The standard overtime rate in the US is time-and-a-half, which is exactly <strong>1.5 times</strong> your regular hourly wage. For example, if your regular rate is $20.00/hr, your overtime rate is $30.00/hr ($20.00 × 1.5).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is double-time pay and when does it apply?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Double-time pay is premium compensation equal to <strong>2.0 times</strong> your regular hourly wage. Under federal law, double-time is not mandatory, but many employers offer it voluntarily for holiday shifts, Sundays, or when working more than 12 hours in a single day.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Who is eligible for overtime pay under the Fair Labor Standards Act (FLSA)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Under the FLSA, most hourly employees are classified as "non-exempt" and are legally eligible for overtime pay once they work over 40 hours in a single workweek. Salaried employees earning below certain regulatory thresholds may also qualify.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does tax withholding affect my overtime earnings?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Because overtime earnings increase your gross income during a single pay period, payroll software may project that you are in a higher annual tax bracket, applying a higher withholding rate on that paycheck. This is a temporary withholding spike—any overpaid taxes are typically returned to you as a tax refund at the end of the year.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

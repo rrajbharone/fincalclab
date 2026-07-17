@@ -1,0 +1,531 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Inventory Days Calculator"
+  description="Measure how efficiently your business turns inventory into sales. Calculate Average Days Sales of Inventory (DSI), inventory turnover ratios, and warehouse carrying costs."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="inventory-days-calculator">
+    
+    <!-- Step 1: Currency & Financial Inputs -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Inventory Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="dsi-currency-select">Currency</label>
+        <select id="dsi-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Beginning Inventory -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="dsi-beginning-input">Beginning Inventory Value</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="dsi-beginning-input" min="100" step="500" value="50000" aria-label="Beginning Inventory Value" />
+        </div>
+      </div>
+      <input type="range" id="dsi-beginning-slider" min="1000" max="250000" step="2500" value="50000" class="slider-range" aria-label="Beginning Inventory Slider" />
+    </div>
+
+    <!-- Ending Inventory -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="dsi-ending-input">Ending Inventory Value</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="dsi-ending-input" min="100" step="500" value="70000" aria-label="Ending Inventory Value" />
+        </div>
+      </div>
+      <input type="range" id="dsi-ending-slider" min="1000" max="250000" step="2500" value="70000" class="slider-range" aria-label="Ending Inventory Slider" />
+    </div>
+
+    <!-- Cost of Goods Sold (COGS) -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="dsi-cogs-input">Cost of Goods Sold (COGS)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="dsi-cogs-input" min="500" step="1000" value="240000" aria-label="Cost of Goods Sold" />
+        </div>
+      </div>
+      <input type="range" id="dsi-cogs-slider" min="5000" max="1000000" step="10000" value="240000" class="slider-range" aria-label="COGS Slider" />
+    </div>
+
+    <!-- Step 2: Settings & Carrying Rate -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Settings & Overhead</h3>
+      
+      <!-- Analysis Period -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dsi-period-select">Analysis Period</label>
+          <select id="dsi-period-select" class="currency-select" aria-label="Select Period Days">
+            <option value="365" selected>Annual (365 days)</option>
+            <option value="90">Quarterly (90 days)</option>
+            <option value="30">Monthly (30 days)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Carrying Cost Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dsi-carrying-rate-input">Carrying Cost Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="dsi-carrying-rate-input" min="5" max="50" step="1" value="25" aria-label="Carrying Cost Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="dsi-carrying-rate-slider" min="5" max="50" step="1" value="25" class="slider-range" aria-label="Carrying Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="dsi-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Inventory Efficiency Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-warning);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Inventory Days (DSI)</span>
+        <div id="res-dsi-days" style="font-size: 1.75rem; font-weight: 800; color: var(--color-warning); margin-top: 4px;">91.25 days</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-dsi-turnover">Inventory Turnover: 4.00x per period</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Carrying Overhead</span>
+        <div id="res-dsi-carrying-cost" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$15,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-dsi-carrying-desc">Est. annual storage & cost of capital</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="dsi-verdict-card" style="border-left: 4px solid var(--color-warning); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Efficiency Verdict</span>
+        <p id="res-dsi-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your business holds inventory for an average of <strong>91.25 days</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Workforce Productivity Breakdown</h4>
+    <div class="results-grid dsi-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Average Inventory</span>
+        <div class="tile-value" id="tile-dsi-avg-inv" style="color: var(--color-primary);">$60,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-dsi-beg-end">Beg: $50k | End: $70k</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Inventory Turnover</span>
+        <div class="tile-value" id="tile-dsi-turnover" style="color: var(--color-accent);">4.00x</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Turnover frequency per year</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Daily Cost of Goods</span>
+        <div class="tile-value" id="tile-dsi-daily-cogs" style="color: var(--color-text-base);">$657.53</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-dsi-period-days">COGS cost rate per day</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initDsiCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('dsi-currency-select') as HTMLSelectElement;
+
+    const beginningInput = document.getElementById('dsi-beginning-input') as HTMLInputElement;
+    const beginningSlider = document.getElementById('dsi-beginning-slider') as HTMLInputElement;
+    const endingInput = document.getElementById('dsi-ending-input') as HTMLInputElement;
+    const endingSlider = document.getElementById('dsi-ending-slider') as HTMLInputElement;
+    const cogsInput = document.getElementById('dsi-cogs-input') as HTMLInputElement;
+    const cogsSlider = document.getElementById('dsi-cogs-slider') as HTMLInputElement;
+
+    const periodSelect = document.getElementById('dsi-period-select') as HTMLSelectElement;
+    const carryingInput = document.getElementById('dsi-carrying-rate-input') as HTMLInputElement;
+    const carryingSlider = document.getElementById('dsi-carrying-rate-slider') as HTMLInputElement;
+
+    if (!beginningInput || !currencySelect || !cogsInput || !periodSelect) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(beginningInput, beginningSlider);
+    bindSlider(endingInput, endingSlider);
+    bindSlider(cogsInput, cogsSlider);
+    bindSlider(carryingInput, carryingSlider);
+
+    // Dropdown / Currency triggers
+    periodSelect.addEventListener('change', calculateAll);
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('dsi-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        beginningInput.value = '50000';
+        beginningSlider.value = '50000';
+        endingInput.value = '70000';
+        endingSlider.value = '70000';
+        cogsInput.value = '240000';
+        cogsSlider.value = '240000';
+
+        periodSelect.value = '365';
+        carryingInput.value = '25';
+        carryingSlider.value = '25';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const begInv = parseFloat(beginningInput.value) || 0;
+      const endInv = parseFloat(endingInput.value) || 0;
+      const cogs = parseFloat(cogsInput.value) || 0;
+      const periodDays = parseFloat(periodSelect.value) || 365;
+      const carryingRate = parseFloat(carryingInput.value) || 0;
+
+      // Average Inventory Calculation
+      const avgInventory = (begInv + endInv) / 2;
+
+      // Turnover calculation
+      const turnover = avgInventory > 0 ? cogs / avgInventory : 0;
+
+      // Days Sales of Inventory (DSI)
+      // DSI = (Average Inventory / COGS) * Period Days
+      const dsi = cogs > 0 ? (avgInventory / cogs) * periodDays : 0;
+
+      // Carrying Cost (Annual)
+      const carryingCost = avgInventory * (carryingRate / 100);
+
+      // Daily COGS
+      const dailyCogs = cogs / periodDays;
+
+      // DOM Updates
+      const resDsi = document.getElementById('res-dsi-days');
+      const resCarrying = document.getElementById('res-dsi-carrying-cost');
+      const lblTurnover = document.getElementById('lbl-dsi-turnover');
+
+      if (resDsi) resDsi.textContent = dsi.toFixed(2) + ' days';
+      if (resCarrying) resCarrying.textContent = formatCurrency(carryingCost);
+      if (lblTurnover) lblTurnover.textContent = `Inventory Turnover: ${turnover.toFixed(2)}x per period`;
+
+      // Verdict card and text
+      const verdictCard = document.getElementById('dsi-verdict-card');
+      const verdictText = document.getElementById('res-dsi-verdict-text');
+      if (verdictText && verdictCard) {
+        let color = 'var(--color-success)';
+
+        if (dsi > 90) {
+          color = 'var(--color-danger)';
+          verdictText.innerHTML = `<strong>Sluggish Inventory warning!</strong> Your inventory is held for an average of <strong>${dsi.toFixed(2)} days</strong>. Having <strong>${formatCurrency(avgInventory)}</strong> frozen in warehouse stocks incurs an annual carrying cost of <strong>${formatCurrency(carryingCost)}</strong>. Optimize replenishment cycles immediately to free up cash flow.`;
+        } else if (dsi > 45) {
+          color = 'var(--color-warning)';
+          verdictText.innerHTML = `<strong>Standard Inventory Turnover.</strong> Your inventory is held for <strong>${dsi.toFixed(2)} days</strong>. Average inventory turnover is <strong>${turnover.toFixed(2)}x</strong>. Ratios are within normal parameters, but carry room for efficiency gains.`;
+        } else {
+          color = 'var(--color-success)';
+          verdictText.innerHTML = `<strong>Highly Capital Efficient!</strong> Your inventory turns over rapidly every <strong>${dsi.toFixed(2)} days</strong> (<strong>${turnover.toFixed(2)}x</strong> turnover rate). Carrying overhead is minimized, maximizing operational cash flow.`;
+        }
+
+        verdictCard.style.borderLeftColor = color;
+        if (resDsi) resDsi.style.color = color;
+      }
+
+      // Details Tiles Updates
+      const tileAvgInv = document.getElementById('tile-dsi-avg-inv');
+      const lblBegEnd = document.getElementById('lbl-dsi-beg-end');
+      const tileTurnover = document.getElementById('tile-dsi-turnover');
+      const tileDailyCogs = document.getElementById('tile-dsi-daily-cogs');
+      const lblPeriodDays = document.getElementById('lbl-dsi-period-days');
+
+      const symbol = getCurrencySymbol(currencySelect.value);
+      if (tileAvgInv) tileAvgInv.textContent = formatCurrency(avgInventory).split('.')[0];
+      if (lblBegEnd) lblBegEnd.textContent = `Beg: ${symbol}${(begInv/1000).toFixed(0)}k | End: ${symbol}${(endInv/1000).toFixed(0)}k`;
+      if (tileTurnover) tileTurnover.textContent = turnover.toFixed(2) + 'x';
+      if (tileDailyCogs) tileDailyCogs.textContent = formatCurrency(dailyCogs).split('.')[0];
+      if (lblPeriodDays) lblPeriodDays.textContent = `COGS cost rate per day over ${periodDays} days`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Days Sales of Inventory (DSI) Analysis:\n` +
+                   `Beginning Inventory: ${beginningInput.value} | Ending Inventory: ${endingInput.value} -> Average: ${document.getElementById('tile-dsi-avg-inv')?.textContent}\n` +
+                   `COGS: ${cogsInput.value} | Period: ${periodSelect.value} days\n` +
+                   `Inventory Turnover Ratio: ${document.getElementById('tile-dsi-turnover')?.textContent}\n` +
+                   `Days Sales of Inventory (DSI): ${document.getElementById('res-dsi-days')?.textContent}\n` +
+                   `Carrying cost rate: ${carryingInput.value}% -> Annual Carrying Cost: ${document.getElementById('res-dsi-carrying-cost')?.textContent}\n` +
+                   `Verdict: ${document.getElementById('res-dsi-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initDsiCalculator);
+  document.addEventListener('astro:after-swap', initDsiCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

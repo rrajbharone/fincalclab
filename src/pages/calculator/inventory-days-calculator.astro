@@ -1,0 +1,246 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import InventoryDaysCalculator from '../../components/calculator/InventoryDaysCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Inventory Days Calculator', path: '/calculator/inventory-days-calculator' }
+];
+---
+
+<Layout
+  title="Inventory Days Calculator - Days Sales of Inventory (DSI)"
+  description="Free online Inventory Days Calculator. Calculate Days Sales of Inventory (DSI / DIO), inventory turnover ratio, and warehouse carrying costs."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <InventoryDaysCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Retail Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Inventory Trap: How Having $60,000 Frozen in Stock Bankrupted My E-Commerce Store</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a boutique fashion founder who scaled sales but went bankrupt because their cash was locked up in warehouse shelves for an average of 91 days. Learn how monitoring Days Sales of Inventory (DSI) protects business cash flow.
+            </p>
+            <a href="/blog/calculate-inventory-days-outstanding" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Inventory Days Outstanding & Reduce Carrying Costs
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Days Sales of Inventory (DSI)?</h2>
+        <p>
+          In retail accounting, supply chain management, and corporate finance, <strong>Days Sales of Inventory</strong> (DSI)—also known as Days Inventory Outstanding (DIO) or Inventory Days—is a financial efficiency ratio. It measures the average number of days a company holds inventory before converting it into sales.
+        </p>
+        <p>
+          DSI is a key component of the <strong>Cash Conversion Cycle</strong> (CCC). A lower DSI indicates a highly efficient business that turns stock rapidly, freeing up cash flow. Conversely, a high DSI indicates slow-moving stock, meaning business capital is frozen on warehouse shelves.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To diagnose your company's inventory health, follow these steps to input your data:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Inventory Parameters:</strong> Enter your Beginning Inventory Value (raw stock cost at the start of the period) and your Ending Inventory Value (stock cost at the end of the period).
+          </li>
+          <li>
+            <strong>Input Cost of Goods Sold (COGS):</strong> Enter the total cost of producing or purchasing the goods sold during that same period.
+          </li>
+          <li>
+            <strong>Configure Settings:</strong> Select the Analysis Period (Annual, Quarterly, or Monthly) and enter your Estimated Carrying Cost Rate (typically 20% to 30%, covering warehouse rent, depreciation, and insurance).
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly processes your total DSI, inventory turnover ratio, average stock value, and annual carrying overhead.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Inventory Days</h2>
+        <p>
+          The calculator applies standard corporate accounting formulas to analyze your inventory throughput:
+        </p>
+        
+        <h3>1. Average Inventory Formula</h3>
+        <p>
+          To smooth out seasonal spikes in stock levels, the calculator computes the average inventory value held during the period:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Average Inventory} = \\frac{\\text{Beginning Inventory} + \\text{Ending Inventory}}{2}\\)"}
+        </p>
+
+        <h3>2. Inventory Turnover Ratio Formula</h3>
+        <p>
+          Turnover measures how many times during the period a business completely sells and replaces its inventory:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Inventory Turnover} = \\frac{\\text{Cost of Goods Sold (COGS)}}{\\text{Average Inventory}}\\)"}
+        </p>
+
+        <h3>3. Days Sales of Inventory (DSI) Formula</h3>
+        <p>
+          To calculate the average duration (in days) stock remains in the warehouse before being sold:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{DSI} = \\frac{\\text{Average Inventory}}{\\text{Cost of Goods Sold (COGS)}} \\times \\text{Period Days}\\)"}
+        </p>
+        <p>
+          Alternatively, DSI can be calculated as:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{DSI} = \\frac{\\text{Period Days}}{\\text{Inventory Turnover}}\\)"}
+        </p>
+
+        <h3>4. Estimated Inventory Carrying Cost</h3>
+        <p>
+          Holding inventory incurs carrying costs (rent, utilities, insurance, stock damage, and obsolescence). The calculator estimates these annual overheads using the formula:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Annual Carrying Cost} = \\text{Average Inventory} \\times \\text{Carrying Cost Rate \\%}\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an e-commerce boutique starts the year with $50,000 of stock, finishes with $70,000 of stock, and logs annual Cost of Goods Sold (COGS) of $240,000. They have a 25% annual carrying rate.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Average Inventory Value:</strong> {"\\(\\frac{\\$50,000 + \\$70,000}{2} = \\mathbf{\\$60,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Inventory Turnover Ratio:</strong> {"\\(\\frac{\\$240,000}{\\$60,000} = \\mathbf{4.00x \\text{ turnover per year}}\\)"}
+          </li>
+          <li>
+            <strong>Days Sales of Inventory (DSI):</strong> {"\\(\\frac{\\$60,000}{\\$240,000} \\times 365 = \\mathbf{91.25 \\text{ days}}\\)"}
+          </li>
+          <li>
+            <strong>Estimated Annual Carrying Cost:</strong> {"\\(\\$60,000 \\times 0.25 = \\mathbf{\\$15,000.00 \\text{ / year}}\\)"}
+          </li>
+        </ul>
+        <p>
+          This indicates that the business holds stock for an average of 91 days. This slow turnover rate freezes $60,000 of cash and costs the company $15,000 a year in warehouse carrying costs.
+        </p>
+
+        <h2>Strategies to Optimize Inventory Days</h2>
+        <p>
+          To reduce your DSI and free up operational cash flow, focus on four supply chain strategies:
+        </p>
+        <ol>
+          <li>
+            <strong>Just-in-Time (JIT) Inventory:</strong> Coordinate with suppliers to schedule smaller, more frequent shipments rather than bulk ordering months in advance. This lowers average inventory values.
+          </li>
+          <li>
+            <strong>Liquidate Slow-Moving Stock:</strong> Run promotional sales, bundle dead stock, or sell excess inventory to liquidators. Clearing slow items reduces DSI and warehouse overhead.
+          </li>
+          <li>
+            <strong>Improve Demand Forecasting:</strong> Leverage historical sales data and analytical tools to predict customer purchase cycles, avoiding over-purchasing.
+          </li>
+          <li>
+            <strong>Utilize Drop-Shipping:</strong> For high-cost or slow-moving items, establish drop-shipping contracts where the vendor ships directly to the customer, removing the need to hold stock.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Inventory Days FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is days sales of inventory (DSI) and why does it matter?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Days Sales of Inventory (DSI) measures the average number of days your stock sits in the warehouse before being sold. It matters because it reveals your cash efficiency; a lower DSI means you turn stock quickly and keep cash flow liquid, whereas a high DSI indicates cash is frozen in unsold goods.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is average inventory calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Average inventory is calculated by adding the beginning inventory value of a period to the ending inventory value of that same period, and then dividing by 2. This helps smooth out temporary seasonal fluctuations in stock levels.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a good days sales of inventory (DSI) ratio?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              What constitutes a good DSI varies by industry. For grocery stores selling perishables, a DSI of <strong>6 to 15 days</strong> is common. For retail apparel, <strong>30 to 60 days</strong> is typical. Generally, any ratio below 45 days is highly efficient, whereas ratios exceeding 90 days indicate potential cash flow bottlenecks.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between inventory turnover and inventory days?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Inventory turnover measures the frequency (times per year or period) that a business sells and replaces its entire stock (e.g. 4 times a year). Inventory days (DSI) measures the same metric in days (e.g. 365 / 4 = 91.25 days). They are mathematical inverses of each other.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What are inventory carrying costs and how do they impact margins?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Inventory carrying costs are the expenses incurred by storing unsold inventory. They include warehouse rent, utilities, insurance, stock depreciation, and the opportunity cost of tied-up capital. Carrying costs typically represent <strong>20% to 30%</strong> of your average inventory value annually, eroding your net profit margins.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

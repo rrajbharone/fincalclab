@@ -1,0 +1,666 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Shift Differential Calculator"
+  description="Determine your total compensation when working premium shifts. Calculate standard hours, night/evening shift differentials, weekend bonuses, tax deductions, and blended effective hourly rates."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="shift-differential-calculator">
+    
+    <!-- Step 1: Currency & Base Pay Settings -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Base Contract Pay</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sd-currency-select">Currency</label>
+        <select id="sd-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Regular Base Rate -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sd-rate-input">Regular Base Hourly Rate</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="sd-rate-input" min="5" step="0.50" value="20" aria-label="Base Hourly Rate" />
+        </div>
+      </div>
+      <input type="range" id="sd-rate-slider" min="10" max="150" step="1" value="20" class="slider-range" aria-label="Base Rate Slider" />
+    </div>
+
+    <!-- Regular Dayshift Hours Worked -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sd-base-hours-input">Standard Dayshift Hours</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="sd-base-hours-input" min="1" max="40" step="1" value="40" aria-label="Standard Hours Worked" style="text-align: left;" />
+          <span class="percent-symbol">hrs</span>
+        </div>
+      </div>
+      <input type="range" id="sd-base-hours-slider" min="1" max="40" step="1" value="40" class="slider-range" aria-label="Base Hours Slider" />
+    </div>
+
+    <!-- Step 2: Shift 1 Premium Settings -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Shift 1 Premium (e.g. Night Shift)</h3>
+      
+      <!-- Premium Type -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-s1-type">Premium Type</label>
+          <select id="sd-s1-type" class="currency-select" aria-label="Shift 1 Premium Type">
+            <option value="flat" selected>Flat Rate ($/hr)</option>
+            <option value="percent">Percentage (%)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Premium Value -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-s1-value-input" id="lbl-sd-s1-val">Flat Premium Value</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="symbol-sd-s1-val">$</span>
+            <input type="number" id="sd-s1-value-input" min="0" step="0.25" value="3.50" aria-label="Shift 1 Premium Value" />
+            <span class="percent-symbol hidden" id="percent-sd-s1-val">%</span>
+          </div>
+        </div>
+        <input type="range" id="sd-s1-value-slider" min="0" max="25" step="0.25" value="3.50" class="slider-range" aria-label="Shift 1 Value Slider" />
+      </div>
+
+      <!-- Hours Worked -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-s1-hours-input">Shift 1 Hours Worked</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sd-s1-hours-input" min="0" step="0.5" value="12" aria-label="Shift 1 Hours Worked" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="sd-s1-hours-slider" min="0" max="40" step="0.5" value="12" class="slider-range" aria-label="Shift 1 Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Shift 2 Premium Settings -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Shift 2 Premium (e.g. Weekend Shift)</h3>
+      
+      <!-- Premium Type -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-s2-type">Premium Type</label>
+          <select id="sd-s2-type" class="currency-select" aria-label="Shift 2 Premium Type">
+            <option value="flat">Flat Rate ($/hr)</option>
+            <option value="percent" selected>Percentage (%)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Premium Value -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-s2-value-input" id="lbl-sd-s2-val">Percentage Premium Value</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol hidden" id="symbol-sd-s2-val">$</span>
+            <input type="number" id="sd-s2-value-input" min="0" step="0.25" value="10" aria-label="Shift 2 Premium Value" />
+            <span class="percent-symbol" id="percent-sd-s2-val">%</span>
+          </div>
+        </div>
+        <input type="range" id="sd-s2-value-slider" min="0" max="50" step="1" value="10" class="slider-range" aria-label="Shift 2 Value Slider" />
+      </div>
+
+      <!-- Hours Worked -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-s2-hours-input">Shift 2 Hours Worked</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sd-s2-hours-input" min="0" step="0.5" value="8" aria-label="Shift 2 Hours Worked" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="sd-s2-hours-slider" min="0" max="40" step="0.5" value="8" class="slider-range" aria-label="Shift 2 Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Step 4: Estimated Taxes -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">4. Taxes</h3>
+      
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-tax-rate-input">Estimated Tax Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sd-tax-rate-input" min="0" max="50" step="1" value="20" aria-label="Estimated Tax Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="sd-tax-rate-slider" min="0" max="50" step="1" value="20" class="slider-range" aria-label="Tax Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="sd-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Premium Pay Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Net Take-Home Pay</span>
+        <div id="res-sd-netpay" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$1,006.40</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sd-gross">Gross earnings: $1,258.00</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Blended Hourly Rate</span>
+        <div id="res-sd-blended-rate" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$20.97/hr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sd-hours-total">Based on 60.00 total hours</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="sd-verdict-card" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Blended Premium Yield</span>
+        <p id="res-sd-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your premium shifts increased your regular wage yield by <strong>+4.83%</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Earnings Category Breakdown</h4>
+    <div class="results-grid sd-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Regular Dayshift (1.0x)</span>
+        <div class="tile-value" id="tile-sd-reg-pay" style="color: var(--color-text-base);">$800</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sd-reg-hours-desc">40 standard hours</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-sd-tile-s1-title">Shift 1 (Night Shift)</span>
+        <div class="tile-value" id="tile-sd-s1-pay" style="color: var(--color-accent);">$282</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sd-s1-hours-desc">12 hours @ $23.50/hr</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-sd-tile-s2-title">Shift 2 (Weekend Shift)</span>
+        <div class="tile-value" id="tile-sd-s2-pay" style="color: var(--color-success);">$176</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sd-s2-hours-desc">8 hours @ $22.00/hr</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSdCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('sd-currency-select') as HTMLSelectElement;
+
+    const rateInput = document.getElementById('sd-rate-input') as HTMLInputElement;
+    const rateSlider = document.getElementById('sd-rate-slider') as HTMLInputElement;
+    const baseHoursInput = document.getElementById('sd-base-hours-input') as HTMLInputElement;
+    const baseHoursSlider = document.getElementById('sd-base-hours-slider') as HTMLInputElement;
+
+    const s1TypeSelect = document.getElementById('sd-s1-type') as HTMLSelectElement;
+    const s1ValInput = document.getElementById('sd-s1-value-input') as HTMLInputElement;
+    const s1ValSlider = document.getElementById('sd-s1-value-slider') as HTMLInputElement;
+    const s1HoursInput = document.getElementById('sd-s1-hours-input') as HTMLInputElement;
+    const s1HoursSlider = document.getElementById('sd-s1-hours-slider') as HTMLInputElement;
+
+    const s2TypeSelect = document.getElementById('sd-s2-type') as HTMLSelectElement;
+    const s2ValInput = document.getElementById('sd-s2-value-input') as HTMLInputElement;
+    const s2ValSlider = document.getElementById('sd-s2-value-slider') as HTMLInputElement;
+    const s2HoursInput = document.getElementById('sd-s2-hours-input') as HTMLInputElement;
+    const s2HoursSlider = document.getElementById('sd-s2-hours-slider') as HTMLInputElement;
+
+    const taxInput = document.getElementById('sd-tax-rate-input') as HTMLInputElement;
+    const taxSlider = document.getElementById('sd-tax-rate-slider') as HTMLInputElement;
+
+    if (!rateInput || !currencySelect || !baseHoursInput || !s1HoursInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(rateInput, rateSlider);
+    bindSlider(baseHoursInput, baseHoursSlider);
+    bindSlider(s1ValInput, s1ValSlider);
+    bindSlider(s1HoursInput, s1HoursSlider);
+    bindSlider(s2ValInput, s2ValSlider);
+    bindSlider(s2HoursInput, s2HoursSlider);
+    bindSlider(taxInput, taxSlider);
+
+    // Type listeners (flat vs. percent)
+    function setupTypeToggle(select: HTMLSelectElement, slider: HTMLInputElement, input: HTMLInputElement, labelId: string, symbolId: string, percentId: string, defVal: number, maxVal: number) {
+      select.addEventListener('change', () => {
+        const type = select.value;
+        const label = document.getElementById(labelId);
+        const symbol = document.getElementById(symbolId);
+        const pct = document.getElementById(percentId);
+
+        if (type === 'flat') {
+          if (label) label.textContent = 'Flat Premium Value';
+          if (symbol) symbol.classList.remove('hidden');
+          if (pct) pct.classList.add('hidden');
+          slider.max = '25';
+          slider.step = '0.25';
+          input.step = '0.25';
+          input.value = defVal.toString();
+          slider.value = defVal.toString();
+        } else {
+          if (label) label.textContent = 'Percentage Premium Value';
+          if (symbol) symbol.classList.add('hidden');
+          if (pct) pct.classList.remove('hidden');
+          slider.max = maxVal.toString();
+          slider.step = '1';
+          input.step = '1';
+          const defaultPct = select === s1TypeSelect ? 15 : 10;
+          input.value = defaultPct.toString();
+          slider.value = defaultPct.toString();
+        }
+        calculateAll();
+      });
+    }
+
+    setupTypeToggle(s1TypeSelect, s1ValSlider, s1ValInput, 'lbl-sd-s1-val', 'symbol-sd-s1-val', 'percent-sd-s1-val', 3.50, 50);
+    setupTypeToggle(s2TypeSelect, s2ValSlider, s2ValInput, 'lbl-sd-s2-val', 'symbol-sd-s2-val', 'percent-sd-s2-val', 2.00, 50);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('sd-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        rateInput.value = '20';
+        rateSlider.value = '20';
+        baseHoursInput.value = '40';
+        baseHoursSlider.value = '40';
+
+        s1TypeSelect.value = 'flat';
+        document.getElementById('lbl-sd-s1-val')!.textContent = 'Flat Premium Value';
+        document.getElementById('symbol-sd-s1-val')!.classList.remove('hidden');
+        document.getElementById('percent-sd-s1-val')!.classList.add('hidden');
+        s1ValSlider.max = '25';
+        s1ValInput.value = '3.50';
+        s1ValSlider.value = '3.50';
+        s1HoursInput.value = '12';
+        s1HoursSlider.value = '12';
+
+        s2TypeSelect.value = 'percent';
+        document.getElementById('lbl-sd-s2-val')!.textContent = 'Percentage Premium Value';
+        document.getElementById('symbol-sd-s2-val')!.classList.add('hidden');
+        document.getElementById('percent-sd-s2-val')!.classList.remove('hidden');
+        s2ValSlider.max = '50';
+        s2ValInput.value = '10';
+        s2ValSlider.value = '10';
+        s2HoursInput.value = '8';
+        s2HoursSlider.value = '8';
+
+        taxInput.value = '20';
+        taxSlider.value = '20';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const baseRate = parseFloat(rateInput.value) || 0;
+      const baseHours = parseFloat(baseHoursInput.value) || 0;
+
+      const s1Type = s1TypeSelect.value;
+      const s1Val = parseFloat(s1ValInput.value) || 0;
+      const s1Hours = parseFloat(s1HoursInput.value) || 0;
+
+      const s2Type = s2TypeSelect.value;
+      const s2Val = parseFloat(s2ValInput.value) || 0;
+      const s2Hours = parseFloat(s2HoursInput.value) || 0;
+
+      const taxRate = parseFloat(taxInput.value) || 0;
+
+      // Rate Calculations
+      let s1Rate = baseRate;
+      if (s1Type === 'flat') {
+        s1Rate = baseRate + s1Val;
+      } else {
+        s1Rate = baseRate * (1 + s1Val / 100);
+      }
+
+      let s2Rate = baseRate;
+      if (s2Type === 'flat') {
+        s2Rate = baseRate + s2Val;
+      } else {
+        s2Rate = baseRate * (1 + s2Val / 100);
+      }
+
+      // Earnings calculations
+      const regEarnings = baseRate * baseHours;
+      const s1Earnings = s1Rate * s1Hours;
+      const s2Earnings = s2Rate * s2Hours;
+
+      const grossPay = regEarnings + s1Earnings + s2Earnings;
+      const taxAmount = grossPay * (taxRate / 100);
+      const netPay = grossPay - taxAmount;
+
+      const totalHours = baseHours + s1Hours + s2Hours;
+      const blendedRate = totalHours > 0 ? grossPay / totalHours : 0;
+
+      const blendedPctIncrease = baseRate > 0 ? ((blendedRate - baseRate) / baseRate) * 100 : 0;
+
+      // DOM Updates
+      const resNetPay = document.getElementById('res-sd-netpay');
+      const resBlended = document.getElementById('res-sd-blended-rate');
+      const lblGross = document.getElementById('lbl-sd-gross');
+      const lblHoursTotal = document.getElementById('lbl-sd-hours-total');
+
+      if (resNetPay) resNetPay.textContent = formatCurrency(netPay);
+      if (resBlended) resBlended.textContent = formatCurrency(blendedRate) + '/hr';
+      if (lblGross) lblGross.textContent = `Gross earnings: ${formatCurrency(grossPay)}`;
+      if (lblHoursTotal) lblHoursTotal.textContent = `Based on ${totalHours.toFixed(2)} total hours`;
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-sd-verdict-text');
+      if (verdictText) {
+        if (totalHours > baseHours) {
+          verdictText.innerHTML = `Working <strong>${totalHours.toFixed(1)} total hours</strong> yields gross pay of <strong>${formatCurrency(grossPay)}</strong>. Shift differentials increased your base hourly yield by <strong>+${blendedPctIncrease.toFixed(2)}%</strong> (blended rate: <strong>${formatCurrency(blendedRate)}/hr</strong> vs. <strong>${formatCurrency(baseRate)}/hr</strong> regular base). Taxes deduct <strong>${formatCurrency(taxAmount)}</strong> (${taxRate}%).`;
+        } else {
+          verdictText.innerHTML = `Enter your regular base hourly rate and work hours to calculate premium shift differential earnings options.`;
+        }
+      }
+
+      // Details Tiles Updates
+      const tileReg = document.getElementById('tile-sd-reg-pay');
+      const lblRegDesc = document.getElementById('lbl-sd-reg-hours-desc');
+      const tileS1 = document.getElementById('tile-sd-s1-pay');
+      const lblS1Desc = document.getElementById('lbl-sd-s1-hours-desc');
+      const tileS2 = document.getElementById('tile-sd-s2-pay');
+      const lblS2Desc = document.getElementById('lbl-sd-s2-hours-desc');
+
+      if (tileReg) tileReg.textContent = formatCurrency(regEarnings).split('.')[0];
+      if (lblRegDesc) lblRegDesc.textContent = `${baseHours} standard hours`;
+
+      if (tileS1) tileS1.textContent = formatCurrency(s1Earnings).split('.')[0];
+      if (lblS1Desc) lblS1Desc.textContent = `${s1Hours} hours @ ${formatCurrency(s1Rate)}/hr`;
+
+      if (tileS2) tileS2.textContent = formatCurrency(s2Earnings).split('.')[0];
+      if (lblS2Desc) lblS2Desc.textContent = `${s2Hours} hours @ ${formatCurrency(s2Rate)}/hr`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Shift Differential & Blended Pay Analysis:\n` +
+                   `Regular Base: Rate: ${rateInput.value}/hr | Hours: ${baseHoursInput.value} -> Earnings: ${document.getElementById('tile-sd-reg-pay')?.textContent}\n` +
+                   `Shift 1 (${s1TypeSelect.value}): Premium: ${s1ValInput.value} | Hours: ${s1HoursInput.value} -> Earnings: ${document.getElementById('tile-sd-s1-pay')?.textContent}\n` +
+                   `Shift 2 (${s2TypeSelect.value}): Premium: ${s2ValInput.value} | Hours: ${s2HoursInput.value} -> Earnings: ${document.getElementById('tile-sd-s2-pay')?.textContent}\n` +
+                   `Total Gross Pay: ${document.getElementById('lbl-sd-gross')?.textContent}\n` +
+                   `Estimated Taxes: ${taxInput.value}% -> Net Pay: ${document.getElementById('res-sd-netpay')?.textContent}\n` +
+                   `Blended Hourly Rate: ${document.getElementById('res-sd-blended-rate')?.textContent} (${document.getElementById('lbl-sd-hours-total')?.textContent})\n` +
+                   `Verdict: ${document.getElementById('res-sd-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSdCalculator);
+  document.addEventListener('astro:after-swap', initSdCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

@@ -1,0 +1,573 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Runway Calculator"
+  description="Determine how long your business can operate before running out of capital. Calculate monthly net burn rates, runway duration, target funding gaps, and required cost reductions."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="runway-calculator">
+    
+    <!-- Step 1: Currency & Financial Inputs -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Capital Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="runway-currency-select">Currency</label>
+        <select id="runway-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Current Cash Balance -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="runway-cash-input">Current Cash Balance</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="runway-cash-input" min="100" step="1000" value="250000" aria-label="Current Cash Balance" />
+        </div>
+      </div>
+      <input type="range" id="runway-cash-slider" min="5000" max="1000000" step="5000" value="250000" class="slider-range" aria-label="Cash Slider" />
+    </div>
+
+    <!-- Monthly Revenue -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="runway-revenue-input">Monthly Gross Revenue</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="runway-revenue-input" min="0" step="500" value="20000" aria-label="Monthly Revenue" />
+        </div>
+      </div>
+      <input type="range" id="runway-revenue-slider" min="0" max="100000" step="1000" value="20000" class="slider-range" aria-label="Revenue Slider" />
+    </div>
+
+    <!-- Monthly Operating Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="runway-expenses-input">Monthly Expenses (Gross Burn)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="runway-expenses-input" min="100" step="500" value="40000" aria-label="Monthly Expenses" />
+        </div>
+      </div>
+      <input type="range" id="runway-expenses-slider" min="1000" max="200000" step="2500" value="40000" class="slider-range" aria-label="Expenses Slider" />
+    </div>
+
+    <!-- Step 2: Target Runway -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Runway Goals</h3>
+      
+      <!-- Target Runway Months -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="runway-target-input">Target Runway Goal</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="runway-target-input" min="6" max="36" step="1" value="18" aria-label="Target Runway Goal" style="text-align: left;" />
+            <span class="percent-symbol">months</span>
+          </div>
+        </div>
+        <input type="range" id="runway-target-slider" min="6" max="36" step="1" value="18" class="slider-range" aria-label="Target Runway Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="runway-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Cash Runway Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-warning);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Remaining Runway</span>
+        <div id="res-runway-months" style="font-size: 1.75rem; font-weight: 800; color: var(--color-warning); margin-top: 4px;">12.50 months</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-runway-netburn">Monthly net burn: $20,000.00</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Funding Gap</span>
+        <div id="res-runway-funding-gap" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$110,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-runway-target-required">To hit 18.00 months runway goal</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="runway-verdict-card" style="border-left: 4px solid var(--color-warning); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Runway Diagnosis</span>
+        <p id="res-runway-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your business has <strong>12.5 months</strong> of runway left.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Runway Optimization Targets</h4>
+    <div class="results-grid runway-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Max Allowable Net Burn</span>
+        <div class="tile-value" id="tile-runway-maxburn" style="color: var(--color-success);">$13,888</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-runway-maxburn-desc">To survive 18 months</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Required Burn Reduction</span>
+        <div class="tile-value" id="tile-runway-reduction" style="color: var(--color-danger);">$6,111</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Or increase monthly revenue</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Gross Burn (Expenses)</span>
+        <div class="tile-value" id="tile-runway-grossburn" style="color: var(--color-text-base);">$40,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Total monthly expenses</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initRunwayCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('runway-currency-select') as HTMLSelectElement;
+
+    const cashInput = document.getElementById('runway-cash-input') as HTMLInputElement;
+    const cashSlider = document.getElementById('runway-cash-slider') as HTMLInputElement;
+    const revenueInput = document.getElementById('runway-revenue-input') as HTMLInputElement;
+    const revenueSlider = document.getElementById('runway-revenue-slider') as HTMLInputElement;
+    const expensesInput = document.getElementById('runway-expenses-input') as HTMLInputElement;
+    const expensesSlider = document.getElementById('runway-expenses-slider') as HTMLInputElement;
+
+    const targetInput = document.getElementById('runway-target-input') as HTMLInputElement;
+    const targetSlider = document.getElementById('runway-target-slider') as HTMLInputElement;
+
+    if (!cashInput || !currencySelect || !expensesInput || !targetInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(cashInput, cashSlider);
+    bindSlider(revenueInput, revenueSlider);
+    bindSlider(expensesInput, expensesSlider);
+    bindSlider(targetInput, targetSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('runway-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        cashInput.value = '250000';
+        cashSlider.value = '250000';
+        revenueInput.value = '20000';
+        revenueSlider.value = '20000';
+        expensesInput.value = '40000';
+        expensesSlider.value = '40000';
+
+        targetInput.value = '18';
+        targetSlider.value = '18';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const cash = parseFloat(cashInput.value) || 0;
+      const revenue = parseFloat(revenueInput.value) || 0;
+      const expenses = parseFloat(expensesInput.value) || 0;
+      const targetMonths = parseFloat(targetInput.value) || 0;
+
+      // Net Burn calculation
+      const netBurn = expenses - revenue;
+
+      // Runway months
+      let runwayMonths = 0;
+      let infiniteRunway = false;
+      if (netBurn <= 0) {
+        infiniteRunway = true;
+      } else {
+        runwayMonths = cash / netBurn;
+      }
+
+      // Target calculations
+      const requiredCash = netBurn > 0 ? netBurn * targetMonths : 0;
+      const fundingGap = Math.max(0, requiredCash - cash);
+      const fundingSurplus = Math.max(0, cash - requiredCash);
+
+      // Max allowable net burn for target
+      const maxAllowableBurn = targetMonths > 0 ? cash / targetMonths : 0;
+      const burnReductionNeeded = Math.max(0, netBurn - maxAllowableBurn);
+
+      // DOM Updates
+      const resRunway = document.getElementById('res-runway-months');
+      const resFundingGap = document.getElementById('res-runway-funding-gap');
+      const lblNetBurn = document.getElementById('lbl-runway-netburn');
+      const lblTargetRequired = document.getElementById('lbl-runway-target-required');
+
+      if (resRunway) {
+        if (infiniteRunway) {
+          resRunway.textContent = 'Infinite';
+          resRunway.style.color = 'var(--color-success)';
+        } else {
+          resRunway.textContent = runwayMonths.toFixed(2) + ' months';
+        }
+      }
+
+      if (lblNetBurn) {
+        if (netBurn <= 0) {
+          lblNetBurn.textContent = `Cash flow positive: +${formatCurrency(Math.abs(netBurn))}/mo`;
+        } else {
+          lblNetBurn.textContent = `Monthly net burn: ${formatCurrency(netBurn)}`;
+        }
+      }
+
+      if (resFundingGap) {
+        if (infiniteRunway) {
+          resFundingGap.textContent = '$0.00';
+        } else {
+          resFundingGap.textContent = formatCurrency(fundingGap);
+        }
+      }
+
+      if (lblTargetRequired) {
+        if (netBurn <= 0) {
+          lblTargetRequired.textContent = `No funding gap (Cash Flow Positive)`;
+        } else if (fundingGap > 0) {
+          lblTargetRequired.textContent = `Required to survive ${targetMonths} months`;
+        } else {
+          lblTargetRequired.textContent = `Funding surplus: ${formatCurrency(fundingSurplus)}`;
+        }
+      }
+
+      // Verdict card and text
+      const verdictCard = document.getElementById('runway-verdict-card');
+      const verdictText = document.getElementById('res-runway-verdict-text');
+      if (verdictText && verdictCard) {
+        let color = 'var(--color-success)';
+
+        if (infiniteRunway) {
+          color = 'var(--color-success)';
+          verdictText.innerHTML = `<strong>Profitable!</strong> Your business is cash flow positive, generating <strong>${formatCurrency(Math.abs(netBurn))}</strong> in monthly surplus cash. You have infinite runway and high capital optionality.`;
+        } else {
+          if (runwayMonths < 6) {
+            color = 'var(--color-danger)';
+            verdictText.innerHTML = `<strong>Critical Danger Zone!</strong> Your cash runway is only <strong>${runwayMonths.toFixed(2)} months</strong>. You must cut expenses, freeze hiring, or close emergency funding immediately.`;
+          } else if (runwayMonths < 12) {
+            color = 'var(--color-warning)';
+            verdictText.innerHTML = `<strong>Warning Zone.</strong> You have <strong>${runwayMonths.toFixed(2)} months</strong> of runway remaining. Since funding rounds typically take 4-6 months, you should launch fundraising campaigns immediately.`;
+          } else if (runwayMonths < 24) {
+            color = 'var(--color-primary)';
+            verdictText.innerHTML = `<strong>Healthy Growth Runway.</strong> You have <strong>${runwayMonths.toFixed(2)} months</strong> of runway left. Focus on key product and sales milestones to hit valuation targets before your next round.`;
+          } else {
+            color = 'var(--color-success)';
+            verdictText.innerHTML = `<strong>Safe Capital Reserve.</strong> Your runway of <strong>${runwayMonths.toFixed(2)} months</strong> provides exceptional protection and operational flexibility.`;
+          }
+        }
+
+        verdictCard.style.borderLeftColor = color;
+        if (resRunway && !infiniteRunway) resRunway.style.color = color;
+      }
+
+      // Details Tiles Updates
+      const tileMaxBurn = document.getElementById('tile-runway-maxburn');
+      const lblMaxBurnDesc = document.getElementById('lbl-runway-maxburn-desc');
+      const tileReduction = document.getElementById('tile-runway-reduction');
+      const tileGrossBurn = document.getElementById('tile-runway-grossburn');
+
+      if (tileMaxBurn) {
+        if (infiniteRunway) {
+          tileMaxBurn.textContent = 'Infinite';
+        } else {
+          tileMaxBurn.textContent = formatCurrency(maxAllowableBurn).split('.')[0];
+        }
+      }
+      if (lblMaxBurnDesc) lblMaxBurnDesc.textContent = `To survive ${targetMonths} months`;
+
+      if (tileReduction) {
+        if (infiniteRunway || burnReductionNeeded <= 0) {
+          tileReduction.textContent = '$0';
+          tileReduction.style.color = 'var(--color-success)';
+        } else {
+          tileReduction.textContent = formatCurrency(burnReductionNeeded).split('.')[0];
+          tileReduction.style.color = 'var(--color-danger)';
+        }
+      }
+
+      if (tileGrossBurn) tileGrossBurn.textContent = formatCurrency(expenses).split('.')[0];
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Capital Runway Analysis:\n` +
+                   `Cash Balance: ${cashInput.value} | Monthly Rev: ${revenueInput.value} | Expenses: ${expensesInput.value}\n` +
+                   `Net Burn Rate: ${document.getElementById('lbl-runway-netburn')?.textContent}\n` +
+                   `Remaining Runway: ${document.getElementById('res-runway-months')?.textContent}\n` +
+                   `Target Runway: ${targetInput.value} months (Funding Gap: ${document.getElementById('res-runway-funding-gap')?.textContent})\n` +
+                   `Max Allowable Net Burn: ${document.getElementById('tile-runway-maxburn')?.textContent} (Reduction needed: ${document.getElementById('tile-runway-reduction')?.textContent})\n` +
+                   `Verdict: ${document.getElementById('res-runway-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initRunwayCalculator);
+  document.addEventListener('astro:after-swap', initRunwayCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

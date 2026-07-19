@@ -1,0 +1,239 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LeanFireCalculator from '../../components/calculator/LeanFireCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Lean FIRE Calculator', path: '/calculator/lean-fire-calculator' }
+];
+---
+
+<Layout
+  title="Lean FIRE Calculator - Calculate Minimalist Early Retirement Target"
+  description="Free online Lean FIRE Calculator. Calculate how minimalist living slashes your required retirement nest egg, comparison against Standard FIRE, and years-to-freedom timeline."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <LeanFireCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Minimalist Retirement Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Retiring at Age 35 on $30,000 a Year: My Lean FIRE Story</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a graphic designer who embraced intentional minimalism, slashed their annual spending to $30,000, and retired at age 35 with a $750,000 nest egg—escaping the rat race 9 years earlier than a standard $1.8M FIRE target.
+            </p>
+            <a href="/blog/how-to-achieve-lean-fire" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Achieve Lean FIRE & Live on a Frugal Nest Egg
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Lean FIRE?</h2>
+        <p>
+          In personal finance and the Financial Independence movement, <strong>Lean FIRE</strong> (Financial Independence, Retire Early) is a minimalist retirement strategy. Practitioners intentionally design a low-cost, high-efficiency lifestyle that reduces annual living expenses to a frugal baseline—typically under $40,000 a year for an individual or under $50,000 for a couple.
+        </p>
+        <p>
+          Because your annual living expenses are significantly lower than average, your required retirement nest egg is dramatically smaller. Lean FIRE allows individuals to achieve complete financial independence and retire years or decades earlier than traditional retirement benchmarks.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To compute your Lean FIRE target, capital savings discount, and accumulation timeline, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Target Lean Expenses:</strong> Enter your Target Lean Annual Living Expenses (total cost of housing, food, utilities, health insurance, and leisure).
+          </li>
+          <li>
+            <strong>Input Standard Expenses:</strong> Enter an estimated Standard (Non-Frugal) Annual Expense benchmark (e.g. $75,000/yr) to calculate your nest egg discount.
+          </li>
+          <li>
+            <strong>Configure Safe Withdrawal Rate (SWR):</strong> Input your target SWR % based on the Trinity Study (typically 4.0% or 3.5%).
+          </li>
+          <li>
+            <strong>Configure Portfolio Parameters:</strong> Enter your Current Invested Portfolio balance, Annual Investment Contribution ($/yr), and Expected Return Rate %.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly displays your required Lean FIRE target, Standard FIRE target, monthly lean budget, capital saved, and years-to-freedom accumulation timeline.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Lean FIRE</h2>
+        <p>
+          The calculator applies FIRE economics and compound interest math to process your financial targets:
+        </p>
+        
+        <h3>1. Lean FIRE Nest Egg Target Formula</h3>
+        <p>
+          Under the standard 4% Rule (SWR = 4.0%), your portfolio target is calculated by multiplying your annual minimalist living expenses by 25:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Lean FIRE Target} = \\frac{\\text{Target Lean Annual Expenses}}{\\text{SWR \\%}} \\times 100\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Lean FIRE Target} = \\text{Lean Annual Expenses} \\times 25\\)"}
+        </p>
+
+        <h3>2. Standard FIRE Target & Frugality Discount Formula</h3>
+        <p>
+          For comparison, a standard non-frugal retirement target requires 25 times standard annual expenses:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Standard FIRE Target} = \\text{Standard Annual Expenses} \\times 25\\)"}
+        </p>
+        <p>
+          The capital savings discount achieved by adopting a lean lifestyle is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Capital Saved} = \\text{Standard FIRE Target} - \\text{Lean FIRE Target}\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an individual adopts a minimalist lifestyle with annual living expenses of $30,000 ($2,500/month). A standard consumer lifestyle in their area costs $75,000/yr. Their Safe Withdrawal Rate is 4.0%. They currently have $150,000 invested and contribute $25,000/yr at a 7% net return rate.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Monthly Lean Budget:</strong> {"\\(\\frac{\\$30,000}{12} = \\mathbf{\\$2,500.00 \\text{ / month}}\\)"}
+          </li>
+          <li>
+            <strong>Lean FIRE Target Nest Egg:</strong> {"\\(\\$30,000 \\times 25 = \\mathbf{\\$750,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Standard FIRE Target Nest Egg:</strong> {"\\(\\$75,000 \\times 25 = \\mathbf{\\$1,875,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Capital Saved / Nest Egg Discount:</strong> {"\\(\\$1,875,000 - \\$750,000 = \\mathbf{\\$1,125,000.00}\\)"} (a 60.0% reduction!)
+          </li>
+          <li>
+            <strong>Timeline to Lean FIRE:</strong> Reaches $750,000 in <strong>11.6 years</strong> (compared to 20.7 years for Standard FIRE).
+          </li>
+          <li>
+            <strong>Freedom Advantage:</strong> Escape the corporate rat race <strong>9.1 years earlier</strong>!
+          </li>
+        </ul>
+
+        <h2>Lean FIRE Strategies & Geoarbitrage</h2>
+        <p>
+          Achieving a sustainable Lean FIRE retirement relies on key lifestyle strategies:
+        </p>
+        <ol>
+          <li>
+            <strong>Geoarbitrage:</strong> Relocating from a High Cost of Living (HCOL) city (like New York or San Francisco) to a Low Cost of Living (LCOL) area or overseas expat hub (like Portugal, Thailand, or Mexico) where $30,000/yr affords a high quality of life.
+          </li>
+          <li>
+            <strong>Paid-Off Housing:</strong> Eliminating a mortgage or rent payment drastically lowers baseline annual spending, making a $24,000 to $30,000 annual budget easily manageable.
+          </li>
+          <li>
+            <strong>ACA Health Insurance Subsidies:</strong> Because Lean FIRE retirees report low taxable income ($30,000/yr), they qualify for substantial Affordable Care Act (ACA) premium tax credits, reducing monthly health insurance costs to near zero.
+          </li>
+          <li>
+            <strong>Intentional Minimalism:</strong> Prioritizing experiences, relationships, and nature over material consumption, consumer debt, and status symbols.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Lean FIRE FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is Lean FIRE and how does it work?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Lean FIRE is an early retirement strategy centered around minimalist living. By capping annual living expenses to a low baseline (typically under $40k/yr), you require a much smaller portfolio nest egg ($750k vs $1.8M), allowing you to achieve complete financial independence years ahead of traditional schedules.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What annual budget qualifies as Lean FIRE?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              In the FIRE community, an annual retirement budget of <strong>$40,000 or less for individuals</strong> (or $50,000 or less for families) is generally considered Lean FIRE.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does Lean FIRE differ from Fat FIRE, Coast FIRE, and Barista FIRE?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Fat FIRE involves high spending ($100k+/yr) requiring a $2.5M+ portfolio. Barista FIRE involves working part-time for supplemental income and health benefits. Coast FIRE means letting existing investments compound while working to cover current costs. Lean FIRE relies on 100% portfolio withdrawals paired with a frugal budget.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Is a 4% safe withdrawal rate safe for a Lean FIRE budget?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              While the 4% Rule has a historical 95%+ success rate over 30 years, many Lean FIRE retirees use a slightly more conservative Safe Withdrawal Rate of <strong>3.25% to 3.5%</strong> or maintain flexible spending habits to mitigate long retirement horizons.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do Lean FIRE retirees handle healthcare costs and inflation?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Because Lean FIRE taxable income is low ($30k/yr), retirees qualify for high ACA (Obamacare) health insurance subsidies. Inflation is hedged by holding equity index funds and adjusting discretionary spending during market downturns.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

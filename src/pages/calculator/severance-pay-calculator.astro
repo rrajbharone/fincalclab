@@ -1,0 +1,256 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SeverancePayCalculator from '../../components/calculator/SeverancePayCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Severance Pay Calculator', path: '/calculator/severance-pay-calculator' }
+];
+---
+
+<Layout
+  title="Severance Pay Calculator - Calculate Layoff Packages & Taxes"
+  description="Free online Severance Pay Calculator. Compute weekly wage rates, years-of-service multipliers, company policy caps, COBRA benefits, supplemental taxes, and net take-home cash."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <SeverancePayCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Layoff Negotiation Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Layoff Negotiation: How I Negotiated My Severance Package from 6 Weeks to 14 Weeks</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a senior marketing manager who was laid off after 6 years of service, negotiating their severance package from a baseline 6-week offer up to 14 weeks of pay + COBRA continuation.
+            </p>
+            <a href="/blog/calculate-severance-pay-severance-agreement" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Severance Pay & Negotiate Your Agreement
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Severance Pay?</h2>
+        <p>
+          In human resource management, employment law, and corporate finance, <strong>severance pay</strong> is the financial compensation package awarded to employees upon involuntary termination, downsizing, or corporate restructuring. Severance pay acts as a financial bridge, cushioning workers while they transition into new employment.
+        </p>
+        <p>
+          While severance pay is rarely mandated under federal law in the United States, corporate policy handbooks, employment contracts, and collective bargaining agreements standardly define severance multipliers based on tenure and job level.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your total severance payout, tax withholdings, and net take-home cash, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Select Compensation Type:</strong> Choose between Salaried Employee or Hourly Wage Employee.
+          </li>
+          <li>
+            <strong>Input Wage Parameters:</strong> Enter your Annual Base Salary or Hourly Wage + Weekly Hours to calculate your weekly base wage rate.
+          </li>
+          <li>
+            <strong>Configure Tenure & Multipliers:</strong> Enter your Years of Service (tenure), your company's Severance Weeks per Year multiplier (typically 1 to 2 weeks per year), Minimum Floor Weeks, and Maximum Policy Cap Weeks (enter 0 for no cap).
+          </li>
+          <li>
+            <strong>Input Package Add-Ons:</strong> Include any pro-rated annual bonus payouts, accrued unused PTO cash-outs, or COBRA health benefit stipends.
+          </li>
+          <li>
+            <strong>Configure Taxes:</strong> Enter your combined estimated Supplemental Tax Rate % (typically 22% federal + state/FICA) to isolate net take-home pay.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly computes your gross severance package, net take-home cash, total severance weeks granted, and tax deductions.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Severance Pay</h2>
+        <p>
+          The calculator applies corporate HR formulas to process your severance payout:
+        </p>
+        
+        <h3>1. Weekly Base Wage Rate Formula</h3>
+        <p>
+          For salaried employees, your weekly base wage is derived directly from your annual base salary:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Weekly Wage} = \\frac{\\text{Annual Base Salary}}{52}\\)"}
+        </p>
+        <p>
+          For example, an annual salary of $85,000 yields a weekly wage of:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Weekly Wage} = \\frac{\\$85,000}{52} = \\mathbf{\\$1,634.62 \\text{ / week}}\\)"}
+        </p>
+
+        <h3>2. Severance Weeks Granted Formula</h3>
+        <p>
+          Your baseline severance weeks are calculated by multiplying your years of tenure (T) by your company's weeks-per-year multiplier (M):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Raw Severance Weeks} = \\text{Tenure Years (T)} \\times \\text{Multiplier (M)}\\)"}
+        </p>
+        <p>
+          Applying minimum floor guarantees (F) and policy caps (C):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Severance Weeks} = \\min(\\max(\\text{Raw Weeks}, \\text{Floor (F)}), \\text{Cap (C)})\\)"}
+        </p>
+
+        <h3>3. Total Gross Package & Net Take-Home Cash</h3>
+        <p>
+          Summing base severance pay and package add-ons (bonus, COBRA, PTO):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Base Severance Pay} = \\text{Severance Weeks} \\times \\text{Weekly Wage}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Severance Package} = \\text{Base Severance Pay} + \\text{Bonus} + \\text{COBRA Stipend}\\)"}
+        </p>
+        <p>
+          Subtracting supplemental tax withholdings (Tax%):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Take-Home Cash} = \\text{Gross Package} \\times (1 - \\frac{\\text{Tax Rate}}{100})\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose a salaried worker earning $85,000/yr is laid off after 5 years of service. Their company offers 2 weeks of severance pay per year of service, with a minimum 2-week floor and a 26-week cap. The estimated supplemental tax rate is 25%.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Weekly Base Wage:</strong> {"\\(\\frac{\\$85,000}{52} = \\mathbf{\\$1,634.62 \\text{ / week}}\\)"}
+          </li>
+          <li>
+            <strong>Severance Weeks Granted:</strong> {"\\(5 \\text{ years} \\times 2 \\text{ wks/yr} = \\mathbf{10.00 \\text{ weeks}}\\)"}
+          </li>
+          <li>
+            <strong>Base Severance Pay:</strong> {"\\(10 \\text{ weeks} \\times \\$1,634.62 = \\mathbf{\\$16,346.15}\\)"}
+          </li>
+          <li>
+            <strong>Estimated Tax Withholdings (25%):</strong> {"\\(\\$16,346.15 \\times 0.25 = \\mathbf{\\$4,086.54}\\)"}
+          </li>
+          <li>
+            <strong>Net Take-Home Cash:</strong> {"\\(\\$16,346.15 - \\$4,086.54 = \\mathbf{\\$12,259.61}\\)"}
+          </li>
+        </ul>
+
+        <h2>Severance Regulations & Negotiation Tips</h2>
+        <p>
+          When facing a corporate layoff, keep these legal standards and negotiation strategies in mind:
+        </p>
+        <ol>
+          <li>
+            <strong>The WARN Act Requirements:</strong> Under the federal Worker Adjustment and Retraining Notification (WARN) Act, employers with 100+ employees must provide <strong>60 days' advance written notice</strong> before mass layoffs or plant closures. If an employer fails to give 60 days' notice, they are legally required to pay you 60 days of full back pay and benefits.
+          </li>
+          <li>
+            <strong>Everything is Negotiable:</strong> A severance agreement is a contract. In exchange for your severance check, the company requires you to sign a release of claims waiving your right to sue them. If you have unvested stock options, an upcoming annual bonus, or exceptional tenure, you can negotiate for extra weeks of pay or COBRA coverage extension.
+          </li>
+          <li>
+            <strong>Review Periods (ADEA Protections):</strong> Under the Older Workers Benefit Protection Act (OWBPA), if you are age 40 or older, your employer must give you at least <strong>21 days to review</strong> a severance agreement (or 45 days in group layoffs) and 7 days after signing to revoke your agreement. Never sign a severance offer on the spot.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Severance Pay FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Is an employer legally required to pay severance pay?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Under US federal law (FLSA), employers are not required to offer severance pay. However, severance pay is mandatory if it is stipulated in an employee handbook, employment contract, collective bargaining agreement, or required under the WARN Act due to lack of layoff notice.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is severance pay standardly calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The industry baseline formula awards <strong>1 to 2 weeks of base salary for every full year of service</strong> worked at the company. Executive roles may receive 3 to 4 weeks per year of service, often subject to a policy cap (e.g. capped at 26 weeks).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is severance pay taxed in the United States?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Severance payouts are considered supplemental wages by the IRS. Lump-sum payouts are subject to a flat federal withholding rate of <strong>22%</strong>, plus state income taxes and 7.65% FICA taxes, resulting in combined initial tax withholdings of 25% to 35%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the WARN Act and how does it relate to severance pay?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The WARN Act mandates that employers with 100+ workers give 60 days' notice before major layoffs. If an employer fails to provide 60 days' notice, they must pay affected workers 60 days of full pay and benefits in lieu of notice, which is separate from contractual severance pay.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Can you negotiate a higher severance package when laid off?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes. Severance agreements are legally binding releases of claims. You can negotiate for additional weeks of pay, extended COBRA health coverage, pro-rated bonus payouts, unvested stock option acceleration, or positive job references before signing.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

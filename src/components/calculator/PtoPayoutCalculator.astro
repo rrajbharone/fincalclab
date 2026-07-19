@@ -1,0 +1,638 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="PTO Payout Calculator"
+  description="Determine the exact cash payout for your accrued, unused Paid Time Off (PTO) upon leaving a job or during cash-out. Calculate hourly vs. salaried rates, company policy caps, supplemental taxes, and net take-home pay."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="pto-payout-calculator">
+    
+    <!-- Step 1: Currency & Worker Type -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Pay Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="pto-currency-select">Currency</label>
+        <select id="pto-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Worker Type -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="pto-worker-type">Compensation Type</label>
+        <select id="pto-worker-type" class="currency-select" aria-label="Compensation Type">
+          <option value="hourly" selected>Hourly Wage Employee</option>
+          <option value="salary">Salaried Employee</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Hourly Rate Group -->
+    <div class="input-group" id="grp-pto-hourly">
+      <div class="input-label-row">
+        <label for="pto-hourly-input">Base Hourly Wage</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="pto-hourly-input" min="5" step="0.50" value="35" aria-label="Base Hourly Wage" />
+        </div>
+      </div>
+      <input type="range" id="pto-hourly-slider" min="10" max="150" step="1" value="35" class="slider-range" aria-label="Hourly Wage Slider" />
+    </div>
+
+    <!-- Salaried Group (hidden by default) -->
+    <div id="grp-pto-salary" class="hidden">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="pto-salary-input">Annual Base Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="pto-salary-input" min="10000" step="1000" value="75000" aria-label="Annual Base Salary" />
+          </div>
+        </div>
+        <input type="range" id="pto-salary-slider" min="20000" max="250000" step="2500" value="75000" class="slider-range" aria-label="Annual Salary Slider" />
+      </div>
+
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="pto-weekly-hours-input">Standard Hours Worked Per Week</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="pto-weekly-hours-input" min="20" max="60" step="1" value="40" aria-label="Weekly Hours Worked" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="pto-weekly-hours-slider" min="20" max="60" step="1" value="40" class="slider-range" aria-label="Weekly Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Step 2: PTO Hours Parameters -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. PTO Hours Balance</h3>
+      
+      <!-- Accrued Hours -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="pto-accrued-input">Total Accrued PTO Hours</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="pto-accrued-input" min="0" step="1" value="80" aria-label="Total Accrued PTO Hours" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="pto-accrued-slider" min="0" max="300" step="1" value="80" class="slider-range" aria-label="Accrued Hours Slider" />
+      </div>
+
+      <!-- Used Hours -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="pto-used-input">Already Used PTO Hours</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="pto-used-input" min="0" step="1" value="20" aria-label="Already Used PTO Hours" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="pto-used-slider" min="0" max="150" step="1" value="20" class="slider-range" aria-label="Used Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Company Policy & Taxes -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Company Policy & Taxes</h3>
+      
+      <!-- Payout Rate % -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="pto-payout-rate-input">Company Payout Rate %</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="pto-payout-rate-input" min="10" max="100" step="5" value="100" aria-label="Company Payout Rate Percentage" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="pto-payout-rate-slider" min="10" max="100" step="5" value="100" class="slider-range" aria-label="Payout Rate Slider" />
+      </div>
+
+      <!-- Payout Hour Cap -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="pto-cap-input">Max Payout Cap (0 = No Cap)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="pto-cap-input" min="0" max="200" step="8" value="0" aria-label="Maximum Payout Cap Hours" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="pto-cap-slider" min="0" max="200" step="8" value="0" class="slider-range" aria-label="Payout Cap Slider" />
+      </div>
+
+      <!-- Estimated Taxes -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="pto-tax-rate-input">Estimated Supplemental Tax Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="pto-tax-rate-input" min="0" max="50" step="1" value="25" aria-label="Estimated Supplemental Tax Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="pto-tax-rate-slider" min="0" max="50" step="1" value="25" class="slider-range" aria-label="Tax Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="pto-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">PTO Payout Cash Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Net Take-Home Cash</span>
+        <div id="res-pto-netpay" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$1,575.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-pto-gross">Gross Payout: $2,100.00</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Effective Hourly Wage</span>
+        <div id="res-pto-hourly-wage" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$35.00/hr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-pto-payable-hours">60.00 payable PTO hours</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="pto-verdict-card" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Payout Policy Diagnosis</span>
+        <p id="res-pto-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          You are eligible to cash out <strong>60.00 unused PTO hours</strong> (7.50 workdays).
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Payout Math Breakdown</h4>
+    <div class="results-grid pto-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Unused PTO Balance</span>
+        <div class="tile-value" id="tile-pto-unused-hours" style="color: var(--color-text-base);">60 hrs</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-pto-acc-used">Accrued: 80 | Used: 20</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Payable PTO Hours</span>
+        <div class="tile-value" id="tile-pto-payable-hours" style="color: var(--color-accent);">60.0 hrs</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-pto-policy-desc">100% payout (no cap)</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Tax Withholdings</span>
+        <div class="tile-value" id="tile-pto-tax-deduct" style="color: var(--color-danger);">$525</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-pto-tax-desc">25% tax withholding</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initPtoCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('pto-currency-select') as HTMLSelectElement;
+    const workerTypeSelect = document.getElementById('pto-worker-type') as HTMLSelectElement;
+
+    const grpHourly = document.getElementById('grp-pto-hourly') as HTMLElement;
+    const grpSalary = document.getElementById('grp-pto-salary') as HTMLElement;
+
+    const hourlyInput = document.getElementById('pto-hourly-input') as HTMLInputElement;
+    const hourlySlider = document.getElementById('pto-hourly-slider') as HTMLInputElement;
+
+    const salaryInput = document.getElementById('pto-salary-input') as HTMLInputElement;
+    const salarySlider = document.getElementById('pto-salary-slider') as HTMLInputElement;
+    const weeklyHoursInput = document.getElementById('pto-weekly-hours-input') as HTMLInputElement;
+    const weeklyHoursSlider = document.getElementById('pto-weekly-hours-slider') as HTMLInputElement;
+
+    const accruedInput = document.getElementById('pto-accrued-input') as HTMLInputElement;
+    const accruedSlider = document.getElementById('pto-accrued-slider') as HTMLInputElement;
+    const usedInput = document.getElementById('pto-used-input') as HTMLInputElement;
+    const usedSlider = document.getElementById('pto-used-slider') as HTMLInputElement;
+
+    const payoutRateInput = document.getElementById('pto-payout-rate-input') as HTMLInputElement;
+    const payoutRateSlider = document.getElementById('pto-payout-rate-slider') as HTMLInputElement;
+    const capInput = document.getElementById('pto-cap-input') as HTMLInputElement;
+    const capSlider = document.getElementById('pto-cap-slider') as HTMLInputElement;
+
+    const taxInput = document.getElementById('pto-tax-rate-input') as HTMLInputElement;
+    const taxSlider = document.getElementById('pto-tax-rate-slider') as HTMLInputElement;
+
+    if (!hourlyInput || !currencySelect || !accruedInput || !workerTypeSelect) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(hourlyInput, hourlySlider);
+    bindSlider(salaryInput, salarySlider);
+    bindSlider(weeklyHoursInput, weeklyHoursSlider);
+    bindSlider(accruedInput, accruedSlider);
+    bindSlider(usedInput, usedSlider);
+    bindSlider(payoutRateInput, payoutRateSlider);
+    bindSlider(capInput, capSlider);
+    bindSlider(taxInput, taxSlider);
+
+    // Worker type toggle
+    workerTypeSelect.addEventListener('change', () => {
+      const type = workerTypeSelect.value;
+      if (type === 'hourly') {
+        grpHourly.classList.remove('hidden');
+        grpSalary.classList.add('hidden');
+      } else {
+        grpHourly.classList.add('hidden');
+        grpSalary.classList.remove('hidden');
+      }
+      calculateAll();
+    });
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('pto-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        workerTypeSelect.value = 'hourly';
+        grpHourly.classList.remove('hidden');
+        grpSalary.classList.add('hidden');
+
+        hourlyInput.value = '35';
+        hourlySlider.value = '35';
+
+        salaryInput.value = '75000';
+        salarySlider.value = '75000';
+        weeklyHoursInput.value = '40';
+        weeklyHoursSlider.value = '40';
+
+        accruedInput.value = '80';
+        accruedSlider.value = '80';
+        usedInput.value = '20';
+        usedSlider.value = '20';
+
+        payoutRateInput.value = '100';
+        payoutRateSlider.value = '100';
+        capInput.value = '0';
+        capSlider.value = '0';
+
+        taxInput.value = '25';
+        taxSlider.value = '25';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const type = workerTypeSelect.value;
+      let effectiveWage = 0;
+
+      if (type === 'hourly') {
+        effectiveWage = parseFloat(hourlyInput.value) || 0;
+      } else {
+        const annualSal = parseFloat(salaryInput.value) || 0;
+        const hrsPerWk = parseFloat(weeklyHoursInput.value) || 40;
+        effectiveWage = annualSal / (hrsPerWk * 52);
+      }
+
+      const accrued = parseFloat(accruedInput.value) || 0;
+      const used = parseFloat(usedInput.value) || 0;
+      const unused = Math.max(0, accrued - used);
+
+      const ratePct = parseFloat(payoutRateInput.value) || 0;
+      const capHours = parseFloat(capInput.value) || 0;
+      const taxRate = parseFloat(taxInput.value) || 0;
+
+      // Payable Hours
+      let rawPayable = unused;
+      if (capHours > 0 && unused > capHours) {
+        rawPayable = capHours;
+      }
+
+      const payableHours = rawPayable * (ratePct / 100);
+
+      // Financial Outputs
+      const grossPayout = payableHours * effectiveWage;
+      const taxAmount = grossPayout * (taxRate / 100);
+      const netPayout = grossPayout - taxAmount;
+
+      const workDays = (payableHours / 8).toFixed(2);
+
+      // DOM Updates
+      const resNetPay = document.getElementById('res-pto-netpay');
+      const resHourlyWage = document.getElementById('res-pto-hourly-wage');
+      const lblGross = document.getElementById('lbl-pto-gross');
+      const lblPayableHours = document.getElementById('lbl-pto-payable-hours');
+
+      if (resNetPay) resNetPay.textContent = formatCurrency(netPayout);
+      if (resHourlyWage) resHourlyWage.textContent = formatCurrency(effectiveWage) + '/hr';
+      if (lblGross) lblGross.textContent = `Gross Payout: ${formatCurrency(grossPayout)}`;
+      if (lblPayableHours) lblPayableHours.textContent = `${payableHours.toFixed(2)} payable PTO hours`;
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-pto-verdict-text');
+      if (verdictText) {
+        let capNote = '';
+        if (capHours > 0 && unused > capHours) {
+          capNote = ` (capped from ${unused.toFixed(1)} unused hours due to your company's ${capHours} hrs payout limit)`;
+        }
+
+        verdictText.innerHTML = `Your company payout policy allows you to cash out <strong>${payableHours.toFixed(2)} PTO hours</strong>${capNote}, equivalent to <strong>${workDays} workdays</strong>. At an effective hourly wage of <strong>${formatCurrency(effectiveWage)}/hr</strong>, your gross payout is <strong>${formatCurrency(grossPayout)}</strong>. Estimated taxes deduct <strong>${formatCurrency(taxAmount)}</strong> (${taxRate}%).`;
+      }
+
+      // Details Tiles Updates
+      const tileUnused = document.getElementById('tile-pto-unused-hours');
+      const lblAccUsed = document.getElementById('lbl-pto-acc-used');
+      const tilePayable = document.getElementById('tile-pto-payable-hours');
+      const lblPolicyDesc = document.getElementById('lbl-pto-policy-desc');
+      const tileTax = document.getElementById('tile-pto-tax-deduct');
+      const lblTaxDesc = document.getElementById('lbl-pto-tax-desc');
+
+      if (tileUnused) tileUnused.textContent = unused.toFixed(1) + ' hrs';
+      if (lblAccUsed) lblAccUsed.textContent = `Accrued: ${accrued} | Used: ${used}`;
+
+      if (tilePayable) tilePayable.textContent = payableHours.toFixed(1) + ' hrs';
+      if (lblPolicyDesc) {
+        lblPolicyDesc.textContent = `${ratePct}% rate` + (capHours > 0 ? ` (Cap: ${capHours}h)` : ' (No Cap)');
+      }
+
+      if (tileTax) tileTax.textContent = formatCurrency(taxAmount).split('.')[0];
+      if (lblTaxDesc) lblTaxDesc.textContent = `${taxRate}% tax withholding`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `PTO Payout Cash-Out Analysis:\n` +
+                   `Worker Mode: ${workerTypeSelect.value} | Effective Rate: ${document.getElementById('res-pto-hourly-wage')?.textContent}\n` +
+                   `Unused PTO Balance: ${document.getElementById('tile-pto-unused-hours')?.textContent} (${document.getElementById('lbl-pto-acc-used')?.textContent})\n` +
+                   `Payable Hours: ${document.getElementById('tile-pto-payable-hours')?.textContent} (${document.getElementById('lbl-pto-policy-desc')?.textContent})\n` +
+                   `Gross PTO Payout: ${document.getElementById('lbl-pto-gross')?.textContent}\n` +
+                   `Tax Withholdings: ${document.getElementById('tile-pto-tax-deduct')?.textContent} (${document.getElementById('lbl-pto-tax-desc')?.textContent})\n` +
+                   `Net Take-Home Cash: ${document.getElementById('res-pto-netpay')?.textContent}\n` +
+                   `Diagnosis: ${document.getElementById('res-pto-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initPtoCalculator);
+  document.addEventListener('astro:after-swap', initPtoCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

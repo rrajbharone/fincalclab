@@ -1,0 +1,555 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Barista FIRE Calculator"
+  description="Calculate your shortcut to early retirement. See how working a low-stress part-time job or side hustle slashes your required retirement nest egg, comparison against 100% Full FIRE, and your exact years-to-freedom timeline."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="barista-fire-calculator">
+    
+    <!-- Step 1: Currency & Retirement Expenses -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Retirement Lifestyle & Part-Time Wage</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="bf-currency-select">Currency</label>
+        <select id="bf-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Annual Retirement Living Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="bf-exp-input">Annual Retirement Living Expenses</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="bf-exp-input" min="10000" step="1000" value="60000" aria-label="Annual Retirement Living Expenses" />
+        </div>
+      </div>
+      <input type="range" id="bf-exp-slider" min="20000" max="150000" step="2500" value="60000" class="slider-range" aria-label="Annual Expenses Slider" />
+    </div>
+
+    <!-- Expected Part-Time / Side-Hustle Income -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="bf-inc-input">Part-Time / Side-Hustle Income ($/yr)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="bf-inc-input" min="0" step="1000" value="24000" aria-label="Part-Time Income per Year" />
+        </div>
+      </div>
+      <input type="range" id="bf-inc-slider" min="0" max="80000" step="1000" value="24000" class="slider-range" aria-label="Part-Time Income Slider" />
+    </div>
+
+    <!-- Safe Withdrawal Rate -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="bf-swr-input">Safe Withdrawal Rate (SWR)</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="bf-swr-input" min="2.0" max="6.0" step="0.25" value="4.0" aria-label="Safe Withdrawal Rate" style="text-align: left;" />
+          <span class="percent-symbol">%</span>
+        </div>
+      </div>
+      <input type="range" id="bf-swr-slider" min="2.5" max="5.0" step="0.25" value="4.0" class="slider-range" aria-label="SWR Slider" />
+    </div>
+
+    <!-- Step 2: Portfolio Accumulation & Growth -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Current Portfolio & Investment Contributions</h3>
+      
+      <!-- Current Invested Portfolio -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="bf-port-input">Current Invested Portfolio Balance</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="bf-port-input" min="0" step="5000" value="250000" aria-label="Current Invested Portfolio Balance" />
+          </div>
+        </div>
+        <input type="range" id="bf-port-slider" min="0" max="1000000" step="10000" value="250000" class="slider-range" aria-label="Current Portfolio Slider" />
+      </div>
+
+      <!-- Annual Contribution -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="bf-contrib-input">Annual Investment Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="bf-contrib-input" min="0" step="1000" value="20000" aria-label="Annual Investment Contribution" />
+          </div>
+        </div>
+        <input type="range" id="bf-contrib-slider" min="0" max="100000" step="2500" value="20000" class="slider-range" aria-label="Annual Contribution Slider" />
+      </div>
+
+      <!-- Expected Return Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="bf-return-input">Expected Investment Return Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="bf-return-input" min="2.0" max="15.0" step="0.5" value="7.0" aria-label="Expected Investment Return Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="bf-return-slider" min="3.0" max="12.0" step="0.5" value="7.0" class="slider-range" aria-label="Return Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="bf-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Barista FIRE Targets & Timeline</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Barista FIRE Target Nest Egg</span>
+        <div id="res-bf-target" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$900,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-bf-full-target">Full FIRE Target: $1,500,000.00</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Time to Barista FIRE</span>
+        <div id="res-bf-years" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">11.9 years</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-bf-years-saved">Saves 5.7 years vs Full FIRE</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="bf-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Financial Independence Shortcut</span>
+        <p id="res-bf-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Working part-time reduces your required retirement nest egg by <strong>$600,000</strong> (a 40% discount).
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">FIRE Economics Breakdown</h4>
+    <div class="results-grid bf-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Net Portfolio Draw</span>
+        <div class="tile-value" id="tile-bf-net-draw" style="color: var(--color-primary);">$36,000/yr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-bf-draw-desc">$60k expenses - $24k income</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Capital Saved</span>
+        <div class="tile-value" id="tile-bf-cap-saved" style="color: var(--color-accent);">$600,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-bf-disc-pct">40.0% nest egg discount</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Full FIRE Timeline</span>
+        <div class="tile-value" id="tile-bf-full-years" style="color: var(--color-text-base);">17.6 yrs</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">To reach 100% full retirement</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initBfCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('bf-currency-select') as HTMLSelectElement;
+
+    const expInput = document.getElementById('bf-exp-input') as HTMLInputElement;
+    const expSlider = document.getElementById('bf-exp-slider') as HTMLInputElement;
+    const incInput = document.getElementById('bf-inc-input') as HTMLInputElement;
+    const incSlider = document.getElementById('bf-inc-slider') as HTMLInputElement;
+    const swrInput = document.getElementById('bf-swr-input') as HTMLInputElement;
+    const swrSlider = document.getElementById('bf-swr-slider') as HTMLInputElement;
+
+    const portInput = document.getElementById('bf-port-input') as HTMLInputElement;
+    const portSlider = document.getElementById('bf-port-slider') as HTMLInputElement;
+    const contribInput = document.getElementById('bf-contrib-input') as HTMLInputElement;
+    const contribSlider = document.getElementById('bf-contrib-slider') as HTMLInputElement;
+    const returnInput = document.getElementById('bf-return-input') as HTMLInputElement;
+    const returnSlider = document.getElementById('bf-return-slider') as HTMLInputElement;
+
+    if (!expInput || !currencySelect || !incInput || !portInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(expInput, expSlider);
+    bindSlider(incInput, incSlider);
+    bindSlider(swrInput, swrSlider);
+    bindSlider(portInput, portSlider);
+    bindSlider(contribInput, contribSlider);
+    bindSlider(returnInput, returnSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('bf-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        expInput.value = '60000';
+        expSlider.value = '60000';
+        incInput.value = '24000';
+        incSlider.value = '24000';
+        swrInput.value = '4.0';
+        swrSlider.value = '4.0';
+
+        portInput.value = '250000';
+        portSlider.value = '250000';
+        contribInput.value = '20000';
+        contribSlider.value = '20000';
+        returnInput.value = '7.0';
+        returnSlider.value = '7.0';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Solve compounding years
+    function calculateYearsToTarget(startPort: number, annualContrib: number, rate: number, target: number): number {
+      if (startPort >= target) return 0;
+      let current = startPort;
+      let years = 0;
+      const r = rate / 100;
+      
+      // Safety cap at 100 years
+      while (current < target && years < 100) {
+        current = current * (1 + r) + annualContrib;
+        years++;
+      }
+      return years;
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const expenses = parseFloat(expInput.value) || 0;
+      const partTimeInc = parseFloat(incInput.value) || 0;
+      const swrPct = parseFloat(swrInput.value) || 4.0;
+
+      const currentPort = parseFloat(portInput.value) || 0;
+      const annualContrib = parseFloat(contribInput.value) || 0;
+      const returnRate = parseFloat(returnInput.value) || 7.0;
+
+      // Net Draw & Targets
+      const netDraw = Math.max(0, expenses - partTimeInc);
+      const baristaTarget = swrPct > 0 ? netDraw / (swrPct / 100) : 0;
+      const fullTarget = swrPct > 0 ? expenses / (swrPct / 100) : 0;
+
+      const capitalSaved = Math.max(0, fullTarget - baristaTarget);
+      const discountPct = expenses > 0 ? (partTimeInc / expenses) * 100 : 0;
+
+      // Timelines
+      const yearsBarista = calculateYearsToTarget(currentPort, annualContrib, returnRate, baristaTarget);
+      const yearsFull = calculateYearsToTarget(currentPort, annualContrib, returnRate, fullTarget);
+      const yearsSaved = Math.max(0, yearsFull - yearsBarista);
+
+      // DOM Updates
+      const resTarget = document.getElementById('res-bf-target');
+      const resYears = document.getElementById('res-bf-years');
+      const lblFullTarget = document.getElementById('lbl-bf-full-target');
+      const lblYearsSaved = document.getElementById('lbl-bf-years-saved');
+
+      if (resTarget) resTarget.textContent = formatCurrency(baristaTarget);
+      if (resYears) resYears.textContent = yearsBarista.toFixed(1) + ' years';
+      if (lblFullTarget) lblFullTarget.textContent = `Full FIRE Target: ${formatCurrency(fullTarget)}`;
+      if (lblYearsSaved) lblYearsSaved.textContent = `Saves ${yearsSaved.toFixed(1)} years vs Full FIRE`;
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-bf-verdict-text');
+      if (verdictText) {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        verdictText.innerHTML = `Earning <strong>${formatCurrency(partTimeInc)}/yr</strong> from a part-time job or side hustle covers <strong>${discountPct.toFixed(1)}%</strong> of your living expenses. This slashes your required nest egg from <strong>${formatCurrency(fullTarget)}</strong> down to <strong>${formatCurrency(baristaTarget)}</strong> (saving <strong>${formatCurrency(capitalSaved)}</strong>). You reach financial freedom <strong>${yearsSaved.toFixed(1)} years sooner</strong> (in <strong>${yearsBarista.toFixed(1)} years</strong> instead of <strong>${yearsFull.toFixed(1)} years</strong>).`;
+      }
+
+      // Details Tiles Updates
+      const tileNetDraw = document.getElementById('tile-bf-net-draw');
+      const lblDrawDesc = document.getElementById('lbl-bf-draw-desc');
+      const tileCapSaved = document.getElementById('tile-bf-cap-saved');
+      const lblDiscPct = document.getElementById('lbl-bf-disc-pct');
+      const tileFullYears = document.getElementById('tile-bf-full-years');
+
+      const symbol = getCurrencySymbol(currencySelect.value);
+      if (tileNetDraw) tileNetDraw.textContent = formatCurrency(netDraw).split('.')[0] + '/yr';
+      if (lblDrawDesc) lblDrawDesc.textContent = `${symbol}${(expenses/1000).toFixed(0)}k expenses - ${symbol}${(partTimeInc/1000).toFixed(0)}k income`;
+
+      if (tileCapSaved) tileCapSaved.textContent = formatCurrency(capitalSaved).split('.')[0];
+      if (lblDiscPct) lblDiscPct.textContent = `${discountPct.toFixed(1)}% nest egg discount`;
+
+      if (tileFullYears) tileFullYears.textContent = yearsFull.toFixed(1) + ' yrs';
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Barista FIRE Financial Independence Analysis:\n` +
+                   `Annual Living Expenses: ${expInput.value} | Part-Time Income: ${incInput.value}/yr\n` +
+                   `Safe Withdrawal Rate: ${swrInput.value}% -> Net Portfolio Draw: ${document.getElementById('tile-bf-net-draw')?.textContent}\n` +
+                   `Barista FIRE Target: ${document.getElementById('res-bf-target')?.textContent} (${document.getElementById('lbl-bf-full-target')?.textContent})\n` +
+                   `Capital Saved: ${document.getElementById('tile-bf-cap-saved')?.textContent} (${document.getElementById('lbl-bf-disc-pct')?.textContent})\n` +
+                   `Current Portfolio: ${portInput.value} | Annual Contribution: ${contribInput.value} @ ${returnInput.value}%\n` +
+                   `Timeline: ${document.getElementById('res-bf-years')?.textContent} to Barista FIRE (${document.getElementById('lbl-bf-years-saved')?.textContent})\n` +
+                   `Diagnosis: ${document.getElementById('res-bf-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initBfCalculator);
+  document.addEventListener('astro:after-swap', initBfCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

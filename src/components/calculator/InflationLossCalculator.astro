@@ -1,0 +1,546 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Inflation Loss Calculator"
+  description="See how inflation erodes the purchasing power of your cash savings over time. Calculate real purchasing power, net dollar losses, real Fisher interest rates, and opportunity costs against index investments."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="inflation-loss-calculator">
+    
+    <!-- Step 1: Currency & Cash Profile -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Cash Savings Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="inf-currency-select">Currency</label>
+        <select id="inf-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Initial Cash Balance -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="inf-cash-input">Initial Cash Savings</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="inf-cash-input" min="500" step="1000" value="50000" aria-label="Initial Cash Savings" />
+        </div>
+      </div>
+      <input type="range" id="inf-cash-slider" min="1000" max="250000" step="2500" value="50000" class="slider-range" aria-label="Initial Cash Slider" />
+    </div>
+
+    <!-- Time Horizon -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="inf-years-input">Time Horizon (Years)</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="inf-years-input" min="1" max="50" step="1" value="10" aria-label="Time Horizon Years" style="text-align: left;" />
+          <span class="percent-symbol">yrs</span>
+        </div>
+      </div>
+      <input type="range" id="inf-years-slider" min="1" max="30" step="1" value="10" class="slider-range" aria-label="Years Slider" />
+    </div>
+
+    <!-- Step 2: Inflation & Interest Rates -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Inflation & Bank Rates</h3>
+      
+      <!-- Annual Inflation Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inf-inflation-rate-input">Expected Annual Inflation Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="inf-inflation-rate-input" min="0.5" max="20" step="0.1" value="3.5" aria-label="Annual Inflation Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="inf-inflation-rate-slider" min="1" max="15" step="0.5" value="3.5" class="slider-range" aria-label="Inflation Rate Slider" />
+      </div>
+
+      <!-- Bank Savings Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inf-bank-rate-input">Bank Savings Interest Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="inf-bank-rate-input" min="0" max="15" step="0.1" value="0.5" aria-label="Bank Savings Interest Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="inf-bank-rate-slider" min="0" max="10" step="0.25" value="0.5" class="slider-range" aria-label="Bank Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Investment Opportunity Comparison -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Opportunity Cost Comparison</h3>
+      
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="inf-invest-rate-input">Alternative Investment Return (e.g. Index Fund)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="inf-invest-rate-input" min="0" max="20" step="0.5" value="8.0" aria-label="Alternative Investment Return" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="inf-invest-rate-slider" min="0" max="15" step="0.5" value="8.0" class="slider-range" aria-label="Investment Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="inf-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Purchasing Power Erosion Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-danger);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Real Purchasing Power</span>
+        <div id="res-inf-real-power" style="font-size: 1.75rem; font-weight: 800; color: var(--color-danger); margin-top: 4px;">$37,257.69</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-inf-nominal-bal">Nominal balance: $52,555.70</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-warning);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Net Dollar Loss</span>
+        <div id="res-inf-dollar-loss" style="font-size: 1.75rem; font-weight: 800; color: var(--color-warning); margin-top: 4px;">-$12,742.31</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-inf-loss-pct">-25.48% purchasing power decay</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="inf-verdict-card" style="border-left: 4px solid var(--color-danger); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Purchasing Power Diagnosis</span>
+        <p id="res-inf-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Over <strong>10 years</strong>, inflation will erode <strong>25.48%</strong> of your cash purchasing power.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Inflation Economics Breakdown</h4>
+    <div class="results-grid inf-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Real Net Return Rate</span>
+        <div class="tile-value" id="tile-inf-real-rate" style="color: var(--color-danger);">-2.90%/yr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-inf-fisher-desc">Fisher Equation real yield</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Inflation Multiplier</span>
+        <div class="tile-value" id="tile-inf-factor" style="color: var(--color-text-base);">1.41x</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-inf-factor-desc">Goods cost 41.06% more</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Opportunity Cost</span>
+        <div class="tile-value" id="tile-inf-opp-cost" style="color: var(--color-accent);">$39,267</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-inf-opp-desc">vs 8.0% index return</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initInfCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('inf-currency-select') as HTMLSelectElement;
+
+    const cashInput = document.getElementById('inf-cash-input') as HTMLInputElement;
+    const cashSlider = document.getElementById('inf-cash-slider') as HTMLInputElement;
+    const yearsInput = document.getElementById('inf-years-input') as HTMLInputElement;
+    const yearsSlider = document.getElementById('inf-years-slider') as HTMLInputElement;
+
+    const infRateInput = document.getElementById('inf-inflation-rate-input') as HTMLInputElement;
+    const infRateSlider = document.getElementById('inf-inflation-rate-slider') as HTMLInputElement;
+    const bankRateInput = document.getElementById('inf-bank-rate-input') as HTMLInputElement;
+    const bankRateSlider = document.getElementById('inf-bank-rate-slider') as HTMLInputElement;
+
+    const investRateInput = document.getElementById('inf-invest-rate-input') as HTMLInputElement;
+    const investRateSlider = document.getElementById('inf-invest-rate-slider') as HTMLInputElement;
+
+    if (!cashInput || !currencySelect || !yearsInput || !infRateInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(cashInput, cashSlider);
+    bindSlider(yearsInput, yearsSlider);
+    bindSlider(infRateInput, infRateSlider);
+    bindSlider(bankRateInput, bankRateSlider);
+    bindSlider(investRateInput, investRateSlider);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('inf-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        cashInput.value = '50000';
+        cashSlider.value = '50000';
+        yearsInput.value = '10';
+        yearsSlider.value = '10';
+
+        infRateInput.value = '3.5';
+        infRateSlider.value = '3.5';
+        bankRateInput.value = '0.5';
+        bankRateSlider.value = '0.5';
+
+        investRateInput.value = '8.0';
+        investRateSlider.value = '8.0';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const initialCash = parseFloat(cashInput.value) || 0;
+      const years = parseFloat(yearsInput.value) || 0;
+      const infRate = parseFloat(infRateInput.value) || 0;
+      const bankRate = parseFloat(bankRateInput.value) || 0;
+      const investRate = parseFloat(investRateInput.value) || 0;
+
+      // Inflation math
+      const nominalSavings = initialCash * Math.pow(1 + bankRate / 100, years);
+      const inflationFactor = Math.pow(1 + infRate / 100, years);
+      const realPower = nominalSavings / inflationFactor;
+
+      const dollarLoss = initialCash - realPower;
+      const lossPct = initialCash > 0 ? (dollarLoss / initialCash) * 100 : 0;
+
+      // Fisher Real Return Rate
+      // Real Rate = ((1 + nominal) / (1 + inflation) - 1) * 100
+      const realReturnRate = ((1 + bankRate / 100) / (1 + infRate / 100) - 1) * 100;
+
+      // Alternative Investment Math
+      const nominalInvestment = initialCash * Math.pow(1 + investRate / 100, years);
+      const realInvestPower = nominalInvestment / inflationFactor;
+      const oppCost = realInvestPower - realPower;
+
+      // DOM Updates
+      const resRealPower = document.getElementById('res-inf-real-power');
+      const resDollarLoss = document.getElementById('res-inf-dollar-loss');
+      const lblNominalBal = document.getElementById('lbl-inf-nominal-bal');
+      const lblLossPct = document.getElementById('lbl-inf-loss-pct');
+
+      if (resRealPower) resRealPower.textContent = formatCurrency(realPower);
+      if (resDollarLoss) resDollarLoss.textContent = (dollarLoss >= 0 ? '-' : '+') + formatCurrency(Math.abs(dollarLoss));
+      if (lblNominalBal) lblNominalBal.textContent = `Nominal bank balance: ${formatCurrency(nominalSavings)}`;
+      if (lblLossPct) lblLossPct.textContent = `${lossPct.toFixed(2)}% real purchasing power decay`;
+
+      // Verdict card and text
+      const verdictCard = document.getElementById('inf-verdict-card');
+      const verdictText = document.getElementById('res-inf-verdict-text');
+      if (verdictText && verdictCard) {
+        let color = 'var(--color-danger)';
+        if (realReturnRate >= 0) {
+          color = 'var(--color-success)';
+          verdictText.innerHTML = `<strong>Capital Preserved!</strong> Your bank interest rate of <strong>${bankRate}%</strong> exceeds inflation of <strong>${infRate}%</strong>. Over <strong>${years} years</strong>, your real purchasing power increases by <strong>${formatCurrency(Math.abs(dollarLoss))}</strong> (real return rate: <strong>+${realReturnRate.toFixed(2)}%/yr</strong>).`;
+        } else {
+          color = 'var(--color-danger)';
+          verdictText.innerHTML = `<strong>Purchasing Power Erosion Warning!</strong> Over <strong>${years} years</strong>, an inflation rate of <strong>${infRate}%</strong> will erode <strong>${lossPct.toFixed(2)}%</strong> of your cash purchasing power. Although your bank balance grows nominally to <strong>${formatCurrency(nominalSavings)}</strong> (at ${bankRate}% interest), its real purchasing power drops to <strong>${formatCurrency(realPower)}</strong>—a real dollar loss of <strong>${formatCurrency(dollarLoss)}</strong>.`;
+        }
+        verdictCard.style.borderLeftColor = color;
+        if (resRealPower) resRealPower.style.color = color;
+      }
+
+      // Details Tiles Updates
+      const tileRealRate = document.getElementById('tile-inf-real-rate');
+      const lblFisherDesc = document.getElementById('lbl-inf-fisher-desc');
+      const tileFactor = document.getElementById('tile-inf-factor');
+      const lblFactorDesc = document.getElementById('lbl-inf-factor-desc');
+      const tileOppCost = document.getElementById('tile-inf-opp-cost');
+      const lblOppDesc = document.getElementById('lbl-inf-opp-desc');
+
+      if (tileRealRate) {
+        tileRealRate.textContent = (realReturnRate >= 0 ? '+' : '') + realReturnRate.toFixed(2) + '%/yr';
+        tileRealRate.style.color = realReturnRate >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+      if (lblFisherDesc) lblFisherDesc.textContent = `Fisher Equation real yield`;
+
+      if (tileFactor) tileFactor.textContent = inflationFactor.toFixed(2) + 'x';
+      if (lblFactorDesc) lblFactorDesc.textContent = `Goods cost ${((inflationFactor - 1) * 100).toFixed(2)}% more`;
+
+      const symbol = getCurrencySymbol(currencySelect.value);
+      if (tileOppCost) tileOppCost.textContent = formatCurrency(oppCost).split('.')[0];
+      if (lblOppDesc) lblOppDesc.textContent = `vs ${investRate}% index yield (${symbol}${(realInvestPower/1000).toFixed(1)}k real)`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Inflation Purchasing Power Decay Analysis:\n` +
+                   `Initial Cash: ${cashInput.value} | Time Horizon: ${yearsInput.value} years\n` +
+                   `Inflation Rate: ${infRateInput.value}% | Bank Savings Rate: ${bankRateInput.value}%\n` +
+                   `Nominal Balance: ${document.getElementById('lbl-inf-nominal-bal')?.textContent}\n` +
+                   `Real Purchasing Power: ${document.getElementById('res-inf-real-power')?.textContent}\n` +
+                   `Net Purchasing Power Loss: ${document.getElementById('res-inf-dollar-loss')?.textContent} (${document.getElementById('lbl-inf-loss-pct')?.textContent})\n` +
+                   `Real Fisher Net Rate: ${document.getElementById('tile-inf-real-rate')?.textContent}\n` +
+                   `Opportunity Cost (vs ${investRateInput.value}% return): ${document.getElementById('tile-inf-opp-cost')?.textContent}\n` +
+                   `Diagnosis: ${document.getElementById('res-inf-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initInfCalculator);
+  document.addEventListener('astro:after-swap', initInfCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

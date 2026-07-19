@@ -1,0 +1,681 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Severance Pay Calculator"
+  description="Estimate your total severance package compensation upon job separation or layoff. Calculate weekly wages, years-of-service multipliers, company policy caps, bonus add-ons, COBRA stipends, supplemental taxes, and net take-home pay."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="severance-pay-calculator">
+    
+    <!-- Step 1: Currency & Compensation Type -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Pay & Compensation Profile</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sev-currency-select">Currency</label>
+        <select id="sev-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Worker Type -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sev-worker-type">Compensation Type</label>
+        <select id="sev-worker-type" class="currency-select" aria-label="Compensation Type">
+          <option value="salary" selected>Salaried Employee</option>
+          <option value="hourly">Hourly Wage Employee</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Salaried Group -->
+    <div class="input-group" id="grp-sev-salary">
+      <div class="input-label-row">
+        <label for="sev-salary-input">Annual Base Salary</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="sev-salary-input" min="10000" step="1000" value="85000" aria-label="Annual Base Salary" />
+        </div>
+      </div>
+      <input type="range" id="sev-salary-slider" min="20000" max="250000" step="2500" value="85000" class="slider-range" aria-label="Annual Salary Slider" />
+    </div>
+
+    <!-- Hourly Group (hidden by default) -->
+    <div id="grp-sev-hourly" class="hidden">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-hourly-input">Base Hourly Wage</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sev-hourly-input" min="5" step="0.50" value="40" aria-label="Base Hourly Wage" />
+          </div>
+        </div>
+        <input type="range" id="sev-hourly-slider" min="10" max="150" step="1" value="40" class="slider-range" aria-label="Hourly Wage Slider" />
+      </div>
+
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="sev-weekly-hours-input">Standard Hours Worked Per Week</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sev-weekly-hours-input" min="20" max="60" step="1" value="40" aria-label="Weekly Hours Worked" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="sev-weekly-hours-slider" min="20" max="60" step="1" value="40" class="slider-range" aria-label="Weekly Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Step 2: Tenure & Policy Settings -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Tenure & Severance Formula</h3>
+      
+      <!-- Years of Service -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-tenure-input">Years of Service (Tenure)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sev-tenure-input" min="0.5" max="40" step="0.5" value="5" aria-label="Years of Service" style="text-align: left;" />
+            <span class="percent-symbol">yrs</span>
+          </div>
+        </div>
+        <input type="range" id="sev-tenure-slider" min="0.5" max="30" step="0.5" value="5" class="slider-range" aria-label="Tenure Slider" />
+      </div>
+
+      <!-- Weeks Per Year -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-weeks-per-year-input">Severance Weeks Granted per Year</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sev-weeks-per-year-input" min="1" max="6" step="0.5" value="2" aria-label="Weeks Per Year Granted" style="text-align: left;" />
+            <span class="percent-symbol">wks/yr</span>
+          </div>
+        </div>
+        <input type="range" id="sev-weeks-per-year-slider" min="1" max="4" step="0.5" value="2" class="slider-range" aria-label="Weeks Per Year Slider" />
+      </div>
+
+      <!-- Minimum Floor Weeks -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-min-weeks-input">Minimum Guaranteed Severance Floor</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sev-min-weeks-input" min="0" max="12" step="1" value="2" aria-label="Minimum Floor Weeks" style="text-align: left;" />
+            <span class="percent-symbol">wks</span>
+          </div>
+        </div>
+        <input type="range" id="sev-min-weeks-slider" min="0" max="12" step="1" value="2" class="slider-range" aria-label="Minimum Weeks Slider" />
+      </div>
+
+      <!-- Policy Cap Weeks -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-cap-input">Maximum Policy Cap (0 = No Cap)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sev-cap-input" min="0" max="52" step="2" value="26" aria-label="Maximum Policy Cap Weeks" style="text-align: left;" />
+            <span class="percent-symbol">wks</span>
+          </div>
+        </div>
+        <input type="range" id="sev-cap-slider" min="0" max="52" step="2" value="26" class="slider-range" aria-label="Policy Cap Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Package Add-Ons & Taxes -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Add-Ons & Taxes</h3>
+      
+      <!-- Pro-Rated Bonus -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-bonus-input">Pro-Rated Bonus / Accrued Add-On</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sev-bonus-input" min="0" step="500" value="0" aria-label="Pro-Rated Bonus Payout" />
+          </div>
+        </div>
+        <input type="range" id="sev-bonus-slider" min="0" max="50000" step="500" value="0" class="slider-range" aria-label="Bonus Slider" />
+      </div>
+
+      <!-- COBRA / Health Stipend -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-cobra-input">COBRA / Health Benefits Stipend</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sev-cobra-input" min="0" step="250" value="0" aria-label="COBRA Benefits Stipend" />
+          </div>
+        </div>
+        <input type="range" id="sev-cobra-slider" min="0" max="20000" step="250" value="0" class="slider-range" aria-label="COBRA Slider" />
+      </div>
+
+      <!-- Estimated Taxes -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sev-tax-rate-input">Estimated Supplemental Tax Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sev-tax-rate-input" min="0" max="50" step="1" value="25" aria-label="Estimated Supplemental Tax Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="sev-tax-rate-slider" min="0" max="50" step="1" value="25" class="slider-range" aria-label="Tax Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="sev-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Severance Package Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Net Take-Home Cash</span>
+        <div id="res-sev-netpay" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$12,259.61</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sev-gross">Gross Package: $16,346.15</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Severance Weeks</span>
+        <div id="res-sev-weeks" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">10.0 weeks</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sev-weekly-wage">$1,634.62 base weekly wage</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="sev-verdict-card" style="border-left: 4px solid var(--color-primary); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Severance Package Diagnosis</span>
+        <p id="res-sev-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your 5.0 years of tenure qualify you for <strong>10.0 weeks of base severance pay</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Package Math Breakdown</h4>
+    <div class="results-grid sev-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Base Severance Pay</span>
+        <div class="tile-value" id="tile-sev-base-pay" style="color: var(--color-text-base);">$16,346</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sev-tenure-desc">5 yrs @ 2 wks/yr</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Bonus & COBRA Add-Ons</span>
+        <div class="tile-value" id="tile-sev-addons" style="color: var(--color-accent);">$0</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sev-addons-desc">Bonus: $0 | COBRA: $0</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Tax Withholdings</span>
+        <div class="tile-value" id="tile-sev-tax-deduct" style="color: var(--color-danger);">$4,087</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sev-tax-desc">25% tax withholding</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSevCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('sev-currency-select') as HTMLSelectElement;
+    const workerTypeSelect = document.getElementById('sev-worker-type') as HTMLSelectElement;
+
+    const grpSalary = document.getElementById('grp-sev-salary') as HTMLElement;
+    const grpHourly = document.getElementById('grp-sev-hourly') as HTMLElement;
+
+    const salaryInput = document.getElementById('sev-salary-input') as HTMLInputElement;
+    const salarySlider = document.getElementById('sev-salary-slider') as HTMLInputElement;
+
+    const hourlyInput = document.getElementById('sev-hourly-input') as HTMLInputElement;
+    const hourlySlider = document.getElementById('sev-hourly-slider') as HTMLInputElement;
+    const weeklyHoursInput = document.getElementById('sev-weekly-hours-input') as HTMLInputElement;
+    const weeklyHoursSlider = document.getElementById('sev-weekly-hours-slider') as HTMLInputElement;
+
+    const tenureInput = document.getElementById('sev-tenure-input') as HTMLInputElement;
+    const tenureSlider = document.getElementById('sev-tenure-slider') as HTMLInputElement;
+    const weeksPerYrInput = document.getElementById('sev-weeks-per-year-input') as HTMLInputElement;
+    const weeksPerYrSlider = document.getElementById('sev-weeks-per-year-slider') as HTMLInputElement;
+    const minWeeksInput = document.getElementById('sev-min-weeks-input') as HTMLInputElement;
+    const minWeeksSlider = document.getElementById('sev-min-weeks-slider') as HTMLInputElement;
+    const capInput = document.getElementById('sev-cap-input') as HTMLInputElement;
+    const capSlider = document.getElementById('sev-cap-slider') as HTMLInputElement;
+
+    const bonusInput = document.getElementById('sev-bonus-input') as HTMLInputElement;
+    const bonusSlider = document.getElementById('sev-bonus-slider') as HTMLInputElement;
+    const cobraInput = document.getElementById('sev-cobra-input') as HTMLInputElement;
+    const cobraSlider = document.getElementById('sev-cobra-slider') as HTMLInputElement;
+    const taxInput = document.getElementById('sev-tax-rate-input') as HTMLInputElement;
+    const taxSlider = document.getElementById('sev-tax-rate-slider') as HTMLInputElement;
+
+    if (!salaryInput || !currencySelect || !tenureInput || !workerTypeSelect) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(salaryInput, salarySlider);
+    bindSlider(hourlyInput, hourlySlider);
+    bindSlider(weeklyHoursInput, weeklyHoursSlider);
+    bindSlider(tenureInput, tenureSlider);
+    bindSlider(weeksPerYrInput, weeksPerYrSlider);
+    bindSlider(minWeeksInput, minWeeksSlider);
+    bindSlider(capInput, capSlider);
+    bindSlider(bonusInput, bonusSlider);
+    bindSlider(cobraInput, cobraSlider);
+    bindSlider(taxInput, taxSlider);
+
+    // Worker type toggle
+    workerTypeSelect.addEventListener('change', () => {
+      const type = workerTypeSelect.value;
+      if (type === 'salary') {
+        grpSalary.classList.remove('hidden');
+        grpHourly.classList.add('hidden');
+      } else {
+        grpSalary.classList.add('hidden');
+        grpHourly.classList.remove('hidden');
+      }
+      calculateAll();
+    });
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('sev-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        workerTypeSelect.value = 'salary';
+        grpSalary.classList.remove('hidden');
+        grpHourly.classList.add('hidden');
+
+        salaryInput.value = '85000';
+        salarySlider.value = '85000';
+
+        hourlyInput.value = '40';
+        hourlySlider.value = '40';
+        weeklyHoursInput.value = '40';
+        weeklyHoursSlider.value = '40';
+
+        tenureInput.value = '5';
+        tenureSlider.value = '5';
+        weeksPerYrInput.value = '2';
+        weeksPerYrSlider.value = '2';
+        minWeeksInput.value = '2';
+        minWeeksSlider.value = '2';
+        capInput.value = '26';
+        capSlider.value = '26';
+
+        bonusInput.value = '0';
+        bonusSlider.value = '0';
+        cobraInput.value = '0';
+        cobraSlider.value = '0';
+        taxInput.value = '25';
+        taxSlider.value = '25';
+        currencySelect.value = 'USD';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const type = workerTypeSelect.value;
+      let weeklyWage = 0;
+
+      if (type === 'salary') {
+        const annualSal = parseFloat(salaryInput.value) || 0;
+        weeklyWage = annualSal / 52;
+      } else {
+        const hrRate = parseFloat(hourlyInput.value) || 0;
+        const hrsWk = parseFloat(weeklyHoursInput.value) || 40;
+        weeklyWage = hrRate * hrsWk;
+      }
+
+      const tenureYrs = parseFloat(tenureInput.value) || 0;
+      const wksPerYr = parseFloat(weeksPerYrInput.value) || 0;
+      const minWeeks = parseFloat(minWeeksInput.value) || 0;
+      const maxCap = parseFloat(capInput.value) || 0;
+
+      const bonus = parseFloat(bonusInput.value) || 0;
+      const cobra = parseFloat(cobraInput.value) || 0;
+      const taxRate = parseFloat(taxInput.value) || 0;
+
+      // Raw Severance Weeks
+      let rawWeeks = tenureYrs * wksPerYr;
+      if (minWeeks > 0 && rawWeeks < minWeeks) {
+        rawWeeks = minWeeks;
+      }
+
+      let finalWeeks = rawWeeks;
+      if (maxCap > 0 && rawWeeks > maxCap) {
+        finalWeeks = maxCap;
+      }
+
+      // Financial Outputs
+      const baseSeverancePay = finalWeeks * weeklyWage;
+      const addOnsTotal = bonus + cobra;
+      const grossPackage = baseSeverancePay + addOnsTotal;
+      const taxAmount = grossPackage * (taxRate / 100);
+      const netPayout = grossPackage - taxAmount;
+
+      // DOM Updates
+      const resNetPay = document.getElementById('res-sev-netpay');
+      const resWeeks = document.getElementById('res-sev-weeks');
+      const lblGross = document.getElementById('lbl-sev-gross');
+      const lblWeeklyWage = document.getElementById('lbl-sev-weekly-wage');
+
+      if (resNetPay) resNetPay.textContent = formatCurrency(netPayout);
+      if (resWeeks) resWeeks.textContent = finalWeeks.toFixed(1) + ' weeks';
+      if (lblGross) lblGross.textContent = `Gross Package: ${formatCurrency(grossPackage)}`;
+      if (lblWeeklyWage) lblWeeklyWage.textContent = `${formatCurrency(weeklyWage)} base weekly wage`;
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-sev-verdict-text');
+      if (verdictText) {
+        let capNote = '';
+        if (maxCap > 0 && rawWeeks > maxCap) {
+          capNote = ` (capped from ${rawWeeks.toFixed(1)} earned weeks due to your company's ${maxCap} wks policy cap)`;
+        } else if (minWeeks > 0 && (tenureYrs * wksPerYr) < minWeeks) {
+          capNote = ` (increased to match your company's ${minWeeks} wks minimum floor guarantee)`;
+        }
+
+        let addOnNote = '';
+        if (addOnsTotal > 0) {
+          addOnNote = ` plus <strong>${formatCurrency(addOnsTotal)}</strong> in bonus/COBRA add-ons`;
+        }
+
+        verdictText.innerHTML = `Your <strong>${tenureYrs.toFixed(1)} years of service</strong> qualify you for <strong>${finalWeeks.toFixed(1)} weeks of severance pay</strong>${capNote}. At a weekly base wage of <strong>${formatCurrency(weeklyWage)}/wk</strong>, your base severance pay is <strong>${formatCurrency(baseSeverancePay)}</strong>${addOnNote}, creating a total gross package of <strong>${formatCurrency(grossPackage)}</strong>. Estimated taxes deduct <strong>${formatCurrency(taxAmount)}</strong> (${taxRate}%).`;
+      }
+
+      // Details Tiles Updates
+      const tileBasePay = document.getElementById('tile-sev-base-pay');
+      const lblTenureDesc = document.getElementById('lbl-sev-tenure-desc');
+      const tileAddons = document.getElementById('tile-sev-addons');
+      const lblAddonsDesc = document.getElementById('lbl-sev-addons-desc');
+      const tileTax = document.getElementById('tile-sev-tax-deduct');
+      const lblTaxDesc = document.getElementById('lbl-sev-tax-desc');
+
+      const symbol = getCurrencySymbol(currencySelect.value);
+      if (tileBasePay) tileBasePay.textContent = formatCurrency(baseSeverancePay).split('.')[0];
+      if (lblTenureDesc) lblTenureDesc.textContent = `${tenureYrs} yrs @ ${wksPerYr} wks/yr`;
+
+      if (tileAddons) tileAddons.textContent = formatCurrency(addOnsTotal).split('.')[0];
+      if (lblAddonsDesc) lblAddonsDesc.textContent = `Bonus: ${symbol}${(bonus/1000).toFixed(1)}k | COBRA: ${symbol}${(cobra/1000).toFixed(1)}k`;
+
+      if (tileTax) tileTax.textContent = formatCurrency(taxAmount).split('.')[0];
+      if (lblTaxDesc) lblTaxDesc.textContent = `${taxRate}% tax withholding`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Severance Package Analysis:\n` +
+                   `Worker Mode: ${workerTypeSelect.value} | Base Weekly Wage: ${document.getElementById('lbl-sev-weekly-wage')?.textContent}\n` +
+                   `Tenure: ${tenureInput.value} yrs | Severance Granted: ${document.getElementById('res-sev-weeks')?.textContent}\n` +
+                   `Base Severance Pay: ${document.getElementById('tile-sev-base-pay')?.textContent} | Add-Ons: ${document.getElementById('tile-sev-addons')?.textContent}\n` +
+                   `Total Gross Package: ${document.getElementById('lbl-sev-gross')?.textContent}\n` +
+                   `Tax Withholdings: ${document.getElementById('tile-sev-tax-deduct')?.textContent} (${document.getElementById('lbl-sev-tax-desc')?.textContent})\n` +
+                   `Net Take-Home Cash: ${document.getElementById('res-sev-netpay')?.textContent}\n` +
+                   `Diagnosis: ${document.getElementById('res-sev-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSevCalculator);
+  document.addEventListener('astro:after-swap', initSevCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

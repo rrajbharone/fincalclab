@@ -1,0 +1,254 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import InflationLossCalculator from '../../components/calculator/InflationLossCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Inflation Loss Calculator', path: '/calculator/inflation-loss-calculator' }
+];
+---
+
+<Layout
+  title="Inflation Loss Calculator - Calculate Purchasing Power Decay"
+  description="Free online Inflation Loss Calculator. Calculate real purchasing power, net dollar losses, Fisher real interest rates, and opportunity costs against index investments."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <InflationLossCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Inflation Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Silent Wealth Thief: How Holding $50,000 in Cash Cost Me $12,700</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a conservative saver who kept $50,000 sitting in a 0.5% traditional checking account for ten years, believing their money was safe, only to realize inflation erased over $12,700 of real purchasing power.
+            </p>
+            <a href="/blog/how-inflation-destroys-savings" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How Inflation Destroys Cash Savings & Real Return Math
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Inflation Loss?</h2>
+        <p>
+          In monetary economics, macroeconomics, and wealth management, <strong>inflation loss</strong> represents the gradual loss of real purchasing power that occurs when general prices for consumer goods and services rise over time. When inflation outpaces the interest rate paid on your bank deposits, the real value of your cash declines—even if your nominal bank balance stays the same or grows slightly.
+        </p>
+        <p>
+          Financial advisors often refer to uninvested cash as being subject to a "silent tax." Understanding how inflation compounds over 5, 10, or 20 years helps you make informed choices about emergency funds, cash reserves, and long-term investments.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To compute your purchasing power decay, real interest rate, and opportunity cost, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Cash Profile:</strong> Enter your Initial Cash Savings balance and select your Time Horizon (in years).
+          </li>
+          <li>
+            <strong>Input Economic Rates:</strong> Enter your Expected Annual Inflation Rate (historically averaging 2% to 4%) and your Bank Savings Interest Rate.
+          </li>
+          <li>
+            <strong>Configure Alternative Comparison:</strong> Input an Alternative Investment Return % (e.g. 8% for an S&P 500 index fund) to evaluate opportunity cost.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly displays your nominal bank balance, real purchasing power, net dollar loss, Fisher real return rate, and opportunity cost.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Inflation Decay</h2>
+        <p>
+          The calculator applies standard financial economics formulas to analyze your cash erosion:
+        </p>
+        
+        <h3>1. Nominal Savings Balance Formula</h3>
+        <p>
+          First, calculate the future nominal balance of your bank savings after earning bank interest (r_bank):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Nominal Balance} = \\text{Initial Cash} \\times (1 + \\frac{r_{bank}}{100})^Y\\)"}
+        </p>
+
+        <h3>2. Real Purchasing Power Formula</h3>
+        <p>
+          Next, discount the nominal balance by the compounding inflation factor over Y years:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Purchasing Power} = \\frac{\\text{Nominal Balance}}{(1 + \\frac{r_{inf}}{100})^Y}\\)"}
+        </p>
+
+        <h3>3. Net Purchasing Power Loss Formula</h3>
+        <p>
+          The actual loss in real purchasing power compared to your starting principal:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Purchasing Power Loss} = \\text{Initial Cash} - \\text{Real Purchasing Power}\\)"}
+        </p>
+
+        <h3>4. The Fisher Equation (Real Net Return Rate)</h3>
+        <p>
+          To calculate your exact annual real rate of return accounting for compounding inflation, economists use the Fisher Equation:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Return Rate} = (\\frac{1 + \\frac{r_{bank}}{100}}{1 + \\frac{r_{inf}}{100}} - 1) \\times 100\\)"}
+        </p>
+
+        <h3>5. The Rule of 72 for Inflation</h3>
+        <p>
+          You can estimate how many years it will take for inflation to cut your cash purchasing power in half by dividing 72 by the annual inflation rate:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Years to Halve Purchasing Power} \\approx \\frac{72}{\\text{Inflation Rate}}\\)"}
+        </p>
+        <p>
+          At a 3.5% inflation rate, $100,000 of cash will lose half its purchasing power in approximately <strong>20.5 years</strong> (72 / 3.5).
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose you keep $50,000 in a traditional bank savings account paying 0.5% interest per year. Over a 10-year period, annual inflation averages 3.5%. An alternative index fund yields 8.0% annually.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Nominal Savings Balance:</strong> {"\\(\\$50,000 \\times (1.005)^{10} = \\mathbf{\\$52,555.70}\\)"}
+          </li>
+          <li>
+            <strong>Compounding Inflation Factor:</strong> {"\\((1.035)^{10} = \\mathbf{1.4106}\\)"} (goods cost 41.06% more)
+          </li>
+          <li>
+            <strong>Real Purchasing Power:</strong> {"\\(\\frac{\\$52,555.70}{1.4106} = \\mathbf{\\$37,257.69}\\)"}
+          </li>
+          <li>
+            <strong>Net Purchasing Power Loss:</strong> {"\\(\\$50,000 - \\$37,257.69 = \\mathbf{\\$12,742.31}\\)"} (a 25.48% loss of purchasing power)
+          </li>
+          <li>
+            <strong>Real Net Return Rate:</strong> {"\\((\\frac{1.005}{1.035} - 1) \\times 100 = \\mathbf{-2.90\\% \\text{ / year}}\\)"}
+          </li>
+          <li>
+            <strong>Opportunity Cost vs. 8% Index Fund:</strong> {"\\(\\$76,525.06 - \\$37,257.69 = \\mathbf{\\$39,267.37}\\)"}
+          </li>
+        </ul>
+
+        <h2>Strategies to Beat Inflation Loss</h2>
+        <p>
+          To protect your wealth from purchasing power erosion, consider deploying these financial strategies:
+        </p>
+        <ol>
+          <li>
+            <strong>High-Yield Savings Accounts (HYSAs):</strong> Move short-term emergency funds out of traditional 0.01% checking accounts and into HYSAs paying competitive market rates.
+          </li>
+          <li>
+            <strong>Treasury Inflation-Protected Securities (TIPS):</strong> US government bonds whose principal value automatically increases with CPI inflation.
+          </li>
+          <li>
+            <strong>Low-Cost Stock Market Index Funds:</strong> Historically, broad market index funds (such as S&P 500 index funds) have generated nominal returns of 8% to 10%, outpacing long-term inflation.
+          </li>
+          <li>
+            <strong>Real Assets (Real Estate & Commodities):</strong> Physical assets and real estate property values tend to appreciate alongside rising consumer prices.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Inflation Loss FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is inflation loss and how does it erode purchasing power?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Inflation loss occurs when the prices of goods and services rise over time, making each dollar buy less than it used to. If your bank savings account earns less interest than the inflation rate, your nominal cash balance grows, but your real ability to buy goods decreases.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between nominal value and real purchasing power?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Nominal value is the dollar amount printed on your bank statement (e.g. $50,000). Real purchasing power is what that money can actually buy in terms of goods and services after adjusting for inflation.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you calculate real return rate using the Fisher equation?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The exact Fisher equation is <strong>Real Rate = [(1 + Nominal Rate) / (1 + Inflation Rate)] - 1</strong>. For example, a 5% nominal bank return with 3% inflation yields a real return rate of 1.94% per year.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the Rule of 72 and how does it apply to inflation?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The Rule of 72 is a quick mental formula to estimate how long it takes for a value to double or halve. Divide 72 by the annual inflation rate to see how many years it will take for your cash purchasing power to cut in half (e.g. 72 / 4% = 18 years).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can you protect your savings from inflation loss?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Protect savings by moving excess cash out of traditional 0.01% bank accounts into High-Yield Savings Accounts (HYSAs), Treasury Inflation-Protected Securities (TIPS), Series I Savings Bonds, low-cost stock index funds, or real estate assets.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

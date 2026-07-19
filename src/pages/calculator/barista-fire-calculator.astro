@@ -1,0 +1,250 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BaristaFireCalculator from '../../components/calculator/BaristaFireCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Barista FIRE Calculator', path: '/calculator/barista-fire-calculator' }
+];
+---
+
+<Layout
+  title="Barista FIRE Calculator - Calculate Semi-Retirement Nest Egg & Timeline"
+  description="Free online Barista FIRE Calculator. Calculate how working part-time slashes your required retirement nest egg, comparison against 100% Full FIRE, and years-to-freedom timeline."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <BaristaFireCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Semi-Retirement Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Escaping the Corporate Grind at Age 38: My Barista FIRE Journey</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a tech manager who quit his 60-hour corporate job at age 38 with a $900,000 nest egg, taking a part-time barista job for health insurance and earning $24,000/yr while escaping the rat race 6 years earlier than Full FIRE.
+            </p>
+            <a href="/blog/how-to-achieve-barista-fire" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Achieve Barista FIRE & Slash Your Nest Egg Goal
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Barista FIRE?</h2>
+        <p>
+          In personal finance and early retirement planning, <strong>Barista FIRE</strong> (Financial Independence, Retire Early) is a hybrid retirement model. Instead of accumulating a massive nest egg to cover 100% of your living expenses in full retirement, you accumulate a smaller portfolio and semi-retire early by taking a low-stress, flexible, or part-time job.
+        </p>
+        <p>
+          The term "Barista FIRE" originated because companies like Starbucks offer health insurance benefits to part-time employees working 20 hours a week. By combining part-time earned income (and health insurance coverage) with a modest annual draw from your portfolio, you can quit the high-stress corporate rat race years ahead of traditional retirement schedules.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To compute your Barista FIRE target, capital savings discount, and accumulation timeline, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Retirement Expenses:</strong> Enter your desired Annual Retirement Living Expenses (total cost of housing, food, travel, and healthcare).
+          </li>
+          <li>
+            <strong>Input Part-Time Income:</strong> Enter your Expected Part-Time or Side-Hustle Income ($/yr).
+          </li>
+          <li>
+            <strong>Configure Safe Withdrawal Rate (SWR):</strong> Input your target SWR % based on the Trinity Study (typically 4.0% or 3.5%).
+          </li>
+          <li>
+            <strong>Configure Portfolio Parameters:</strong> Enter your Current Invested Portfolio balance, Annual Investment Contribution ($/yr), and Expected Return Rate %.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly displays your required Barista FIRE nest egg target, Full FIRE comparison, capital saved, and years-to-freedom accumulation timeline.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Barista FIRE</h2>
+        <p>
+          The calculator applies FIRE economics and compound interest math to process your financial targets:
+        </p>
+        
+        <h3>1. Net Portfolio Annual Draw Formula</h3>
+        <p>
+          Your portfolio only needs to cover the spending gap remaining after your part-time income is applied:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Portfolio Draw} = \\max(0, \\text{Annual Living Expenses} - \\text{Part-Time Income})\\)"}
+        </p>
+
+        <h3>2. Barista FIRE Nest Egg Target Formula</h3>
+        <p>
+          Applying your Safe Withdrawal Rate (SWR %) to the net portfolio draw:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Barista FIRE Target} = \\frac{\\text{Net Portfolio Draw}}{\\text{SWR \\%}} \\times 100\\)"}
+        </p>
+        <p>
+          Under the standard 4% Rule (SWR = 4.0%), your target is simply 25 times your net annual portfolio draw:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Barista FIRE Target} = (\\text{Annual Expenses} - \\text{Part-Time Income}) \\times 25\\)"}
+        </p>
+
+        <h3>3. Full FIRE Target & Capital Discount</h3>
+        <p>
+          For comparison, a traditional 100% Full FIRE target requires 25 times your total annual expenses:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Full FIRE Target} = \\text{Annual Living Expenses} \\times 25\\)"}
+        </p>
+        <p>
+          The nest egg discount percentage achieved by working part-time is:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Nest Egg Discount \\%} = \\frac{\\text{Part-Time Income}}{\\text{Annual Living Expenses}} \\times 100\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an individual wants $60,000/yr in retirement living expenses. They plan to earn $24,000/yr working 20 hours a week at a part-time job with healthcare benefits. Their Safe Withdrawal Rate is 4.0%. They currently have $250,000 invested and contribute $20,000/yr at a 7% net return rate.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Net Annual Portfolio Draw:</strong> {"\\(\\$60,000 - \\$24,000 = \\mathbf{\\$36,000.00 \\text{ / year}}\\)"}
+          </li>
+          <li>
+            <strong>Barista FIRE Target Nest Egg:</strong> {"\\(\\$36,000 \\times 25 = \\mathbf{\\$900,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Full FIRE Target Nest Egg (100% retired):</strong> {"\\(\\$60,000 \\times 25 = \\mathbf{\\$1,500,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Capital Saved / Nest Egg Discount:</strong> {"\\(\\$1,500,000 - \\$900,000 = \\mathbf{\\$600,000.00}\\)"} (a 40.0% reduction!)
+          </li>
+          <li>
+            <strong>Timeline to Barista FIRE:</strong> Reaches $900,000 in <strong>11.9 years</strong> (compared to 17.6 years for Full FIRE).
+          </li>
+          <li>
+            <strong>Freedom Advantage:</strong> Escape the corporate rat race <strong>5.7 years earlier</strong>!
+          </li>
+        </ul>
+
+        <h2>Comparing FIRE Variations</h2>
+        <p>
+          Understanding where Barista FIRE fits into the broader Financial Independence spectrum:
+        </p>
+        <ol>
+          <li>
+            <strong>Traditional Full FIRE:</strong> Accumulating 25x total living expenses ($1.5M for $60k spending) to completely stop working forever.
+          </li>
+          <li>
+            <strong>Lean FIRE:</strong> Retiring 100% on a minimalist budget (typically under $40k/yr spending) through extreme frugality.
+          </li>
+          <li>
+            <strong>Coast FIRE:</strong> Accumulating enough capital early in life so that compounding alone will reach your retirement target at age 65, allowing you to stop saving further while working a job that only covers current living costs.
+          </li>
+          <li>
+            <strong>Barista FIRE:</strong> Combining a reduced investment portfolio draw with part-time or flexible work to cover basic living costs and secure health insurance coverage ahead of full retirement.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Barista FIRE FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is Barista FIRE and how does it differ from traditional FIRE?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Barista FIRE is a semi-retirement strategy where you accumulate a smaller portfolio than traditional 100% FIRE, quit your high-stress corporate career, and work a low-stress part-time job to cover basic expenses and healthcare costs. It differs from traditional FIRE because you continue to earn supplemental income rather than relying 100% on portfolio withdrawals.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does part-time income reduce your required retirement nest egg?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Every dollar of part-time income you earn reduces your required portfolio nest egg by $25 (under the 4% Rule). Earning $20,000 a year part-time slashes your required retirement portfolio by <strong>$500,000</strong> ($20,000 × 25).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What are the best part-time jobs for Barista FIRE (healthcare benefits)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Popular part-time employers that offer health insurance to part-time workers include Starbucks (20 hrs/wk), Costco, REI, Trader Joe's, and UPS. Other popular options include freelance consulting, tutoring, or seasonal outdoor recreation jobs.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What safe withdrawal rate (SWR) should you use for Barista FIRE?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Most early retirees use a Safe Withdrawal Rate of <strong>3.5% to 4.0%</strong> based on the Trinity Study. Because Barista FIRE workers have active part-time earned income, their portfolios carry lower sequence-of-returns risk than 100% retired individuals.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between Barista FIRE and Coast FIRE?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              In Coast FIRE, your portfolio is left untouched to compound until traditional retirement age (65), while your job covers 100% of your current living costs. In Barista FIRE, you actively draw down a portion of your portfolio while working part-time to cover the remaining spending gap.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

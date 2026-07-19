@@ -1,0 +1,630 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Financial Independence Date Calculator"
+  description="Calculate the exact month, year, and age when you will achieve Financial Independence. See how your savings rate, investment return, inflation, and safe withdrawal rate determine your FI crossover date."
+  category="Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="financial-independence-date-calculator">
+    
+    <!-- Step 1: Currency & Income Profile -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Personal Profile & Income</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="fid-currency-select">Currency</label>
+        <select id="fid-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Current Age -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="fid-age-input">Current Age (Years)</label>
+        <div class="input-symbol-wrapper">
+          <input type="number" id="fid-age-input" min="18" max="75" step="1" value="30" aria-label="Current Age" style="text-align: left;" />
+          <span class="percent-symbol">yrs</span>
+        </div>
+      </div>
+      <input type="range" id="fid-age-slider" min="18" max="65" step="1" value="30" class="slider-range" aria-label="Current Age Slider" />
+    </div>
+
+    <!-- Annual Take-Home Income -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="fid-income-input">Annual Take-Home Income</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="fid-income-input" min="10000" step="2500" value="90000" aria-label="Annual Take Home Income" />
+        </div>
+      </div>
+      <input type="range" id="fid-income-slider" min="20000" max="250000" step="2500" value="90000" class="slider-range" aria-label="Annual Income Slider" />
+    </div>
+
+    <!-- Annual Living Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="fid-exp-input">Annual Living Expenses</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="fid-exp-input" min="10000" step="2500" value="45000" aria-label="Annual Living Expenses" />
+        </div>
+      </div>
+      <input type="range" id="fid-exp-slider" min="15000" max="150000" step="2500" value="45000" class="slider-range" aria-label="Annual Expenses Slider" />
+    </div>
+
+    <!-- Step 2: Assets & Monthly Savings -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Current Assets & Monthly Investments</h3>
+      
+      <!-- Current Portfolio Balance -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="fid-port-input">Current Invested Portfolio</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="fid-port-input" min="0" step="5000" value="100000" aria-label="Current Invested Portfolio" />
+          </div>
+        </div>
+        <input type="range" id="fid-port-slider" min="0" max="1000000" step="10000" value="100000" class="slider-range" aria-label="Current Portfolio Slider" />
+      </div>
+
+      <!-- Monthly Savings -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="fid-savings-input">Monthly Investment Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="fid-savings-input" min="0" step="250" value="3750" aria-label="Monthly Savings Contribution" />
+          </div>
+        </div>
+        <input type="range" id="fid-savings-slider" min="0" max="10000" step="250" value="3750" class="slider-range" aria-label="Monthly Savings Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Economic Assumptions -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">3. Economic & Growth Rates</h3>
+
+      <!-- Safe Withdrawal Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="fid-swr-input">Safe Withdrawal Rate (SWR)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="fid-swr-input" min="2.0" max="6.0" step="0.25" value="4.0" aria-label="Safe Withdrawal Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="fid-swr-slider" min="2.5" max="5.0" step="0.25" value="4.0" class="slider-range" aria-label="SWR Slider" />
+      </div>
+
+      <!-- Expected Return Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="fid-return-input">Expected Investment Return Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="fid-return-input" min="2.0" max="15.0" step="0.5" value="8.0" aria-label="Expected Investment Return Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="fid-return-slider" min="4.0" max="12.0" step="0.5" value="8.0" class="slider-range" aria-label="Return Rate Slider" />
+      </div>
+
+      <!-- Expected Inflation Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="fid-inflation-input">Expected Annual Inflation Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="fid-inflation-input" min="0.5" max="10.0" step="0.5" value="3.0" aria-label="Expected Annual Inflation Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="fid-inflation-slider" min="1.0" max="8.0" step="0.5" value="3.0" class="slider-range" aria-label="Inflation Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="fid-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Financial Independence Forecast</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Financial Independence Date</span>
+        <div id="res-fid-date" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">September 2040</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-fid-age">Age: 44.2 years old</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Target FI Nest Egg</span>
+        <div id="res-fid-target" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$1,125,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-fid-timeline">14.2 years away</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="fid-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">FI Crossover Diagnosis</span>
+        <p id="res-fid-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          At a <strong>50.0% savings rate</strong>, you will reach Financial Independence in <strong>14.2 years</strong> at age <strong>44.2</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">FI Accumulation Breakdown</h4>
+    <div class="results-grid fid-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Savings Rate</span>
+        <div class="tile-value" id="tile-fid-savings-rate" style="color: var(--color-success);">50.0%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-fid-monthly-contrib">$3,750/mo saved</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Net Real Return</span>
+        <div class="tile-value" id="tile-fid-real-return" style="color: var(--color-primary);">4.85%/yr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-fid-return-desc">8% return - 3% inflation</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Passive Income</span>
+        <div class="tile-value" id="tile-fid-passive-inc" style="color: var(--color-accent);">$3,750/mo</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-fid-swr-desc">4.0% SWR yield</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initFidCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('fid-currency-select') as HTMLSelectElement;
+
+    const ageInput = document.getElementById('fid-age-input') as HTMLInputElement;
+    const ageSlider = document.getElementById('fid-age-slider') as HTMLInputElement;
+    const incomeInput = document.getElementById('fid-income-input') as HTMLInputElement;
+    const incomeSlider = document.getElementById('fid-income-slider') as HTMLInputElement;
+    const expInput = document.getElementById('fid-exp-input') as HTMLInputElement;
+    const expSlider = document.getElementById('fid-exp-slider') as HTMLInputElement;
+
+    const portInput = document.getElementById('fid-port-input') as HTMLInputElement;
+    const portSlider = document.getElementById('fid-port-slider') as HTMLInputElement;
+    const savingsInput = document.getElementById('fid-savings-input') as HTMLInputElement;
+    const savingsSlider = document.getElementById('fid-savings-slider') as HTMLInputElement;
+
+    const swrInput = document.getElementById('fid-swr-input') as HTMLInputElement;
+    const swrSlider = document.getElementById('fid-swr-slider') as HTMLInputElement;
+    const returnInput = document.getElementById('fid-return-input') as HTMLInputElement;
+    const returnSlider = document.getElementById('fid-return-slider') as HTMLInputElement;
+    const inflationInput = document.getElementById('fid-inflation-input') as HTMLInputElement;
+    const inflationSlider = document.getElementById('fid-inflation-slider') as HTMLInputElement;
+
+    if (!ageInput || !currencySelect || !incomeInput || !expInput) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(ageInput, ageSlider);
+    bindSlider(incomeInput, incomeSlider);
+    bindSlider(expInput, expSlider);
+    bindSlider(portInput, portSlider);
+    bindSlider(savingsInput, savingsSlider);
+    bindSlider(swrInput, swrSlider);
+    bindSlider(returnInput, returnSlider);
+    bindSlider(inflationInput, inflationSlider);
+
+    // Auto update monthly savings when income/expenses change
+    let userModifiedSavings = false;
+    savingsInput.addEventListener('change', () => userModifiedSavings = true);
+    savingsSlider.addEventListener('change', () => userModifiedSavings = true);
+
+    incomeInput.addEventListener('input', () => {
+      if (!userModifiedSavings) syncSavingsFromBudget();
+    });
+    expInput.addEventListener('input', () => {
+      if (!userModifiedSavings) syncSavingsFromBudget();
+    });
+
+    function syncSavingsFromBudget() {
+      const inc = parseFloat(incomeInput.value) || 0;
+      const exp = parseFloat(expInput.value) || 0;
+      const monthlySavings = Math.max(0, (inc - exp) / 12);
+      savingsInput.value = monthlySavings.toFixed(0);
+      savingsSlider.value = monthlySavings.toFixed(0);
+    }
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('fid-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        userModifiedSavings = false;
+
+        ageInput.value = '30';
+        ageSlider.value = '30';
+        incomeInput.value = '90000';
+        incomeSlider.value = '90000';
+        expInput.value = '45000';
+        expSlider.value = '45000';
+
+        portInput.value = '100000';
+        portSlider.value = '100000';
+        savingsInput.value = '3750';
+        savingsSlider.value = '3750';
+
+        swrInput.value = '4.0';
+        swrSlider.value = '4.0';
+        returnInput.value = '8.0';
+        returnSlider.value = '8.0';
+        inflationInput.value = '3.0';
+        inflationSlider.value = '3.0';
+
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const currentAge = parseFloat(ageInput.value) || 30;
+      const annualIncome = parseFloat(incomeInput.value) || 0;
+      const annualExp = parseFloat(expInput.value) || 0;
+
+      const currentPort = parseFloat(portInput.value) || 0;
+      const monthlySavings = parseFloat(savingsInput.value) || 0;
+
+      const swrPct = parseFloat(swrInput.value) || 4.0;
+      const returnRate = parseFloat(returnInput.value) || 8.0;
+      const inflationRate = parseFloat(inflationInput.value) || 3.0;
+
+      // Savings Rate
+      const annualSavings = monthlySavings * 12;
+      const savingsRatePct = annualIncome > 0 ? (annualSavings / annualIncome) * 100 : 0;
+
+      // Target Nest Egg
+      const targetNestEgg = swrPct > 0 ? annualExp / (swrPct / 100) : 0;
+      const monthlyPassiveInc = (targetNestEgg * (swrPct / 100)) / 12;
+
+      // Real Net Return Rate (Fisher Equation)
+      // Real Return = ((1 + nominal) / (1 + inflation) - 1)
+      const realReturnRate = ((1 + returnRate / 100) / (1 + inflationRate / 100) - 1);
+      const monthlyRealRate = Math.pow(1 + realReturnRate, 1/12) - 1;
+
+      // Compounding Month-by-Month Loop to solve for months to FI
+      let monthsToFI = 0;
+      let portfolio = currentPort;
+
+      if (portfolio < targetNestEgg) {
+        if (monthlySavings <= 0 && monthlyRealRate <= 0) {
+          monthsToFI = 1200; // Cap at 100 years
+        } else {
+          while (portfolio < targetNestEgg && monthsToFI < 1200) {
+            portfolio = portfolio * (1 + monthlyRealRate) + monthlySavings;
+            monthsToFI++;
+          }
+        }
+      }
+
+      const yearsToFI = monthsToFI / 12;
+      const fiAge = currentAge + yearsToFI;
+
+      // Calendar Date Calculation
+      const today = new Date();
+      const fiDateObj = new Date(today.getFullYear(), today.getMonth() + monthsToFI, 1);
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const fiDateFormatted = `${monthNames[fiDateObj.getMonth()]} ${fiDateObj.getFullYear()}`;
+
+      // DOM Updates
+      const resDate = document.getElementById('res-fid-date');
+      const resTarget = document.getElementById('res-fid-target');
+      const lblAge = document.getElementById('lbl-fid-age');
+      const lblTimeline = document.getElementById('lbl-fid-timeline');
+
+      if (resDate) resDate.textContent = fiDateFormatted;
+      if (resTarget) resTarget.textContent = formatCurrency(targetNestEgg);
+      if (lblAge) lblAge.textContent = `Age: ${fiAge.toFixed(1)} years old`;
+      if (lblTimeline) lblTimeline.textContent = `${yearsToFI.toFixed(1)} years away`;
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-fid-verdict-text');
+      if (verdictText) {
+        verdictText.innerHTML = `At a <strong>${savingsRatePct.toFixed(1)}% savings rate</strong> (${formatCurrency(monthlySavings)}/mo), your investments will reach your Financial Independence crossover target of <strong>${formatCurrency(targetNestEgg)}</strong> in <strong>${yearsToFI.toFixed(1)} years</strong>. Your exact FI Date is <strong>${fiDateFormatted}</strong> (at age <strong>${fiAge.toFixed(1)}</strong>).`;
+      }
+
+      // Details Tiles Updates
+      const tileSavingsRate = document.getElementById('tile-fid-savings-rate');
+      const lblMonthlyContrib = document.getElementById('lbl-fid-monthly-contrib');
+      const tileRealReturn = document.getElementById('tile-fid-real-return');
+      const lblReturnDesc = document.getElementById('lbl-fid-return-desc');
+      const tilePassiveInc = document.getElementById('tile-fid-passive-inc');
+      const lblSwrDesc = document.getElementById('lbl-fid-swr-desc');
+
+      if (tileSavingsRate) tileSavingsRate.textContent = savingsRatePct.toFixed(1) + '%';
+      if (lblMonthlyContrib) lblMonthlyContrib.textContent = `${formatCurrency(monthlySavings)}/mo saved`;
+
+      if (tileRealReturn) tileRealReturn.textContent = (realReturnRate * 100).toFixed(2) + '%/yr';
+      if (lblReturnDesc) lblReturnDesc.textContent = `${returnRate}% return - ${inflationRate}% inflation`;
+
+      if (tilePassiveInc) tilePassiveInc.textContent = formatCurrency(monthlyPassiveInc).split('.')[0] + '/mo';
+      if (lblSwrDesc) lblSwrDesc.textContent = `${swrPct.toFixed(1)}% SWR yield`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Financial Independence Date Forecast:\n` +
+                   `Current Age: ${ageInput.value} yrs | Annual Income: ${incomeInput.value} | Expenses: ${expInput.value}\n` +
+                   `Savings Rate: ${document.getElementById('tile-fid-savings-rate')?.textContent} (${document.getElementById('lbl-fid-monthly-contrib')?.textContent})\n` +
+                   `Current Portfolio: ${portInput.value} | Net Real Return: ${document.getElementById('tile-fid-real-return')?.textContent}\n` +
+                   `Target FI Nest Egg: ${document.getElementById('res-fid-target')?.textContent} (${swrInput.value}% SWR)\n` +
+                   `FI Crossover Date: ${document.getElementById('res-fid-date')?.textContent} (${document.getElementById('lbl-fid-age')?.textContent})\n` +
+                   `Timeline: ${document.getElementById('lbl-fid-timeline')?.textContent}\n` +
+                   `Diagnosis: ${document.getElementById('res-fid-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initFidCalculator);
+  document.addEventListener('astro:after-swap', initFidCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

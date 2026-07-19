@@ -1,0 +1,254 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FinancialIndependenceDateCalculator from '../../components/calculator/FinancialIndependenceDateCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Financial Independence Date Calculator', path: '/calculator/financial-independence-date-calculator' }
+];
+---
+
+<Layout
+  title="Financial Independence Date Calculator - Calculate FI Crossover Month & Year"
+  description="Free online Financial Independence Date Calculator. Forecast your exact FI crossover calendar month, year, and age based on savings rate, real returns, and safe withdrawal rates."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <FinancialIndependenceDateCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Financial Independence Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Mapping My FI Date: How Shifting to a 50% Savings Rate Shaved 15 Years Off My Career</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a 30-year-old accountant who mapped out their exact Financial Independence Date (September 2040 at age 44), demonstrating how raising their savings rate from 20% to 50% cut 15 years off their working career.
+            </p>
+            <a href="/blog/how-to-calculate-financial-independence-date" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Your Financial Independence Date & Accelerate Timeline
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Financial Independence Date?</h2>
+        <p>
+          In wealth management and early retirement planning, your <strong>Financial Independence Date (FI Date)</strong> is the exact calendar month and year when your invested assets generate enough passive income to cover 100% of your annual living expenses indefinitely. 
+        </p>
+        <p>
+          Reaching your FI Date—also known as the <strong>FI Crossover Point</strong>—means that working for an income becomes 100% optional. You gain complete control over your time, whether you choose to continue working, switch careers, start a business, or retire early.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To forecast your exact FI crossover calendar date, age, and nest egg target, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Age & Income:</strong> Enter your Current Age, Annual Take-Home Income, and Annual Living Expenses to establish your baseline savings rate.
+          </li>
+          <li>
+            <strong>Input Current Assets:</strong> Enter your Current Invested Portfolio balance and Monthly Investment Contribution ($/mo).
+          </li>
+          <li>
+            <strong>Configure Economic Rates:</strong> Input your target Safe Withdrawal Rate (SWR %, default 4.0%), Expected Investment Return Rate %, and Annual Inflation Rate %.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator compounds your investments month-by-month in real purchasing power terms, displaying your exact FI calendar month/year, age at FI, target nest egg, savings rate, and timeline.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Financial Independence</h2>
+        <p>
+          The calculator applies economic crossover formulas and inflation-adjusted compounding to forecast your FI Date:
+        </p>
+        
+        <h3>1. Target FI Nest Egg Formula</h3>
+        <p>
+          Based on the Trinity Study's 4% Safe Withdrawal Rate (SWR = 4.0%), your target nest egg is 25 times your annual living expenses:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Target FI Nest Egg} = \\frac{\\text{Annual Living Expenses}}{\\text{SWR \\%}} \\times 100 = \\text{Annual Expenses} \\times 25\\)"}
+        </p>
+
+        <h3>2. Savings Rate Percentage Formula</h3>
+        <p>
+          Your savings rate is the single most powerful variable determining your timeline to FI:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Savings Rate \\%} = \\frac{\\text{Take-Home Income} - \\text{Living Expenses}}{\\text{Take-Home Income}} \\times 100\\)"}
+        </p>
+
+        <h3>3. Real Inflation-Adjusted Return Rate (Fisher Equation)</h3>
+        <p>
+          To ensure your target nest egg and monthly contributions account for compounding inflation over decades, we compute the real net return rate:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Net Return Rate} = (\\frac{1 + \\frac{\\text{Nominal Return}}{100}}{1 + \\frac{\\text{Inflation}}{100}} - 1) \\times 100\\)"}
+        </p>
+
+        <h2>The Shockingly Simple Math of Early Retirement</h2>
+        <p>
+          In Mr. Money Mustache's famous FIRE framework, your timeline to financial independence depends almost entirely on your **savings rate percentage**, regardless of your absolute salary level:
+        </p>
+        <ul>
+          <li>
+            <strong>10% Savings Rate:</strong> Requires <strong>~51 years</strong> of work to reach FI.
+          </li>
+          <li>
+            <strong>25% Savings Rate:</strong> Requires <strong>~32 years</strong> of work to reach FI.
+          </li>
+          <li>
+            <strong>50% Savings Rate:</strong> Requires <strong>~17 years</strong> of work to reach FI.
+          </li>
+          <li>
+            <strong>70% Savings Rate:</strong> Requires <strong>~8.5 years</strong> of work to reach FI.
+          </li>
+        </ul>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose a 30-year-old worker earns $90,000/yr take-home income and spends $45,000/yr (a 50.0% savings rate = $3,750/month saved). They have $100,000 in existing investments, an 8% expected return, 3% inflation (4.85% real net return), and a 4% SWR.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Target FI Nest Egg:</strong> {"\\(\\$45,000 \\times 25 = \\mathbf{\\$1,125,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Current Savings Rate:</strong> {"\\(\\frac{\\$45,000}{\\$90,000} \\times 100 = \\mathbf{50.0\\%}\\)"}
+          </li>
+          <li>
+            <strong>Timeline to FI:</strong> Compounding $100,000 + $3,750/mo at 4.85% real return takes <strong>14.2 years</strong> (170 months).
+          </li>
+          <li>
+            <strong>Exact FI Date:</strong> <strong>September 2040</strong>
+          </li>
+          <li>
+            <strong>Age at FI:</strong> <strong>44.2 years old</strong>
+          </li>
+          <li>
+            <strong>Monthly Passive Income at FI:</strong> {"\\(\\frac{\\$1,125,000 \\times 0.04}{12} = \\mathbf{\\$3,750.00 \\text{ / month}}\\)"}
+          </li>
+        </ul>
+
+        <h2>4 Strategies to Accelerate Your FI Date</h2>
+        <p>
+          To pull your FI Date forward by years or decades, execute these four wealth building strategies:
+        </p>
+        <ol>
+          <li>
+            <strong>Increase Your Savings Rate:</strong> Bumping your savings rate from 30% to 50% cuts over 10 years off your working life.
+          </li>
+          <li>
+            <strong>Eliminate High-Interest Debt:</strong> Pay off credit cards and personal loans to free up monthly cash flow for investing.
+          </li>
+          <li>
+            <strong>Max Out Tax-Advantaged Accounts:</strong> Utilize 401(k)s, Roth IRAs, and HSAs to eliminate tax drag on your compounding growth.
+          </li>
+          <li>
+            <strong>Avoid Lifestyle Creep:</strong> When you receive raises or promotions, direct 100% of the income increase into investments rather than upgrading your spending.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Financial Independence Date FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a Financial Independence (FI) Date and how is it calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Your FI Date is the calendar month and year when your investment portfolio reaches a target size (usually 25x annual expenses) where portfolio withdrawals can cover 100% of your living expenses indefinitely. It is calculated by compounding your current portfolio and monthly savings at an inflation-adjusted real return rate.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does your savings rate impact your Financial Independence Date?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Savings rate is the single biggest driver of early retirement. A higher savings rate simultaneously increases the amount you invest each month while decreasing the nest egg needed in retirement. Saving 50% of your income achieves FI in ~17 years, compared to ~32 years at a 25% savings rate.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What safe withdrawal rate (SWR) should you use to calculate your FI target?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The standard benchmark is <strong>4.0%</strong> based on the Trinity Study, which indicates a 95%+ success rate over a 30-year retirement. Early retirees with 40+ year horizons often use a slightly more conservative SWR of 3.25% to 3.5%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do inflation and taxes affect your FI Date calculation?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Inflation erodes purchasing power, so our calculator uses a real return rate (e.g. 8% nominal return minus 3% inflation = 4.85% real net return). Taxes on investment gains and take-home pay should be factored in to ensure your monthly savings and target withdrawals reflect net cash flow.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Can you reach Financial Independence without a high salary?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes! Because FI math depends on your <strong>savings rate percentage</strong> rather than total salary, anyone who maintains low living expenses relative to their income can achieve FI. Lower living expenses also mean a significantly smaller target nest egg.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

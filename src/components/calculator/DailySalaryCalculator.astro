@@ -1,0 +1,564 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Daily Salary Calculator"
+  description="Convert your annual, monthly, bi-weekly, or hourly wages into an exact daily salary rate. Factor in work days per week, hours per day, and unpaid days off to see your true per-day and per-minute earnings."
+  category="Salary"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="daily-salary-calculator">
+    
+    <!-- Step 1: Currency & Pay Mode -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Pay Mode & Earnings</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ds-currency-select">Currency</label>
+        <select id="ds-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Pay Frequency Mode -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ds-pay-type">Pay Frequency Mode</label>
+        <select id="ds-pay-type" class="currency-select" aria-label="Select Pay Frequency Mode" style="max-width: 100%;">
+          <option value="annual" selected>Annual Salary ($/year)</option>
+          <option value="monthly">Monthly Salary ($/month)</option>
+          <option value="biweekly">Bi-Weekly Salary ($/2 weeks)</option>
+          <option value="hourly">Hourly Wage ($/hour)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Salary / Wage Amount -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ds-amount-input" id="lbl-ds-amount-title">Salary / Wage Amount</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="ds-amount-input" min="1" step="500" value="75000" aria-label="Salary Amount" />
+        </div>
+      </div>
+      <input type="range" id="ds-amount-slider" min="10000" max="250000" step="1000" value="75000" class="slider-range" aria-label="Amount Slider" />
+    </div>
+
+    <!-- Step 2: Work Schedule Parameters -->
+    <div style="margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Work Schedule & Time Off</h3>
+      
+      <!-- Work Days Per Week -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ds-days-week-input">Work Days Per Week</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="ds-days-week-input" min="1" max="7" step="1" value="5" aria-label="Work Days Per Week" style="text-align: left;" />
+            <span class="percent-symbol">days</span>
+          </div>
+        </div>
+        <input type="range" id="ds-days-week-slider" min="1" max="7" step="1" value="5" class="slider-range" aria-label="Days Per Week Slider" />
+      </div>
+
+      <!-- Work Hours Per Day -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ds-hours-day-input">Work Hours Per Day</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="ds-hours-day-input" min="1" max="16" step="0.5" value="8" aria-label="Work Hours Per Day" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="ds-hours-day-slider" min="1" max="16" step="0.5" value="8" class="slider-range" aria-label="Hours Per Day Slider" />
+      </div>
+
+      <!-- Unpaid Days Off Per Year -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ds-unpaid-days-input">Unpaid Days Off / Holidays (Per Year)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="ds-unpaid-days-input" min="0" max="90" step="1" value="0" aria-label="Unpaid Days Off Per Year" style="text-align: left;" />
+            <span class="percent-symbol">days</span>
+          </div>
+        </div>
+        <input type="range" id="ds-unpaid-days-slider" min="0" max="60" step="1" value="0" class="slider-range" aria-label="Unpaid Days Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="ds-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Daily Earnings & Micro-Pay Summary</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Gross Daily Salary</span>
+        <div id="res-ds-daily-pay" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$288.46 / day</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-ds-work-days">260 paid work days per year</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Hourly Equivalent Rate</span>
+        <div id="res-ds-hourly-rate" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$36.06 / hr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-ds-minute-rate">$0.60 / minute</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="ds-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Daily Rate Earnings Diagnosis</span>
+        <p id="res-ds-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          At an annual salary of <strong>$75,000</strong> working <strong>5 days/week</strong> (8 hours/day), your true gross daily rate is <strong>$288.46 per day</strong> ($36.06/hour or $0.60/minute).
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Pay Frequency Equivalents</h4>
+    <div class="results-grid ds-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Bi-Weekly Pay</span>
+        <div class="tile-value" id="tile-ds-biweekly" style="color: var(--color-primary);">$2,884.62</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Every 2 weeks (10 work days)</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Monthly Pay</span>
+        <div class="tile-value" id="tile-ds-monthly" style="color: var(--color-accent);">$6,250.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Average monthly gross earnings</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Per Minute Pay</span>
+        <div class="tile-value" id="tile-ds-minute" style="color: var(--color-success);">$0.60/min</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Based on 8 working hours/day</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initDsCalculator() {
+    // Select elements
+    const currencySelect = document.getElementById('ds-currency-select') as HTMLSelectElement;
+    const payTypeSelect = document.getElementById('ds-pay-type') as HTMLSelectElement;
+
+    const amountInput = document.getElementById('ds-amount-input') as HTMLInputElement;
+    const amountSlider = document.getElementById('ds-amount-slider') as HTMLInputElement;
+    const daysWeekInput = document.getElementById('ds-days-week-input') as HTMLInputElement;
+    const daysWeekSlider = document.getElementById('ds-days-week-slider') as HTMLInputElement;
+    const hoursDayInput = document.getElementById('ds-hours-day-input') as HTMLInputElement;
+    const hoursDaySlider = document.getElementById('ds-hours-day-slider') as HTMLInputElement;
+    const unpaidDaysInput = document.getElementById('ds-unpaid-days-input') as HTMLInputElement;
+    const unpaidDaysSlider = document.getElementById('ds-unpaid-days-slider') as HTMLInputElement;
+
+    if (!amountInput || !currencySelect || !payTypeSelect) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(amountInput, amountSlider);
+    bindSlider(daysWeekInput, daysWeekSlider);
+    bindSlider(hoursDayInput, hoursDaySlider);
+    bindSlider(unpaidDaysInput, unpaidDaysSlider);
+
+    // Pay Frequency Mode Switcher
+    payTypeSelect.addEventListener('change', () => {
+      const mode = payTypeSelect.value;
+      const lblTitle = document.getElementById('lbl-ds-amount-title');
+
+      if (mode === 'annual') {
+        if (lblTitle) lblTitle.textContent = 'Annual Salary ($/year)';
+        amountInput.value = '75000';
+        amountSlider.min = '10000';
+        amountSlider.max = '250000';
+        amountSlider.step = '1000';
+        amountSlider.value = '75000';
+      } else if (mode === 'monthly') {
+        if (lblTitle) lblTitle.textContent = 'Monthly Salary ($/month)';
+        amountInput.value = '6250';
+        amountSlider.min = '1000';
+        amountSlider.max = '25000';
+        amountSlider.step = '250';
+        amountSlider.value = '6250';
+      } else if (mode === 'biweekly') {
+        if (lblTitle) lblTitle.textContent = 'Bi-Weekly Salary ($/2 weeks)';
+        amountInput.value = '2885';
+        amountSlider.min = '500';
+        amountSlider.max = '15000';
+        amountSlider.step = '100';
+        amountSlider.value = '2885';
+      } else if (mode === 'hourly') {
+        if (lblTitle) lblTitle.textContent = 'Hourly Wage ($/hour)';
+        amountInput.value = '36.06';
+        amountSlider.min = '10';
+        amountSlider.max = '150';
+        amountSlider.step = '1';
+        amountSlider.value = '36.06';
+      }
+
+      calculateAll();
+    });
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('ds-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        payTypeSelect.value = 'annual';
+        const lblTitle = document.getElementById('lbl-ds-amount-title');
+        if (lblTitle) lblTitle.textContent = 'Annual Salary ($/year)';
+
+        amountInput.value = '75000';
+        amountSlider.min = '10000';
+        amountSlider.max = '250000';
+        amountSlider.step = '1000';
+        amountSlider.value = '75000';
+
+        daysWeekInput.value = '5';
+        daysWeekSlider.value = '5';
+        hoursDayInput.value = '8';
+        hoursDaySlider.value = '8';
+        unpaidDaysInput.value = '0';
+        unpaidDaysSlider.value = '0';
+
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number, decimals: number = 2) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const amount = parseFloat(amountInput.value) || 0;
+      const payMode = payTypeSelect.value;
+      const daysPerWeek = parseFloat(daysWeekInput.value) || 5;
+      const hoursPerDay = parseFloat(hoursDayInput.value) || 8;
+      const unpaidDays = parseFloat(unpaidDaysInput.value) || 0;
+
+      // Base Work Days per year
+      const baseWorkDays = 52 * daysPerWeek;
+      const paidWorkDays = Math.max(1, baseWorkDays - unpaidDays);
+
+      // Solve Annual Equivalent Salary
+      let annualSalary = 0;
+      if (payMode === 'annual') {
+        annualSalary = amount;
+      } else if (payMode === 'monthly') {
+        annualSalary = amount * 12;
+      } else if (payMode === 'biweekly') {
+        annualSalary = amount * 26;
+      } else if (payMode === 'hourly') {
+        annualSalary = amount * hoursPerDay * paidWorkDays;
+      }
+
+      // Output metrics
+      const dailySalary = annualSalary / paidWorkDays;
+      const hourlyRate = hoursPerDay > 0 ? dailySalary / hoursPerDay : 0;
+      const minuteRate = hoursPerDay > 0 ? hourlyRate / 60 : 0;
+      const biweeklyPay = dailySalary * (daysPerWeek * 2);
+      const monthlyPay = annualSalary / 12;
+
+      // DOM Updates
+      const resDailyPay = document.getElementById('res-ds-daily-pay');
+      const resHourlyRate = document.getElementById('res-ds-hourly-rate');
+      const lblWorkDays = document.getElementById('lbl-ds-work-days');
+      const lblMinuteRate = document.getElementById('lbl-ds-minute-rate');
+
+      if (resDailyPay) resDailyPay.textContent = formatCurrency(dailySalary) + ' / day';
+      if (resHourlyRate) resHourlyRate.textContent = formatCurrency(hourlyRate) + ' / hr';
+      if (lblWorkDays) lblWorkDays.textContent = `${paidWorkDays} paid work days per year`;
+      if (lblMinuteRate) lblMinuteRate.textContent = `${formatCurrency(minuteRate)} / minute`;
+
+      // Verdict card and text
+      const verdictText = document.getElementById('res-ds-verdict-text');
+      if (verdictText) {
+        verdictText.innerHTML = `At an annual salary equivalent of <strong>${formatCurrency(annualSalary)}</strong> working <strong>${daysPerWeek} days/week</strong> (${hoursPerDay} hours/day), your true gross daily rate is <strong>${formatCurrency(dailySalary)} per day</strong> (<strong>${formatCurrency(hourlyRate)}/hour</strong> or <strong>${formatCurrency(minuteRate)}/minute</strong>).`;
+      }
+
+      // Details Tiles Updates
+      const tileBiweekly = document.getElementById('tile-ds-biweekly');
+      const tileMonthly = document.getElementById('tile-ds-monthly');
+      const tileMinute = document.getElementById('tile-ds-minute');
+
+      if (tileBiweekly) tileBiweekly.textContent = formatCurrency(biweeklyPay);
+      if (tileMonthly) tileMonthly.textContent = formatCurrency(monthlyPay);
+      if (tileMinute) tileMinute.textContent = formatCurrency(minuteRate) + '/min';
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Daily Salary & Earnings Breakdown:\n` +
+                   `Pay Mode: ${payTypeSelect.value} | Amount: ${amountInput.value}\n` +
+                   `Schedule: ${daysWeekInput.value} days/wk, ${hoursDayInput.value} hrs/day, ${unpaidDaysInput.value} unpaid days off\n` +
+                   `Gross Daily Salary: ${document.getElementById('res-ds-daily-pay')?.textContent}\n` +
+                   `Hourly Equivalent: ${document.getElementById('res-ds-hourly-rate')?.textContent}\n` +
+                   `Per Minute Rate: ${document.getElementById('tile-ds-minute')?.textContent}\n` +
+                   `Bi-Weekly Pay: ${document.getElementById('tile-ds-biweekly')?.textContent} | Monthly Pay: ${document.getElementById('tile-ds-monthly')?.textContent}\n` +
+                   `Diagnosis: ${document.getElementById('res-ds-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initDsCalculator);
+  document.addEventListener('astro:after-swap', initDsCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

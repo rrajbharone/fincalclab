@@ -1,0 +1,235 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GrossRevenueCalculator from '../../components/calculator/GrossRevenueCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Gross Revenue Calculator', path: '/calculator/gross-revenue-calculator' }
+];
+---
+
+<Layout
+  title="Gross Revenue Calculator - Calculate Top-Line Sales & Net Profit"
+  description="Free online Gross Revenue Calculator. Calculate top-line gross sales, net revenue after returns and discounts, gross profit, and profit margins for your business."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <GrossRevenueCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Business Revenue Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Top-Line vanity vs. Bottom-Line Sanity: How We Reconciled $150k Gross Revenue into Real Profit</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of an e-commerce founder who grew their business to $150,000 in gross revenue, but learned how untracked returns, promotional discounts, and COGS reduced their net revenue to $138,000 and gross profit to $85,500.
+            </p>
+            <a href="/blog/how-to-calculate-gross-revenue" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Gross Revenue & Optimize Sales Margins
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Gross Revenue?</h2>
+        <p>
+          In corporate accounting and business management, <strong>Gross Revenue</strong> (also known as top-line sales or total sales) is the total dollar amount generated from selling products or services during a specific period before deducting returns, customer discounts, allowances, or cost of goods sold (COGS).
+        </p>
+        <p>
+          It sits at the very top of the Income Statement (P&L). While gross revenue reflects overall commercial demand and sales momentum, it does not represent your actual profit. Understanding how gross revenue flows down into net revenue and gross profit is essential for maintaining business health.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To compute your top-line gross revenue, net revenue, and gross profit margins, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Sales Volume & Price:</strong> Enter your Total Units / Contracts Sold and Average Selling Price Per Unit.
+          </li>
+          <li>
+            <strong>Input Revenue Deductions:</strong> Enter estimated Product Returns & Allowances ($) and Promotional Discounts ($).
+          </li>
+          <li>
+            <strong>Input Direct Production Costs:</strong> Enter your Cost of Goods Sold (COGS) ($).
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly computes total gross revenue, net revenue, gross profit, deduction ratio %, and gross profit margin %.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Gross Revenue & Sales Waterfall</h2>
+        <p>
+          The calculator applies GAAP income statement accounting rules to reconcile your top-line sales:
+        </p>
+        
+        <h3>1. Gross Revenue Formula</h3>
+        <p>
+          Top-line revenue is calculated by multiplying sales volume by average unit price:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Revenue} = \\text{Units Sold} \\times \\text{Average Selling Price}\\)"}
+        </p>
+
+        <h3>2. Net Revenue Reconciliation Formula</h3>
+        <p>
+          Net Revenue represents the actual cash collected after adjusting for sales returns, damaged goods allowances, and promotional discounts:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total Deductions} = \\text{Returns \\& Allowances} + \\text{Promotional Discounts}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Revenue} = \\text{Gross Revenue} - \\text{Total Deductions}\\)"}
+        </p>
+
+        <h3>3. Gross Profit & Gross Margin Percentage Formulas</h3>
+        <p>
+          Gross profit measures your profit after deducting direct production/sourcing costs (COGS):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Profit} = \\text{Net Revenue} - \\text{Cost of Goods Sold (COGS)}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Margin \\%} = \\left( \\frac{\\text{Gross Profit}}{\\text{Gross Revenue}} \\right) \\times 100\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an e-commerce business sells 1,000 products at an average price of $150 per unit. During the month, they process $7,500 in product returns, offer $4,500 in discount codes, and incur $52,500 in inventory manufacturing costs (COGS).
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Total Gross Revenue:</strong> {"\\(1,000 \\times \\$150 = \\mathbf{\\$150,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Total Deductions:</strong> {"\\(\\$7,500 + \\$4,500 = \\mathbf{\\$12,000.00}\\)"} (8.0% deduction rate)
+          </li>
+          <li>
+            <strong>Net Revenue:</strong> {"\\(\\$150,000 - \\$12,000 = \\mathbf{\\$138,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Gross Profit:</strong> {"\\(\\$138,000 - \\$52,500 = \\mathbf{\\$85,500.00}\\)"}
+          </li>
+          <li>
+            <strong>Gross Margin Percentage:</strong> {"\\(\\frac{\\$85,500}{\\$150,000} \\times 100 = \\mathbf{57.00\\%}\\)"}
+          </li>
+        </ul>
+
+        <h2>Comparing Gross Revenue vs Net Revenue vs Gross Profit</h2>
+        <p>
+          Understanding where each metric sits on the Income Statement prevents misinterpretation of financial health:
+        </p>
+        <ul>
+          <li>
+            <strong>Gross Revenue (Top Line):</strong> Measures total gross demand generated from customers. Indicates market size and growth speed.
+          </li>
+          <li>
+            <strong>Net Revenue (Realized Sales):</strong> Measures actual net sales kept after customer returns, damage claims, and coupon codes.
+          </li>
+          <li>
+            <strong>Gross Profit (Unit Profitability):</strong> Measures how efficiently you produce or purchase inventory relative to your selling price.
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Gross Revenue FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is gross revenue and how is it calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gross revenue is the total money generated from all sales before subtracting any expenses or deductions. It is calculated by multiplying total units sold by average selling price (Units Sold × Price = Gross Revenue).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between gross revenue and net revenue?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gross revenue is the total initial sales amount. Net revenue is the remaining sales balance after subtracting product returns, customer allowances, and promotional discounts (Net Revenue = Gross Revenue - Returns & Discounts).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between gross revenue and gross profit?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gross revenue is total top-line sales. Gross profit is the money left over after deducting both sales deductions AND direct manufacturing/sourcing costs (COGS) from sales (Gross Profit = Net Revenue - COGS).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why is gross revenue important for businesses and investors?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gross revenue indicates market demand, scale, and year-over-year sales growth velocity. Investors use top-line revenue to evaluate valuation multiples (Price-to-Sales ratio) and market share growth.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Does gross revenue include sales tax, returns, or operating expenses?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              No. Under GAAP accounting, sales taxes collected on behalf of governments are excluded from gross revenue. Returns and discounts are subtracted below gross revenue to arrive at net revenue. Operating expenses (like rent and marketing) are deducted much further down the income statement.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

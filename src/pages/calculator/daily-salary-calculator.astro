@@ -1,0 +1,239 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DailySalaryCalculator from '../../components/calculator/DailySalaryCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Daily Salary Calculator', path: '/calculator/daily-salary-calculator' }
+];
+---
+
+<Layout
+  title="Daily Salary Calculator - Convert Annual Salary to Per-Day Pay"
+  description="Free online Daily Salary Calculator. Convert annual, monthly, bi-weekly, or hourly wages into exact daily pay rates based on work days per week and hours per day."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <DailySalaryCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Compensation Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">What Is 8 Hours of Your Life Worth? How Calculating My $288 Daily Pay Rate Changed My Career</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a salaried project manager earning $75,000/yr who calculated their true daily pay rate ($288.46/day or $0.60/minute), used it to evaluate uncompensated overtime, and accurately priced freelance contract day rates.
+            </p>
+            <a href="/blog/how-to-calculate-daily-salary" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Your Daily Salary & Use It to Negotiate Pay
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Daily Salary?</h2>
+        <p>
+          Your <strong>Daily Salary</strong> (or day rate) is the total gross compensation you earn for a single work day. While most salaried workers discuss earnings in terms of annual salary ($75,000/yr) or monthly pay ($6,250/mo), converting your income into a daily pay rate provides immediate, tangible clarity regarding the monetary value of your time.
+        </p>
+        <p>
+          Knowing your exact daily rate helps you evaluate job offers, negotiate freelance contract day rates, price uncompensated overtime, calculate unworked holiday pay deductions, and understand the true cost of taking unpaid leave.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To convert your earnings into an exact daily salary rate, hourly equivalent, and per-minute pay, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Select Pay Frequency Mode:</strong> Choose your current pay structure—Annual Salary ($/year), Monthly Salary ($/month), Bi-Weekly Salary ($/2 weeks), or Hourly Wage ($/hour).
+          </li>
+          <li>
+            <strong>Input Earnings Amount:</strong> Enter your gross pay figure in the input box or slider.
+          </li>
+          <li>
+            <strong>Configure Work Schedule:</strong> Select your Work Days Per Week (typically 5 days) and Work Hours Per Day (typically 8 hours).
+          </li>
+          <li>
+            <strong>Input Unpaid Days Off:</strong> Enter any Unpaid Days Off or unpaid holidays taken per year to adjust your annual paid working days.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly displays your gross daily salary rate, hourly equivalent rate, per-minute pay, bi-weekly pay, and monthly gross earnings.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Daily Salary</h2>
+        <p>
+          The calculator uses standard labor accounting standards and schedule conversions to process your pay:
+        </p>
+        
+        <h3>1. The 260-Day Rule (Annual Salary to Daily Pay)</h3>
+        <p>
+          A standard full-time work year consists of 52 weeks at 5 days per week, totaling 260 working days per year:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Base Work Days per Year} = 52 \\times 5 = 260 \\text{ days}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Daily Salary} = \\frac{\\text{Annual Salary}}{\\text{Paid Work Days per Year}}\\)"}
+        </p>
+
+        <h3>2. Hourly Wage to Daily Salary Formula</h3>
+        <p>
+          If you are paid an hourly rate, your daily salary rate is simply your hourly wage multiplied by your scheduled daily hours:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Gross Daily Salary} = \\text{Hourly Wage} \\times \\text{Work Hours Per Day}\\)"}
+        </p>
+
+        <h3>3. Per-Minute Micro-Pay Rate Formula</h3>
+        <p>
+          To understand your earnings on a micro-level during the workday:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Per Minute Pay Rate} = \\frac{\\text{Gross Daily Salary}}{\\text{Work Hours Per Day} \\times 60}\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an employee earns an annual salary of $75,000, working a standard 5-day work week (8 hours per day) with 0 unpaid days off (260 paid work days).
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Paid Work Days:</strong> {"\\(52 \\times 5 = \\mathbf{260 \\text{ days / year}}\\)"}
+          </li>
+          <li>
+            <strong>Gross Daily Salary:</strong> {"\\(\\frac{\\$75,000}{260} = \\mathbf{\\$288.46 \\text{ / day}}\\)"}
+          </li>
+          <li>
+            <strong>Hourly Equivalent Rate:</strong> {"\\(\\frac{\\$288.46}{8} = \\mathbf{\\$36.06 \\text{ / hour}}\\)"}
+          </li>
+          <li>
+            <strong>Per-Minute Pay Rate:</strong> {"\\(\\frac{\\$36.06}{60} = \\mathbf{\\$0.60 \\text{ / minute}}\\)"}
+          </li>
+          <li>
+            <strong>Bi-Weekly Pay:</strong> {"\\(\\$288.46 \\times 10 = \\mathbf{\\$2,884.62 \\text{ / bi-weekly}}\\)"}
+          </li>
+          <li>
+            <strong>Monthly Gross Pay:</strong> {"\\(\\frac{\\$75,000}{12} = \\mathbf{\\$6,250.00 \\text{ / month}}\\)"}
+          </li>
+        </ul>
+
+        <h2>Salaried W2 Daily Rates vs. Freelancer Contract Day Rates</h2>
+        <p>
+          If you are transitioning from a full-time salaried W2 position to freelance or contract consulting, <strong>never charge your W2 daily rate as your contract day rate</strong>!
+        </p>
+        <p>
+          A W2 daily rate of $288/day includes employer-paid benefits, health insurance, paid vacation, 401(k) matching, and 7.65% employer FICA taxes.
+        </p>
+        <p>
+          Freelancers and contractors must account for self-employment tax (15.3%), health insurance, non-billable administrative hours, and vacant project gaps. As a rule of thumb, **multiply your W2 daily rate by 1.5x to 2.0x** when setting a freelance day rate:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Freelance Contract Day Rate} = \\text{W2 Daily Rate} \\times 1.5 \\text{ to } 2.0\\)"}
+        </p>
+        <p>
+          A W2 daily rate of $288.46 translates to a competitive freelance day rate of **$435.00 to $575.00 per day**.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Daily Salary FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you calculate your daily salary from an annual salary?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              To calculate your daily salary from an annual income, divide your total gross annual salary by the number of paid working days in the year (typically 260 days for a standard 5-day work week). For example, $75,000 ÷ 260 = <strong>$288.46 per day</strong>.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the standard number of working days in a year (the 260-day rule)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The <strong>260-day rule</strong> assumes 52 weeks in a year with 5 working days per week (52 × 5 = 260 days). Depending on leap years and calendar alignment, a year has 260 to 262 weekdays. Paid Time Off (PTO) and paid holidays are included in this 260-day total for salaried employees.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do paid time off (PTO) and unpaid holidays affect daily pay?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Paid Time Off (PTO) and paid holidays count as paid work days, so they do not reduce your annual salary or daily rate. However, taking <strong>unpaid leave or unpaid holidays</strong> reduces your total paid days per year, increasing your daily rate requirement to earn the same annual target.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you convert an hourly wage into a daily salary rate?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              To convert an hourly wage into a daily salary, multiply your hourly pay by your scheduled daily working hours. For example, an hourly wage of $36.06 working an 8-hour shift equals $36.06 × 8 = <strong>$288.48 per day</strong>.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can freelancers set an accurate daily rate (day rate)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Freelancers should calculate their target W2 daily rate and mark it up by <strong>1.5x to 2.0x</strong> to cover self-employment taxes (15.3%), health insurance, unbilled administrative time, and project downtime. If your W2 daily rate is $288/day, charge a freelance day rate of $435 to $575/day.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

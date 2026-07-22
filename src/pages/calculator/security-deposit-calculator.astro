@@ -1,0 +1,247 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SecurityDepositCalculator from '../../components/calculator/SecurityDepositCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Security Deposit Calculator', path: '/calculator/security-deposit-calculator' }
+];
+---
+
+<Layout
+  title="Security Deposit Calculator - Reconcile Rent Deposit Interest & Refund"
+  description="Free online Security Deposit Calculator. Calculate interest accrued on rental deposits, subtract move-out damages, and reconcile your final tenant refund."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <SecurityDepositCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Renting Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Getting My Security Deposit Back: Reconciling $60.45 in Interest and $500 in Cleaning Fees</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a tenant who moved out of a rented apartment—discovering how their $2,000 deposit earned $60.45 in interest over 24 months, but faced $500 in cleaning and repair charges, reconciling their final refund to $1,560.45.
+            </p>
+            <a href="/blog/how-to-calculate-security-deposit-refund" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Security Deposit Refunds & Reconcile Deductions
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Security Deposit?</h2>
+        <p>
+          A <strong>Security Deposit</strong> is a lump-sum payment made by a tenant to a landlord before moving into a rental property. The deposit serves as a financial safeguard for the landlord against potential property damage beyond normal wear and tear, lease breaches, or unpaid rent during the tenancy.
+        </p>
+        <p>
+          Unlike rent, a security deposit remains the legal property of the tenant throughout the lease. Under state tenant-landlord laws, landlords must hold these funds in trust, return them within strict timelines upon lease termination, and in many jurisdictions, pay annual interest on the deposit.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To compute your lease interest growth or reconcile your move-out deductions, select your preferred mode:
+        </p>
+        
+        <h3>Mode 1: Interest Accrual (Default)</h3>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all inputs and outputs correctly.
+          </li>
+          <li>
+            <strong>Input Deposit Amount:</strong> Enter the original security deposit amount paid to the landlord.
+          </li>
+          <li>
+            <strong>Input Interest Rate:</strong> Enter your state's regulated interest rate (%). Many cities or states publish these rates annually.
+          </li>
+          <li>
+            <strong>Input Tenure:</strong> Enter the number of months the landlord held the deposit.
+          </li>
+          <li>
+            <strong>Select Compounding:</strong> Choose between simple interest, compounded annually, or compounded monthly.
+          </li>
+        </ol>
+
+        <h3>Mode 2: Move-Out Refund Reconciliation</h3>
+        <ol>
+          <li>
+            <strong>Input Original Deposit & Interest:</strong> Enter the starting deposit and total interest accrued during the tenancy.
+          </li>
+          <li>
+            <strong>Input Deductions:</strong> Enter itemized cleaning costs, repair charges for damages, and unpaid rent or utility bills.
+          </li>
+          <li>
+            <strong>Review Reconciled Refund:</strong> The calculator outputs the net refund due to the tenant, or the deficit amount the tenant owes to the landlord.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Security Deposit Interest</h2>
+        <p>
+          Depending on your lease contract and local municipal codes, interest is calculated in one of three ways:
+        </p>
+        
+        <h3>1. Simple Interest Formula</h3>
+        <p>
+          For a starting deposit {"\\(P\\)"}, annual interest rate {"\\(R\\)"}, and duration {"\\(M\\)"} months:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Interest (Simple)} = P \\times \\left( \\frac{R}{100} \\right) \\times \\left( \\frac{M}{12} \\right)\\)"}
+        </p>
+
+        <h3>2. Compounded Annually Formula</h3>
+        <p>
+          If interest is added to the principal balance at the end of each full year:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Future Value} = P \\times \\left( 1 + \\frac{R}{100} \\right)^{\\frac{M}{12}}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Interest (Annual Compound)} = \\text{Future Value} - P\\)"}
+        </p>
+
+        <h3>3. Move-Out Refund Formula</h3>
+        <p>
+           re-balancing the final return to the tenant:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Refund} = (\\text{Original Deposit} + \\text{Interest}) - (\\text{Cleaning} + \\text{Repairs} + \\text{Unpaid Rent})\\)"}
+        </p>
+
+        <h2>Duplex Move-Out Example</h2>
+        <p>
+          Suppose a tenant paid a $2,000 security deposit. Over a 24-month lease, the landlord held the funds in an interest-bearing account earning 1.50% annual interest compounded annually. At move-out, the landlord claims $150 in professional carpet cleaning fees and $350 to patch drywall holes.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Interest Accrued:</strong> {"\\(\\$2,000 \\times (1.015)^2 - \\$2,000 = \\mathbf{\\$60.45}\\)"}
+          </li>
+          <li>
+            <strong>Gross Refund Balance:</strong> {"\\(\\$2,000 + \\$60.45 = \\mathbf{\\$2,060.45}\\)"}
+          </li>
+          <li>
+            <strong>Total Deductions:</strong> {"\\(\\$150 + \\$350 = \\mathbf{\\$500.00}\\)"}
+          </li>
+          <li>
+            <strong>Net Tenant Refund Due:</strong> {"\\(\\$2,060.45 - \\$500 = \\mathbf{\\$1,560.45}\\)"}
+          </li>
+        </ul>
+
+        <h2>4 Strategies to Protect Your Security Deposit</h2>
+        <p>
+          To secure a full security deposit refund and prevent tenant-landlord disputes, follow these four rules:
+        </p>
+        <ol>
+          <li>
+            <strong>Document with Time-Stamped Media:</strong> On the day you receive the keys, take high-resolution photos and videos of every room, closet, appliance, and window screen. Save these in a cloud folder. Do the exact same thing on move-out day.
+          </li>
+          <li>
+            <strong>Request a Joint Pre-Move-Out Inspection:</strong> Request a walkthrough with the landlord 2 weeks before your lease ends. Have them point out any issues so you have time to clean or repair them yourself before they hire expensive contractors.
+          </li>
+          <li>
+            <strong>Understand Normal Wear and Tear:</strong> Landlords cannot charge you for normal wear and tear (e.g. faded paint, worn carpet fibers, minor scuff marks). They can only deduct for actual negligence or damage (e.g. giant holes in walls, torn carpets, broken windows).
+          </li>
+          <li>
+            <strong>Know Your State Interest Laws:</strong> States like Massachusetts, Illinois (specifically Chicago under the RLTO), and Maryland have strict laws requiring landlords to pay annual interest. Non-compliance can result in triple damages penalties.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Security Deposit FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Are landlords legally required to pay interest on security deposits?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              It depends on your local state or city laws. In states like Massachusetts, New Jersey, Illinois (Chicago), Maryland, and Minnesota, landlords are legally required to hold deposits in interest-bearing accounts and pay interest to the tenant annually or at move-out. Other states do not require interest.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between normal wear and tear and tenant damage?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Normal wear and tear is natural deterioration that occurs over time (e.g. faded wallpaper, slightly worn carpets, minor scuff marks on floors). Tenant damage is caused by abuse or neglect (e.g. large holes in drywall, pet stains on carpets, broken window glass, uncleaned trash piles). Landlords can only charge for tenant damage.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How long does a landlord have to return a security deposit?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Every state sets a strict deadline. Typically, landlords must return the deposit (plus interest, minus deductions) within 14 to 30 days of the tenant vacating the property. Failure to meet this deadline can result in the landlord forfeiting their right to make any deductions.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What expenses can a landlord legally deduct from a security deposit?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A landlord can legally deduct for the cost of repairing tenant damage (beyond wear and tear), professional deep cleaning if the unit was left dirty, unpaid rent or outstanding utility bills, and key replacement fees if keys were lost.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does a tenant dispute unfair security deposit deductions?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              If a landlord makes unfair deductions, the tenant should write a formal dispute letter requesting itemized contractor receipts and referencing move-in/move-out photos. If the landlord refuses to refund the disputed amount, the tenant can file a claim in small claims court, where some states award up to 3x the disputed deposit.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

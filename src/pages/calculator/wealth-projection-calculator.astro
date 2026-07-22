@@ -1,0 +1,235 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WealthProjectionCalculator from '../../components/calculator/WealthProjectionCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Wealth Projection Calculator', path: '/calculator/wealth-projection-calculator' }
+];
+---
+
+<Layout
+  title="Wealth Projection Calculator - Project Compound Investment Growth"
+  description="Free online Wealth Projection Calculator. Project your future investment portfolio growth, comparing nominal wealth against inflation-adjusted real value."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <WealthProjectionCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Compounding Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">The Compounding Illusion: How Inflation Erased $782,000 from My 25-Year Wealth Projection</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a 30-year-old saver starting with $100,000 and adding $1,000/month who projected their wealth over 25 years—discovering how compounding turns $400,000 in total deposits into $1,685,000 in nominal wealth, while inflation adjusts it to $902,255 in real purchasing power.
+            </p>
+            <a href="/blog/how-to-project-investment-wealth" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Project Investment Wealth & Account for Inflation Drag
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Wealth Projection?</h2>
+        <p>
+          A <strong>Wealth Projection</strong> is a mathematical forecast that models how your current financial assets and regular savings deposits will grow over time under the influence of compounding investment returns. 
+        </p>
+        <p>
+          Rather than simply adding up your cash contributions, a wealth projection demonstrates the exponential power of compound interest—the process where your investment returns generate their own returns, snowballing your capital over decades.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To forecast your compounded future portfolio value and analyze the impact of inflation, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Starting Balance:</strong> Enter your Current Invested Assets (starting balance of your portfolio or current net worth).
+          </li>
+          <li>
+            <strong>Input Monthly Savings:</strong> Enter your expected Monthly Savings Deposit ($/month) to add to your portfolio.
+          </li>
+          <li>
+            <strong>Configure Time Horizon:</strong> Enter your Investment Horizon (Years) (number of years you plan to let the portfolio grow).
+          </li>
+          <li>
+            <strong>Configure Rates:</strong> Input your Expected Gross Annual Return % (nominal return rate) and Expected Annual Inflation Rate %.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly displays nominal projected wealth, real projected wealth (inflation-adjusted purchasing power), total deposits, nominal interest earned, and the dollar value eroded by inflation.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Wealth Compounding</h2>
+        <p>
+          The calculator applies standard compounding growth algorithms and Fisher inflation-adjustment equations:
+        </p>
+        
+        <h3>1. Monthly Compounded Future Value (Nominal) Formula</h3>
+        <p>
+          For an initial balance {"\\(P_0\\)"}, monthly deposit {"\\(PMT\\)"}, and monthly return rate {"\\(r_m = \\frac{\\text{Gross Return \\%}}{12}\\)"} over {"\\(M = Y \\times 12\\)"} months:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(FV_{\\text{nominal}} = P_0 \\times (1 + r_m)^M + PMT \\times \\left[ \\frac{(1 + r_m)^M - 1}{r_m} \\right]\\)"}
+        </p>
+
+        <h3>2. Net Real Annual Return Rate Formula (Fisher Equation)</h3>
+        <p>
+          To adjust nominal returns for price inflation, we apply the Fisher Equation:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Real Net Return Rate} = (\\frac{1 + \\frac{\\text{Nominal Return}}{100}}{1 + \\frac{\\text{Inflation}}{100}} - 1) \\times 100\\)"}
+        </p>
+
+        <h3>3. Real Future Value (Purchasing Power) Formula</h3>
+        <p>
+          To calculate the real buying power of your future portfolio in today's dollars, we compound using the monthly real rate {"\\(r_{m, real} = (1 + \\frac{\\text{Real Return}}{100})^{1/12} - 1\\)"}:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(FV_{\\text{real}} = P_0 \\times (1 + r_{m, real})^M + PMT \\times \\left[ \\frac{(1 + r_{m, real})^M - 1}{r_{m, real}} \\right]\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an investor starts with $100,000, saves $1,000/month for 25 years, and expects an 8.0% gross return and 3.0% inflation (resulting in a 4.85% real net return).
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Total Deposits:</strong> {"\\(\\$100,000 + (\\$1,000 \\times 12 \\times 25) = \\mathbf{\\$400,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Nominal Ending Balance:</strong> {"\\(\\mathbf{\\$1,685,044.52}\\)"}
+          </li>
+          <li>
+            <strong>Real Ending Balance (Today's Power):</strong> {"\\(\\mathbf{\\$902,255.45}\\)"}
+          </li>
+          <li>
+            <strong>Inflation Drag Loss:</strong> {"\\(\\$1,685,044 - \\$902,255 = \\mathbf{\\$782,789.07}\\)"}
+          </li>
+          <li>
+            <strong>Compounded Interest Earned (Nominal):</strong> {"\\(\\$1,685,044 - \\$400,000 = \\mathbf{\\$1,285,044.52}\\)"}
+          </li>
+        </ul>
+
+        <h2>4 Rules to Optimize Your Wealth Projection</h2>
+        <p>
+          To maximize your future portfolio value and defeat inflation drag, implement these four compounding rules:
+        </p>
+        <ol>
+          <li>
+            <strong>Start as Early as Possible:</strong> Due to the exponential nature of compound interest, saving money in your 20s is worth twice as much as saving in your 30s. Time is your greatest multiplier.
+          </li>
+          <li>
+            <strong>Hedge Inflation with Equities:</strong> Cash savings accounts lose purchasing power to inflation. Hold broad market equity index funds (like S&P 500 ETFs) which historically beat inflation by 4% to 7% annually over long periods.
+          </li>
+          <li>
+            <strong>Automate Reinvestment of Dividends:</strong> Enable Automatic Dividend Reinvestment (DRIP) on your brokerage account to ensure all fund payouts are instantly bought back into equities, accelerating compounding.
+          </li>
+          <li>
+            <strong>Minimize Tax and Fee Drag:</strong> Maximize contributions to tax-advantaged accounts (401k, Roth IRA, HSA) and select index funds with expense ratios under 0.10% to eliminate wealth erosion.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Wealth Projection FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a wealth projection and how does compound interest work?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A wealth projection is a forecast of your future investment portfolio value. Compound interest works by adding investment returns back onto your starting balance, so you earn returns on your returns. Over long horizons, this cycle creates exponential portfolio growth.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between nominal wealth and inflation-adjusted real wealth?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Nominal wealth is the raw dollar balance in your account in future years. Inflation-adjusted real wealth measures the true purchasing power of that future balance in today's dollars, deducting the value lost to rising prices (inflation drag).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does the Rule of 72 apply to wealth projections?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The Rule of 72 is a mental shortcut to estimate how long it takes your money to double at a set return rate. Divide 72 by your expected annual return rate (e.g. 72 ÷ 8% return = <strong>9 years to double</strong> your starting capital).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do monthly savings additions impact your long-term compounding velocity?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              While your starting balance provides the initial momentum, regular monthly deposits act as fuel for your compounding engine. Consistently adding capital ensures a steady stream of new dollars are buying assets and compounding, shortening the years needed to hit your wealth target.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can you minimize tax and investment fee drag on your projected wealth?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You can protect your compounding growth by investing inside tax-advantaged retirement accounts (401k, Roth IRA, HSA) to eliminate annual dividend taxes, and selecting low-cost index ETFs with expense ratios under 0.10% to prevent fee drag.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

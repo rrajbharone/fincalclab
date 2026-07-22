@@ -1,0 +1,662 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Cap Rate Calculator"
+  description="Calculate the capitalization rate (Cap Rate) of real estate investments to evaluate rental property yields, or estimate property values based on Net Operating Income (NOI)."
+  category="Real Estate"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="cap-rate-calculator">
+    
+    <!-- Currency & Mode Controls -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Calculator Settings</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cr-currency-select">Currency</label>
+        <select id="cr-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Mode Segment controller -->
+    <div class="input-group">
+      <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base); margin-bottom: var(--space-1);">Calculation Mode</label>
+      <div class="mode-segment-container" style="display: flex; background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px; gap: 4px;">
+        <button type="button" id="btn-mode-caprate" class="segment-btn active" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.85rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Calculate Cap Rate</button>
+        <button type="button" id="btn-mode-value" class="segment-btn" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.85rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Calculate Property Value</button>
+      </div>
+    </div>
+
+    <!-- Mode A Content: Calculate Cap Rate -->
+    <div id="cr-mode-caprate-inputs" class="mode-inputs-group">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: var(--space-5) 0 var(--space-4) 0;">2. Property Valuation & Income</h3>
+      
+      <!-- Purchase Price -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cr-price-input">Property Purchase Price</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="cr-price-input" min="5000" step="10000" value="500000" aria-label="Property Purchase Price" />
+          </div>
+        </div>
+        <input type="range" id="cr-price-slider" min="50000" max="2000000" step="25000" value="500000" class="slider-range" aria-label="Purchase Price Slider" />
+      </div>
+
+      <!-- Monthly Gross Rent -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cr-rent-input">Monthly Rental Income</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="cr-rent-input" min="0" step="100" value="4000" aria-label="Monthly Rental Income" />
+          </div>
+        </div>
+        <input type="range" id="cr-rent-slider" min="0" max="15000" step="250" value="4000" class="slider-range" aria-label="Monthly Rent Slider" />
+      </div>
+
+      <!-- Monthly Other Income -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cr-other-input">Monthly Other Income <span style="font-size: 0.75rem; font-weight: normal; color: var(--color-text-light);">(Parking, Laundry)</span></label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="cr-other-input" min="0" step="50" value="200" aria-label="Monthly Other Income" />
+          </div>
+        </div>
+        <input type="range" id="cr-other-slider" min="0" max="3000" step="50" value="200" class="slider-range" aria-label="Monthly Other Income Slider" />
+      </div>
+
+      <!-- Vacancy Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cr-vacancy-input">Expected Vacancy Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="cr-vacancy-input" min="0.0" max="25.0" step="0.5" value="5.0" aria-label="Vacancy Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="cr-vacancy-slider" min="0.0" max="20.0" step="0.5" value="5.0" class="slider-range" aria-label="Vacancy Slider" />
+      </div>
+
+      <!-- Monthly Operating Expenses -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cr-expenses-input">Monthly Operating Expenses <span style="font-size: 0.75rem; font-weight: normal; color: var(--color-text-light);">(Excl. Mortgage)</span></label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="cr-expenses-input" min="0" step="100" value="1500" aria-label="Monthly Expenses" />
+          </div>
+        </div>
+        <input type="range" id="cr-expenses-slider" min="0" max="10000" step="100" value="1500" class="slider-range" aria-label="Monthly Expenses Slider" />
+      </div>
+    </div>
+
+    <!-- Mode B Content: Calculate Property Value -->
+    <div id="cr-mode-value-inputs" class="mode-inputs-group hidden">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: var(--space-5) 0 var(--space-4) 0;">2. Property Valuation Settings</h3>
+      
+      <!-- Annual NOI -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cr-noi-input">Annual Net Operating Income (NOI)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="cr-noi-input" min="100" step="1000" value="30000" aria-label="Annual NOI" />
+          </div>
+        </div>
+        <input type="range" id="cr-noi-slider" min="5000" max="250000" step="2500" value="30000" class="slider-range" aria-label="NOI Slider" />
+      </div>
+
+      <!-- Target Cap Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cr-caprate-input">Target Cap Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="cr-caprate-input" min="0.5" max="25.0" step="0.1" value="6.0" aria-label="Target Cap Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="cr-caprate-slider" min="1.0" max="15.0" step="0.1" value="6.0" class="slider-range" aria-label="Cap Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="cr-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Real Estate Yield Forecast</h3>
+
+    <!-- Core Yield Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span id="lbl-cr-primary-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Capitalization Rate (Cap Rate)</span>
+        <div id="res-cr-primary-val" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">5.98%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cr-secondary-val">Annual NOI: $29,880.00</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span id="lbl-cr-other-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Operating Expense Ratio (OER)</span>
+        <div id="res-cr-other-val" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">37.59%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cr-other-desc">Expenses relative to gross income</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="cr-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Investment Profitability Verdict</span>
+        <p id="res-cr-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          A purchase price of <strong>$500,000</strong> generating an annual NOI of <strong>$29,880</strong> (after accounting for a <strong>5% vacancy loss</strong>) yields a capitalization rate of <strong>5.98%</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Annual Cash Flow Waterfall</h4>
+    <div class="results-grid cr-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Effective Gross Income</span>
+        <div class="tile-value" id="tile-cr-egi" style="color: var(--color-success);">$47,880</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Net rental potential</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Annual Expenses</span>
+        <div class="tile-value" id="tile-cr-ann-expenses" style="color: var(--color-danger);">$18,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Operating outflows</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Vacancy Loss</span>
+        <div class="tile-value" id="tile-cr-vacancy-loss" style="color: var(--color-primary);">$2,520</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">At 5.0% vacancy rate</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initCrCalculator() {
+    let currentMode = 'caprate'; // 'caprate' or 'value'
+
+    // Select settings elements
+    const currencySelect = document.getElementById('cr-currency-select') as HTMLSelectElement;
+    const btnModeCaprate = document.getElementById('btn-mode-caprate') as HTMLButtonElement;
+    const btnModeValue = document.getElementById('btn-mode-value') as HTMLButtonElement;
+
+    // Select mode input containers
+    const containerModeCaprate = document.getElementById('cr-mode-caprate-inputs');
+    const containerModeValue = document.getElementById('cr-mode-value-inputs');
+
+    // Select inputs A (Cap Rate)
+    const priceInput = document.getElementById('cr-price-input') as HTMLInputElement;
+    const priceSlider = document.getElementById('cr-price-slider') as HTMLInputElement;
+    const rentInput = document.getElementById('cr-rent-input') as HTMLInputElement;
+    const rentSlider = document.getElementById('cr-rent-slider') as HTMLInputElement;
+    const otherInput = document.getElementById('cr-other-input') as HTMLInputElement;
+    const otherSlider = document.getElementById('cr-other-slider') as HTMLInputElement;
+    const vacancyInput = document.getElementById('cr-vacancy-input') as HTMLInputElement;
+    const vacancySlider = document.getElementById('cr-vacancy-slider') as HTMLInputElement;
+    const expensesInput = document.getElementById('cr-expenses-input') as HTMLInputElement;
+    const expensesSlider = document.getElementById('cr-expenses-slider') as HTMLInputElement;
+
+    // Select inputs B (Value)
+    const noiInput = document.getElementById('cr-noi-input') as HTMLInputElement;
+    const noiSlider = document.getElementById('cr-noi-slider') as HTMLInputElement;
+    const caprateInput = document.getElementById('cr-caprate-input') as HTMLInputElement;
+    const caprateSlider = document.getElementById('cr-caprate-slider') as HTMLInputElement;
+
+    if (!priceInput || !currencySelect || !btnModeCaprate || !btnModeValue) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(priceInput, priceSlider);
+    bindSlider(rentInput, rentSlider);
+    bindSlider(otherInput, otherSlider);
+    bindSlider(vacancyInput, vacancySlider);
+    bindSlider(expensesInput, expensesSlider);
+
+    bindSlider(noiInput, noiSlider);
+    bindSlider(caprateInput, caprateSlider);
+
+    // Mode Toggle Logic
+    btnModeCaprate.addEventListener('click', () => {
+      currentMode = 'caprate';
+      btnModeCaprate.classList.add('active');
+      btnModeValue.classList.remove('active');
+      
+      btnModeCaprate.style.background = 'var(--color-primary)';
+      btnModeCaprate.style.color = 'var(--color-bg-base)';
+      btnModeValue.style.background = 'transparent';
+      btnModeValue.style.color = 'var(--color-text-base)';
+
+      containerModeCaprate?.classList.remove('hidden');
+      containerModeValue?.classList.add('hidden');
+      
+      // Update DOM labels
+      document.getElementById('lbl-cr-primary-title')!.textContent = 'Capitalization Rate (Cap Rate)';
+      document.getElementById('lbl-cr-other-title')!.textContent = 'Operating Expense Ratio (OER)';
+      document.getElementById('lbl-cr-other-desc')!.textContent = 'Expenses relative to gross income';
+      
+      calculateAll();
+    });
+
+    btnModeValue.addEventListener('click', () => {
+      currentMode = 'value';
+      btnModeValue.classList.add('active');
+      btnModeCaprate.classList.remove('active');
+
+      btnModeValue.style.background = 'var(--color-primary)';
+      btnModeValue.style.color = 'var(--color-bg-base)';
+      btnModeCaprate.style.background = 'transparent';
+      btnModeCaprate.style.color = 'var(--color-text-base)';
+
+      containerModeValue?.classList.remove('hidden');
+      containerModeCaprate?.classList.add('hidden');
+
+      // Update DOM labels
+      document.getElementById('lbl-cr-primary-title')!.textContent = 'Estimated Property Value';
+      document.getElementById('lbl-cr-other-title')!.textContent = 'Target Capitalization Rate';
+      document.getElementById('lbl-cr-other-desc')!.textContent = 'Required property yield';
+
+      calculateAll();
+    });
+
+    // Style segment controller initially
+    btnModeCaprate.style.background = 'var(--color-primary)';
+    btnModeCaprate.style.color = 'var(--color-bg-base)';
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('cr-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        priceInput.value = '500000';
+        priceSlider.value = '500000';
+        rentInput.value = '4000';
+        rentSlider.value = '4000';
+        otherInput.value = '200';
+        otherSlider.value = '200';
+        vacancyInput.value = '5.0';
+        vacancySlider.value = '5.0';
+        expensesInput.value = '1500';
+        expensesSlider.value = '1500';
+
+        noiInput.value = '30000';
+        noiSlider.value = '30000';
+        caprateInput.value = '6.0';
+        caprateSlider.value = '6.0';
+
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        
+        // Trigger caprate mode reset
+        btnModeCaprate.click();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // DOM Elements updates
+      const resPrimaryVal = document.getElementById('res-cr-primary-val');
+      const resOtherVal = document.getElementById('res-cr-other-val');
+      const lblSecondaryVal = document.getElementById('lbl-cr-secondary-val');
+      const verdictText = document.getElementById('res-cr-verdict-text');
+
+      const tileEgi = document.getElementById('tile-cr-egi');
+      const tileExpenses = document.getElementById('tile-cr-ann-expenses');
+      const tileVacancy = document.getElementById('tile-cr-vacancy-loss');
+
+      if (currentMode === 'caprate') {
+        const price = parseFloat(priceInput.value) || 0;
+        const monthlyRent = parseFloat(rentInput.value) || 0;
+        const monthlyOther = parseFloat(otherInput.value) || 0;
+        const vacancyPct = parseFloat(vacancyInput.value) || 0;
+        const monthlyExpenses = parseFloat(expensesInput.value) || 0;
+
+        // Annualized figures
+        const potentialGross = (monthlyRent + monthlyOther) * 12;
+        const vacancyLoss = potentialGross * (vacancyPct / 100);
+        const egi = potentialGross - vacancyLoss;
+        const annualExpenses = monthlyExpenses * 12;
+        const noi = egi - annualExpenses;
+
+        // Cap Rate and Expense Ratio
+        const capRate = price > 0 ? (noi / price) * 100 : 0;
+        const expenseRatio = egi > 0 ? (annualExpenses / egi) * 100 : 0;
+
+        // DOM Updates
+        if (resPrimaryVal) resPrimaryVal.textContent = capRate.toFixed(2) + '%';
+        if (resOtherVal) resOtherVal.textContent = expenseRatio.toFixed(2) + '%';
+        if (lblSecondaryVal) lblSecondaryVal.textContent = `Annual NOI: ${formatCurrency(noi)}`;
+
+        if (tileEgi) tileEgi.textContent = formatCurrency(egi).split('.')[0];
+        if (tileExpenses) tileExpenses.textContent = formatCurrency(annualExpenses).split('.')[0];
+        if (tileVacancy) tileVacancy.textContent = formatCurrency(vacancyLoss).split('.')[0];
+
+        if (verdictText) {
+          verdictText.innerHTML = `A property purchased for <strong>${formatCurrency(price)}</strong> yielding an annual Net Operating Income (NOI) of <strong>${formatCurrency(noi)}</strong> (Effective Gross Income of <strong>${formatCurrency(egi)}</strong> minus <strong>${formatCurrency(annualExpenses)}</strong> in operating costs) generates a capitalization rate of <strong>${capRate.toFixed(2)}%</strong>. Your operating expense ratio is <strong>${expenseRatio.toFixed(2)}%</strong>.`;
+        }
+
+      } else {
+        const annualNoi = parseFloat(noiInput.value) || 0;
+        const targetCapRate = parseFloat(caprateInput.value) || 6.0;
+
+        // Estimated Value
+        const estimatedValue = targetCapRate > 0 ? (annualNoi / (targetCapRate / 100)) : 0;
+
+        // DOM Updates
+        if (resPrimaryVal) resPrimaryVal.textContent = formatCurrency(estimatedValue).split('.')[0];
+        if (resOtherVal) resOtherVal.textContent = targetCapRate.toFixed(2) + '%';
+        if (lblSecondaryVal) lblSecondaryVal.textContent = `Annual NOI: ${formatCurrency(annualNoi)}`;
+
+        if (tileEgi) tileEgi.textContent = formatCurrency(annualNoi).split('.')[0];
+        if (tileExpenses) tileExpenses.textContent = 'N/A';
+        if (tileVacancy) tileVacancy.textContent = 'N/A';
+
+        if (verdictText) {
+          verdictText.innerHTML = `To achieve a target capitalization rate of <strong>${targetCapRate.toFixed(2)}%</strong> with a property generating <strong>${formatCurrency(annualNoi)}</strong> in annual Net Operating Income (NOI), the maximum purchase price (or estimated property valuation) is <strong>${formatCurrency(estimatedValue)}</strong>.`;
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      let text = '';
+      if (currentMode === 'caprate') {
+        text = `Capitalization Rate Calculation:\n` +
+               `Purchase Price: ${priceInput.value} | Monthly Rent: ${rentInput.value} | Vacancy: ${vacancyInput.value}%\n` +
+               `Effective Gross Income (EGI): ${document.getElementById('tile-cr-egi')?.textContent}\n` +
+               `Annual Expenses: ${document.getElementById('tile-cr-ann-expenses')?.textContent}\n` +
+               `Net Operating Income (NOI): ${document.getElementById('lbl-cr-secondary-val')?.textContent}\n` +
+               `Cap Rate: ${document.getElementById('res-cr-primary-val')?.textContent} | Expense Ratio: ${document.getElementById('res-cr-other-val')?.textContent}\n` +
+               `Diagnosis: ${document.getElementById('res-cr-verdict-text')?.textContent}`;
+      } else {
+        text = `Property Valuation Calculation:\n` +
+               `Annual NOI: ${noiInput.value} | Target Cap Rate: ${caprateInput.value}%\n` +
+               `Estimated Property Value: ${document.getElementById('res-cr-primary-val')?.textContent}\n` +
+               `Diagnosis: ${document.getElementById('res-cr-verdict-text')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCrCalculator);
+  document.addEventListener('astro:after-swap', initCrCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* segment toggles active status */
+  .segment-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base);
+  }
+
+  .segment-btn:not(.active) {
+    color: var(--color-text-base);
+  }
+
+  .segment-btn:not(.active):hover {
+    background-color: var(--color-border);
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

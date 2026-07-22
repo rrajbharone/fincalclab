@@ -1,0 +1,229 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MoneyDoublingCalculator from '../../components/calculator/MoneyDoublingCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Money Doubling Calculator', path: '/calculator/money-doubling-calculator' }
+];
+---
+
+<Layout
+  title="Money Doubling Calculator - Rule of 72 & Exact Doubling Time"
+  description="Free online Money Doubling Calculator. Calculate exact years, months, and days it takes to double your investment capital. Compare the Rule of 72 against logarithmic formulas."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <MoneyDoublingCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Money Doubling Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">How Long to Turn $10,000 into $20,000? S&P 500 Indexes vs. High-Yield Savings Accounts</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a young investor who set a goal to double their $10,000 savings—discovering how stock market indexes compound it to $20,000 in 8.7 years (nominal) and 14.3 years (real purchasing power) compared to 24+ years in bank savings accounts.
+            </p>
+            <a href="/blog/how-fast-does-money-double" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How Fast Does Money Double? Rule of 72 & Exact Calculations
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Money Doubling?</h2>
+        <p>
+          In personal finance and investment accounting, <strong>Money Doubling</strong> refers to the time required for a principal lump-sum investment to compound and grow to exactly twice its original size (e.g. turning $10,000 into $20,000).
+        </p>
+        <p>
+          Understanding your portfolio's doubling horizon helps you set realistic long-term financial milestones, compare different asset class returns (like real estate, equities, and cash savings), and evaluate the impact of inflation on your purchasing power over time.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your exact doubling, tripling, and quadrupling timelines under different compounding frequencies, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Principal Amount:</strong> Enter your starting investment balance (principal).
+          </li>
+          <li>
+            <strong>Select Compounding Frequency:</strong> Choose how often interest compounds (Annually, Quarterly, Monthly, Daily, or Continuous).
+          </li>
+          <li>
+            <strong>Configure Return & Inflation Rates:</strong> Enter your Expected Gross Annual Return % (nominal return rate) and Expected Annual Inflation Rate %.
+          </li>
+          <li>
+            <strong>Review Output Metrics:</strong> The calculator instantly displays exact nominal doubling years, real doubling years (inflation-adjusted), nominal target balance, Rule of 72 estimate, nominal tripling years, and nominal quadrupling years.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Money Doubling</h2>
+        <p>
+          The calculator applies logarithmic growth equations and compounding rate models to calculate your timeline:
+        </p>
+        
+        <h3>1. The Rule of 72 (Mental Shortcut)</h3>
+        <p>
+          The Rule of 72 is a standard mathematical shortcut to estimate the doubling time in years by dividing 72 by the annual return rate:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(T_{\\text{approx}} \\approx \\frac{72}{\\text{Annual Return Rate \\%}}\\)"}
+        </p>
+
+        <h3>2. Exact Doubling Time Formula (Discrete Compounding)</h3>
+        <p>
+          To solve for the exact doubling time in years under discrete compounding frequency {"\\(n\\)"} per year (e.g., monthly compounding where {"\\(n = 12\\)"} and period rate {"\\(r = \\frac{\\text{Return \\%}}{100 \\times n}\\)"}):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(T_{\\text{exact}} = \\frac{\\ln(2)}{n \\times \\ln(1 + r)}\\)"}
+        </p>
+
+        <h3>3. Continuous Compounding Formula (Rule of 69.3)</h3>
+        <p>
+          Under continuous compounding (compounding every millisecond), the doubling formula resolves exactly to the natural logarithm of 2:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(T_{\\text{continuous}} = \\frac{\\ln(2)}{R / 100} = \\frac{100 \\times \\ln(2)}{R} \\approx \\frac{69.3}{R}\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an investor invests $10,000 under monthly compounding at an 8.0% annual return rate, expecting a 3.0% annual inflation rate (Net Real Return = 4.85%).
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Nominal Doubling Target:</strong> {"\\(\\$10,000 \\times 2 = \\mathbf{\\$20,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Nominal Doubling Horizon:</strong> {"\\(\\frac{\\ln(2)}{12 \\times \\ln(1 + \\frac{8}{1200})} = \\mathbf{8.69 \\text{ years}}\\)"} (104.3 months)
+          </li>
+          <li>
+            <strong>Real Doubling Horizon (Today's Power):</strong> {"\\(\\frac{\\ln(2)}{12 \\times \\ln(1 + \\frac{4.854}{1200})} = \\mathbf{14.31 \\text{ years}}\\)"} (171.7 months)
+          </li>
+          <li>
+            <strong>Rule of 72 Shortcut Estimate:</strong> {"\\(\\frac{72}{8} = \\mathbf{9.00 \\text{ years}}\\)"} (A difference of 0.31 years)
+          </li>
+          <li>
+            <strong>Nominal Tripling Horizon (3x to $30k):</strong> {"\\(\\frac{\\ln(3)}{12 \\times \\ln(1 + \\frac{8}{1200})} = \\mathbf{13.78 \\text{ years}}\\)"}
+          </li>
+          <li>
+            <strong>Nominal Quadrupling Horizon (4x to $40k):</strong> {"\\(\\frac{\\ln(4)}{12 \\times \\ln(1 + \\frac{8}{1200})} = \\mathbf{17.39 \\text{ years}}\\)"}
+          </li>
+        </ul>
+
+        <h2>The Rules of 114 (Tripling) and 144 (Quadrupling)</h2>
+        <p>
+          Just like the Rule of 72, you can use mental shortcuts to calculate how long it takes to triple or quadruple your principal:
+        </p>
+        <ul>
+          <li>
+            <strong>The Rule of 114 (Tripling):</strong> Divide 114 by your annual return rate to estimate tripling time (e.g. at 8% return, money triples in {"\\(114 \\div 8 = 14.25\\)"} years).
+          </li>
+          <li>
+            <strong>The Rule of 144 (Quadrupling):</strong> Divide 144 by your annual return rate to estimate quadrupling time (e.g. at 8% return, money quadruples in {"\\(144 \\div 8 = 18.00\\)"} years).
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Money Doubling FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the Rule of 72 and how is it used to find money doubling time?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The Rule of 72 is a simple mathematical formula used to estimate how many years it takes an investment to double at a fixed annual return rate. To use it, divide 72 by your expected annual interest rate (e.g., at an 8% return, your money doubles in approximately 72 ÷ 8 = <strong>9 years</strong>).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the exact mathematical formula to calculate money doubling?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The exact doubling formula uses natural logarithms: <strong>Time = ln(2) ÷ ln(1 + r)</strong>, where <strong>r</strong> is the interest rate per compounding period. For monthly compounding, the formula is <strong>Time (Years) = ln(2) ÷ [12 × ln(1 + R/1200)]</strong>.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does compounding frequency impact how fast your money doubles?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              More frequent compounding speeds up doubling time because you earn interest on your interest sooner. At an 8% return, money compounds annually in <strong>9.01 years</strong>, monthly in <strong>8.69 years</strong>, and continuously in <strong>8.66 years</strong>.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between a nominal and an inflation-adjusted real double?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A nominal double is when your account balance hits twice its initial face value (e.g. $10k grows to $20k). An inflation-adjusted real double is when your portfolio grows to twice its initial purchasing power, taking into account rising prices. At 8% return and 3% inflation, money doubles nominally in 8.7 years but takes 14.3 years to double in real purchasing power.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can you apply the Rule of 114 and Rule of 144 to project wealth?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The Rule of 114 estimates how long it takes to triple your money (114 ÷ Rate), while the Rule of 144 estimates how long it takes to quadruple your money (144 ÷ Rate). For example, at an 8% return, your investment will triple in ~14.2 years and quadruple in ~18 years.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

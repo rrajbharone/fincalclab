@@ -1,0 +1,738 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Security Deposit Calculator"
+  description="Calculate interest accrued on tenant security deposits, or reconcile move-out deduction balances to determine the final refund due under local leasing regulations."
+  category="Real Estate"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="security-deposit-calculator">
+    
+    <!-- Currency & Mode Controls -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Calculator Settings</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sd-currency-select">Currency</label>
+        <select id="sd-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Mode Segment controller -->
+    <div class="input-group">
+      <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base); margin-bottom: var(--space-1);">Calculation Mode</label>
+      <div class="mode-segment-container" style="display: flex; background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px; gap: 4px;">
+        <button type="button" id="btn-mode-interest" class="segment-btn active" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.85rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Interest Accrual</button>
+        <button type="button" id="btn-mode-deduction" class="segment-btn" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.85rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Move-Out Refund</button>
+      </div>
+    </div>
+
+    <!-- Mode A Content: Interest Accrual -->
+    <div id="sd-mode-interest-inputs" class="mode-inputs-group">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: var(--space-5) 0 var(--space-4) 0;">2. Deposit & Interest Rates</h3>
+      
+      <!-- Deposit Amount -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-deposit-input">Security Deposit Amount</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sd-deposit-input" min="50" step="100" value="2000" aria-label="Security Deposit Amount" />
+          </div>
+        </div>
+        <input type="range" id="sd-deposit-slider" min="100" max="10000" step="100" value="2000" class="slider-range" aria-label="Deposit Amount Slider" />
+      </div>
+
+      <!-- Annual Interest Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-rate-input">State-Regulated Interest Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sd-rate-input" min="0.0" max="10.0" step="0.05" value="1.50" aria-label="Annual Interest Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="sd-rate-slider" min="0.0" max="8.0" step="0.1" value="1.50" class="slider-range" aria-label="Interest Rate Slider" />
+      </div>
+
+      <!-- Tenure (Months) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-months-input">Lease Duration</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sd-months-input" min="1" max="120" step="1" value="12" aria-label="Lease Duration Months" style="text-align: left;" />
+            <span class="percent-symbol">mo</span>
+          </div>
+        </div>
+        <input type="range" id="sd-months-slider" min="1" max="60" step="1" value="12" class="slider-range" aria-label="Duration Slider" />
+      </div>
+
+      <!-- Compounding Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-compound-select">Compounding Type</label>
+          <select id="sd-compound-select" class="currency-select" aria-label="Select Compounding Frequency" style="max-width: 100%;">
+            <option value="simple">Simple Interest (Standard)</option>
+            <option value="annual" selected>Compounded Annually</option>
+            <option value="monthly">Compounded Monthly</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode B Content: Move-Out Deduction Refund -->
+    <div id="sd-mode-deduction-inputs" class="mode-inputs-group hidden">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin: var(--space-5) 0 var(--space-4) 0;">2. Move-Out Reconciliations</h3>
+      
+      <!-- Original Security Deposit -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-orig-input">Original Security Deposit</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sd-orig-input" min="50" step="100" value="2000" aria-label="Original Security Deposit" />
+          </div>
+        </div>
+        <input type="range" id="sd-orig-slider" min="100" max="10000" step="100" value="2000" class="slider-range" aria-label="Original Deposit Slider" />
+      </div>
+
+      <!-- Total Interest Accrued -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-interest-input">Interest Accrued On Deposit</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sd-interest-input" min="0" step="5" value="60" aria-label="Interest Accrued" />
+          </div>
+        </div>
+        <input type="range" id="sd-interest-slider" min="0" max="1000" step="10" value="60" class="slider-range" aria-label="Interest Accrued Slider" />
+      </div>
+
+      <!-- Cleaning Charges -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-cleaning-input">Cleaning Charges Deductions</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sd-cleaning-input" min="0" step="10" value="150" aria-label="Cleaning Charges" />
+          </div>
+        </div>
+        <input type="range" id="sd-cleaning-slider" min="0" max="1000" step="25" value="150" class="slider-range" aria-label="Cleaning Slider" />
+      </div>
+
+      <!-- Repair Damage Costs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-repairs-input">Damage Repair Deductions</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sd-repairs-input" min="0" step="10" value="350" aria-label="Repair Costs" />
+          </div>
+        </div>
+        <input type="range" id="sd-repairs-slider" min="0" max="3000" step="50" value="350" class="slider-range" aria-label="Repairs Slider" />
+      </div>
+
+      <!-- Unpaid Rent Utilities -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sd-unpaid-input">Unpaid Rent / Utilities Deductions</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sd-unpaid-input" min="0" step="100" value="0" aria-label="Unpaid Rent" />
+          </div>
+        </div>
+        <input type="range" id="sd-unpaid-slider" min="0" max="5000" step="100" value="0" class="slider-range" aria-label="Unpaid Rent Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="sd-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Refund Reconciliation Forecast</h3>
+
+    <!-- Core Return Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span id="lbl-sd-primary-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Tenant Refund Due</span>
+        <div id="res-sd-primary-val" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$2,060.45</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sd-secondary-val">Interest Accrued: $60.45</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span id="lbl-sd-other-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Interest Growth Yield</span>
+        <div id="res-sd-other-val" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">3.02%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sd-other-desc">Total compound growth rate</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="sd-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Reconciliation Summary</span>
+        <p id="res-sd-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          A security deposit of <strong>$2,000</strong> held at <strong>1.50% annual interest</strong> over <strong>12 months</strong> generates <strong>$60.45</strong> in interest, yielding a total refund balance of <strong>$2,060.45</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Deduction Reconciliation Waterfall</h4>
+    <div class="results-grid sd-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-tile-gross">Gross Balance</span>
+        <div class="tile-value" id="tile-sd-gross-refund" style="color: var(--color-success);">$2,060</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-tile-gross-desc">Original deposit + interest</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-tile-expenses">Total Deductions</span>
+        <div class="tile-value" id="tile-sd-total-deductions" style="color: var(--color-danger);">$0</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-tile-expenses-desc">Normal wear & tear excluded</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-tile-rate">Interest Accrued</span>
+        <div class="tile-value" id="tile-sd-interest-amount" style="color: var(--color-primary);">$60</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-tile-rate-desc">Earned over 12 months</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSdCalculator() {
+    let currentMode = 'interest'; // 'interest' or 'deduction'
+
+    // Select settings elements
+    const currencySelect = document.getElementById('sd-currency-select') as HTMLSelectElement;
+    const btnModeInterest = document.getElementById('btn-mode-interest') as HTMLButtonElement;
+    const btnModeDeduction = document.getElementById('btn-mode-deduction') as HTMLButtonElement;
+
+    // Select mode input containers
+    const containerModeInterest = document.getElementById('sd-mode-interest-inputs');
+    const containerModeDeduction = document.getElementById('sd-mode-deduction-inputs');
+
+    // Select inputs A (Interest)
+    const depositInput = document.getElementById('sd-deposit-input') as HTMLInputElement;
+    const depositSlider = document.getElementById('sd-deposit-slider') as HTMLInputElement;
+    const rateInput = document.getElementById('sd-rate-input') as HTMLInputElement;
+    const rateSlider = document.getElementById('sd-rate-slider') as HTMLInputElement;
+    const monthsInput = document.getElementById('sd-months-input') as HTMLInputElement;
+    const monthsSlider = document.getElementById('sd-months-slider') as HTMLInputElement;
+    const compoundSelect = document.getElementById('sd-compound-select') as HTMLSelectElement;
+
+    // Select inputs B (Deduction)
+    const origInput = document.getElementById('sd-orig-input') as HTMLInputElement;
+    const origSlider = document.getElementById('sd-orig-slider') as HTMLInputElement;
+    const interestInput = document.getElementById('sd-interest-input') as HTMLInputElement;
+    const interestSlider = document.getElementById('sd-interest-slider') as HTMLInputElement;
+    const cleaningInput = document.getElementById('sd-cleaning-input') as HTMLInputElement;
+    const cleaningSlider = document.getElementById('sd-cleaning-slider') as HTMLInputElement;
+    const repairsInput = document.getElementById('sd-repairs-input') as HTMLInputElement;
+    const repairsSlider = document.getElementById('sd-repairs-slider') as HTMLInputElement;
+    const unpaidInput = document.getElementById('sd-unpaid-input') as HTMLInputElement;
+    const unpaidSlider = document.getElementById('sd-unpaid-slider') as HTMLInputElement;
+
+    if (!depositInput || !currencySelect || !btnModeInterest || !btnModeDeduction) return;
+
+    // Slider bindings
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(depositInput, depositSlider);
+    bindSlider(rateInput, rateSlider);
+    bindSlider(monthsInput, monthsSlider);
+
+    bindSlider(origInput, origSlider);
+    bindSlider(interestInput, interestSlider);
+    bindSlider(cleaningInput, cleaningSlider);
+    bindSlider(repairsInput, repairsSlider);
+    bindSlider(unpaidInput, unpaidSlider);
+
+    compoundSelect.addEventListener('change', calculateAll);
+
+    // Mode Toggle Logic
+    btnModeInterest.addEventListener('click', () => {
+      currentMode = 'interest';
+      btnModeInterest.classList.add('active');
+      btnModeDeduction.classList.remove('active');
+      
+      btnModeInterest.style.background = 'var(--color-primary)';
+      btnModeInterest.style.color = 'var(--color-bg-base)';
+      btnModeDeduction.style.background = 'transparent';
+      btnModeDeduction.style.color = 'var(--color-text-base)';
+
+      containerModeInterest?.classList.remove('hidden');
+      containerModeDeduction?.classList.add('hidden');
+      
+      // Update DOM labels
+      document.getElementById('lbl-sd-primary-title')!.textContent = 'Tenant Refund Due';
+      document.getElementById('lbl-sd-other-title')!.textContent = 'Interest Growth Yield';
+      document.getElementById('lbl-sd-other-desc')!.textContent = 'Total compound growth rate';
+
+      document.getElementById('lbl-tile-gross')!.textContent = 'Gross Balance';
+      document.getElementById('lbl-tile-gross-desc')!.textContent = 'Original deposit + interest';
+      document.getElementById('lbl-tile-expenses')!.textContent = 'Principal Amount';
+      document.getElementById('lbl-tile-expenses-desc')!.textContent = 'Starting tenant deposit';
+      document.getElementById('lbl-tile-rate')!.textContent = 'Interest Accrued';
+      document.getElementById('lbl-tile-rate-desc')!.textContent = 'Earned interest growth';
+      
+      calculateAll();
+    });
+
+    btnModeDeduction.addEventListener('click', () => {
+      currentMode = 'deduction';
+      btnModeDeduction.classList.add('active');
+      btnModeInterest.classList.remove('active');
+
+      btnModeDeduction.style.background = 'var(--color-primary)';
+      btnModeDeduction.style.color = 'var(--color-bg-base)';
+      btnModeInterest.style.background = 'transparent';
+      btnModeInterest.style.color = 'var(--color-text-base)';
+
+      containerModeDeduction?.classList.remove('hidden');
+      containerModeInterest?.classList.add('hidden');
+
+      // Update DOM labels
+      document.getElementById('lbl-sd-primary-title')!.textContent = 'Tenant Refund Due';
+      document.getElementById('lbl-sd-other-title')!.textContent = 'Total Move-Out Deductions';
+      document.getElementById('lbl-sd-other-desc')!.textContent = 'Amount subtracted from deposit';
+
+      document.getElementById('lbl-tile-gross')!.textContent = 'Gross Balance';
+      document.getElementById('lbl-tile-gross-desc')!.textContent = 'Original deposit + interest';
+      document.getElementById('lbl-tile-expenses')!.textContent = 'Total Deductions';
+      document.getElementById('lbl-tile-expenses-desc')!.textContent = 'Subtracted tenant fees';
+      document.getElementById('lbl-tile-rate')!.textContent = 'Interest Accrued';
+      document.getElementById('lbl-tile-rate-desc')!.textContent = 'Deposit interest earned';
+
+      calculateAll();
+    });
+
+    // Style segment controller initially
+    btnModeInterest.style.background = 'var(--color-primary)';
+    btnModeInterest.style.color = 'var(--color-bg-base)';
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('sd-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        depositInput.value = '2000';
+        depositSlider.value = '2000';
+        rateInput.value = '1.50';
+        rateSlider.value = '1.50';
+        monthsInput.value = '12';
+        monthsSlider.value = '12';
+        compoundSelect.value = 'annual';
+
+        origInput.value = '2000';
+        origSlider.value = '2000';
+        interestInput.value = '60';
+        interestSlider.value = '60';
+        cleaningInput.value = '150';
+        cleaningSlider.value = '150';
+        repairsInput.value = '350';
+        repairsSlider.value = '350';
+        unpaidInput.value = '0';
+        unpaidSlider.value = '0';
+
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        
+        btnModeInterest.click();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // DOM Elements updates
+      const resPrimaryVal = document.getElementById('res-sd-primary-val');
+      const resOtherVal = document.getElementById('res-sd-other-val');
+      const lblSecondaryVal = document.getElementById('lbl-sd-secondary-val');
+      const verdictText = document.getElementById('res-sd-verdict-text');
+
+      const tileGrossRefund = document.getElementById('tile-sd-gross-refund');
+      const tileTotalDeductions = document.getElementById('tile-sd-total-deductions');
+      const tileInterestAmount = document.getElementById('tile-sd-interest-amount');
+
+      if (currentMode === 'interest') {
+        const principal = parseFloat(depositInput.value) || 0;
+        const annualRate = parseFloat(rateInput.value) || 0;
+        const months = parseFloat(monthsInput.value) || 0;
+        const compounding = compoundSelect.value;
+
+        const yrs = months / 12;
+        let futureValue = principal;
+        let interest = 0;
+
+        if (compounding === 'simple') {
+          interest = principal * (annualRate / 100) * yrs;
+          futureValue = principal + interest;
+        } else if (compounding === 'annual') {
+          futureValue = principal * Math.pow(1 + annualRate / 100, yrs);
+          interest = futureValue - principal;
+        } else if (compounding === 'monthly') {
+          futureValue = principal * Math.pow(1 + annualRate / 1200, months);
+          interest = futureValue - principal;
+        }
+
+        const totalReturnRate = principal > 0 ? (interest / principal) * 100 : 0;
+
+        // DOM Updates
+        if (resPrimaryVal) resPrimaryVal.textContent = formatCurrency(futureValue);
+        if (resOtherVal) resOtherVal.textContent = totalReturnRate.toFixed(2) + '%';
+        if (lblSecondaryVal) lblSecondaryVal.textContent = `Interest Accrued: ${formatCurrency(interest)}`;
+
+        if (tileGrossRefund) tileGrossRefund.textContent = formatCurrency(futureValue).split('.')[0];
+        if (tileTotalDeductions) tileTotalDeductions.textContent = formatCurrency(principal).split('.')[0];
+        if (tileInterestAmount) tileInterestAmount.textContent = formatCurrency(interest).split('.')[0];
+
+        if (verdictText) {
+          verdictText.innerHTML = `A security deposit of <strong>${formatCurrency(principal)}</strong> held at <strong>${annualRate.toFixed(2)}% annual interest</strong> over <strong>${months} months</strong> generates <strong>${formatCurrency(interest)}</strong> in interest, yielding a total gross refund balance of <strong>${formatCurrency(futureValue)}</strong>.`;
+        }
+
+      } else {
+        const principal = parseFloat(origInput.value) || 0;
+        const interest = parseFloat(interestInput.value) || 0;
+        const cleaning = parseFloat(cleaningInput.value) || 0;
+        const repairs = parseFloat(repairsInput.value) || 0;
+        const unpaid = parseFloat(unpaidInput.value) || 0;
+
+        const grossBalance = principal + interest;
+        const totalDeductions = cleaning + repairs + unpaid;
+        const netRefund = grossBalance - totalDeductions;
+
+        // DOM Updates
+        const labelPrimary = document.getElementById('lbl-sd-primary-title');
+        const boxPrimary = resPrimaryVal?.parentElement;
+
+        if (netRefund >= 0) {
+          if (resPrimaryVal) resPrimaryVal.textContent = formatCurrency(netRefund);
+          if (resPrimaryVal) resPrimaryVal.style.color = 'var(--color-success)';
+          if (labelPrimary) labelPrimary.textContent = 'Tenant Refund Due';
+          if (boxPrimary) boxPrimary.style.borderTopColor = 'var(--color-success)';
+        } else {
+          if (resPrimaryVal) resPrimaryVal.textContent = formatCurrency(Math.abs(netRefund));
+          if (resPrimaryVal) resPrimaryVal.style.color = 'var(--color-danger)';
+          if (labelPrimary) labelPrimary.textContent = 'Tenant Owed to Landlord';
+          if (boxPrimary) boxPrimary.style.borderTopColor = 'var(--color-danger)';
+        }
+
+        if (resOtherVal) resOtherVal.textContent = formatCurrency(totalDeductions);
+        if (lblSecondaryVal) lblSecondaryVal.textContent = `Interest Accrued: ${formatCurrency(interest)}`;
+
+        if (tileGrossRefund) tileGrossRefund.textContent = formatCurrency(grossBalance).split('.')[0];
+        if (tileTotalDeductions) tileTotalDeductions.textContent = formatCurrency(totalDeductions).split('.')[0];
+        if (tileInterestAmount) tileInterestAmount.textContent = formatCurrency(interest).split('.')[0];
+
+        if (verdictText) {
+          if (netRefund >= 0) {
+            verdictText.innerHTML = `Your original deposit of <strong>${formatCurrency(principal)}</strong> plus <strong>${formatCurrency(interest)}</strong> interest total <strong>${formatCurrency(grossBalance)}</strong>. After subtracting <strong>${formatCurrency(totalDeductions)}</strong> in move-out charges (cleaning, repairs, unpaid utility drag), the net refund due to the tenant is <strong>${formatCurrency(netRefund)}</strong>.`;
+          } else {
+            verdictText.innerHTML = `Your original deposit of <strong>${formatCurrency(principal)}</strong> plus <strong>${formatCurrency(interest)}</strong> interest total <strong>${formatCurrency(grossBalance)}</strong>. Because move-out deductions total <strong>${formatCurrency(totalDeductions)}</strong>, the tenant has a deficit and owes the landlord <strong>${formatCurrency(Math.abs(netRefund))}</strong>.`;
+          }
+        }
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      let text = '';
+      if (currentMode === 'interest') {
+        text = `Security Deposit Interest Accrual:\n` +
+               `Deposit Amount: ${depositInput.value} | Annual Rate: ${rateInput.value}% | Duration: ${monthsInput.value} months\n` +
+               `Compounding: ${compoundSelect.value}\n` +
+               `Tenant Refund Due: ${document.getElementById('res-sd-primary-val')?.textContent}\n` +
+               `Interest Accrued: ${document.getElementById('lbl-sd-secondary-val')?.textContent} (Total Return: ${document.getElementById('res-sd-other-val')?.textContent})\n` +
+               `Diagnosis: ${document.getElementById('res-sd-verdict-text')?.textContent}`;
+      } else {
+        const isOwed = document.getElementById('lbl-sd-primary-title')?.textContent;
+        text = `Security Deposit Move-Out Reconciliation:\n` +
+               `Original Deposit: ${origInput.value} | Interest: ${interestInput.value}\n` +
+               `Cleaning Charges: ${cleaningInput.value} | Repairs: ${repairsInput.value} | Unpaid: ${unpaidInput.value}\n` +
+               `Gross Balance: ${document.getElementById('tile-sd-gross-refund')?.textContent}\n` +
+               `Total Deductions: ${document.getElementById('res-sd-other-val')?.textContent}\n` +
+               `${isOwed}: ${document.getElementById('res-sd-primary-val')?.textContent}\n` +
+               `Diagnosis: ${document.getElementById('res-sd-verdict-text')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSdCalculator);
+  document.addEventListener('astro:after-swap', initSdCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* segment toggles active status */
+  .segment-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base);
+  }
+
+  .segment-btn:not(.active) {
+    color: var(--color-text-base);
+  }
+
+  .segment-btn:not(.active):hover {
+    background-color: var(--color-border);
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

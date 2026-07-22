@@ -1,0 +1,251 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CapRateCalculator from '../../components/calculator/CapRateCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Cap Rate Calculator', path: '/calculator/cap-rate-calculator' }
+];
+---
+
+<Layout
+  title="Cap Rate Calculator - Calculate Real Estate Yield & Valuation"
+  description="Free online Cap Rate Calculator. Calculate capitalization rates, annual Net Operating Income (NOI), and estimate property valuations based on target yields."
+  breadcrumbs={breadcrumbs}
+>
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <CapRateCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Real Estate Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Real Estate Yields vs. Cash Savings: Analyzing a Duplex Listing with a 5.98% Cap Rate</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of an investor who analyzed a duplex listed for $500,000—discovering how a 5.98% cap rate ($29,880 NOI) compares to a 3% cash savings account or stock market yield, explaining Net Operating Income calculations and expense exclusions.
+            </p>
+            <a href="/blog/how-to-calculate-cap-rate" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Cap Rate & Value Rental Property
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Cap Rate (Capitalization Rate)?</h2>
+        <p>
+          In commercial and residential real estate investing, the <strong>Capitalization Rate</strong> (commonly abbreviated as Cap Rate) is a metric used to measure the expected annual rate of return on an investment property, assuming the asset is purchased entirely with cash.
+        </p>
+        <p>
+          The cap rate serves as a standard benchmark for comparing the relative yield of different properties in a market, independent of their financing structures. It is the ratio of the property's annualized Net Operating Income (NOI) to its current market value or purchase price.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your capitalization rate or estimate property values, select your preferred mode and follow these steps:
+        </p>
+        
+        <h3>Mode 1: Calculate Cap Rate (Default)</h3>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results correctly.
+          </li>
+          <li>
+            <strong>Input Purchase Price:</strong> Enter your property purchase price (or current market valuation).
+          </li>
+          <li>
+            <strong>Input Rental Income:</strong> Enter your expected Monthly Gross Rental Income.
+          </li>
+          <li>
+            <strong>Input Other Income:</strong> Enter monthly auxiliary income streams (e.g. parking spaces, laundry machines, storage units).
+          </li>
+          <li>
+            <strong>Input Vacancy Rate:</strong> Enter the expected annual Vacancy Rate % to account for unleased periods.
+          </li>
+          <li>
+            <strong>Input Operating Expenses:</strong> Enter monthly operating expenses (property taxes, insurance, repairs, management fees, utilities). <em>Do not include mortgage interest or depreciation.</em>
+          </li>
+        </ol>
+
+        <h3>Mode 2: Calculate Property Value</h3>
+        <ol>
+          <li>
+            <strong>Input Annual NOI:</strong> Enter your expected Net Operating Income ($/year).
+          </li>
+          <li>
+            <strong>Input Target Cap Rate:</strong> Enter your target yield Cap Rate %.
+          </li>
+          <li>
+            <strong>Review Valuation:</strong> The calculator instantly outputs the maximum purchase price to achieve that yield.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Cap Rates</h2>
+        <p>
+          The calculator applies standard real estate accounting formulas to derive yields and valuations:
+        </p>
+        
+        <h3>1. Net Operating Income (NOI) Formula</h3>
+        <p>
+          To find NOI, we first compute Effective Gross Income (EGI) by subtracting vacancy losses from total potential rental and other income, then subtract operating expenses:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Effective Gross Income (EGI)} = (\\text{Monthly Rent} + \\text{Monthly Other Income}) \\times 12 \\times (1 - \\frac{\\text{Vacancy \\%}}{100})\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Operating Income (NOI)} = \\text{EGI} - (\\text{Monthly Operating Expenses} \\times 12)\\)"}
+        </p>
+
+        <h3>2. Capitalization Rate Formula</h3>
+        <p>
+          The cap rate percentage is the ratio of annualized NOI to the property's purchase price:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Cap Rate \\%} = \\left( \\frac{\\text{Net Operating Income (NOI)}}{\\text{Property Purchase Price}} \\right) \\times 100\\)"}
+        </p>
+
+        <h3>3. Property Valuation Formula</h3>
+        <p>
+          To find the maximum valuation to pay for a property based on its NOI and your target cap rate yield:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Estimated Property Value} = \\frac{\\text{Net Operating Income (NOI)}}{\\text{Target Cap Rate / 100}}\\)"}
+        </p>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose you buy a duplex for $500,000. It rents for $4,000/month, has $200/month other income, a 5.0% vacancy rate, and monthly operating costs (taxes, insurance, management, repairs) of $1,500.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>Potential Annual Income:</strong> {"\\((\\$4,000 + \\$200) \\times 12 = \\mathbf{\\$50,400.00}\\)"}
+          </li>
+          <li>
+            <strong>Vacancy Loss:</strong> {"\\(\\$50,400 \\times 0.05 = \\mathbf{\\$2,520.00}\\)"}
+          </li>
+          <li>
+            <strong>Effective Gross Income (EGI):</strong> {"\\(\\$50,400 - \\$2,520 = \\mathbf{\\$47,880.00}\\)"}
+          </li>
+          <li>
+            <strong>Annual Expenses:</strong> {"\\(\\$1,500 \\times 12 = \\mathbf{\\$18,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Net Operating Income (NOI):</strong> {"\\(\\$47,880 - \\$18,000 = \\mathbf{\\$29,880.00}\\)"}
+          </li>
+          <li>
+            <strong>Capitalization Rate (Cap Rate):</strong> {"\\((\\frac{\\$29,880}{\\$500,000}) \\times 100 = \\mathbf{5.98\\%}\\)"}
+          </li>
+          <li>
+            <strong>Operating Expense Ratio (OER):</strong> {"\\((\\frac{\\$18,000}{\\$47,880}) \\times 100 = \\mathbf{37.59\\%}\\)"}
+          </li>
+        </ul>
+
+        <h2>Understanding Expenses Exclusions (Critical Rule)</h2>
+        <p>
+          One of the most common mistakes is including debt service (mortgage principal and interest payments) in the operating expenses input. 
+        </p>
+        <p>
+          <strong>Mortgage interest payments, capital depreciation, corporate income taxes, and amortization are completely excluded from Operating Expenses when calculating Cap Rates.</strong>
+        </p>
+        <p>
+          This is because cap rates are designed to measure the raw unlevered yield of the asset itself, regardless of whether you pay for it with 100% cash or take out a 90% loan.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Cap Rate FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a capitalization rate (cap rate) and how is it calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A capitalization rate is the annual yield on a real estate asset, assuming a cash purchase. It is calculated by dividing the property's annual Net Operating Income (NOI) by its purchase price or current market value (Cap Rate = NOI ÷ Property Value).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What expenses are excluded from Net Operating Income (NOI) when finding cap rates?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              NOI only includes operating expenses like property taxes, insurance, maintenance, property management, and utilities. It completely excludes mortgage interest/debt service, depreciation, amortization, and owner income taxes.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a "good" cap rate for a rental property investment?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A "good" cap rate depends on location and market risk. Typically, cap rates range between 4% and 10%. Class A properties in high-demand cities (like San Francisco or New York) have low cap rates (4% to 5%) due to low risk and higher appreciation potential, while properties in secondary markets often have higher cap rates (7% to 10%) due to higher risk.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does cap rate differ from Cash-on-Cash (CoC) return?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Cap rate assumes an all-cash purchase and measures asset yield. Cash-on-Cash (CoC) return factors in mortgage financing, dividing the annual pre-tax cash flow (NOI minus mortgage payments) by your actual cash invested (down payment + closing costs).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does market interest rates and inflation impact cap rates?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              When market interest rates rise, cap rates typically follow. This is because investors demand a higher yield premium on real estate to offset risk relative to risk-free government bonds. High inflation can compress cap rates if rents grow faster than operating costs, boosting NOI.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,584 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Cash Calculator"
+  description="Count physical cash, coins, and bill denominations quickly. Reconcile cash register drawers against floats and expected balances to track retail variance."
+  category="Business"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="cash-calculator">
+    
+    <!-- Currency Selector -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">1. Currency & Reconcile Settings</h3>
+    
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cc-currency-select">Currency</label>
+        <select id="cc-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Expected Register Cash -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cc-expected-input">Expected Cash in Drawer</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="cc-expected-input" min="0" step="50" value="1000" aria-label="Expected Cash in Drawer" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Starting Float Cash -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cc-float-input">Starting Cash Float</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="cc-float-input" min="0" step="10" value="150" aria-label="Starting Cash Float" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Denominations counting grid -->
+    <div style="margin-top: var(--space-6);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-4);">2. Physical Counts</h3>
+      
+      <div class="denom-columns-container" style="display: flex; gap: var(--space-5); flex-wrap: wrap;">
+        
+        <!-- Bills Column -->
+        <div class="denom-column" style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: var(--space-3);">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase;">Bills / Banknotes</span>
+          
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-bill-100" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>100 Bills</label>
+            <input type="number" id="cc-bill-100" min="0" value="5" class="denom-count-input" aria-label="Quantity of 100 bills" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-bill-50" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>50 Bills</label>
+            <input type="number" id="cc-bill-50" min="0" value="3" class="denom-count-input" aria-label="Quantity of 50 bills" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-bill-20" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>20 Bills</label>
+            <input type="number" id="cc-bill-20" min="0" value="10" class="denom-count-input" aria-label="Quantity of 20 bills" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-bill-10" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>10 Bills</label>
+            <input type="number" id="cc-bill-10" min="0" value="5" class="denom-count-input" aria-label="Quantity of 10 bills" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-bill-5" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>5 Bills</label>
+            <input type="number" id="cc-bill-5" min="0" value="12" class="denom-count-input" aria-label="Quantity of 5 bills" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-bill-2" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>2 Bills</label>
+            <input type="number" id="cc-bill-2" min="0" value="0" class="denom-count-input" aria-label="Quantity of 2 bills" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-bill-1" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>1 Bills</label>
+            <input type="number" id="cc-bill-1" min="0" value="15" class="denom-count-input" aria-label="Quantity of 1 bills" />
+          </div>
+        </div>
+
+        <!-- Coins Column -->
+        <div class="denom-column" style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: var(--space-3);">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase;">Coins</span>
+          
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-coin-100" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>1 Coins</label>
+            <input type="number" id="cc-coin-100" min="0" value="0" class="denom-count-input" aria-label="Quantity of 1 coins" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-coin-50" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>0.50 Coins</label>
+            <input type="number" id="cc-coin-50" min="0" value="0" class="denom-count-input" aria-label="Quantity of 50c coins" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-coin-25" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>0.25 Coins</label>
+            <input type="number" id="cc-coin-25" min="0" value="40" class="denom-count-input" aria-label="Quantity of 25c coins" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-coin-10" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>0.10 Coins</label>
+            <input type="number" id="cc-coin-10" min="0" value="50" class="denom-count-input" aria-label="Quantity of 10c coins" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-coin-5" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>0.05 Coins</label>
+            <input type="number" id="cc-coin-5" min="0" value="20" class="denom-count-input" aria-label="Quantity of 5c coins" />
+          </div>
+
+          <div class="denom-row" style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+            <label for="cc-coin-1" style="font-size: 0.9rem; font-weight: 600;"><span class="currency-symbol">$</span>0.01 Coins</label>
+            <input type="number" id="cc-coin-1" min="0" value="100" class="denom-count-input" aria-label="Quantity of 1c coins" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="cc-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Cash Reconciliation Report</h3>
+
+    <!-- Core Cash Outputs -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Cash Counted</span>
+        <div id="res-cc-total" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$992.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cc-breakdown">Bills: $975.00 | Coins: $17.00</span>
+      </div>
+      <div class="net-value-box" id="cc-variance-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-danger);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Drawer Variance</span>
+        <div id="res-cc-variance" style="font-size: 1.75rem; font-weight: 800; color: var(--color-danger); margin-top: 4px;">-$8.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cc-status">Variance Status: SHORT</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="cc-verdict-card" style="border-left: 4px solid var(--color-danger); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Audit Verdict</span>
+        <p id="res-cc-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Physical cash counted totals <strong>$992.00</strong> (including <strong>$975.00 in bills</strong> and <strong>$17.00 in coins</strong>). Compared to an expected drawer total of <strong>$1,000.00</strong>, the register is <strong>short by $8.00</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Cash Audit Breakdown</h4>
+    <div class="results-grid cc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Bills Subtotal</span>
+        <div class="tile-value" id="tile-cc-bills" style="color: var(--color-success);">$975</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-cc-bills-count">35 banknotes counted</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Coins Subtotal</span>
+        <div class="tile-value" id="tile-cc-coins" style="color: var(--color-primary);">$17</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-cc-coins-count">210 coins counted</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Net Sales Revenue</span>
+        <div class="tile-value" id="tile-cc-netsales" style="color: var(--color-accent);">$842</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cc-float-desc">Excludes $150 starting float</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initCcCalculator() {
+    // Select settings elements
+    const currencySelect = document.getElementById('cc-currency-select') as HTMLSelectElement;
+    const expectedInput = document.getElementById('cc-expected-input') as HTMLInputElement;
+    const floatInput = document.getElementById('cc-float-input') as HTMLInputElement;
+
+    // Bills input fields
+    const billsIds = ['100', '50', '20', '10', '5', '2', '1'];
+    const coinsIds = ['100', '50', '25', '10', '5', '1']; // coin 100 represents $1 coin, 50 represents 0.50c, etc.
+
+    const billInputs: { val: number; el: HTMLInputElement }[] = billsIds.map(id => ({
+      val: parseFloat(id),
+      el: document.getElementById(`cc-bill-${id}`) as HTMLInputElement
+    }));
+
+    const coinInputs: { val: number; el: HTMLInputElement }[] = coinsIds.map(id => ({
+      val: parseFloat(id) / 100, // coin values: 1.00, 0.50, 0.25, 0.10, 0.05, 0.01
+      el: document.getElementById(`cc-coin-${id}`) as HTMLInputElement
+    }));
+
+    if (!expectedInput || !currencySelect || !floatInput) return;
+
+    // Attach event listeners to all fields
+    const allInputElements = [expectedInput, floatInput, ...billInputs.map(b => b.el), ...coinInputs.map(c => c.el)];
+    allInputElements.forEach(el => {
+      if (el) el.addEventListener('input', calculateAll);
+    });
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('cc-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        expectedInput.value = '1000';
+        floatInput.value = '150';
+
+        // Set default values matching Test Case 1
+        (document.getElementById('cc-bill-100') as HTMLInputElement).value = '5';
+        (document.getElementById('cc-bill-50') as HTMLInputElement).value = '3';
+        (document.getElementById('cc-bill-20') as HTMLInputElement).value = '10';
+        (document.getElementById('cc-bill-10') as HTMLInputElement).value = '5';
+        (document.getElementById('cc-bill-5') as HTMLInputElement).value = '12';
+        (document.getElementById('cc-bill-2') as HTMLInputElement).value = '0';
+        (document.getElementById('cc-bill-1') as HTMLInputElement).value = '15';
+
+        (document.getElementById('cc-coin-100') as HTMLInputElement).value = '0';
+        (document.getElementById('cc-coin-50') as HTMLInputElement).value = '0';
+        (document.getElementById('cc-coin-25') as HTMLInputElement).value = '40';
+        (document.getElementById('cc-coin-10') as HTMLInputElement).value = '50';
+        (document.getElementById('cc-coin-5') as HTMLInputElement).value = '20';
+        (document.getElementById('cc-coin-1') as HTMLInputElement).value = '100';
+
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // Re-sum bills
+      let totalBills = 0;
+      let totalBillCount = 0;
+      billInputs.forEach(item => {
+        const qty = parseInt(item.el.value) || 0;
+        totalBills += qty * item.val;
+        totalBillCount += qty;
+      });
+
+      // Re-sum coins
+      let totalCoins = 0;
+      let totalCoinCount = 0;
+      coinInputs.forEach(item => {
+        const qty = parseInt(item.el.value) || 0;
+        totalCoins += qty * item.val;
+        totalCoinCount += qty;
+      });
+
+      const totalCash = totalBills + totalCoins;
+
+      // Reconciliation calculations
+      const expected = parseFloat(expectedInput.value) || 0;
+      const floatVal = parseFloat(floatInput.value) || 0;
+      const netSales = Math.max(0, totalCash - floatVal);
+      const variance = totalCash - expected;
+
+      // Update primary displays
+      const resCcTotal = document.getElementById('res-cc-total');
+      const resCcVariance = document.getElementById('res-cc-variance');
+      const lblCcBreakdown = document.getElementById('lbl-cc-breakdown');
+      const lblCcStatus = document.getElementById('lbl-cc-status');
+      const varianceBox = document.getElementById('cc-variance-box');
+
+      if (resCcTotal) resCcTotal.textContent = formatCurrency(totalCash);
+      if (lblCcBreakdown) lblCcBreakdown.textContent = `Bills: ${formatCurrency(totalBills)} | Coins: ${formatCurrency(totalCoins)}`;
+
+      // Update variance box styles and status
+      if (resCcVariance) resCcVariance.textContent = (variance >= 0 ? '+' : '') + formatCurrency(variance);
+
+      if (varianceBox && lblCcStatus && resCcVariance) {
+        if (Math.abs(variance) < 0.005) {
+          lblCcStatus.textContent = 'Variance Status: BALANCED';
+          resCcVariance.style.color = 'var(--color-success)';
+          varianceBox.style.borderTopColor = 'var(--color-success)';
+        } else if (variance > 0) {
+          lblCcStatus.textContent = 'Variance Status: OVER';
+          resCcVariance.style.color = 'var(--color-success)';
+          varianceBox.style.borderTopColor = 'var(--color-success)';
+        } else {
+          lblCcStatus.textContent = 'Variance Status: SHORT';
+          resCcVariance.style.color = 'var(--color-danger)';
+          varianceBox.style.borderTopColor = 'var(--color-danger)';
+        }
+      }
+
+      // Update verdict card & text
+      const verdictCard = document.getElementById('cc-verdict-card');
+      const verdictText = document.getElementById('res-cc-verdict-text');
+      if (verdictCard && verdictText) {
+        if (Math.abs(variance) < 0.005) {
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+          verdictText.innerHTML = `Physical cash counted totals <strong>${formatCurrency(totalCash)}</strong> (including <strong>${formatCurrency(totalBills)} in bills</strong> and <strong>${formatCurrency(totalCoins)} in coins</strong>). The drawer matches your expected cash balance of <strong>${formatCurrency(expected)}</strong> perfectly. Register is <strong>balanced</strong>.`;
+        } else if (variance > 0) {
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+          verdictText.innerHTML = `Physical cash counted totals <strong>${formatCurrency(totalCash)}</strong> (including <strong>${formatCurrency(totalBills)} in bills</strong> and <strong>${formatCurrency(totalCoins)} in coins</strong>). Compared to an expected drawer total of <strong>${formatCurrency(expected)}</strong>, the register has a surplus and is <strong>over by ${formatCurrency(variance)}</strong>.`;
+        } else {
+          verdictCard.style.borderLeftColor = 'var(--color-danger)';
+          verdictText.innerHTML = `Physical cash counted totals <strong>${formatCurrency(totalCash)}</strong> (including <strong>${formatCurrency(totalBills)} in bills</strong> and <strong>${formatCurrency(totalCoins)} in coins</strong>). Compared to an expected drawer total of <strong>${formatCurrency(expected)}</strong>, the register has a deficit and is <strong>short by ${formatCurrency(Math.abs(variance))}</strong>.`;
+        }
+      }
+
+      // Update Tiles
+      const tileCcBills = document.getElementById('tile-cc-bills');
+      const tileCcBillsCount = document.getElementById('tile-cc-bills-count');
+      const tileCcCoins = document.getElementById('tile-cc-coins');
+      const tileCcCoinsCount = document.getElementById('tile-cc-coins-count');
+      const tileCcNetSales = document.getElementById('tile-cc-netsales');
+      const lblCcFloatDesc = document.getElementById('lbl-cc-float-desc');
+
+      if (tileCcBills) tileCcBills.textContent = formatCurrency(totalBills).split('.')[0];
+      if (tileCcBillsCount) tileCcBillsCount.textContent = `${totalBillCount} banknotes counted`;
+
+      if (tileCcCoins) tileCcCoins.textContent = formatCurrency(totalCoins).split('.')[0] + formatCurrency(totalCoins).substring(formatCurrency(totalCoins).indexOf('.'));
+      if (tileCcCoinsCount) tileCcCoinsCount.textContent = `${totalCoinCount} coins counted`;
+
+      if (tileCcNetSales) tileCcNetSales.textContent = formatCurrency(netSales).split('.')[0];
+      if (lblCcFloatDesc) lblCcFloatDesc.textContent = `Excludes ${formatCurrency(floatVal)} starting float`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Cash Drawer Count & Reconciliation Report:\n` +
+                   `Total Cash Counted: ${document.getElementById('res-cc-total')?.textContent}\n` +
+                   `Bills Subtotal: ${document.getElementById('tile-cc-bills')?.textContent} (${document.getElementById('tile-cc-bills-count')?.textContent})\n` +
+                   `Coins Subtotal: ${document.getElementById('tile-cc-coins')?.textContent} (${document.getElementById('tile-cc-coins-count')?.textContent})\n` +
+                   `Expected Drawer Cash: ${expectedInput.value} | Starting Float: ${floatInput.value}\n` +
+                   `Drawer Variance: ${document.getElementById('res-cc-variance')?.textContent} (${document.getElementById('lbl-cc-status')?.textContent})\n` +
+                   `Net Drawer Sales: ${document.getElementById('tile-cc-netsales')?.textContent}\n` +
+                   `Audit Verdict: ${document.getElementById('res-cc-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCcCalculator);
+  document.addEventListener('astro:after-swap', initCcCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Denomination count input styling */
+  .denom-count-input {
+    width: 75px;
+    height: 34px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: center;
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .denom-count-input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

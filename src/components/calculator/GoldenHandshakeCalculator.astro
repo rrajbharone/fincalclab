@@ -1,0 +1,720 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Golden Handshake Calculator"
+  description="Calculate your estimated severance package and redundancy exit payout. Reconcile tenure formulas, pay in lieu of notice, outplacement cash benefits, and contractual executive multipliers."
+  category="Employment"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="golden-handshake-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-currency-select">Currency</label>
+          <select id="gh-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Mode Segment controller -->
+      <div class="input-group">
+        <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base); margin-bottom: 2px;">Calculation Mode</label>
+        <div class="mode-segment-container" style="display: flex; background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px; gap: 4px;">
+          <button type="button" id="btn-mode-tenure" class="segment-btn active" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.85rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Standard Tenure</button>
+          <button type="button" id="btn-mode-multiplier" class="segment-btn" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.85rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Executive Multiplier</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode A Content: Standard Tenure Inputs -->
+    <div id="gh-mode-tenure-inputs" class="mode-inputs-group" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Redundancy & Exit Details</h3>
+      
+      <!-- Annual Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-salary-input-tenure">Current Annual Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="gh-salary-input-tenure" min="10000" step="5000" value="130000" aria-label="Current Annual Salary" />
+          </div>
+        </div>
+        <input type="range" id="gh-salary-slider-tenure" min="10000" max="300000" step="5000" value="130000" class="slider-range" aria-label="Annual Salary Slider" />
+      </div>
+
+      <!-- Years of Service -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-years-input">Years of Service</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="gh-years-input" min="1" max="50" step="1" value="10" aria-label="Years of Service" style="text-align: left;" />
+            <span class="percent-symbol">yrs</span>
+          </div>
+        </div>
+        <input type="range" id="gh-years-slider" min="1" max="40" step="1" value="10" class="slider-range" aria-label="Years of Service Slider" />
+      </div>
+
+      <!-- Weeks of Pay per Year -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-weeks-input">Weeks of Pay Per Year</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="gh-weeks-input" min="0.5" max="10.0" step="0.5" value="2.0" aria-label="Weeks of Pay per Year" style="text-align: left;" />
+            <span class="percent-symbol">wks</span>
+          </div>
+        </div>
+        <input type="range" id="gh-weeks-slider" min="0.5" max="6.0" step="0.5" value="2.0" class="slider-range" aria-label="Weeks Slider" />
+      </div>
+
+      <!-- Notice Period -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-notice-input">Notice Period (PILON)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="gh-notice-input" min="0" max="24" step="1" value="3" aria-label="Notice Period Months" style="text-align: left;" />
+            <span class="percent-symbol">mo</span>
+          </div>
+        </div>
+        <input type="range" id="gh-notice-slider" min="0" max="12" step="1" value="3" class="slider-range" aria-label="Notice Slider" />
+      </div>
+
+      <!-- Additional Incentives -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-incentive-input">Additional Exit Incentives</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="gh-incentive-input" min="0" step="1000" value="10000" aria-label="Additional Exit Incentives" />
+          </div>
+        </div>
+        <input type="range" id="gh-incentive-slider" min="0" max="100000" step="2500" value="10000" class="slider-range" aria-label="Incentives Slider" />
+      </div>
+    </div>
+
+    <!-- Mode B Content: Contractual Multiplier Inputs -->
+    <div id="gh-mode-multiplier-inputs" class="mode-inputs-group hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Executive Covenant Exit Details</h3>
+      
+      <!-- Annual Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-salary-input-multiplier">Current Annual Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="gh-salary-input-multiplier" min="20000" step="10000" value="200000" aria-label="Current Annual Salary" />
+          </div>
+        </div>
+        <input type="range" id="gh-salary-slider-multiplier" min="20000" max="500000" step="10000" value="200000" class="slider-range" aria-label="Annual Salary Slider Multiplier" />
+      </div>
+
+      <!-- Contract Multiplier -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-multiplier-input">Contractual Multiplier</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="gh-multiplier-input" min="0.5" max="5.0" step="0.1" value="1.5" aria-label="Contractual Multiplier" style="text-align: left;" />
+            <span class="percent-symbol">x</span>
+          </div>
+        </div>
+        <input type="range" id="gh-multiplier-slider" min="0.5" max="4.0" step="0.1" value="1.5" class="slider-range" aria-label="Multiplier Slider" />
+      </div>
+
+      <!-- Cash Benefits -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gh-benefits-input">Outplacement & Health Cash Benefits</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="gh-benefits-input" min="0" step="1000" value="15000" aria-label="Outplacement Cash Benefits" />
+          </div>
+        </div>
+        <input type="range" id="gh-benefits-slider" min="0" max="50000" step="2500" value="15000" class="slider-range" aria-label="Benefits Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="gh-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Redundancy Package Summary</h3>
+
+    <!-- Core Golden Handshake Outputs -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Exit Package</span>
+        <div id="res-gh-total" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$92,500.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-gh-pilon-desc">Includes notice pay (PILON) and incentives</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);" id="lbl-gh-base-title">Severance Pay</span>
+        <div id="res-gh-base-severance" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$50,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-gh-base-desc">20 weeks redundancy payout</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="gh-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Payout diagnosis</span>
+        <p id="res-gh-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your estimated Golden Handshake redundancy exit package is <strong>$92,500.00</strong>. This includes <strong>$50,000.00</strong> in tenure-based severance, <strong>$32,500.00</strong> in notice period pay (PILON), and <strong>$10,000.00</strong> in additional exit incentives.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Exit Package Breakdown</h4>
+    <div class="results-grid gh-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label" id="tile-lbl-gh-base">Base Severance</span>
+        <div class="tile-value" id="tile-gh-base" style="color: var(--color-primary);">$50,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-gh-base-sub">10 yrs × 2 wks pay</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-lbl-gh-notice">Notice Pay (PILON)</span>
+        <div class="tile-value" id="tile-gh-notice" style="color: var(--color-accent);">$32,500</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-gh-notice-sub">3 months notice period</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-lbl-gh-extra">Extra Incentives</span>
+        <div class="tile-value" id="tile-gh-extra" style="color: var(--color-success);">$10,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="tile-gh-extra-sub">Transition cash benefits</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initGhCalculator() {
+    // Select settings elements
+    const currencySelect = document.getElementById('gh-currency-select') as HTMLSelectElement;
+    
+    // Mode toggle buttons
+    const btnTenure = document.getElementById('btn-mode-tenure') as HTMLButtonElement;
+    const btnMultiplier = document.getElementById('btn-mode-multiplier') as HTMLButtonElement;
+    
+    // Mode Input blocks
+    const tenureInputsBlock = document.getElementById('gh-mode-tenure-inputs') as HTMLDivElement;
+    const multiplierInputsBlock = document.getElementById('gh-mode-multiplier-inputs') as HTMLDivElement;
+
+    // Mode A (Tenure) Input Fields
+    const salaryInputTenure = document.getElementById('gh-salary-input-tenure') as HTMLInputElement;
+    const salarySliderTenure = document.getElementById('gh-salary-slider-tenure') as HTMLInputElement;
+    const yearsInput = document.getElementById('gh-years-input') as HTMLInputElement;
+    const yearsSlider = document.getElementById('gh-years-slider') as HTMLInputElement;
+    const weeksInput = document.getElementById('gh-weeks-input') as HTMLInputElement;
+    const weeksSlider = document.getElementById('gh-weeks-slider') as HTMLInputElement;
+    const noticeInput = document.getElementById('gh-notice-input') as HTMLInputElement;
+    const noticeSlider = document.getElementById('gh-notice-slider') as HTMLInputElement;
+    const incentiveInput = document.getElementById('gh-incentive-input') as HTMLInputElement;
+    const incentiveSlider = document.getElementById('gh-incentive-slider') as HTMLInputElement;
+
+    // Mode B (Multiplier) Input Fields
+    const salaryInputMultiplier = document.getElementById('gh-salary-input-multiplier') as HTMLInputElement;
+    const salarySliderMultiplier = document.getElementById('gh-salary-slider-multiplier') as HTMLInputElement;
+    const multiplierInput = document.getElementById('gh-multiplier-input') as HTMLInputElement;
+    const multiplierSlider = document.getElementById('gh-multiplier-slider') as HTMLInputElement;
+    const benefitsInput = document.getElementById('gh-benefits-input') as HTMLInputElement;
+    const benefitsSlider = document.getElementById('gh-benefits-slider') as HTMLInputElement;
+
+    let activeMode: 'tenure' | 'multiplier' = 'tenure';
+
+    if (!salaryInputTenure || !currencySelect || !btnTenure || !btnMultiplier) return;
+
+    // Helper functions for sliders
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    // Bind Mode A
+    bindSlider(salaryInputTenure, salarySliderTenure, calculateAll);
+    bindSlider(yearsInput, yearsSlider, calculateAll);
+    bindSlider(weeksInput, weeksSlider, calculateAll);
+    bindSlider(noticeInput, noticeSlider, calculateAll);
+    bindSlider(incentiveInput, incentiveSlider, calculateAll);
+
+    // Bind Mode B
+    bindSlider(salaryInputMultiplier, salarySliderMultiplier, calculateAll);
+    bindSlider(multiplierInput, multiplierSlider, calculateAll);
+    bindSlider(benefitsInput, benefitsSlider, calculateAll);
+
+    // Mode toggles
+    btnTenure.addEventListener('click', () => {
+      activeMode = 'tenure';
+      btnTenure.classList.add('active');
+      btnMultiplier.classList.remove('active');
+
+      btnTenure.style.background = 'var(--color-primary)';
+      btnTenure.style.color = 'var(--color-bg-base)';
+      btnMultiplier.style.background = 'transparent';
+      btnMultiplier.style.color = 'var(--color-text-base)';
+
+      tenureInputsBlock.classList.remove('hidden');
+      multiplierInputsBlock.classList.add('hidden');
+      calculateAll();
+    });
+
+    btnMultiplier.addEventListener('click', () => {
+      activeMode = 'multiplier';
+      btnMultiplier.classList.add('active');
+      btnTenure.classList.remove('active');
+
+      btnMultiplier.style.background = 'var(--color-primary)';
+      btnMultiplier.style.color = 'var(--color-bg-base)';
+      btnTenure.style.background = 'transparent';
+      btnTenure.style.color = 'var(--color-text-base)';
+
+      multiplierInputsBlock.classList.remove('hidden');
+      tenureInputsBlock.classList.add('hidden');
+      calculateAll();
+    });
+
+    // Style segment controller initially
+    btnTenure.style.background = 'var(--color-primary)';
+    btnTenure.style.color = 'var(--color-bg-base)';
+    btnMultiplier.style.background = 'transparent';
+    btnMultiplier.style.color = 'var(--color-text-base)';
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('gh-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        // Mode resets
+        activeMode = 'tenure';
+        btnTenure.classList.add('active');
+        btnMultiplier.classList.remove('active');
+
+        btnTenure.style.background = 'var(--color-primary)';
+        btnTenure.style.color = 'var(--color-bg-base)';
+        btnMultiplier.style.background = 'transparent';
+        btnMultiplier.style.color = 'var(--color-text-base)';
+
+        tenureInputsBlock.classList.remove('hidden');
+        multiplierInputsBlock.classList.add('hidden');
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        // Mode A values
+        salaryInputTenure.value = '130000';
+        salarySliderTenure.value = '130000';
+        yearsInput.value = '10';
+        yearsSlider.value = '10';
+        weeksInput.value = '2.0';
+        weeksSlider.value = '2.0';
+        noticeInput.value = '3';
+        noticeSlider.value = '3';
+        incentiveInput.value = '10000';
+        incentiveSlider.value = '10000';
+
+        // Mode B values
+        salaryInputMultiplier.value = '200000';
+        salarySliderMultiplier.value = '200000';
+        multiplierInput.value = '1.5';
+        multiplierSlider.value = '1.5';
+        benefitsInput.value = '15000';
+        benefitsSlider.value = '15000';
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      // DOM Elements
+      const resGhTotal = document.getElementById('res-gh-total');
+      const resGhBaseSeverance = document.getElementById('res-gh-base-severance');
+      const lblGhBaseTitle = document.getElementById('lbl-gh-base-title');
+      const lblGhBaseDesc = document.getElementById('lbl-gh-base-desc');
+      const lblGhPilonDesc = document.getElementById('lbl-gh-pilon-desc');
+      const resGhVerdictText = document.getElementById('res-gh-verdict-text');
+
+      const tileGhBase = document.getElementById('tile-gh-base');
+      const tileGhBaseSub = document.getElementById('tile-gh-base-sub');
+      const tileGhNotice = document.getElementById('tile-gh-notice');
+      const tileGhNoticeSub = document.getElementById('tile-gh-notice-sub');
+      const tileGhExtra = document.getElementById('tile-gh-extra');
+      const tileGhExtraSub = document.getElementById('tile-gh-extra-sub');
+
+      const tileLblGhBase = document.getElementById('tile-lbl-gh-base');
+      const tileLblGhNotice = document.getElementById('tile-lbl-gh-notice');
+      const tileLblGhExtra = document.getElementById('tile-lbl-gh-extra');
+
+      if (activeMode === 'tenure') {
+        const annualSal = parseFloat(salaryInputTenure.value) || 0;
+        const years = parseFloat(yearsInput.value) || 0;
+        const weeksPerYr = parseFloat(weeksInput.value) || 0;
+        const noticeMonths = parseFloat(noticeInput.value) || 0;
+        const incentive = parseFloat(incentiveInput.value) || 0;
+
+        // Math
+        const weeklySal = annualSal / 52;
+        const severanceWeeks = years * weeksPerYr;
+        const severancePayout = weeklySal * severanceWeeks;
+        const noticePayout = (annualSal / 12) * noticeMonths;
+        const totalPayout = severancePayout + noticePayout + incentive;
+
+        // Primary Outputs
+        if (resGhTotal) resGhTotal.textContent = formatCurrency(totalPayout);
+        if (resGhBaseSeverance) resGhBaseSeverance.textContent = formatCurrency(severancePayout);
+        if (lblGhBaseTitle) lblGhBaseTitle.textContent = 'Severance Pay';
+        if (lblGhBaseDesc) lblGhBaseDesc.textContent = `${severanceWeeks.toFixed(1)} weeks redundancy payout`;
+        if (lblGhPilonDesc) lblGhPilonDesc.textContent = 'Includes notice pay (PILON) and incentives';
+
+        // Verdict diagnosis
+        if (resGhVerdictText) {
+          resGhVerdictText.innerHTML = `Your estimated Golden Handshake redundancy exit package is <strong>${formatCurrency(totalPayout)}</strong>. This includes <strong>${formatCurrency(severancePayout)}</strong> in tenure-based severance, <strong>${formatCurrency(noticePayout)}</strong> in notice period pay (PILON), and <strong>${formatCurrency(incentive)}</strong> in additional exit incentives.`;
+        }
+
+        // Tiles
+        if (tileLblGhBase) tileLblGhBase.textContent = 'Base Severance';
+        if (tileGhBase) tileGhBase.textContent = formatCurrency(severancePayout).split('.')[0];
+        if (tileGhBaseSub) tileGhBaseSub.textContent = `${years.toFixed(0)} yrs × ${weeksPerYr.toFixed(1)} wks pay`;
+
+        if (tileLblGhNotice) tileLblGhNotice.textContent = 'Notice Pay (PILON)';
+        if (tileGhNotice) tileGhNotice.textContent = formatCurrency(noticePayout).split('.')[0];
+        if (tileGhNoticeSub) tileGhNoticeSub.textContent = `${noticeMonths.toFixed(0)} months notice period`;
+
+        if (tileLblGhExtra) tileLblGhExtra.textContent = 'Extra Incentives';
+        if (tileGhExtra) tileGhExtra.textContent = formatCurrency(incentive).split('.')[0];
+        if (tileGhExtraSub) tileGhExtraSub.textContent = 'Transition cash benefits';
+
+      } else {
+        const annualSal = parseFloat(salaryInputMultiplier.value) || 0;
+        const multiplier = parseFloat(multiplierInput.value) || 0;
+        const benefits = parseFloat(benefitsInput.value) || 0;
+
+        // Math
+        const multiplierPayout = annualSal * multiplier;
+        const totalPayout = multiplierPayout + benefits;
+
+        // Primary Outputs
+        if (resGhTotal) resGhTotal.textContent = formatCurrency(totalPayout);
+        if (resGhBaseSeverance) resGhBaseSeverance.textContent = formatCurrency(multiplierPayout);
+        if (lblGhBaseTitle) lblGhBaseTitle.textContent = 'Multiplier Exit';
+        if (lblGhBaseDesc) lblGhBaseDesc.textContent = `${multiplier.toFixed(1)}x base annual salary exit`;
+        if (lblGhPilonDesc) lblGhPilonDesc.textContent = 'Includes multiplier payout and cash benefits';
+
+        // Verdict diagnosis
+        if (resGhVerdictText) {
+          resGhVerdictText.innerHTML = `Your estimated Golden Handshake exit package is <strong>${formatCurrency(totalPayout)}</strong>. This includes <strong>${formatCurrency(multiplierPayout)}</strong> in contractual multiplier compensation and <strong>${formatCurrency(benefits)}</strong> in outplacement or health insurance transition benefits.`;
+        }
+
+        // Tiles
+        if (tileLblGhBase) tileLblGhBase.textContent = 'Multiplier Pay';
+        if (tileGhBase) tileGhBase.textContent = formatCurrency(multiplierPayout).split('.')[0];
+        if (tileGhBaseSub) tileGhBaseSub.textContent = `${multiplier.toFixed(1)}x base salary`;
+
+        if (tileLblGhNotice) tileLblGhNotice.textContent = 'Cash Benefits';
+        if (tileGhNotice) tileGhNotice.textContent = formatCurrency(benefits).split('.')[0];
+        if (tileGhNoticeSub) tileGhNoticeSub.textContent = 'Outplacement & healthcare';
+
+        if (tileLblGhExtra) tileLblGhExtra.textContent = 'Total Value';
+        if (tileGhExtra) tileGhExtra.textContent = formatCurrency(totalPayout).split('.')[0];
+        if (tileGhExtraSub) tileGhExtraSub.textContent = 'Gross package value';
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      let text = '';
+      if (activeMode === 'tenure') {
+        text = `Golden Handshake Severance Report:\n` +
+               `Current Salary: ${salaryInputTenure.value}/yr | Years of Service: ${yearsInput.value} | Multiplier: ${weeksInput.value} wks/yr\n` +
+               `Notice Period: ${noticeInput.value} months | Additional Incentives: ${incentiveInput.value}\n` +
+               `Total Exit Package: ${document.getElementById('res-gh-total')?.textContent}\n` +
+               `Base Severance Component: ${document.getElementById('res-gh-base-severance')?.textContent}\n` +
+               `Diagnosis: ${document.getElementById('res-gh-verdict-text')?.textContent}`;
+      } else {
+        text = `Golden Handshake Executive exit Report:\n` +
+               `Annual Salary: ${salaryInputMultiplier.value}/yr | Contractual Multiplier: ${multiplierInput.value}x\n` +
+               `Transition Benefits: ${benefitsInput.value}\n` +
+               `Total Exit Package: ${document.getElementById('res-gh-total')?.textContent}\n` +
+               `Multiplier Payout: ${document.getElementById('res-gh-base-severance')?.textContent}\n` +
+               `Diagnosis: ${document.getElementById('res-gh-verdict-text')?.textContent}`;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initGhCalculator);
+  document.addEventListener('astro:after-swap', initGhCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* segment toggles active status */
+  .segment-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base);
+  }
+
+  .segment-btn:not(.active) {
+    color: var(--color-text-base);
+  }
+
+  .segment-btn:not(.active):hover {
+    background-color: var(--color-border);
+  }
+
+  @media (max-width: 600px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

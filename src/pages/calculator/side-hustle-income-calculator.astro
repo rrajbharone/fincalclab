@@ -1,0 +1,319 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SideHustleIncomeCalculator from '../../components/calculator/SideHustleIncomeCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Side Hustle Income Calculator', path: '/calculator/side-hustle-income-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the difference between gross and net side hustle income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gross side hustle income represents the total earnings before any deductions (e.g., hourly rate multiplied by hours worked). Net side hustle income is your actual take-home profit after subtracting business overhead expenses (like software licenses, materials, or advertising) and self-employment tax reserves."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I calculate my daily earnings from a freelance hourly rate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To calculate daily gross earnings from a freelance hourly rate: first compute your total yearly gross income (e.g. rate × hours/week × 52 weeks) and then divide that annual sum by 365 days. Our calculator does this calendar conversion automatically for you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much of my side hustle income should I set aside for taxes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Generally, self-employed individuals and side-hustlers should set aside 15% to 30% of their net earnings (profits after deducting business expenses) to cover federal, state, and local income taxes, as taxes are not automatically withheld from side hustle payments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I write off business expenses to reduce my taxable income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. In most tax jurisdictions, ordinary and necessary expenses incurred to run your side hustle—such as software subscriptions, internet services, transaction fees, and shipping costs—can be deducted from your gross income, reducing your taxable profit and lowering your overall tax liability."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I optimize my side hustle to earn more per hour?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can optimize your side hustle income by transitioning from a flat hourly pricing model to value-based project pricing. This allows you to scale your earnings as you become more efficient, rather than capping your revenue based on the number of hours you have available in a week."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Side Hustle Income Calculator - Calculate Freelance & Net Profit"
+  description="Free online Side Hustle Income Calculator. Calculate daily, weekly, monthly, and yearly gross and net earnings from hourly work, projects, or sales."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <SideHustleIncomeCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Freelance Earnings Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Freelance Financial Strategy: How a Side Hustle Built $878/Month in Net Profit</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a graphic designer who launched a website design side hustle—discovering how earning $25/hour for 10 hours/week translates to $1,083/month gross, writing off $50 in monthly software overhead, reserving 15% for taxes, and building a net income of $878/month.
+            </p>
+            <a href="/blog/side-hustle-income-calculator-guide" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Reconcile Side Hustle Income & Deduct Business Overhead
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Side Hustle Income?</h2>
+        <p>
+          A <strong>side hustle</strong> is any freelance project, gig, online store, or part-time job you run in addition to your primary source of full-time employment. 
+        </p>
+        <p>
+          While side hustles offer excellent opportunities to pay off debt, build savings, or transition into full-time entrepreneurship, managing their finances can be challenging. Unlike a regular corporate job where income taxes are automatically withheld from your paycheck, side hustles pay in gross amounts. This means you are responsible for tracking your own business expenses, setting aside tax reserves, and calculating your actual net profit.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your side hustle gross and net income projections:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results.
+          </li>
+          <li>
+            <strong>Select Earning Model:</strong>
+            <ul>
+              <li>
+                <strong>Hourly:</strong> Input your hourly rate ($/hour) and hours worked per week or per month.
+              </li>
+              <li>
+                <strong>Project:</strong> Input your average project price ($/project) and completed projects per week or per month.
+              </li>
+              <li>
+                <strong>Sale:</strong> Input your profit margin or revenue per sale ($/unit) and units sold per week or per month.
+              </li>
+              <li>
+                <strong>Monthly:</strong> Input a flat retainer or monthly rate.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Add Deductions (Optional):</strong>
+            <ul>
+              <li>
+                <strong>Monthly Expenses:</strong> Enter your recurring business expenses (e.g., software licenses, web hosting, materials, marketing).
+              </li>
+              <li>
+                <strong>Estimated Tax Rate:</strong> Enter your estimated self-employment tax withholding percentage (typically 15% to 30%).
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Review Projections:</strong> The calculator outputs your gross monthly income, net monthly profit, and a detailed table with daily, weekly, monthly, and yearly gross vs. net equivalents.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Side Hustle Projections</h2>
+        <p>
+          The calculator applies standard business accounting equations to determine monthly gross figures and net take-home profits:
+        </p>
+        
+        <h3>1. Earning Model Gross Conversions</h3>
+        <p>
+          To convert weekly metrics into a standardized monthly gross income, we multiply the weekly rate by the average number of weeks in a month:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Weeks Per Month} = \\frac{52}{12} = 4.3333\\)"}
+        </p>
+        <ul>
+          <li>
+            <strong>Hourly (Weekly):</strong> {"\\(G_{month} = \\text{Hourly Rate} \\times \\text{Hours Worked} \\times 4.3333\\)"}
+          </li>
+          <li>
+            <strong>Project (Weekly):</strong> {"\\(G_{month} = \\text{Price Per Project} \\times \\text{Projects Completed} \\times 4.3333\\)"}
+          </li>
+          <li>
+            <strong>Sale (Weekly):</strong> {"\\(G_{month} = \\text{Revenue Per Sale} \\times \\text{Units Sold} \\times 4.3333\\)"}
+          </li>
+        </ul>
+
+        <h3>2. Deductibility & Net Income Math</h3>
+        <p>
+          Self-employment taxes are calculated after subtracting business overhead expenses (deductible expenses):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Taxable Profit} = G_{month} - \\text{Expenses}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Tax Reserved} = \\text{Taxable Profit} \\times \\frac{\\text{Tax Rate}}{100}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(N_{month} = G_{month} - \\text{Expenses} - \\text{Tax Reserved}\\)"}
+        </p>
+
+        <h2>Real-World Income Example</h2>
+        <p>
+          Suppose you work as an hourly freelance consultant:
+        </p>
+        <ul>
+          <li>
+            <strong>Hourly Rate:</strong> $50.00
+          </li>
+          <li>
+            <strong>Hours Worked:</strong> 8 hours per week
+          </li>
+          <li>
+            <strong>Monthly Expenses:</strong> $100.00 (subscription tools, co-working desk)
+          </li>
+          <li>
+            <strong>Tax Withholding:</strong> 20%
+          </li>
+        </ul>
+        <p>
+          The math works as follows:
+        </p>
+        <ol>
+          <li>
+            <strong>Weekly Gross:</strong> {"\\(\\$50.00 \\times 8 = \\mathbf{\\$400.00}\\)"}
+          </li>
+          <li>
+            <strong>Monthly Gross:</strong> {"\\(\\$400.00 \\times 4.3333 = \\mathbf{\\$1,733.33}\\)"}
+          </li>
+          <li>
+            <strong>Taxable Profit:</strong> {"\\(\\$1,733.33 - \\$100.00 = \\mathbf{\\$1,633.33}\\)"}
+          </li>
+          <li>
+            <strong>Tax Reserved (20%):</strong> {"\\(\\$1,633.33 \\times 0.20 = \\mathbf{\\$326.67}\\)"}
+          </li>
+          <li>
+            <strong>Monthly Net Profit:</strong> {"\\(\\$1,733.33 - \\$100.00 - \\$326.67 = \\mathbf{\\$1,306.66}\\)"}
+          </li>
+        </ol>
+
+        <h2>3 Crucial Financial Rules for Side Hustles</h2>
+        <ol>
+          <li>
+            <strong>Separate Your Banking:</strong> Never mix personal expenses with side hustle income. Open a separate business checking account to receive freelance payments. This makes it incredibly easy to track business expenses and audit your net margins.
+          </li>
+          <li>
+            <strong>Reserve Taxes Proactively:</strong> Unlike full-time employment, freelance payments are not taxed at the source. Set aside a flat percentage (e.g. 20%) from every check into a dedicated tax savings account. This prevents cash flow shocks during tax season.
+          </li>
+          <li>
+            <strong>Track Deductible Expenses:</strong> Keep records and receipts for every business expense. Software licenses, internet bills, hardware, and marketing costs reduce your taxable income, saving you hundreds of dollars in taxes.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Side Hustle FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between gross and net side hustle income?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gross side hustle income represents the total earnings before any deductions (e.g., hourly rate multiplied by hours worked). Net side hustle income is your actual take-home profit after subtracting business overhead expenses (like software licenses, materials, or advertising) and self-employment tax reserves.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do I calculate my daily earnings from a freelance hourly rate?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              To calculate daily gross earnings from a freelance hourly rate: first compute your total yearly gross income (e.g. rate × hours/week × 52 weeks) and then divide that annual sum by 365 days. Our calculator does this calendar conversion automatically for you.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How much of my side hustle income should I set aside for taxes?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Generally, self-employed individuals and side-hustlers should set aside 15% to 30% of their net earnings (profits after deducting business expenses) to cover federal, state, and local income taxes, as taxes are not automatically withheld from side hustle payments.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Can I write off business expenses to reduce my taxable income?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes. In most tax jurisdictions, ordinary and necessary expenses incurred to run your side hustle—such as software subscriptions, internet services, transaction fees, and shipping costs—can be deducted from your gross income, reducing your taxable profit and lowering your overall tax liability.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can I optimize my side hustle to earn more per hour?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You can optimize your side hustle income by transitioning from a flat hourly pricing model to value-based project pricing. This allows you to scale your earnings as you become more efficient, rather than capping your revenue based on the number of hours you have available in a week.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

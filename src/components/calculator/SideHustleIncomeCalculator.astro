@@ -1,0 +1,788 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Side Hustle Income Calculator"
+  description="Estimate your net side hustle profits. Reconcile hourly rates, project rates, unit sales, or monthly retainers, subtracting tax reserves and business expenses."
+  category="Finance"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="side-hustle-income-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-currency-select">Currency</label>
+          <select id="sh-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Earning Model segment grid -->
+      <div class="input-group">
+        <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base); margin-bottom: 2px;">Earning Model</label>
+        <div class="mode-segment-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px; gap: 4px;">
+          <button type="button" id="btn-sh-mode-hourly" class="segment-btn active" style="border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Hourly</button>
+          <button type="button" id="btn-sh-mode-project" class="segment-btn" style="border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Project</button>
+          <button type="button" id="btn-sh-mode-sale" class="segment-btn" style="border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Sale</button>
+          <button type="button" id="btn-sh-mode-fixed" class="segment-btn" style="border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Monthly</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Income Details -->
+    <!-- Mode A Content: Hourly Inputs -->
+    <div id="sh-group-hourly" class="mode-inputs-group" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Hourly Earnings</h3>
+      
+      <!-- Hourly Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-hourly-rate-input">Hourly Rate</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sh-hourly-rate-input" min="1" max="1000" step="5" value="25" aria-label="Hourly Rate" />
+          </div>
+        </div>
+        <input type="range" id="sh-hourly-rate-slider" min="5" max="250" step="5" value="25" class="slider-range" aria-label="Hourly Rate Slider" />
+      </div>
+
+      <!-- Hours Worked -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-hourly-hours-input">Hours Worked</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sh-hourly-hours-input" min="1" max="168" step="1" value="10" aria-label="Hours Worked" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="sh-hourly-hours-slider" min="1" max="80" step="1" value="10" class="slider-range" aria-label="Hours Worked Slider" />
+      </div>
+
+      <!-- Time Frequency -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-hourly-freq-select">Time Period</label>
+          <select id="sh-hourly-freq-select" class="currency-select" aria-label="Select Hourly Time Period">
+            <option value="WEEK" selected>Per Week</option>
+            <option value="MONTH">Per Month</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode B Content: Project Inputs -->
+    <div id="sh-group-project" class="mode-inputs-group hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Project Earnings</h3>
+      
+      <!-- Price per Project -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-project-price-input">Price Per Project</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sh-project-price-input" min="1" max="50000" step="50" value="150" aria-label="Price Per Project" />
+          </div>
+        </div>
+        <input type="range" id="sh-project-price-slider" min="10" max="2500" step="10" value="150" class="slider-range" aria-label="Project Price Slider" />
+      </div>
+
+      <!-- Projects Completed -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-project-qty-input">Projects Completed</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sh-project-qty-input" min="1" max="100" step="1" value="2" aria-label="Projects Completed" style="text-align: left;" />
+            <span class="percent-symbol">projects</span>
+          </div>
+        </div>
+        <input type="range" id="sh-project-qty-slider" min="1" max="20" step="1" value="2" class="slider-range" aria-label="Projects Quantity Slider" />
+      </div>
+
+      <!-- Project Frequency -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-project-freq-select">Time Period</label>
+          <select id="sh-project-freq-select" class="currency-select" aria-label="Select Project Time Period">
+            <option value="WEEK" selected>Per Week</option>
+            <option value="MONTH">Per Month</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode C Content: Sale Inputs -->
+    <div id="sh-group-sale" class="mode-inputs-group hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Sales Earnings</h3>
+      
+      <!-- Revenue per Sale -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-sale-profit-input">Profit/Revenue Per Sale</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sh-sale-profit-input" min="1" max="10000" step="5" value="20" aria-label="Profit Per Sale" />
+          </div>
+        </div>
+        <input type="range" id="sh-sale-profit-slider" min="1" max="500" step="5" value="20" class="slider-range" aria-label="Sale Profit Slider" />
+      </div>
+
+      <!-- Units Sold -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-sale-qty-input">Units Sold</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sh-sale-qty-input" min="1" max="10000" step="5" value="10" aria-label="Units Sold" style="text-align: left;" />
+            <span class="percent-symbol">units</span>
+          </div>
+        </div>
+        <input type="range" id="sh-sale-qty-slider" min="1" max="250" step="5" value="10" class="slider-range" aria-label="Sale Quantity Slider" />
+      </div>
+
+      <!-- Sale Frequency -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-sale-freq-select">Time Period</label>
+          <select id="sh-sale-freq-select" class="currency-select" aria-label="Select Sale Time Period">
+            <option value="WEEK" selected>Per Week</option>
+            <option value="MONTH">Per Month</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode D Content: Fixed Monthly Inputs -->
+    <div id="sh-group-fixed" class="mode-inputs-group hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Retainer Earnings</h3>
+      
+      <!-- Monthly Fixed Amount -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-fixed-amount-input">Monthly Rate / Retainer</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sh-fixed-amount-input" min="10" max="50000" step="50" value="1000" aria-label="Monthly Fixed Retainer" />
+          </div>
+        </div>
+        <input type="range" id="sh-fixed-amount-slider" min="50" max="10000" step="50" value="1000" class="slider-range" aria-label="Monthly Retainer Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Expenses and Taxes adjustments -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">3. Business Deductions</h3>
+      
+      <!-- Monthly Expenses -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-expenses-input">Monthly Expenses</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="sh-expenses-input" min="0" max="10000" step="10" value="50" aria-label="Monthly Expenses" />
+          </div>
+        </div>
+        <input type="range" id="sh-expenses-slider" min="0" max="1000" step="10" value="50" class="slider-range" aria-label="Monthly Expenses Slider" />
+      </div>
+
+      <!-- Estimated Tax rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-tax-rate-input">Estimated Tax Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sh-tax-rate-input" min="0" max="50" step="1" value="15" aria-label="Estimated Tax Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="sh-tax-rate-slider" min="0" max="50" step="1" value="15" class="slider-range" aria-label="Tax Rate Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="sh-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Income Summary</h3>
+
+    <!-- Core Earnings Outputs -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Monthly Net Income</span>
+        <div id="res-sh-net-monthly" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$878.33</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sh-net-desc">Take-home after expenses & taxes</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Monthly Gross</span>
+        <div id="res-sh-gross-monthly" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$1,083.33</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Total earnings before deductions</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="sh-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Hustle Diagnosis</span>
+        <p id="res-sh-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your estimated gross monthly income is <strong>$1,083.33</strong>. After subtracting <strong>$50.00</strong> in overhead expenses and reserving <strong>$155.00</strong> (15%) for taxes, your estimated net monthly profit is <strong>$878.33</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Projections Table -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Earnings Projections Table</h4>
+    <div style="width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-base);">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-border); background: var(--color-bg-surface);">
+            <th style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Period</th>
+            <th style="padding: var(--space-3); font-weight: 700; text-align: right; color: var(--color-text-base);">Gross Earnings</th>
+            <th style="padding: var(--space-3); font-weight: 700; text-align: right; color: var(--color-text-base);">Estimated Net</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: var(--space-3); font-weight: 600; color: var(--color-text-muted);">Daily</td>
+            <td id="res-sh-table-gross-daily" style="padding: var(--space-3); text-align: right; color: var(--color-text-muted);">$35.62</td>
+            <td id="res-sh-table-net-daily" style="padding: var(--space-3); text-align: right; color: var(--color-success); font-weight: 700;">$28.88</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: var(--space-3); font-weight: 600; color: var(--color-text-muted);">Weekly</td>
+            <td id="res-sh-table-gross-weekly" style="padding: var(--space-3); text-align: right; color: var(--color-text-muted);">$250.00</td>
+            <td id="res-sh-table-net-weekly" style="padding: var(--space-3); text-align: right; color: var(--color-success); font-weight: 700;">$202.69</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: var(--space-3); font-weight: 600; color: var(--color-text-muted);">Monthly</td>
+            <td id="res-sh-table-gross-monthly" style="padding: var(--space-3); text-align: right; color: var(--color-text-muted);">$1,083.33</td>
+            <td id="res-sh-table-net-monthly" style="padding: var(--space-3); text-align: right; color: var(--color-success); font-weight: 700;">$878.33</td>
+          </tr>
+          <tr style="border-bottom: none;">
+            <td style="padding: var(--space-3); font-weight: 600; color: var(--color-text-muted);">Yearly</td>
+            <td id="res-sh-table-gross-yearly" style="padding: var(--space-3); text-align: right; color: var(--color-text-muted);">$13,000.00</td>
+            <td id="res-sh-table-net-yearly" style="padding: var(--space-3); text-align: right; color: var(--color-success); font-weight: 700;">$10,540.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initShCalculator() {
+    const currencySelect = document.getElementById('sh-currency-select') as HTMLSelectElement;
+
+    // Segment mode buttons
+    const btnHourly = document.getElementById('btn-sh-mode-hourly') as HTMLButtonElement;
+    const btnProject = document.getElementById('btn-sh-mode-project') as HTMLButtonElement;
+    const btnSale = document.getElementById('btn-sh-mode-sale') as HTMLButtonElement;
+    const btnFixed = document.getElementById('btn-sh-mode-fixed') as HTMLButtonElement;
+
+    // Groups
+    const groupHourly = document.getElementById('sh-group-hourly') as HTMLDivElement;
+    const groupProject = document.getElementById('sh-group-project') as HTMLDivElement;
+    const groupSale = document.getElementById('sh-group-sale') as HTMLDivElement;
+    const groupFixed = document.getElementById('sh-group-fixed') as HTMLDivElement;
+
+    // Hourly fields
+    const hourlyRateInput = document.getElementById('sh-hourly-rate-input') as HTMLInputElement;
+    const hourlyRateSlider = document.getElementById('sh-hourly-rate-slider') as HTMLInputElement;
+    const hourlyHoursInput = document.getElementById('sh-hourly-hours-input') as HTMLInputElement;
+    const hourlyHoursSlider = document.getElementById('sh-hourly-hours-slider') as HTMLInputElement;
+    const hourlyFreqSelect = document.getElementById('sh-hourly-freq-select') as HTMLSelectElement;
+
+    // Project fields
+    const projectPriceInput = document.getElementById('sh-project-price-input') as HTMLInputElement;
+    const projectPriceSlider = document.getElementById('sh-project-price-slider') as HTMLInputElement;
+    const projectQtyInput = document.getElementById('sh-project-qty-input') as HTMLInputElement;
+    const projectQtySlider = document.getElementById('sh-project-qty-slider') as HTMLInputElement;
+    const projectFreqSelect = document.getElementById('sh-project-freq-select') as HTMLSelectElement;
+
+    // Sale fields
+    const saleProfitInput = document.getElementById('sh-sale-profit-input') as HTMLInputElement;
+    const saleProfitSlider = document.getElementById('sh-sale-profit-slider') as HTMLInputElement;
+    const saleQtyInput = document.getElementById('sh-sale-qty-input') as HTMLInputElement;
+    const saleQtySlider = document.getElementById('sh-sale-qty-slider') as HTMLInputElement;
+    const saleFreqSelect = document.getElementById('sh-sale-freq-select') as HTMLSelectElement;
+
+    // Fixed fields
+    const fixedAmountInput = document.getElementById('sh-fixed-amount-input') as HTMLInputElement;
+    const fixedAmountSlider = document.getElementById('sh-fixed-amount-slider') as HTMLInputElement;
+
+    // Deductions fields
+    const expensesInput = document.getElementById('sh-expenses-input') as HTMLInputElement;
+    const expensesSlider = document.getElementById('sh-expenses-slider') as HTMLInputElement;
+    const taxRateInput = document.getElementById('sh-tax-rate-input') as HTMLInputElement;
+    const taxRateSlider = document.getElementById('sh-tax-rate-slider') as HTMLInputElement;
+
+    let activeMode: 'hourly' | 'project' | 'sale' | 'fixed' = 'hourly';
+
+    if (!hourlyRateInput || !currencySelect || !btnHourly) return;
+
+    // Helper functions for sliders
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    // Bind Hourly
+    bindSlider(hourlyRateInput, hourlyRateSlider, calculateAll);
+    bindSlider(hourlyHoursInput, hourlyHoursSlider, calculateAll);
+    hourlyFreqSelect.addEventListener('change', calculateAll);
+
+    // Bind Project
+    bindSlider(projectPriceInput, projectPriceSlider, calculateAll);
+    bindSlider(projectQtyInput, projectQtySlider, calculateAll);
+    projectFreqSelect.addEventListener('change', calculateAll);
+
+    // Bind Sale
+    bindSlider(saleProfitInput, saleProfitSlider, calculateAll);
+    bindSlider(saleQtyInput, saleQtySlider, calculateAll);
+    saleFreqSelect.addEventListener('change', calculateAll);
+
+    // Bind Fixed
+    bindSlider(fixedAmountInput, fixedAmountSlider, calculateAll);
+
+    // Bind Deductions
+    bindSlider(expensesInput, expensesSlider, calculateAll);
+    bindSlider(taxRateInput, taxRateSlider, calculateAll);
+
+    function updateSegmentColors(activeBtn: HTMLButtonElement, otherBtns: HTMLButtonElement[]) {
+      activeBtn.style.background = 'var(--color-primary)';
+      activeBtn.style.color = 'var(--color-bg-base)';
+      otherBtns.forEach(btn => {
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--color-text-base)';
+      });
+    }
+
+    // Segment events
+    btnHourly.addEventListener('click', () => {
+      activeMode = 'hourly';
+      btnHourly.classList.add('active');
+      [btnProject, btnSale, btnFixed].forEach(b => b.classList.remove('active'));
+      updateSegmentColors(btnHourly, [btnProject, btnSale, btnFixed]);
+
+      groupHourly.classList.remove('hidden');
+      [groupProject, groupSale, groupFixed].forEach(g => g.classList.add('hidden'));
+      calculateAll();
+    });
+
+    btnProject.addEventListener('click', () => {
+      activeMode = 'project';
+      btnProject.classList.add('active');
+      [btnHourly, btnSale, btnFixed].forEach(b => b.classList.remove('active'));
+      updateSegmentColors(btnProject, [btnHourly, btnSale, btnFixed]);
+
+      groupProject.classList.remove('hidden');
+      [groupHourly, groupSale, groupFixed].forEach(g => g.classList.add('hidden'));
+      calculateAll();
+    });
+
+    btnSale.addEventListener('click', () => {
+      activeMode = 'sale';
+      btnSale.classList.add('active');
+      [btnHourly, btnProject, btnFixed].forEach(b => b.classList.remove('active'));
+      updateSegmentColors(btnSale, [btnHourly, btnProject, btnFixed]);
+
+      groupSale.classList.remove('hidden');
+      [groupHourly, groupProject, groupFixed].forEach(g => g.classList.add('hidden'));
+      calculateAll();
+    });
+
+    btnFixed.addEventListener('click', () => {
+      activeMode = 'fixed';
+      btnFixed.classList.add('active');
+      [btnHourly, btnProject, btnSale].forEach(b => b.classList.remove('active'));
+      updateSegmentColors(btnFixed, [btnHourly, btnProject, btnSale]);
+
+      groupFixed.classList.remove('hidden');
+      [groupHourly, groupProject, groupSale].forEach(g => g.classList.add('hidden'));
+      calculateAll();
+    });
+
+    // Style segment controller initially
+    updateSegmentColors(btnHourly, [btnProject, btnSale, btnFixed]);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('sh-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        activeMode = 'hourly';
+        btnHourly.classList.add('active');
+        [btnProject, btnSale, btnFixed].forEach(b => b.classList.remove('active'));
+        updateSegmentColors(btnHourly, [btnProject, btnSale, btnFixed]);
+
+        groupHourly.classList.remove('hidden');
+        [groupProject, groupSale, groupFixed].forEach(g => g.classList.add('hidden'));
+
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        // Resets
+        hourlyRateInput.value = '25';
+        hourlyRateSlider.value = '25';
+        hourlyHoursInput.value = '10';
+        hourlyHoursSlider.value = '10';
+        hourlyFreqSelect.value = 'WEEK';
+
+        projectPriceInput.value = '150';
+        projectPriceSlider.value = '150';
+        projectQtyInput.value = '2';
+        projectQtySlider.value = '2';
+        projectFreqSelect.value = 'WEEK';
+
+        saleProfitInput.value = '20';
+        saleProfitSlider.value = '20';
+        saleQtyInput.value = '10';
+        saleQtySlider.value = '10';
+        saleFreqSelect.value = 'WEEK';
+
+        fixedAmountInput.value = '1000';
+        fixedAmountSlider.value = '1000';
+
+        expensesInput.value = '50';
+        expensesSlider.value = '50';
+        taxRateInput.value = '15';
+        taxRateSlider.value = '15';
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      let grossMonthly = 0;
+      
+      const monthlyExpenses = parseFloat(expensesInput.value) || 0;
+      const taxRate = parseFloat(taxRateInput.value) || 0;
+
+      if (activeMode === 'hourly') {
+        const rate = parseFloat(hourlyRateInput.value) || 0;
+        const hours = parseFloat(hourlyHoursInput.value) || 0;
+        const freq = hourlyFreqSelect.value;
+        const grossPeriod = rate * hours;
+        grossMonthly = freq === 'WEEK' ? grossPeriod * (52 / 12) : grossPeriod;
+      } else if (activeMode === 'project') {
+        const price = parseFloat(projectPriceInput.value) || 0;
+        const qty = parseFloat(projectQtyInput.value) || 0;
+        const freq = projectFreqSelect.value;
+        const grossPeriod = price * qty;
+        grossMonthly = freq === 'WEEK' ? grossPeriod * (52 / 12) : grossPeriod;
+      } else if (activeMode === 'sale') {
+        const profit = parseFloat(saleProfitInput.value) || 0;
+        const qty = parseFloat(saleQtyInput.value) || 0;
+        const freq = saleFreqSelect.value;
+        const grossPeriod = profit * qty;
+        grossMonthly = freq === 'WEEK' ? grossPeriod * (52 / 12) : grossPeriod;
+      } else {
+        grossMonthly = parseFloat(fixedAmountInput.value) || 0;
+      }
+
+      // Deductibility Calculations
+      const taxableAmount = Math.max(0, grossMonthly - monthlyExpenses);
+      const taxAmount = taxableAmount * (taxRate / 100);
+      const netMonthly = Math.max(0, grossMonthly - monthlyExpenses - taxAmount);
+
+      // Conversions Projections
+      const grossYearly = grossMonthly * 12;
+      const grossWeekly = grossYearly / 52;
+      const grossDaily = grossYearly / 365;
+
+      const netYearly = netMonthly * 12;
+      const netWeekly = netYearly / 52;
+      const netDaily = netYearly / 365;
+
+      // Outputs DOM
+      const resNetMonthly = document.getElementById('res-sh-net-monthly');
+      const resGrossMonthly = document.getElementById('res-sh-gross-monthly');
+      const resVerdictText = document.getElementById('res-sh-verdict-text');
+
+      if (resNetMonthly) resNetMonthly.textContent = formatCurrency(netMonthly);
+      if (resGrossMonthly) resGrossMonthly.textContent = formatCurrency(grossMonthly);
+      
+      if (resVerdictText) {
+        resVerdictText.innerHTML = `Your estimated gross monthly income is <strong>${formatCurrency(grossMonthly)}</strong>. After subtracting <strong>${formatCurrency(monthlyExpenses)}</strong> in overhead expenses and reserving <strong>${formatCurrency(taxAmount)}</strong> (${taxRate}%) for taxes, your estimated net monthly profit is <strong>${formatCurrency(netMonthly)}</strong>.`;
+      }
+
+      // Table DOM
+      const cellGrossDaily = document.getElementById('res-sh-table-gross-daily');
+      const cellNetDaily = document.getElementById('res-sh-table-net-daily');
+      const cellGrossWeekly = document.getElementById('res-sh-table-gross-weekly');
+      const cellNetWeekly = document.getElementById('res-sh-table-net-weekly');
+      const cellGrossMonthly = document.getElementById('res-sh-table-gross-monthly');
+      const cellNetMonthly = document.getElementById('res-sh-table-net-monthly');
+      const cellGrossYearly = document.getElementById('res-sh-table-gross-yearly');
+      const cellNetYearly = document.getElementById('res-sh-table-net-yearly');
+
+      if (cellGrossDaily) cellGrossDaily.textContent = formatCurrency(grossDaily);
+      if (cellNetDaily) cellNetDaily.textContent = formatCurrency(netDaily);
+      if (cellGrossWeekly) cellGrossWeekly.textContent = formatCurrency(grossWeekly);
+      if (cellNetWeekly) cellNetWeekly.textContent = formatCurrency(netWeekly);
+      if (cellGrossMonthly) cellGrossMonthly.textContent = formatCurrency(grossMonthly);
+      if (cellNetMonthly) cellNetMonthly.textContent = formatCurrency(netMonthly);
+      if (cellGrossYearly) cellGrossYearly.textContent = formatCurrency(grossYearly);
+      if (cellNetYearly) cellNetYearly.textContent = formatCurrency(netYearly);
+    }
+
+    // Initial Trigger
+    calculateAll();
+
+    // Clipboard Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      let details = '';
+      if (activeMode === 'hourly') {
+        details = `Hourly rate: ${hourlyRateInput.value} | Hours: ${hourlyHoursInput.value} | Period: ${hourlyFreqSelect.value}`;
+      } else if (activeMode === 'project') {
+        details = `Price/project: ${projectPriceInput.value} | Quantity: ${projectQtyInput.value} | Period: ${projectFreqSelect.value}`;
+      } else if (activeMode === 'sale') {
+        details = `Profit/sale: ${saleProfitInput.value} | Quantity: ${saleQtyInput.value} | Period: ${saleFreqSelect.value}`;
+      } else {
+        details = `Monthly Rate: ${fixedAmountInput.value}`;
+      }
+
+      const report = `Side Hustle Income Report:\n` +
+                     `Mode: ${activeMode} | ${details}\n` +
+                     `Monthly Expenses: ${expensesInput.value} | Tax rate: ${taxRateInput.value}%\n` +
+                     `Estimated Monthly Gross: ${document.getElementById('res-sh-gross-monthly')?.textContent}\n` +
+                     `Estimated Monthly Net: ${document.getElementById('res-sh-net-monthly')?.textContent}\n` +
+                     `Diagnosis: ${document.getElementById('res-sh-verdict-text')?.textContent}\n` +
+                     `Daily Projections: Gross ${document.getElementById('res-sh-table-gross-daily')?.textContent} / Net ${document.getElementById('res-sh-table-net-daily')?.textContent}\n` +
+                     `Weekly Projections: Gross ${document.getElementById('res-sh-table-gross-weekly')?.textContent} / Net ${document.getElementById('res-sh-table-net-weekly')?.textContent}\n` +
+                     `Yearly Projections: Gross ${document.getElementById('res-sh-table-gross-yearly')?.textContent} / Net ${document.getElementById('res-sh-table-net-yearly')?.textContent}`;
+      
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initShCalculator);
+  document.addEventListener('astro:after-swap', initShCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* segment toggles active status */
+  .segment-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base);
+  }
+
+  .segment-btn:not(.active) {
+    color: var(--color-text-base);
+  }
+
+  .segment-btn:not(.active):hover {
+    background-color: var(--color-border);
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .mode-segment-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

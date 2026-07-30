@@ -1,0 +1,604 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Salary Hike Calculator"
+  description="Calculate your revised salary after an appraisal or job promotion. Compare annual, monthly, and hourly pay before and after your salary hike."
+  category="Salary"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="salary-hike-calculator">
+    
+    <!-- Step 1: Base Salary Details -->
+    <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: var(--space-3);">1. Current Compensation</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sh-currency-select">Currency</label>
+        <select id="sh-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Current Salary -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sh-salary-input">Current Salary</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input type="number" id="sh-salary-input" min="0" step="1000" value="8000" aria-label="Current Salary" />
+        </div>
+      </div>
+      <input type="range" id="sh-salary-slider" min="1000" max="250000" step="5000" value="80000" class="slider-range" aria-label="Current Salary Slider" />
+    </div>
+
+    <!-- Salary Period Type -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="sh-period-select">Salary Period</label>
+        <select id="sh-period-select" class="currency-select" aria-label="Select Salary Period" style="max-width: 100%;">
+          <option value="annual" selected>Annually (Per Year)</option>
+          <option value="monthly">Monthly (Per Month)</option>
+          <option value="hourly">Hourly (Per Hour)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Step 2: Hike Details -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Salary Raise Settings</h3>
+      
+      <!-- Hike Type -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-type-select">Increase Type</label>
+          <select id="sh-type-select" class="currency-select" aria-label="Select Raise Type" style="max-width: 100%;">
+            <option value="percentage" selected>Percentage Increase (%)</option>
+            <option value="fixed">Fixed Amount Increase</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Hike Value -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sh-value-input" id="lbl-sh-value">Hike Percentage</label>
+          <div class="input-symbol-wrapper">
+            <span class="hike-symbol" id="sh-value-symbol">%</span>
+            <input type="number" id="sh-value-input" min="0.0" max="100.0" step="0.5" value="10.0" aria-label="Hike Value" style="text-align: right;" />
+          </div>
+        </div>
+        <input type="range" id="sh-value-slider" min="0.0" max="50.0" step="0.5" value="10.0" class="slider-range" aria-label="Hike Value Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="sh-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Revised Compensation Forecast</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);" id="lbl-sh-new-sal">Revised New Salary</span>
+        <div id="res-sh-new" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$88,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sh-hike-pct">Equivalent Hike: 10.00%</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Monthly Increase</span>
+        <div id="res-sh-monthly-diff" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">+$666.67</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-sh-annual-diff">Annual raise: +$8,000.00</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="sh-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Raise Diagnosis</span>
+        <p id="res-sh-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          A salary raise of <strong>10.0%</strong> on your current <strong>$80,000.00</strong> salary increases your annual compensation to <strong>$88,000.00</strong>. This adds <strong>$666.67 per month</strong> to your gross pay.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Comparison Table Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Before vs. After Comparison</h4>
+    <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: var(--color-bg-base); margin-bottom: var(--space-6);">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+        <thead>
+          <tr style="background: var(--color-bg-surface); border-bottom: 1px solid var(--color-border);">
+            <th style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Interval</th>
+            <th style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Current Salary</th>
+            <th style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">New Salary</th>
+            <th style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Increase / Hike</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Annual</td>
+            <td id="tbl-sh-curr-ann" style="padding: var(--space-3); color: var(--color-text-muted); font-weight: 600;">$80,000.00</td>
+            <td id="tbl-sh-new-ann" style="padding: var(--space-3); color: var(--color-success); font-weight: 700;">$88,000.00</td>
+            <td id="tbl-sh-diff-ann" style="padding: var(--space-3); color: var(--color-primary); font-weight: 700;">+$8,000.00</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-border);">
+            <td style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Monthly</td>
+            <td id="tbl-sh-curr-mth" style="padding: var(--space-3); color: var(--color-text-muted); font-weight: 600;">$6,666.67</td>
+            <td id="tbl-sh-new-mth" style="padding: var(--space-3); color: var(--color-success); font-weight: 700;">$7,333.33</td>
+            <td id="tbl-sh-diff-mth" style="padding: var(--space-3); color: var(--color-primary); font-weight: 700;">+$666.67</td>
+          </tr>
+          <tr>
+            <td style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Hourly</td>
+            <td id="tbl-sh-curr-hr" style="padding: var(--space-3); color: var(--color-text-muted); font-weight: 600;">$38.46</td>
+            <td id="tbl-sh-new-hr" style="padding: var(--space-3); color: var(--color-success); font-weight: 700;">$42.31</td>
+            <td id="tbl-sh-diff-hr" style="padding: var(--space-3); color: var(--color-primary); font-weight: 700;">+$3.85</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initShCalculator() {
+    // Select settings elements
+    const currencySelect = document.getElementById('sh-currency-select') as HTMLSelectElement;
+    const periodSelect = document.getElementById('sh-period-select') as HTMLSelectElement;
+    const typeSelect = document.getElementById('sh-type-select') as HTMLSelectElement;
+
+    // Inputs elements
+    const salaryInput = document.getElementById('sh-salary-input') as HTMLInputElement;
+    const salarySlider = document.getElementById('sh-salary-slider') as HTMLInputElement;
+    const valueInput = document.getElementById('sh-value-input') as HTMLInputElement;
+    const valueSlider = document.getElementById('sh-value-slider') as HTMLInputElement;
+
+    const valueSymbol = document.getElementById('sh-value-symbol');
+    const lblShValue = document.getElementById('lbl-sh-value');
+
+    if (!salaryInput || !currencySelect || !periodSelect || !typeSelect) return;
+
+    // Helper functions for sliders
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    bindSlider(salaryInput, salarySlider, calculateAll);
+    bindSlider(valueInput, valueSlider, calculateAll);
+
+    // Period changes - adjust salary bounds
+    periodSelect.addEventListener('change', () => {
+      const period = periodSelect.value;
+      if (period === 'annual') {
+        salarySlider.min = '1000';
+        salarySlider.max = '250000';
+        salarySlider.step = '5000';
+        salaryInput.value = '80000';
+        salarySlider.value = '80000';
+      } else if (period === 'monthly') {
+        salarySlider.min = '100';
+        salarySlider.max = '25000';
+        salarySlider.step = '250';
+        salaryInput.value = '6000';
+        salarySlider.value = '6000';
+      } else if (period === 'hourly') {
+        salarySlider.min = '5';
+        salarySlider.max = '150';
+        salarySlider.step = '1';
+        salaryInput.value = '40';
+        salarySlider.value = '40';
+      }
+      calculateAll();
+    });
+
+    // Increase type changes - adjust bounds of value slider
+    typeSelect.addEventListener('change', () => {
+      const type = typeSelect.value;
+      const period = periodSelect.value;
+
+      if (type === 'percentage') {
+        if (lblShValue) lblShValue.textContent = 'Hike Percentage';
+        if (valueSymbol) {
+          valueSymbol.textContent = '%';
+          valueSymbol.style.marginRight = '0';
+          valueSymbol.style.marginLeft = '4px';
+          // Move symbol inside wrapper to the right if needed, but simple text swap is fine
+        }
+        
+        valueSlider.min = '0.0';
+        valueSlider.max = '50.0';
+        valueSlider.step = '0.5';
+        valueInput.value = '10.0';
+        valueSlider.value = '10.0';
+      } else {
+        if (lblShValue) lblShValue.textContent = 'Fixed Increase Amount';
+        if (valueSymbol) {
+          valueSymbol.textContent = getCurrencySymbol(currencySelect.value);
+        }
+        
+        if (period === 'annual') {
+          valueSlider.min = '0';
+          valueSlider.max = '50000';
+          valueSlider.step = '1000';
+          valueInput.value = '8000';
+          valueSlider.value = '8000';
+        } else if (period === 'monthly') {
+          valueSlider.min = '0';
+          valueSlider.max = '5000';
+          valueSlider.step = '100';
+          valueInput.value = '600';
+          valueSlider.value = '600';
+        } else if (period === 'hourly') {
+          valueSlider.min = '0';
+          valueSlider.max = '50';
+          valueSlider.step = '0.5';
+          valueInput.value = '4';
+          valueSlider.value = '4';
+        }
+      }
+      calculateAll();
+    });
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      if (typeSelect.value === 'fixed' && valueSymbol) {
+        valueSymbol.textContent = symbol;
+      }
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('sh-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        periodSelect.value = 'annual';
+        typeSelect.value = 'percentage';
+        currencySelect.value = 'USD';
+        
+        // Reset salary bounds first
+        salarySlider.min = '1000';
+        salarySlider.max = '250000';
+        salarySlider.step = '5000';
+        salaryInput.value = '80000';
+        salarySlider.value = '80000';
+
+        // Reset value bounds
+        if (lblShValue) lblShValue.textContent = 'Hike Percentage';
+        if (valueSymbol) {
+          valueSymbol.textContent = '%';
+        }
+        valueSlider.min = '0.0';
+        valueSlider.max = '50.0';
+        valueSlider.step = '0.5';
+        valueInput.value = '10.0';
+        valueSlider.value = '10.0';
+
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Solve for annualized base salary
+    function getAnnualEquivalent(salary: number, period: string): number {
+      if (period === 'annual') return salary;
+      if (period === 'monthly') return salary * 12;
+      return salary * 2080; // 40 hours/week * 52 weeks
+    }
+
+    function calculateAll() {
+      // Inputs variables
+      const salary = parseFloat(salaryInput.value) || 0;
+      const val = parseFloat(valueInput.value) || 0;
+      const period = periodSelect.value;
+      const type = typeSelect.value;
+
+      // Base Annualized Salary
+      const baseAnnual = getAnnualEquivalent(salary, period);
+
+      let hikePct = 0;
+      let hikeAnnual = 0;
+
+      if (type === 'percentage') {
+        hikePct = val;
+        hikeAnnual = baseAnnual * (hikePct / 100);
+      } else {
+        const hikeAmount = val;
+        const inputAnnualRaise = getAnnualEquivalent(hikeAmount, period);
+        hikeAnnual = inputAnnualRaise;
+        hikePct = baseAnnual > 0 ? (hikeAnnual / baseAnnual) * 100 : 0;
+      }
+
+      // Final calculations
+      const newAnnual = baseAnnual + hikeAnnual;
+
+      const currentMonthly = baseAnnual / 12;
+      const newMonthly = newAnnual / 12;
+      const diffMonthly = hikeAnnual / 12;
+
+      const currentHourly = baseAnnual / 2080;
+      const newHourly = newAnnual / 2080;
+      const diffHourly = hikeAnnual / 2080;
+
+      // DOM Primary Output Updates
+      const resShNew = document.getElementById('res-sh-new');
+      const resShMonthlyDiff = document.getElementById('res-sh-monthly-diff');
+      const lblShNewSal = document.getElementById('lbl-sh-new-sal');
+      const lblShHikePct = document.getElementById('lbl-sh-hike-pct');
+      const lblShAnnualDiff = document.getElementById('lbl-sh-annual-diff');
+
+      let displayNewSalary = newAnnual;
+      if (period === 'monthly') displayNewSalary = newMonthly;
+      else if (period === 'hourly') displayNewSalary = newHourly;
+
+      if (resShNew) resShNew.textContent = formatCurrency(displayNewSalary);
+      if (resShMonthlyDiff) resShMonthlyDiff.textContent = '+' + formatCurrency(diffMonthly);
+      if (lblShNewSal) {
+        lblShNewSal.textContent = `Revised New Salary (${period.charAt(0).toUpperCase() + period.slice(1)})`;
+      }
+      if (lblShHikePct) lblShHikePct.textContent = `Equivalent Hike: ${hikePct.toFixed(2)}%`;
+      if (lblShAnnualDiff) lblShAnnualDiff.textContent = `Annual raise: +${formatCurrency(hikeAnnual)}`;
+
+      // Verdict audit update
+      const verdictText = document.getElementById('res-sh-verdict-text');
+      if (verdictText) {
+        verdictText.innerHTML = `A salary raise of <strong>${hikePct.toFixed(2)}%</strong> on your current <strong>${formatCurrency(salary)} ${period}</strong> salary increases your annual compensation to <strong>${formatCurrency(newAnnual)}</strong>. This adds <strong>${formatCurrency(diffMonthly)} per month</strong> and <strong>${formatCurrency(diffHourly)} per hour</strong> to your gross pay.`;
+      }
+
+      // Table Comparison Updates
+      document.getElementById('tbl-sh-curr-ann')!.textContent = formatCurrency(baseAnnual);
+      document.getElementById('tbl-sh-new-ann')!.textContent = formatCurrency(newAnnual);
+      document.getElementById('tbl-sh-diff-ann')!.textContent = '+' + formatCurrency(hikeAnnual);
+
+      document.getElementById('tbl-sh-curr-mth')!.textContent = formatCurrency(currentMonthly);
+      document.getElementById('tbl-sh-new-mth')!.textContent = formatCurrency(newMonthly);
+      document.getElementById('tbl-sh-diff-mth')!.textContent = '+' + formatCurrency(diffMonthly);
+
+      document.getElementById('tbl-sh-curr-hr')!.textContent = formatCurrency(currentHourly);
+      document.getElementById('tbl-sh-new-hr')!.textContent = formatCurrency(newHourly);
+      document.getElementById('tbl-sh-diff-hr')!.textContent = '+' + formatCurrency(diffHourly);
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const text = `Salary Hike Reconciliation Report:\n` +
+                   `Current Salary: ${salaryInput.value} / ${periodSelect.value} | Hike Type: ${typeSelect.value} | Hike Value: ${valueInput.value}\n` +
+                   `Revised New Salary: ${document.getElementById('res-sh-new')?.textContent}\n` +
+                   `Hike Percentage: ${document.getElementById('lbl-sh-hike-pct')?.textContent}\n` +
+                   `Monthly Increase: ${document.getElementById('res-sh-monthly-diff')?.textContent}\n` +
+                   `Annual Increase: ${document.getElementById('lbl-sh-annual-diff')?.textContent}\n` +
+                   `Audit Details:\n` +
+                   `- Current Annual: ${document.getElementById('tbl-sh-curr-ann')?.textContent} | New Annual: ${document.getElementById('tbl-sh-new-ann')?.textContent}\n` +
+                   `- Current Monthly: ${document.getElementById('tbl-sh-curr-mth')?.textContent} | New Monthly: ${document.getElementById('tbl-sh-new-mth')?.textContent}\n` +
+                   `- Current Hourly: ${document.getElementById('tbl-sh-curr-hr')?.textContent} | New Hourly: ${document.getElementById('tbl-sh-new-hr')?.textContent}\n` +
+                   `Diagnosis: ${document.getElementById('res-sh-verdict-text')?.textContent}`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initShCalculator);
+  document.addEventListener('astro:after-swap', initShCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .hike-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  /* Table styling override */
+  table th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  table td {
+    font-family: var(--font-sans);
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

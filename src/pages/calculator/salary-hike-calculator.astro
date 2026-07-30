@@ -1,0 +1,316 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalaryHikeCalculator from '../../components/calculator/SalaryHikeCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Salary Hike Calculator', path: '/calculator/salary-hike-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How is a salary hike percentage calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To calculate a salary hike percentage, subtract your current salary from your new salary to find the hike amount. Then, divide the hike amount by your current salary and multiply the result by 100. Formula: Hike % = ((New Salary - Current Salary) / Current Salary) * 100."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a typical or average annual salary hike percentage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Typically, standard annual merit raises range between 3% and 5% to account for performance and cost-of-living changes. Bumps for internal promotions often average 10% to 15%, while changing companies (external hire) usually yields the largest hikes, averaging 15% to 30%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate a salary hike when transitioning to a new job?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When switching jobs, calculate your new base CTC or gross monthly pay and compare it to your current base. Divide the difference by your current salary and multiply by 100 to find your new company transition hike percentage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a merit raise and a cost-of-living adjustment (COLA)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A merit raise is an increase in pay based on individual performance, skill gains, and contributions to the company. A cost-of-living adjustment (COLA) is a flat percentage adjustment applied sitewide to match macroeconomic inflation, protecting the employees' purchasing power."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can you negotiate a higher salary hike percentage during performance reviews?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Negotiate a higher hike percentage by compiling an itemized list of your key accomplishments, quantifying the revenue or efficiency value you generated, researching local market compensation for your role using salary databases, and presenting a professional business case focused on value delivery."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Salary Hike Calculator - Calculate Salary Raise & Appraisal Percentages"
+  description="Free online Salary Hike Calculator. Estimate your new annual, monthly, and hourly salary after a percentage-based appraisal or flat pay raise."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <SalaryHikeCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Salary Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Appraisal Planning: Reconciling a 10% Raise on an $80k Base Salary</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of an employee preparing for their annual appraisal—discovering how a 10% hike on their $80,000 salary adds $8,000/year ($666.67/month), comparing it to flat raises, and outlining step-by-step negotiation strategies that resulted in a successful raise.
+            </p>
+            <a href="/blog/how-to-calculate-salary-hike" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Calculate Salary Hike Percentage & Negotiate Raises
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Salary Hike?</h2>
+        <p>
+          A <strong>Salary Hike</strong> (also referred to as a pay raise, salary increment, or appraisal increase) is an upward adjustment made to an employee's base compensation. Salary hikes are usually granted during annual performance reviews, corporate promotions, cost-of-living adjustments (COLA), or when transitioning to a new employer.
+        </p>
+        <p>
+          Calculating your salary hike accurately helps you plan your personal budget, evaluate competing job offers, negotiate new employment contracts, and understand your real income growth relative to price inflation.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your pay raise metrics and compare your gross income before and after a salary adjustment, follow these steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Your Currency:</strong> Choose your local currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results.
+          </li>
+          <li>
+            <strong>Input Current Salary:</strong> Enter your current gross salary amount using the numeric field or slider.
+          </li>
+          <li>
+            <strong>Choose Salary Period:</strong> Select your salary period type (Annually, Monthly, or Hourly) to match your current employment terms.
+          </li>
+          <li>
+            <strong>Select Raise Type:</strong> Choose between a <strong>Percentage Increase (%)</strong> or a <strong>Fixed Amount Increase</strong>.
+          </li>
+          <li>
+            <strong>Input Raise Value:</strong> Enter the raise value (e.g., 10% for a percentage hike, or $8,000 for a flat annual increase).
+          </li>
+          <li>
+            <strong>Review Payouts:</strong> The calculator instantly computes your revised new salary, monthly increase, annual increase, equivalent hike percentage, and generates a side-by-side comparison table.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Salary Hike Calculations</h2>
+        <p>
+          The calculator applies standard corporate compensation algorithms to reconcile periods:
+        </p>
+        
+        <h3>1. Percentage Increase Formula</h3>
+        <p>
+          To calculate your new base pay when you are awarded a percentage-based appraisal:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{New Salary} = \\text{Current Salary} \\times \\left( 1 + \\frac{\\text{Hike \\%}}{100} \\right)\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Hike Amount} = \\text{Current Salary} \\times \\left( \\frac{\\text{Hike \\%}}{100} \\right)\\)"}
+        </p>
+
+        <h3>2. Hike Percentage from Fixed Increase Formula</h3>
+        <p>
+          If your landlord or employer awards you a flat dollar-amount raise and you want to know the equivalent rate of return:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Hike Percentage} = \\left( \\frac{\\text{Hike Amount}}{\\text{Current Salary}} \\right) \\times 100\\)"}
+        </p>
+
+        <h3>3. Multi-Period Interval Conversions</h3>
+        <p>
+          The calculator assumes a standard full-time work year of <strong>2,080 hours</strong> (40 hours per week × 52 weeks) to reconcile intervals:
+        </p>
+        <ul>
+          <li>
+            <strong>Annual Salary:</strong> {"\\(\\text{Monthly Salary} \\times 12\\)"} or {"\\(\\text{Hourly Salary} \\times 2,080\\)"}
+          </li>
+          <li>
+            <strong>Monthly Salary:</strong> {"\\(\\frac{\\text{Annual Salary}}{12}\\)"}
+          </li>
+          <li>
+            <strong>Hourly Salary:</strong> {"\\(\\frac{\\text{Annual Salary}}{2,080}\\)"}
+          </li>
+        </ul>
+
+        <h2>Example Scenario Analysis</h2>
+        <p>
+          Suppose an employee currently earns an annual salary of $80,000.00 and receives a 10.0% raise.
+        </p>
+        <p>
+          The calculator will compute:
+        </p>
+        <ul>
+          <li>
+            <strong>New Annual Salary:</strong> {"\\(\\$80,000 \\times 1.10 = \\mathbf{\\$88,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Annual Increase:</strong> {"\\(\\$88,000 - \\$80,000 = \\mathbf{\\$8,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Current Monthly Salary:</strong> {"\\(\\frac{\\$80,000}{12} = \\mathbf{\\$6,666.67}\\)"}
+          </li>
+          <li>
+            <strong>New Monthly Salary:</strong> {"\\(\\frac{\\$88,000}{12} = \\mathbf{\\$7,333.33}\\)"} (Increase = <strong>$666.67/month</strong>)
+          </li>
+          <li>
+            <strong>Current Hourly Rate:</strong> {"\\(\\frac{\\$80,000}{2,080} = \\mathbf{\\$38.46}\\)"}
+          </li>
+          <li>
+            <strong>New Hourly Rate:</strong> {"\\(\\frac{\\$88,000}{2,080} = \\mathbf{\\$42.31}\\)"} (Increase = <strong>$3.85/hour</strong>)
+          </li>
+        </ul>
+
+        <h2>Typical Salary Hike Statistics & Market Benchmarks</h2>
+        <p>
+          To evaluate if your appraisal raise is fair, compare it to these typical industry averages:
+        </p>
+        <ul>
+          <li>
+            <strong>Annual Merit raises:</strong> 3% to 5%. These standard increases match inflation and recognize stable contributions.
+          </li>
+          <li>
+            <strong>Internal Promotions:</strong> 10% to 15%. Reflects a move to a higher job tier or title.
+          </li>
+          <li>
+            <strong>External Job Switch:</strong> 15% to 30%. Changing companies often results in the largest raise because new employers must offer a premium to attract talent.
+          </li>
+        </ul>
+
+        <h2>4 Strategies to Maximize Your Salary Hike</h2>
+        <p>
+          To secure a higher raise percentage during your next performance review, implement these four rules:
+        </p>
+        <ol>
+          <li>
+            <strong>Quantify Your Accomplishments:</strong> Do not just list your daily tasks. Present clear, numerical proof of the value you brought to the business (e.g. "managed a project that cut costs by $20,000" or "increased client retention by 15%").
+          </li>
+          <li>
+            <strong>Research Market Compensation:</strong> Use salary databases like Glassdoor, Payscale, or LinkedIn Salaries to find the average pay scale for your job title, experience level, and geographic area. Use this data as a professional benchmark.
+          </li>
+          <li>
+            <strong>Schedule Your Review Strategically:</strong> Request an appraisal meeting 3 to 4 months before the company budget is finalized. Once budgets are locked, managers have very little flexibility to offer higher raises.
+          </li>
+          <li>
+            <strong>Acquire High-Value Skills:</strong> Focus on obtaining industry certifications, learning new tools, or taking on high-impact projects that make you indispensable to the team.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Salary Hike FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is a salary hike percentage calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Subtract your current salary from your new salary to find the raise amount. Then, divide the raise amount by your current salary and multiply by 100. Formula: Hike % = ((New Salary - Current Salary) / Current Salary) * 100.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a typical or average annual salary hike percentage?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Standard annual raises typically range between 3% and 5% for cost-of-living adjustments or merit increases. Bumps for internal promotions often average 10% to 15%, while transitioning to a new company can yield raises of 15% to 30%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you calculate a salary hike when transitioning to a new job?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Compare the base gross salary offered by the new employer against your current base gross salary. Divide the difference by your current salary and multiply by 100 to find your external transition hike percentage. Make sure you compare similar periods (Annual to Annual, or Monthly to Monthly).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between a merit raise and a cost-of-living adjustment (COLA)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A merit raise is an increase in pay based on individual job performance, skill gains, and achievements. A cost-of-living adjustment (COLA) is a flat percentage adjustment applied sitewide to match macroeconomic inflation, protecting the employees' purchasing power.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can you negotiate a higher salary hike percentage during performance reviews?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Compile an itemized list of your key achievements, quantify the value you generated for the business, research market rates for your position, and present a professional business case focused on value delivery.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

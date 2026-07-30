@@ -1,0 +1,321 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GoldenHandshakeCalculator from '../../components/calculator/GoldenHandshakeCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Golden Handshake Calculator', path: '/calculator/golden-handshake-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a Golden Handshake in employment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A Golden Handshake is a generous financial severance package offered to executives or long-tenured employees upon their retirement, redundancy, or termination of employment. It is designed to compensate the employee for their service and smooth their transition out of the organization."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is a Golden Handshake payout calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Golden Handshakes are calculated in one of two ways. Standard tenure redundancy formulas multiply weekly pay equivalents by years of service and a week-multiplier factor, adding notice periods and flat incentives. Executive exit packages typically use a flat contractual multiplier of annual base salary (e.g. 1.5x or 2.0x base salary) plus transition benefits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are Golden Handshakes subject to income tax?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, golden handshakes are generally subject to income tax, although many tax jurisdictions offer specific exemptions for redundancy or severance payments. For example, in the UK, the first £30,000 of a redundancy payment is tax-free. In the US, severance is taxed as standard wage income. Always consult a certified CPA or tax professional for local tax rules."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a golden handshake and a golden parachute?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A golden handshake is an exit package offered to any long-tenured employee or executive upon retirement, redundancy, or termination. A golden parachute is a specific corporate clause that guarantees massive exit packages to senior executives if they lose their jobs due to a company merger or corporate takeover."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can an employee negotiate a golden handshake package?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. While standard corporate redundancy guidelines are often fixed, long-tenured employees and executives can negotiate notice periods, PILON payouts, outplacement assistance cash, accelerated stock vesting, and extended healthcare coverages before signing a release agreement."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Golden Handshake Calculator - Estimate Redundancy & Exit Payouts"
+  description="Free online Golden Handshake Calculator. Estimate your redundancy severance package, pay in lieu of notice (PILON), and contractual executive multipliers."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <GoldenHandshakeCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Exit Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Golden Handshake Reconciliations: Analyzing a $92,500 Redundancy Exit</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a director who underwent corporate restructuring—discovering how their $130,000 base salary earned a $92,500 standard severance exit (20 weeks redundancy, 3 months notice pay, and $10k cash transition bonuses), comparing it to contractual multipliers, and sharing negotiation guidelines.
+            </p>
+            <a href="/blog/what-is-a-golden-handshake-severance" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: Reconciling a Golden Handshake exit & Redundancy package
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Golden Handshake?</h2>
+        <p>
+          A <strong>Golden Handshake</strong> is a financial exit package offered to executives, senior managers, or long-tenured employees when they leave an organization. This exit can occur due to retirement, corporate redundancy, mergers, or mutual separation agreements.
+        </p>
+        <p>
+          Unlike basic severance pay, a golden handshake is designed to be a comprehensive financial package. It often includes tenure-based redundancy multipliers, pay in lieu of notice (PILON), cash incentives, outplacement counseling credits, and extended healthcare benefits to prevent legal disputes and ensure a smooth separation.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your estimated exit package, choose your separation category:
+        </p>
+        
+        <h3>Mode 1: Standard Tenure (Default)</h3>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all inputs and outputs.
+          </li>
+          <li>
+            <strong>Input Base Salary:</strong> Enter your gross annual salary at the time of exit.
+          </li>
+          <li>
+            <strong>Input Tenure:</strong> Enter your total completed years of service at the firm.
+          </li>
+          <li>
+            <strong>Configure Weeks per Year:</strong> Set the weeks of pay awarded per year of service (e.g. 2.0 weeks is standard).
+          </li>
+          <li>
+            <strong>Set Notice Period:</strong> Select how many months of notice pay (PILON) you are receiving.
+          </li>
+          <li>
+            <strong>Set Additional Cash:</strong> Add any transition bonuses or cash incentives.
+          </li>
+        </ol>
+
+        <h3>Mode 2: Executive Multiplier</h3>
+        <ol>
+          <li>
+            <strong>Input Base Salary:</strong> Enter your gross annual salary.
+          </li>
+          <li>
+            <strong>Configure Salary Multiplier:</strong> Select your contractual exit multiplier (e.g. 1.5x, 2.0x base salary).
+          </li>
+          <li>
+            <strong>Add Transition Benefits:</strong> Enter cash allocations for outplacement services or healthcare.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Golden Handshake Payouts</h2>
+        <p>
+          The calculator applies two corporate separation models to reconcile payouts:
+        </p>
+        
+        <h3>1. Standard Tenure-Based Separation Formula</h3>
+        <p>
+          For a gross annual salary {"\\(A\\)"}, years of service {"\\(Y\\)"}, week multiplier {"\\(W_m\\)"}, notice period in months {"\\(N\\)"}, and incentives {"\\(I\\)"}:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Weekly Wage } (W) = \\frac{A}{52}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Base Severance } (P_s) = W \\times (Y \\times W_m)\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Notice Pay } (P_n) = \\left( \\frac{A}{12} \\right) \\times N\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total Payout} = P_s + P_n + I\\)"}
+        </p>
+
+        <h3>2. Contractual Multiplier Separation Formula</h3>
+        <p>
+          For executives with flat multiplier covenants (where {"\\(M\\)"} represents the salary multiplier factor and {"\\(B\\)"} represents cash benefits):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total Payout} = (A \\times M) + B\\)"}
+        </p>
+
+        <h2>Real Separation Payout Example</h2>
+        <p>
+          Suppose an employee earning $130,000.00 annually is laid off due to a merger after 10 years of service. Their severance policy awards 2 weeks of pay per year of service, 3 months of notice period pay in lieu, and a $10,000.00 cash incentive.
+        </p>
+        <p>
+          The separation calculations are:
+        </p>
+        <ul>
+          <li>
+            <strong>Weekly Salary:</strong> {"\\(\\frac{\\$130,000}{52} = \\mathbf{\\$2,500.00}\\)"}
+          </li>
+          <li>
+            <strong>Base Severance:</strong> {"\\(\\$2,500 \\times (10 \\times 2) = \\mathbf{\\$50,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Pay in Lieu of Notice (PILON):</strong> {"\\(\\left(\\frac{\\$130,000}{12}\\right) \\times 3 = \\mathbf{\\$32,500.00}\\)"}
+          </li>
+          <li>
+            <strong>Additional Incentives:</strong> <strong>$10,000.00</strong>
+          </li>
+          <li>
+            <strong>Estimated Gross Separation Value:</strong> {"\\(\\$50,000 + \\$32,500 + \\$10,000 = \\mathbf{\\$92,500.00}\\)"}
+          </li>
+        </ul>
+
+        <h2>Tax Considerations & Redundancy Rules</h2>
+        <p>
+          Separation payouts are subject to income taxes, but structural rules vary by country:
+        </p>
+        <ul>
+          <li>
+            <strong>United States:</strong> Severance packages are treated as standard wage income. They are subject to federal, state, and local income taxes, as well as FICA (Social Security and Medicare) withholding.
+          </li>
+          <li>
+            <strong>United Kingdom:</strong> The first <strong>£30,000</strong> of a qualifying redundancy separation payment is tax-free. Any PILON (Pay in Lieu of Notice) or holiday payouts are taxed as regular earnings.
+          </li>
+          <li>
+            <strong>Canada:</strong> Severance pay is taxed as regular income, but employees can transfer a portion of their separation payment directly into a Registered Retirement Savings Plan (RRSP) to defer income taxes.
+          </li>
+        </ul>
+        <p style="font-size: 0.9rem; font-style: italic; color: var(--color-text-muted);">
+          Disclaimer: Tax rules change frequently. Always consult a licensed Certified Public Accountant (CPA) or local tax authority to analyze your package's tax liability before signing exit agreements.
+        </p>
+
+        <h2>5 Common Mistakes to Avoid When Accepting an Exit Package</h2>
+        <ol>
+          <li>
+            <strong>Signing the Separation Agreement Immediately:</strong> Companies often put pressure on employees by setting short deadlines (e.g. 48 hours). Legally, you are usually entitled to 21 to 45 days to review the release under age discrimination laws. Take the time to read every clause.
+          </li>
+          <li>
+            <strong>Forgetting to Reconcile Accrued Paid Time Off (PTO):</strong> Ensure your final paycheck includes pay for unused vacation days or PTO, as required by local labor laws.
+          </li>
+          <li>
+            <strong>Ignoring Non-Compete and Solicit Covenants:</strong> Some separation agreements contain strict non-compete clauses that prevent you from working for competitors in your geographic area. Review these constraints carefully as they impact your future career.
+          </li>
+          <li>
+            <strong>Assuming Severance Policies Are Non-Negotiable:</strong> Severance policies are not set in stone. You can negotiate for extended health insurance coverages, outplacement transition credits, or adjusted notice periods.
+          </li>
+          <li>
+            <strong>Not Accounting for Deferred Stock Vesting:</strong> If you hold stock options or restricted stock units (RSUs), check if your termination accelerates their vesting or shortens the exercise window.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Golden Handshake FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a Golden Handshake in employment?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A Golden Handshake is a generous financial exit package offered to senior executives or long-tenured employees upon their retirement, redundancy, or termination of employment. It is designed to compensate the employee for their service and smooth their transition out of the organization.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is a Golden Handshake payout calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Payouts are calculated using either: (1) Standard tenure redundancy formulas, which multiply weekly pay equivalents by years of service and a week-multiplier factor, adding notice periods and flat incentives. (2) Contractual multipliers of annual base salary (e.g. 1.5x or 2.0x base salary) plus transition benefits.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Are Golden Handshakes subject to income tax?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes. Payouts are generally taxed as standard wage income in the US. However, many tax jurisdictions offer specific exemptions for redundancy payments (e.g., the first £30,000 is tax-free in the UK). Always consult a certified CPA or tax professional for local tax rules.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between a golden handshake and a golden parachute?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A golden handshake is an exit package offered to any long-tenured employee or executive upon retirement, redundancy, or separation. A golden parachute is a specific corporate clause that guarantees massive exit packages to senior executives if they lose their jobs due to a company merger or corporate takeover.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Can an employee negotiate a golden handshake package?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes. While standard corporate redundancy guidelines are often fixed, employees and executives can negotiate notice periods, PILON payouts, outplacement assistance credits, accelerated stock vesting, and extended healthcare coverages before signing a separation release.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

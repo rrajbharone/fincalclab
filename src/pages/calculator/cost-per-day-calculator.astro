@@ -1,0 +1,293 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CostPerDayCalculator from '../../components/calculator/CostPerDayCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Cost Per Day Calculator', path: '/calculator/cost-per-day-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is cost per day and why is it useful for budgeting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cost per day is the amortized cost of an expense, subscription, or asset divided by the number of days it is used. It is useful for budgeting because it standardizes disparate billing cycles (weekly, monthly, annual) into a single, high-frequency daily metric, making it easy to spot financial leaks."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate cost per day with start and end dates?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To calculate cost per day with calendar dates, first compute the number of days between your start date and end date (optionally adding +1 day for inclusive counts). Then, divide the total cost of the project or service by this calculated number of days."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the calculator handle leap years for daily calculations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our calculator computes the exact number of calendar days between your selected dates, which automatically accounts for leap years (such as 366 days in years like 2028 or 2032) to ensure 100% mathematical accuracy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between inclusive and exclusive date counting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Exclusive date counting calculates the raw difference between two dates (e.g. June 1 to June 3 is 2 days difference). Inclusive date counting adds the end day to the total count (+1 day offset) to include the full final day (e.g., June 1 to June 3 is 3 inclusive days)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can tracking cost per day help reduce subscription waste?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "By calculating the daily cost of your active SaaS, streaming, or utility subscriptions, you can weigh their cost against your daily usage frequency. If a $30/month software suite translates to $1.00/day but is only used once a month, it is an obvious target for cost cutting."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Cost Per Day Calculator - Amortize Daily Expense & Subscriptions"
+  description="Free online Cost Per Day Calculator. Calculate daily, weekly, monthly, and yearly equivalent costs of expenses, subscriptions, and travel trips."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <CostPerDayCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Expense Audit Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Subscription Amortization: How Daily Cost Auditing Saved Us $140/Month</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a remote freelancer who audited their business and living expenses—discovering how a $1,200 annual software subscription amortizes to $3.29/day, comparing cost-per-day across utilities, and shutting down hidden cost leaks.
+            </p>
+            <a href="/blog/cost-per-day-budgeting-amortization" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Audit Subscriptions & Reconcile Cost Per Day
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Cost Per Day?</h2>
+        <p>
+          <strong>Cost Per Day</strong> is the daily amortized rate of an expense, subscription, lease, or asset. It represents how much an item or service costs you for every single 24-hour cycle of possession or use.
+        </p>
+        <p>
+          In a world dominated by varied billing cycles—weekly SaaS, monthly gyms, quarterly insurance, and annual domain hosting—it is easy to lose track of actual cash flows. Converting all expenses into a daily cost provides a single, high-frequency benchmark that makes budgeting intuitive and exposes hidden subscription waste.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your daily expense amortization and view extrapolated equivalents:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results.
+          </li>
+          <li>
+            <strong>Input Total Cost:</strong> Enter the gross cost of the service, trip, or subscription.
+          </li>
+          <li>
+            <strong>Select Time Mode:</strong>
+            <ul>
+              <li>
+                <strong>Flat Days:</strong> Input a flat duration of days directly (e.g., 30 days for a standard month, 365 days for a year).
+              </li>
+              <li>
+                <strong>Date Range:</strong> Select calendar start and end dates (e.g., June 1 to August 31) to have the calculator compute the exact calendar duration.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Configure Date Settings:</strong> For Date Range mode, toggle the inclusive checkbox to specify whether you want to include the ending day (+1 day) in the total count.
+          </li>
+          <li>
+            <strong>Review Amortization:</strong> The calculator outputs the cost per day, total days, weekly equivalent, monthly equivalent (based on the standard financial year average of 30.4375 days), and yearly equivalent.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Daily Amortization</h2>
+        <p>
+          The calculator applies standard financial accounting formulas to reconcile dates and project equivalent intervals:
+        </p>
+        
+        <h3>1. Cost Per Day Formula</h3>
+        <p>
+          For a total cost {"\\(C\\)"} and duration {"\\(D\\)"} in days:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Cost Per Day } (C_{day}) = \\frac{C}{D}\\)"}
+        </p>
+
+        <h3>2. Calendar Date Difference Formulas</h3>
+        <p>
+          When using calendar dates, the duration is calculated based on milliseconds elapsed, converted to full days:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Duration (Exclusive)} = \\frac{\\text{End Date} - \\text{Start Date}}{1000 \\times 60 \\times 60 \\times 24}\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Duration (Inclusive)} = \\text{Duration (Exclusive)} + 1\\)"}
+        </p>
+
+        <h3>3. Equivalent Projections Formulas</h3>
+        <p>
+          To project a daily rate across larger financial intervals:
+        </p>
+        <ul>
+          <li>
+            <strong>Weekly Equivalent:</strong> {"\\(C_{day} \\times 7\\)"}
+          </li>
+          <li>
+            <strong>Monthly Equivalent:</strong> {"\\(C_{day} \\times 30.4375\\)"} (the financial year average, derived from {"\\(\\frac{365}{12}\\)"})
+          </li>
+          <li>
+            <strong>Yearly Equivalent:</strong> {"\\(C_{day} \\times 365\\)"}
+          </li>
+        </ul>
+
+        <h2>Real-World Calculation Example</h2>
+        <p>
+          Suppose you buy a $1,200.00 annual business software suite. Over a standard year (365 days):
+        </p>
+        <ul>
+          <li>
+            <strong>Daily Amortized Cost:</strong> {"\\(\\frac{\\$1,200.00}{365} = \\mathbf{\\$3.29 \\text{ per day}}\\)"}
+          </li>
+          <li>
+            <strong>Weekly Equivalent:</strong> {"\\(\\$3.29 \\times 7 = \\mathbf{\\$23.03 \\text{ per week}}\\)"}
+          </li>
+          <li>
+            <strong>Monthly Equivalent:</strong> {"\\(\\$3.29 \\times 30.4375 = \\mathbf{\\$100.14 \\text{ per month}}\\)"} (reconciled closer to actual monthly cash flows than a flat $100.00 due to month length variance)
+          </li>
+        </ul>
+
+        <h2>4 Common Budgeting Areas Where Cost Per Day Reveals Waste</h2>
+        <p>
+          Use daily cost calculations to audit these four high-leak expense categories:
+        </p>
+        <ol>
+          <li>
+            <strong>Streaming & Entertainment Subscriptions:</strong> A $15.00/month streaming package sounds cheap. That is only $0.50/day. But if you hold 6 different services, that totals $3.00/day ($1,095/year). Audit your actual usage frequency relative to daily costs.
+          </li>
+          <li>
+            <strong>Gym & Fitness Memberships:</strong> A premium gym membership costing $120.00/month translates to $3.94/day. If you only visit the gym 4 times a month, your actual cost per visit is **$30.00**. Measuring daily cost helps motivate you to visit more often or cancel.
+          </li>
+          <li>
+            <strong>Travel & Vacation Planning:</strong> When booking a 7-day trip, budget by daily exit speed. If flights, hotels, dining, and tickets total $2,100, your daily speed is **$300.00/day**. Track this metric to avoid post-vacation credit card shock.
+          </li>
+          <li>
+            <strong>Automobile Leases & Insurance:</strong> If your monthly car payment, insurance, and maintenance total $600.00, your car costs you **$19.71/day** to sit in the driveway. Compare this to ride-sharing rates if you work from home.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Cost Per Day FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is cost per day and why is it useful for budgeting?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Cost per day is the amortized cost of an expense, subscription, or asset divided by the number of days it is used. It is useful for budgeting because it standardizes disparate billing cycles (weekly, monthly, annual) into a single, high-frequency daily metric, making it easy to spot financial leaks.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you calculate cost per day with start and end dates?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              To calculate cost per day with calendar dates, first compute the number of days between your start date and end date (optionally adding +1 day for inclusive counts). Then, divide the total cost of the project or service by this calculated number of days.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does the calculator handle leap years for daily calculations?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Our calculator computes the exact number of calendar days between your selected dates, which automatically accounts for leap years (such as 366 days in years like 2028 or 2032) to ensure 100% mathematical accuracy.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between inclusive and exclusive date counting?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Exclusive date counting calculates the raw difference between two dates (e.g. June 1 to June 3 is 2 days difference). Inclusive date counting adds the end day to the total count (+1 day offset) to include the full final day (e.g., June 1 to June 3 is 3 inclusive days).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can tracking cost per day help reduce subscription waste?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              By calculating the daily cost of your active SaaS, streaming, or utility subscriptions, you can weigh their cost against your daily usage frequency. If a $30/month software suite translates to $1.00/day but is only used once a month, it is an obvious target for cost cutting.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

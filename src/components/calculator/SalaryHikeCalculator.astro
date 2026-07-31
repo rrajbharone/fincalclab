@@ -124,8 +124,8 @@ import Card from '../ui/Card.astro';
 
     <!-- Comparison Table Grid -->
     <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Before vs. After Comparison</h4>
-    <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: var(--color-bg-base); margin-bottom: var(--space-6);">
-      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+    <div style="width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-base); margin-bottom: var(--space-6); -webkit-overflow-scrolling: touch;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; min-width: 500px;">
         <thead>
           <tr style="background: var(--color-bg-surface); border-bottom: 1px solid var(--color-border);">
             <th style="padding: var(--space-3); font-weight: 700; color: var(--color-text-base);">Interval</th>

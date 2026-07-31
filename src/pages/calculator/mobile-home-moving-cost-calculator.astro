@@ -1,0 +1,328 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MobileHomeMovingCostCalculator from '../../components/calculator/MobileHomeMovingCostCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Mobile Home Moving Cost Calculator', path: '/calculator/mobile-home-moving-cost-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the average cost to move a mobile home?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The average cost to move a mobile home ranges from $3,000 to $8,000 for a local transport-only move (under 50 miles). Full-service moves—which include structural disconnects, state permits, pilot escort cars, new tires, blocking setup, and utility reconnections—typically range from $6,000 to $18,000 depending on home size and travel distance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a transport-only and a full-service move?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A transport-only move (tow-only) only covers hooking the mobile home structure up to a heavy-duty semi-truck and hauling it to the new location (client handles site prep, disconnects, permits, and setup). A full-service move handles everything: preparing the home, securing permits, transport, re-installing block foundations, and hookups."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do double-wide and triple-wide homes require escort vehicles?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Double-wide and triple-wide manufactured homes exceed standard highway lane widths (classified as oversize/superload cargo). Most state transport departments legally mandate 1 to 2 pilot cars (escort vehicles with flashing warning lights) to travel ahead and behind the load to ensure highway safety."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much do permits cost for moving a manufactured home?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oversize transportation permits typically range from $150 to $700 per state line crossed. The cost depends on the width of the home, its gross shipping weight, local transport authority filing fees, and whether structural highway escorts are legally mandated."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I prepare my mobile home site to reduce installation costs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can reduce mobile home moving costs by clearing and leveling the destination site, ensuring proper soil compaction, arranging utility hookups in advance, and making sure the path is completely clear of low-hanging trees or fences so the setup crew can work efficiently."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Mobile Home Moving Cost Calculator - Estimate Setup & Transport"
+  description="Free online Mobile Home Moving Cost Calculator. Estimate total setup, blocking foundation, oversize permits, escort vehicles, and utilities cost."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <MobileHomeMovingCostCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Relocation Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Manufactured Home Relocation: How We Planned & Budgeted a 30-Mile Move</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a homeowner who relocated a single-wide mobile home 80 miles—discovering how base transport ($2,500) combined with mileage surcharges ($180), oversize load permits ($200), basic setup ($2,000), utility reconnection ($1,000), and axles rental ($500) to yield a total move cost of $6,380.
+            </p>
+            <a href="/blog/mobile-home-moving-cost-guide" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Budget Mobile Home Moving & Foundation Installation
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>How Mobile Home Moving Costs are Calculated</h2>
+        <p>
+          Unlike moving household items in a standard box truck, relocating a <strong>mobile home (manufactured home)</strong> is a complex engineering and logistics project. The home itself serves as the cargo chassis, requiring specialized structural preparation, oversize load permits, pilot safety cars, and site re-installation.
+        </p>
+        <p>
+          Relocation costs are typically calculated based on three primary cost centers:
+        </p>
+        <ol>
+          <li>
+            <strong>Transportation Logistics:</strong> Covers the base rate to hook the structure up to a commercial semi-tractor, plus mileage surcharges for the shipping distance.
+          </li>
+          <li>
+            <strong>Regulatory & Safety Fees:</strong> Covers state-mandated oversize load permits, multi-state wide load filings, and pilot car escort vehicles.
+          </li>
+          <li>
+            <strong>Site Preparation & Setup:</strong> Covers structural prep (tires/axles), basic blocking and tie-down installation, concrete footings, skirting, and utility hookups.
+          </li>
+        </ol>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate a fully loaded estimate for your mobile home relocation:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results.
+          </li>
+          <li>
+            <strong>Choose Mobile Home Size:</strong> Select between <strong>Single-Wide</strong>, <strong>Double-Wide</strong>, or <strong>Triple-Wide</strong> home formats. Width affects transport base rates and pilot car requirements.
+          </li>
+          <li>
+            <strong>Input Moving Distance:</strong> Enter the travel distance in miles. The first 50 miles are included in the base rate, with a per-mile surcharge applied thereafter.
+          </li>
+          <li>
+            <strong>Choose Setup / Foundation Level:</strong>
+            <ul>
+              <li>
+                <strong>None (Transport Only):</strong> Select if you are handling site preparation and tie-downs independently.
+              </li>
+              <li>
+                <strong>Basic Blocking & Tie-downs:</strong> Standard anchoring setup onto ground blocks.
+              </li>
+              <li>
+                <strong>Deluxe Concrete Slab:</strong> Heavy setup onto custom concrete slab footings or piers.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Configure Options:</strong> Toggle utility disconnects/reconnections, replacement tires/axles rentals, new skirting installation, and HVAC relocations.
+          </li>
+          <li>
+            <strong>Review Estimations:</strong> The calculator outputs the estimated total moving cost, transport subtotal, and an itemized breakdown of services.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Relocation Estimations</h2>
+        <p>
+          The calculator applies realistic logistics averages to project costs based on distance and home size:
+        </p>
+        
+        <h3>1. Transport & Mileage Overage Formula</h3>
+        <p>
+          Let {"\\(B\\)"} represent the base transport rate, {"\\(D\\)"} represent total miles, and {"\\(R_{over}\\)"} represent the overage rate per mile:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Transport Subtotal} = B + (\\max(0, D - 50) \\times R_{over})\\)"}
+        </p>
+        <p>
+          Rates scale progressively based on home type:
+        </p>
+        <ul>
+          <li>
+            <strong>Single-Wide:</strong> Base rate = $2,500, Overage rate = $6.00/mile
+          </li>
+          <li>
+            <strong>Double-Wide:</strong> Base rate = $5,000, Overage rate = $12.00/mile
+          </li>
+          <li>
+            <strong>Triple-Wide:</strong> Base rate = $8,000, Overage rate = $18.00/mile
+          </li>
+        </ul>
+
+        <h3>2. Pilot Escort Cars Math</h3>
+        <p>
+          Legally mandated escort pilot vehicles are calculated based on travel distance:
+        </p>
+        <ul>
+          <li>
+            <strong>Single-Wide:</strong> $0 (not usually required)
+          </li>
+          <li>
+            <strong>Double-Wide:</strong> 1 vehicle at {"\\(D \\times \\$2.00\\)"}
+          </li>
+          <li>
+            <strong>Triple-Wide:</strong> 2 vehicles at {"\\(D \\times \\$4.00\\)"}
+          </li>
+        </ul>
+
+        <h2>Real-World Calculation Example</h2>
+        <p>
+          Suppose you want to move a double-wide mobile home <strong>80 miles</strong> and want a basic blocking foundation setup with utilities reconnected:
+        </p>
+        <ul>
+          <li>
+            <strong>Base Transport Fee:</strong> $5,000 (includes 50 miles)
+          </li>
+          <li>
+            <strong>Mileage Overage Surcharge:</strong> {"\\(30 \\text{ miles} \\times \\$12.00/\\text{mile} = \\mathbf{\\$360.00}\\)"}
+          </li>
+          <li>
+            <strong>State Oversize Permits:</strong> $400.00
+          </li>
+          <li>
+            <strong>Pilot Escort Cars:</strong> {"\\(80 \\text{ miles} \\times \\$2.00/\\text{mile} = \\mathbf{\\$160.00}\\)"}
+          </li>
+          <li>
+            <strong>Basic Foundation Setup:</strong> $4,000.00
+          </li>
+          <li>
+            <strong>Utility Hookup Service:</strong> $1,800.00
+          </li>
+        </ul>
+        <p>
+          Reconciling these subtotals yields the estimated total moving cost:
+        </p>
+        <p style="text-align: center; font-size: 1.25rem; margin: var(--space-6) 0; font-weight: 800; color: var(--color-success);">
+          {"\\(\\$5,000 + \\$360 + \\$400 + \\$160 + \\$4,000 + \\$1,800 = \\mathbf{\\$11,720.00}\\)"}
+        </p>
+
+        <h2>5 Key Factors That Affect Mobile Home Moving Costs</h2>
+        <ol>
+          <li>
+            <strong>Home Size & Configuration:</strong> Moving a single-wide requires only one semi-truck. Double-wide and triple-wide structures must be split in half, hauled separately, and re-joined on-site, effectively doubling transport and setup costs.
+          </li>
+          <li>
+            <strong>Oversize Load Regulations:</strong> Any load exceeding standard highway widths requires special transport permits. Wide loads may require police escorts, utility line lift crews, or specific travel routing, adding regulatory fees.
+          </li>
+          <li>
+            <strong>Foundation Anchoring:</strong> Anchoring the home onto dry-stacked concrete blocks is relatively inexpensive. Installing a structural concrete slab or custom concrete piers adds thousands in site preparation costs.
+          </li>
+          <li>
+            <strong>Tires, Axles, & Hitch:</strong> Manufactured homes require specialized heavy-duty wheels, axles, and a towing hitch to roll safely. If these have been removed or rusted, they must be rented or replaced.
+          </li>
+          <li>
+            <strong>Utility Connections:</strong> Electrical, plumbing, and HVAC systems must be legally disconnected and reconnected under strict building codes, which usually requires hiring licensed sub-contractors.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Manufactured Home Moving FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the average cost to move a mobile home?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The average cost to move a mobile home ranges from $3,000 to $8,000 for a local transport-only move (under 50 miles). Full-service moves—which include structural disconnects, state permits, pilot escort cars, new tires, blocking setup, and utility reconnections—typically range from $6,000 to $18,000 depending on home size and travel distance.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between a transport-only and a full-service move?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A transport-only move (tow-only) only covers hooking the mobile home structure up to a heavy-duty semi-truck and hauling it to the new location (client handles site prep, disconnects, permits, and setup). A full-service move handles everything: preparing the home, securing permits, transport, re-installing block foundations, and hookups.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why do double-wide and triple-wide homes require escort vehicles?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Double-wide and triple-wide manufactured homes exceed standard highway lane widths (classified as oversize/superload cargo). Most state transport departments legally mandate 1 to 2 pilot cars (escort vehicles with flashing warning lights) to travel ahead and behind the load to ensure highway safety.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How much do permits cost for moving a manufactured home?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Oversize transportation permits typically range from $150 to $700 per state line crossed. The cost depends on the width of the home, its gross shipping weight, local transport authority filing fees, and whether structural highway escorts are legally mandated.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can I prepare my mobile home site to reduce installation costs?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You can reduce mobile home moving costs by clearing and leveling the destination site, ensuring proper soil compaction, arranging utility hookups in advance, and making sure the path is completely clear of low-hanging trees or fences so the setup crew can work efficiently.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,652 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="College Savings Calculator"
+  description="Plan your child's educational future. Calculate projected savings growth, future inflated tuition costs, savings surplus or shortfalls, and recommended monthly contributions."
+  category="Finance"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="college-savings-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-currency-select">Currency</label>
+          <select id="col-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Child's Current Age -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-current-age-input">Child's Current Age</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="col-current-age-input" min="0" max="17" step="1" value="5" aria-label="Child's Current Age" style="text-align: left;" />
+            <span class="percent-symbol">yrs</span>
+          </div>
+        </div>
+        <input type="range" id="col-current-age-slider" min="0" max="17" step="1" value="5" class="slider-range" aria-label="Child's Current Age Slider" />
+      </div>
+
+      <!-- Age at College Entrance -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-entrance-age-input">College Entrance Age</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="col-entrance-age-input" min="17" max="25" step="1" value="18" aria-label="College Entrance Age" style="text-align: left;" />
+            <span class="percent-symbol">yrs</span>
+          </div>
+        </div>
+        <input type="range" id="col-entrance-age-slider" min="17" max="25" step="1" value="18" class="slider-range" aria-label="College Entrance Age Slider" />
+      </div>
+    </div>
+
+    <!-- Step 2: Financial Details -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. College Costs & Savings</h3>
+      
+      <!-- Current College Cost -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-cost-input">Current Total Cost</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="col-cost-input" min="1000" step="5000" value="100000" aria-label="Current Total College Cost" />
+          </div>
+        </div>
+        <input type="range" id="col-cost-slider" min="10000" max="400000" step="5000" value="100000" class="slider-range" aria-label="Current College Cost Slider" />
+      </div>
+
+      <!-- Current Savings -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-savings-input">Current Savings Balance</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="col-savings-input" min="0" step="500" value="10000" aria-label="Current Savings Balance" />
+          </div>
+        </div>
+        <input type="range" id="col-savings-slider" min="0" max="150000" step="1000" value="10000" class="slider-range" aria-label="Current Savings Slider" />
+      </div>
+
+      <!-- Monthly Contribution -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-monthly-input">Monthly Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="col-monthly-input" min="0" step="50" value="300" aria-label="Monthly Contribution" />
+          </div>
+        </div>
+        <input type="range" id="col-monthly-slider" min="0" max="2500" step="50" value="300" class="slider-range" aria-label="Monthly Contribution Slider" />
+      </div>
+    </div>
+
+    <!-- Step 3: Rates of Growth -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">3. Rates & Inflation</h3>
+      
+      <!-- Expected Return -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-return-input">Expected Annual Return</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="col-return-input" min="0" max="15" step="0.1" value="7" aria-label="Expected Annual Return" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="col-return-slider" min="0" max="15" step="0.25" value="7" class="slider-range" aria-label="Expected Annual Return Slider" />
+      </div>
+
+      <!-- College Inflation Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="col-inflation-input">Annual Tuition Inflation</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="col-inflation-input" min="0" max="10" step="0.1" value="5" aria-label="Annual Tuition Inflation Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="col-inflation-slider" min="0" max="10" step="0.1" value="5" class="slider-range" aria-label="Inflation Rate Slider" />
+      </div>
+
+      <!-- Age Validation Warning -->
+      <div id="col-age-error" class="hidden" style="color: var(--color-danger); font-size: 0.85rem; font-weight: 700; border-left: 3px solid var(--color-danger); padding-left: 8px;">
+        Error: Current Age must be strictly less than College Entrance Age.
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="col-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Savings Projections</h3>
+
+    <!-- Primary Savings Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Projected Savings</span>
+        <div id="res-col-savings" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$100,454.62</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Total balance at college entrance</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Future College Cost</span>
+        <div id="res-col-future-cost" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$188,564.91</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-col-future-desc">Inflated over 13 years</span>
+      </div>
+    </div>
+
+    <!-- Goal Progress Bar -->
+    <div style="margin-bottom: var(--space-5);">
+      <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 6px;">
+        <span>Goal Progress</span>
+        <span id="col-progress-percent">53.27%</span>
+      </div>
+      <div style="width: 100%; height: 10px; background: var(--color-border); border-radius: var(--radius-full); overflow: hidden;">
+        <div id="col-progress-bar" style="width: 53.27%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="col-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Savings Diagnosis</span>
+        <p id="res-col-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your child will enter college in <strong>13 years</strong>. The future college cost is estimated at <strong>$188,564.91</strong>. Your projected savings will reach <strong>$100,454.62</strong>, leaving a shortfall of <strong>$88,110.29</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Financial Summary Breakdown</h4>
+    <div class="results-grid col-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-tile-savings">Projected Savings</span>
+        <div class="tile-value" id="tile-col-savings" style="color: var(--color-success);">$100,455</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Growth + contributions</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-tile-future-cost">Future Cost</span>
+        <div class="tile-value" id="tile-col-future-cost" style="color: var(--color-primary);">$188,565</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Inflated college cost</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="lbl-tile-gap">Surplus / Shortfall</span>
+        <div class="tile-value" id="tile-col-gap" style="color: var(--color-danger);">-$88,110</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-col-tile-gap-desc">Shortfall to resolve</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Rec. Monthly Contribution</span>
+        <div class="tile-value" id="tile-col-rec-monthly" style="color: var(--color-primary);">$648.97</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Required monthly saving</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initColCalculator() {
+    const currencySelect = document.getElementById('col-currency-select') as HTMLSelectElement;
+
+    // Inputs
+    const currentAgeInput = document.getElementById('col-current-age-input') as HTMLInputElement;
+    const currentAgeSlider = document.getElementById('col-current-age-slider') as HTMLInputElement;
+    const entranceAgeInput = document.getElementById('col-entrance-age-input') as HTMLInputElement;
+    const entranceAgeSlider = document.getElementById('col-entrance-age-slider') as HTMLInputElement;
+    const costInput = document.getElementById('col-cost-input') as HTMLInputElement;
+    const costSlider = document.getElementById('col-cost-slider') as HTMLInputElement;
+    const savingsInput = document.getElementById('col-savings-input') as HTMLInputElement;
+    const savingsSlider = document.getElementById('col-savings-slider') as HTMLInputElement;
+    const monthlyInput = document.getElementById('col-monthly-input') as HTMLInputElement;
+    const monthlySlider = document.getElementById('col-monthly-slider') as HTMLInputElement;
+    const returnInput = document.getElementById('col-return-input') as HTMLInputElement;
+    const returnSlider = document.getElementById('col-return-slider') as HTMLInputElement;
+    const inflationInput = document.getElementById('col-inflation-input') as HTMLInputElement;
+    const inflationSlider = document.getElementById('col-inflation-slider') as HTMLInputElement;
+
+    const ageError = document.getElementById('col-age-error') as HTMLDivElement;
+
+    if (!currentAgeInput || !currencySelect) return;
+
+    // Helper functions for sliders
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    // Bind inputs
+    bindSlider(currentAgeInput, currentAgeSlider, calculateAll);
+    bindSlider(entranceAgeInput, entranceAgeSlider, calculateAll);
+    bindSlider(costInput, costSlider, calculateAll);
+    bindSlider(savingsInput, savingsSlider, calculateAll);
+    bindSlider(monthlyInput, monthlySlider, calculateAll);
+    bindSlider(returnInput, returnSlider, calculateAll);
+    bindSlider(inflationInput, inflationSlider, calculateAll);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('col-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        currentAgeInput.value = '5';
+        currentAgeSlider.value = '5';
+        entranceAgeInput.value = '18';
+        entranceAgeSlider.value = '18';
+        costInput.value = '100000';
+        costSlider.value = '100000';
+        savingsInput.value = '10000';
+        savingsSlider.value = '10000';
+        monthlyInput.value = '300';
+        monthlySlider.value = '300';
+        returnInput.value = '7';
+        returnSlider.value = '7';
+        inflationInput.value = '5';
+        inflationSlider.value = '5';
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      const currentAge = parseInt(currentAgeInput.value) || 0;
+      const entranceAge = parseInt(entranceAgeInput.value) || 18;
+      
+      const currentCost = parseFloat(costInput.value) || 0;
+      const currentSavings = parseFloat(savingsInput.value) || 0;
+      const monthlyContribution = parseFloat(monthlyInput.value) || 0;
+      const annualReturn = parseFloat(returnInput.value) || 0;
+      const inflationRate = parseFloat(inflationInput.value) || 0;
+
+      let yearsToSave = entranceAge - currentAge;
+      let hasError = false;
+
+      if (yearsToSave <= 0) {
+        hasError = true;
+        if (ageError) ageError.classList.remove('hidden');
+      } else {
+        if (ageError) ageError.classList.add('hidden');
+      }
+
+      if (hasError) return;
+
+      const monthsToSave = yearsToSave * 12;
+
+      // 1. Calculate future inflated college cost
+      const futureCost = currentCost * Math.pow(1 + (inflationRate / 100), yearsToSave);
+
+      // 2. Compound growth on initial savings
+      const monthlyRate = annualReturn / 100 / 12;
+      let initialSavingsGrowth = 0;
+      let contributionsGrowth = 0;
+
+      if (monthlyRate === 0) {
+        initialSavingsGrowth = currentSavings;
+        contributionsGrowth = monthlyContribution * monthsToSave;
+      } else {
+        initialSavingsGrowth = currentSavings * Math.pow(1 + monthlyRate, monthsToSave);
+        contributionsGrowth = monthlyContribution * ((Math.pow(1 + monthlyRate, monthsToSave) - 1) / monthlyRate);
+      }
+
+      const totalProjectedSavings = initialSavingsGrowth + contributionsGrowth;
+
+      // 3. Gap Analysis (Surplus or Shortfall)
+      const gap = totalProjectedSavings - futureCost;
+      const progressPercent = Math.min(100, Math.max(0, (totalProjectedSavings / futureCost) * 100));
+
+      // 4. Recommended Monthly Savings
+      // Target to build using monthly payments = Future Cost - Initial savings growth
+      const targetRequired = futureCost - initialSavingsGrowth;
+      let recommendedMonthly = 0;
+
+      if (targetRequired <= 0) {
+        recommendedMonthly = 0;
+      } else {
+        if (monthlyRate === 0) {
+          recommendedMonthly = targetRequired / monthsToSave;
+        } else {
+          recommendedMonthly = targetRequired * (monthlyRate / (Math.pow(1 + monthlyRate, monthsToSave) - 1));
+        }
+      }
+
+      // DOM Updates
+      const resSavings = document.getElementById('res-col-savings');
+      const resFutureCost = document.getElementById('res-col-future-cost');
+      const lblFutureDesc = document.getElementById('lbl-col-future-desc');
+      const progressPercentLabel = document.getElementById('col-progress-percent');
+      const progressBar = document.getElementById('col-progress-bar');
+      const resVerdictText = document.getElementById('res-col-verdict-text');
+
+      const tileSavings = document.getElementById('tile-col-savings');
+      const tileFutureCost = document.getElementById('tile-col-future-cost');
+      const tileGap = document.getElementById('tile-col-gap');
+      const lblTileGapDesc = document.getElementById('lbl-col-tile-gap-desc');
+      const tileRecMonthly = document.getElementById('tile-col-rec-monthly');
+
+      if (resSavings) resSavings.textContent = formatCurrency(totalProjectedSavings);
+      if (resFutureCost) resFutureCost.textContent = formatCurrency(futureCost);
+      if (lblFutureDesc) lblFutureDesc.textContent = `Inflated over ${yearsToSave} ${yearsToSave === 1 ? 'year' : 'years'}`;
+      if (progressPercentLabel) progressPercentLabel.textContent = progressPercent.toFixed(2) + '%';
+      if (progressBar) progressBar.style.width = progressPercent.toFixed(2) + '%';
+
+      // Verdict card border changes color based on shortfall vs surplus
+      const verdictCard = document.getElementById('col-verdict-card');
+      const formattedGap = formatCurrency(Math.abs(gap));
+
+      if (gap >= 0) {
+        if (tileGap) tileGap.style.color = 'var(--color-success)';
+        if (lblTileGapDesc) lblTileGapDesc.textContent = 'Surplus accumulated';
+        if (verdictCard) verdictCard.style.borderLeftColor = 'var(--color-success)';
+        if (resVerdictText) {
+          resVerdictText.innerHTML = `Your child will enter college in <strong>${yearsToSave} years</strong>. The future college cost is estimated at <strong>${formatCurrency(futureCost)}</strong>. Your projected savings will reach <strong>${formatCurrency(totalProjectedSavings)}</strong>, giving you a surplus of <strong>${formattedGap}</strong>!`;
+        }
+      } else {
+        if (tileGap) tileGap.style.color = 'var(--color-danger)';
+        if (lblTileGapDesc) lblTileGapDesc.textContent = 'Shortfall to resolve';
+        if (verdictCard) verdictCard.style.borderLeftColor = 'var(--color-danger)';
+        if (resVerdictText) {
+          resVerdictText.innerHTML = `Your child will enter college in <strong>${yearsToSave} years</strong>. The future college cost is estimated at <strong>${formatCurrency(futureCost)}</strong>. Your projected savings will reach <strong>${formatCurrency(totalProjectedSavings)}</strong>, leaving a shortfall of <strong>${formattedGap}</strong>. To cover this gap, you should increase your monthly contribution to <strong>${formatCurrency(recommendedMonthly)}</strong>.`;
+        }
+      }
+
+      // Tiles
+      if (tileSavings) tileSavings.textContent = formatCurrency(totalProjectedSavings).split('.')[0];
+      if (tileFutureCost) tileFutureCost.textContent = formatCurrency(futureCost).split('.')[0];
+      if (tileGap) {
+        const sign = gap >= 0 ? '+' : '-';
+        tileGap.textContent = sign + formatCurrency(Math.abs(gap)).split('.')[0];
+      }
+      if (tileRecMonthly) tileRecMonthly.textContent = formatCurrency(recommendedMonthly);
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      const currentAge = currentAgeInput.value;
+      const entranceAge = entranceAgeInput.value;
+      const years = parseInt(entranceAge) - parseInt(currentAge);
+      const cost = costInput.value;
+      const currentSavings = savingsInput.value;
+      const monthly = monthlyInput.value;
+      const retRate = returnInput.value;
+      const infRate = inflationInput.value;
+
+      const report = `College Savings Estimation Report:\n` +
+                     `Child Current Age: ${currentAge} years | College Entrance: ${entranceAge} years (${years} years to save)\n` +
+                     `Current Cost: ${cost} | Initial Savings: ${currentSavings} | Monthly contribution: ${monthly}\n` +
+                     `Expected Return: ${retRate}% | Tuition Inflation: ${infRate}%\n` +
+                     `Projected Savings: ${document.getElementById('res-col-savings')?.textContent}\n` +
+                     `Future College Cost: ${document.getElementById('res-col-future-cost')?.textContent}\n` +
+                     `Goal Progress: ${document.getElementById('col-progress-percent')?.textContent}\n` +
+                     `Recommended Monthly Contribution: ${document.getElementById('tile-col-rec-monthly')?.textContent}\n` +
+                     `Diagnosis: ${document.getElementById('res-col-verdict-text')?.textContent}`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initColCalculator);
+  document.addEventListener('astro:after-swap', initColCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

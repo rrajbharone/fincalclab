@@ -1,0 +1,304 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DebtReductionPlannerCalculator from '../../components/calculator/DebtReductionPlannerCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Debt Reduction Planner Calculator', path: '/calculator/debt-reduction-planner-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the difference between the Debt Snowball and Debt Avalanche methods?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Debt Snowball method prioritizes paying off debts from the smallest balance to the largest balance, regardless of interest rates, to build psychological momentum through quick wins. The Debt Avalanche method prioritizes paying off debts from the highest interest rate to the lowest interest rate to minimize overall interest costs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which strategy saves the most money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mathematically, the Debt Avalanche method always saves the most money because it targets the highest interest rate debts first, minimizing the speed at which your balance accrues monthly interest. However, the Debt Snowball may lead to higher completion rates due to psychological motivation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does making extra payments accelerate debt freedom?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Any amount paid above the minimum monthly payment goes directly toward reducing the principal balance of your debt. Because interest is calculated as a percentage of your outstanding principal balance, reducing principal faster drastically reduces future monthly interest accruals, saving money and shortening the repayment timeline."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if my minimum payments exceed my monthly budget?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If your mandatory minimum payments exceed your net income, you face an unsustainable deficit. You should immediately contact your creditors to request hardship programs, consolidate high-interest debts into lower-interest loans, or seek credit counseling to restructure your liabilities."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I stay motivated during a multi-year debt payoff journey?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can sustain motivation by tracking your progress visually with charts, celebrating milestones (such as paying off an entire credit card account), automating your extra monthly payments, and using the Debt Snowball method to secure quick, motivating victories early in your journey."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Debt Reduction Planner Calculator - Compare Snowball & Avalanche"
+  description="Free online Debt Reduction Planner Calculator. Compare Debt Snowball vs. Avalanche strategies, model extra monthly payments, and project your payoff date."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <DebtReductionPlannerCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Debt Payoff Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Strategic Payoff: How We Reconciled Snowball vs. Avalanche on a $20,000 Portfolio</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a household that structured a payoff plan for a $15,000 credit card debt and a $5,000 medical bill. Compares payoff timelines for Snowball vs. Avalanche, and highlights how adding $200/month extra saved them $1,800 in interest and shaved 18 months off their payoff timeline.
+            </p>
+            <a href="/blog/debt-reduction-strategies-avalanche-snowball" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Budget Extra Payments & Reclaim Debt Freedom
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is Debt Reduction Planning?</h2>
+        <p>
+          Getting out of debt is rarely just about paying the minimums. Credit card balances, personal loans, and student debt carry compounding interest rates that make repayment slow and expensive if you only pay the required minimum amount.
+        </p>
+        <p>
+          A <strong>Debt Reduction Planner</strong> is a mathematical model that maps out exactly when you will be debt-free by prioritizing your balances and allocating extra monthly payments. Instead of paying a little extra to each creditor, a structured strategy focuses all extra cash on a single target account while maintaining minimum payments on the rest.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To create your personalized debt elimination plan:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results.
+          </li>
+          <li>
+            <strong>Choose Planning Mode:</strong>
+            <ul>
+              <li>
+                <strong>Single Debt:</strong> Select if you want to quickly analyze one primary credit card or loan account.
+              </li>
+              <li>
+                <strong>Multiple Debts Portfolio:</strong> Select to input up to 5 separate debts (with distinct balances, interest rates, and minimums) to compare strategies.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Configure Single Debt:</strong> (In Single Debt mode) Enter the balance, annual interest rate, minimum payment, and extra monthly cash.
+          </li>
+          <li>
+            <strong>Configure Debts Portfolio:</strong> (In Multiple Debts mode)
+            <ul>
+              <li>
+                Use the **Add Another Debt Account** button to input each liability.
+              </li>
+              <li>
+                Select your preferred payoff strategy: **Debt Snowball** (smallest balance first) or **Debt Avalanche** (highest interest rate first).
+              </li>
+              <li>
+                Set your **Extra Monthly Payment** (what you can pay in addition to the sum of your minimum payments).
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Analyze Repayment Metrics:</strong> The calculator instantly displays your months to payoff, total interest paid, total repayment, and savings (both interest saved and months shaved off your timeline compared to paying minimums only).
+          </li>
+          <li>
+            <strong>View Schedule:</strong> Review the month-by-month schedule at the bottom to see how your balance drops to zero over time.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Debt Elimination</h2>
+        <p>
+          The calculator simulates your repayment month-by-month using actual compounding amortization mathematics:
+        </p>
+        
+        <h3>1. Monthly Interest Accrual Formula</h3>
+        <p>
+          Let {"\\(B_{m-1}\\)"} represent the starting balance of a debt in month {"\\(m\\)"}, and {"\\(R_{annual}\\)"} represent the annual interest rate:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(I_m = B_{m-1} \\times \\frac{R_{annual}}{12 \\times 100}\\)"}
+        </p>
+        <p>
+          The new balance after interest is {"\\(B_{m-1} + I_m\\)"}.
+        </p>
+
+        <h3>2. Allocation of Total Monthly Budget</h3>
+        <p>
+          Under both methods, the calculator first applies the mandatory minimum payment to every active account:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(P_{d, min} = \\min(B_{d, m-1} + I_d, \\text{Minimum Payment}_d)\\)"}
+        </p>
+        <p>
+          Any leftover cash from your total monthly budget (including the extra payment and the minimums of any accounts that were fully paid off) is pooled together and applied to the highest-priority account:
+        </p>
+        <ul>
+          <li>
+            <strong>Debt Snowball Priority:</strong> Sorted by remaining balance {"\\(B_d\\)"} in ascending order.
+          </li>
+          <li>
+            <strong>Debt Avalanche Priority:</strong> Sorted by annual interest rate {"\\(R_d\\)"} in descending order.
+          </li>
+        </ul>
+
+        <h2>Comparing Payoff Strategies: Snowball vs. Avalanche</h2>
+        
+        <h3>1. The Debt Snowball (Smallest Balance First)</h3>
+        <p>
+          The primary benefit of the Debt Snowball is psychological. By focusing your extra budget on your smallest balance first, you eliminate entire accounts quickly. This yields quick wins, which reinforces behavioral motivation. 
+        </p>
+        <p>
+          However, because it ignores interest rates, you may continue accruing high interest on larger accounts, making it mathematically more expensive over time.
+        </p>
+
+        <h3>2. The Debt Avalanche (Highest Interest Rate First)</h3>
+        <p>
+          The primary benefit of the Debt Avalanche is mathematical efficiency. By targeting the debt with the highest interest rate first, you minimize overall interest costs. 
+        </p>
+        <p style="font-weight: 700;">
+          This method guarantees that you pay the absolute minimum amount of interest and finish repayment in the shortest possible timeframe.
+        </p>
+
+        <h2>5 Key Factors to Stay on Track</h2>
+        <ol>
+          <li>
+            <strong>Automate Payments:</strong> Set up automatic transfers for your minimum payments and your planned extra payment. Automation eliminates the temptation to spend the extra cash elsewhere.
+          </li>
+          <li>
+            <strong>Build a Mini Emergency Fund:</strong> Before throwing all your extra cash at debt, build a small buffer (e.g. $1,000 or one month of expenses) to handle unexpected car repairs or medical bills without having to swipe a credit card again.
+          </li>
+          <li>
+            <strong>Negotiate Interest Rates:</strong> Call your credit card issuers to request lower interest rates, or consolidate high-interest card debt into a lower-rate personal loan to lower your monthly interest accrual.
+          </li>
+          <li>
+            <strong>Avoid the "Minimum Payment Trap":</strong> Creditors set minimum payments extremely low (often just 1% to 2% of the balance plus interest) to keep you in debt for decades. Always pay more than the minimum.
+          </li>
+          <li>
+            <strong>Consolidate Freed-Up Cash:</strong> When a debt is paid off, do not spend that money. Roll its entire former minimum payment and extra payment into the next target debt on your list (the "snowball" effect).
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Debt Reduction FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between the Debt Snowball and Debt Avalanche methods?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The Debt Snowball method prioritizes paying off debts from the smallest balance to the largest balance, regardless of interest rates, to build psychological momentum through quick wins. The Debt Avalanche method prioritizes paying off debts from the highest interest rate to the lowest interest rate to minimize overall interest costs.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Which strategy saves the most money?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Mathematically, the Debt Avalanche method always saves the most money because it targets the highest interest rate debts first, minimizing the speed at which your balance accrues monthly interest. However, the Debt Snowball may lead to higher completion rates due to psychological motivation.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does making extra payments accelerate debt freedom?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Any amount paid above the minimum monthly payment goes directly toward reducing the principal balance of your debt. Because interest is calculated as a percentage of your outstanding principal balance, reducing principal faster drastically reduces future monthly interest accruals, saving money and shortening the repayment timeline.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What happens if my minimum payments exceed my monthly budget?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              If your mandatory minimum payments exceed your net income, you face an unsustainable deficit. You should immediately contact your creditors to request hardship programs, consolidate high-interest debts into lower-interest loans, or seek credit counseling to restructure your liabilities.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How can I stay motivated during a multi-year debt payoff journey?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              You can sustain motivation by tracking your progress visually with charts, celebrating milestones (such as paying off an entire credit card account), automating your extra monthly payments, and using the Debt Snowball method to secure quick, motivating victories early in your journey.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

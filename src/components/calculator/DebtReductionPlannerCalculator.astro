@@ -1,0 +1,929 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Debt Reduction Planner Calculator"
+  description="Plan your path to debt freedom. Compare Debt Snowball vs. Debt Avalanche priorities, model extra payments, and map out your dynamic amortization payoff schedule."
+  category="Finance"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="debt-reduction-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dr-currency-select">Currency</label>
+          <select id="dr-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Planning Mode Selector -->
+      <div class="input-group">
+        <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base); margin-bottom: 2px;">Calculator Planning Mode</label>
+        <div class="mode-segment-container" style="display: flex; background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px; gap: 4px;">
+          <button type="button" id="btn-dr-mode-single" class="segment-btn active" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Single Debt</button>
+          <button type="button" id="btn-dr-mode-multi" class="segment-btn" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Multiple Debts Portfolio</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2A: Single Debt Input Wrapper -->
+    <div id="dr-single-inputs-wrapper" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Debt Details</h3>
+      
+      <!-- Total Debt Balance -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dr-single-balance-input">Total Debt Balance</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="dr-single-balance-input" min="500" step="500" value="10000" aria-label="Total Debt Balance" />
+          </div>
+        </div>
+        <input type="range" id="dr-single-balance-slider" min="500" max="100000" step="500" value="10000" class="slider-range" aria-label="Total Debt Balance Slider" />
+      </div>
+
+      <!-- Annual Interest Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dr-single-rate-input">Annual Interest Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="dr-single-rate-input" min="0" max="30" step="0.1" value="15" aria-label="Annual Interest Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="dr-single-rate-slider" min="0" max="30" step="0.25" value="15" class="slider-range" aria-label="Annual Interest Rate Slider" />
+      </div>
+
+      <!-- Minimum Monthly Payment -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dr-single-min-input">Minimum Monthly Payment</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="dr-single-min-input" min="10" step="10" value="200" aria-label="Minimum Monthly Payment" />
+          </div>
+        </div>
+        <input type="range" id="dr-single-min-slider" min="50" max="3000" step="10" value="200" class="slider-range" aria-label="Minimum Payment Slider" />
+      </div>
+
+      <!-- Extra Monthly Payment -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dr-single-extra-input">Extra Monthly Payment</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="dr-single-extra-input" min="0" step="10" value="100" aria-label="Extra Monthly Payment" />
+          </div>
+        </div>
+        <input type="range" id="dr-single-extra-slider" min="0" max="3000" step="10" value="100" class="slider-range" aria-label="Extra Payment Slider" />
+      </div>
+    </div>
+
+    <!-- Step 2B: Multiple Debts Input Wrapper (Hidden initially) -->
+    <div id="dr-multi-inputs-wrapper" class="hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Debt Portfolio</h3>
+      
+      <!-- Debts Dynamic Container -->
+      <div id="dr-debts-list-container" style="display: flex; flex-direction: column; gap: var(--space-3);">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Add Debt button -->
+      <Button type="button" id="btn-dr-add-debt" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Add Another Debt Account
+      </Button>
+
+      <!-- Payoff Strategy -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dr-multi-strategy-select">Payoff Prioritization Strategy</label>
+          <select id="dr-multi-strategy-select" class="currency-select" aria-label="Select Payoff Strategy" style="max-width: 100%;">
+            <option value="snowball" selected>Debt Snowball (Smallest Balance First)</option>
+            <option value="avalanche">Debt Avalanche (Highest Interest Rate First)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Extra Monthly Budget -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="dr-multi-extra-input">Extra Monthly Payment</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="dr-multi-extra-input" min="0" step="50" value="200" aria-label="Extra Monthly Payment Portfolio" />
+          </div>
+        </div>
+        <input type="range" id="dr-multi-extra-slider" min="0" max="3000" step="50" value="200" class="slider-range" aria-label="Extra Payment Portfolio Slider" />
+      </div>
+    </div>
+
+    <!-- Math Surcharges / Infinite warning block -->
+    <div id="dr-warning-box" class="hidden" style="color: var(--color-danger); font-size: 0.85rem; font-weight: 700; border-left: 3px solid var(--color-danger); padding-left: 8px; margin-top: var(--space-4);">
+      Warning: Your total monthly payments are lower than the interest charged. The debt balance will grow infinitely. Please increase payments.
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="dr-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Repayment plan summary</h3>
+
+    <!-- Primary Cost Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Time to Debt-Free</span>
+        <div id="res-dr-time" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">40 months</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-dr-time-desc">3.3 years with extra budget</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Total Interest Paid</span>
+        <div id="res-dr-interest" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$2,100.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Interest cost during payoff</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="dr-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Savings Diagnosis</span>
+        <p id="res-dr-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Adding extra monthly payments will save you <strong>$1,500.00</strong> in interest and shave <strong>26 months</strong> off your debt payoff timeline compared to minimums only.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Repayment Metrics</h4>
+    <div class="results-grid dr-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Total Repayment</span>
+        <div class="tile-value" id="tile-dr-repayment" style="color: var(--color-success);">$12,100</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Principal + interest</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Interest Saved</span>
+        <div class="tile-value" id="tile-dr-interest-saved" style="color: var(--color-primary);">$1,500</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Money saved using extra</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Payoff Time Saved</span>
+        <div class="tile-value" id="tile-dr-time-saved" style="color: var(--color-primary);">26 months</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Months shaved off</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Payoff Date</span>
+        <div class="tile-value" id="tile-dr-date" style="color: var(--color-success);">Nov 2029</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Projected completion date</span>
+      </div>
+    </div>
+
+    <!-- Amortization Schedule Table -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Month-by-Month Payoff Schedule</h4>
+    <div class="dr-table-wrapper" style="width: 100%; overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-base); max-height: 380px; overflow-y: auto;">
+      <table id="dr-schedule-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem; min-width: 500px;">
+        <thead style="position: sticky; top: 0; background: var(--color-bg-surface); z-index: 1;">
+          <tr style="border-bottom: 2px solid var(--color-border);">
+            <th style="padding: var(--space-2) var(--space-3); font-weight: 700; color: var(--color-text-base);">Month</th>
+            <th style="padding: var(--space-2) var(--space-3); font-weight: 700; text-align: right; color: var(--color-text-base);">Start Balance</th>
+            <th style="padding: var(--space-2) var(--space-3); font-weight: 700; text-align: right; color: var(--color-text-base);">Interest Added</th>
+            <th style="padding: var(--space-2) var(--space-3); font-weight: 700; text-align: right; color: var(--color-text-base);">Payment Made</th>
+            <th style="padding: var(--space-2) var(--space-3); font-weight: 700; text-align: right; color: var(--color-text-base);">End Balance</th>
+          </tr>
+        </thead>
+        <tbody id="dr-schedule-body">
+          <!-- Injected via JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Initial Debts Portfolio
+  let userDebts = [
+    { name: 'Credit Card', balance: 5000, rate: 18, min: 150 },
+    { name: 'Medical Bill', balance: 2000, rate: 5, min: 50 }
+  ];
+
+  function initDrCalculator() {
+    const currencySelect = document.getElementById('dr-currency-select') as HTMLSelectElement;
+
+    // Mode Selector Buttons
+    const btnSingleMode = document.getElementById('btn-dr-mode-single') as HTMLButtonElement;
+    const btnMultiMode = document.getElementById('btn-dr-mode-multi') as HTMLButtonElement;
+
+    // Mode containers
+    const singleWrapper = document.getElementById('dr-single-inputs-wrapper') as HTMLDivElement;
+    const multiWrapper = document.getElementById('dr-multi-inputs-wrapper') as HTMLDivElement;
+
+    // Single mode inputs
+    const balanceInput = document.getElementById('dr-single-balance-input') as HTMLInputElement;
+    const balanceSlider = document.getElementById('dr-single-balance-slider') as HTMLInputElement;
+    const rateInput = document.getElementById('dr-single-rate-input') as HTMLInputElement;
+    const rateSlider = document.getElementById('dr-single-rate-slider') as HTMLInputElement;
+    const minInput = document.getElementById('dr-single-min-input') as HTMLInputElement;
+    const minSlider = document.getElementById('dr-single-min-slider') as HTMLInputElement;
+    const extraInput = document.getElementById('dr-single-extra-input') as HTMLInputElement;
+    const extraSlider = document.getElementById('dr-single-extra-slider') as HTMLInputElement;
+
+    // Multi mode inputs
+    const multiExtraInput = document.getElementById('dr-multi-extra-input') as HTMLInputElement;
+    const multiExtraSlider = document.getElementById('dr-multi-extra-slider') as HTMLInputElement;
+    const strategySelect = document.getElementById('dr-multi-strategy-select') as HTMLSelectElement;
+    const btnAddDebt = document.getElementById('btn-dr-add-debt') as HTMLButtonElement;
+
+    // Global selector triggers
+    const warningBox = document.getElementById('dr-warning-box');
+
+    let currentMode: 'single' | 'multi' = 'single';
+
+    if (!balanceInput || !btnSingleMode) return;
+
+    // Toggle logic helper
+    function updateSegmentColors(activeBtn: HTMLButtonElement, otherBtn: HTMLButtonElement) {
+      activeBtn.style.background = 'var(--color-primary)';
+      activeBtn.style.color = 'var(--color-bg-base)';
+      otherBtn.style.background = 'transparent';
+      otherBtn.style.color = 'var(--color-text-base)';
+    }
+
+    btnSingleMode.addEventListener('click', () => {
+      currentMode = 'single';
+      btnSingleMode.classList.add('active');
+      btnMultiMode.classList.remove('active');
+      updateSegmentColors(btnSingleMode, btnMultiMode);
+      singleWrapper.classList.remove('hidden');
+      multiWrapper.classList.add('hidden');
+      calculateAll();
+    });
+
+    btnMultiMode.addEventListener('click', () => {
+      currentMode = 'multi';
+      btnMultiMode.classList.add('active');
+      btnSingleMode.classList.remove('active');
+      updateSegmentColors(btnMultiMode, btnSingleMode);
+      singleWrapper.classList.add('hidden');
+      multiWrapper.classList.remove('hidden');
+      renderDebtsList();
+      calculateAll();
+    });
+
+    // Style segment controller initially
+    updateSegmentColors(btnSingleMode, btnMultiMode);
+
+    // Bind Quick Single Debt
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    bindSlider(balanceInput, balanceSlider, calculateAll);
+    bindSlider(rateInput, rateSlider, calculateAll);
+    bindSlider(minInput, minSlider, calculateAll);
+    bindSlider(extraInput, extraSlider, calculateAll);
+
+    // Bind Multi Extra
+    bindSlider(multiExtraInput, multiExtraSlider, calculateAll);
+    strategySelect.addEventListener('change', calculateAll);
+
+    // Add Debt Button
+    btnAddDebt.addEventListener('click', () => {
+      if (userDebts.length >= 5) return;
+      userDebts.push({
+        name: `Debt #${userDebts.length + 1}`,
+        balance: 3000,
+        rate: 12,
+        min: 80
+      });
+      renderDebtsList();
+      calculateAll();
+    });
+
+    // Dynamic rendering of Debts List
+    function renderDebtsList() {
+      const container = document.getElementById('dr-debts-list-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      userDebts.forEach((debt, index) => {
+        const row = document.createElement('div');
+        row.className = 'debt-row';
+        row.style.display = 'flex';
+        row.style.flexDirection = 'column';
+        row.style.gap = 'var(--space-2)';
+        row.style.border = '1px solid var(--color-border)';
+        row.style.borderRadius = 'var(--radius-md)';
+        row.style.padding = 'var(--space-3)';
+        row.style.position = 'relative';
+
+        row.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted);">Debt #${index + 1} Account</span>
+            ${userDebts.length > 1 ? `<button type="button" class="btn-delete-debt" data-index="${index}" style="background: transparent; border: none; color: var(--color-danger); cursor: pointer; font-size: 0.72rem; font-weight: 700;">Remove</button>` : ''}
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-2); width: 100%;">
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Account Name</label>
+              <input type="text" class="debt-name-input" data-index="${index}" value="${debt.name}" style="width: 100%; box-sizing: border-box; height:32px; padding:0 8px; border:1px solid var(--color-border); border-radius:var(--radius-sm); font-size:0.82rem; font-weight:600; background:var(--color-bg-surface); color:var(--color-text-base);" />
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Balance</label>
+              <input type="number" class="debt-balance-input" data-index="${index}" value="${debt.balance}" style="width: 100%; box-sizing: border-box; height:32px; padding:0 8px; border:1px solid var(--color-border); border-radius:var(--radius-sm); font-size:0.82rem; font-weight:600; background:var(--color-bg-surface); color:var(--color-text-base);" />
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); width: 100%;">
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Interest Rate (%)</label>
+              <input type="number" step="0.1" class="debt-rate-input" data-index="${index}" value="${debt.rate}" style="width: 100%; box-sizing: border-box; height:32px; padding:0 8px; border:1px solid var(--color-border); border-radius:var(--radius-sm); font-size:0.82rem; font-weight:600; background:var(--color-bg-surface); color:var(--color-text-base);" />
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Min Monthly Payment</label>
+              <input type="number" class="debt-min-input" data-index="${index}" value="${debt.min}" style="width: 100%; box-sizing: border-box; height:32px; padding:0 8px; border:1px solid var(--color-border); border-radius:var(--radius-sm); font-size:0.82rem; font-weight:600; background:var(--color-bg-surface); color:var(--color-text-base);" />
+            </div>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+
+      // Attach dynamic listeners
+      document.querySelectorAll('.debt-name-input').forEach(el => {
+        el.addEventListener('input', (e) => {
+          const idx = parseInt((e.target as HTMLInputElement).dataset.index || '0');
+          userDebts[idx].name = (e.target as HTMLInputElement).value;
+        });
+      });
+
+      document.querySelectorAll('.debt-balance-input').forEach(el => {
+        el.addEventListener('input', (e) => {
+          const idx = parseInt((e.target as HTMLInputElement).dataset.index || '0');
+          userDebts[idx].balance = parseFloat((e.target as HTMLInputElement).value) || 0;
+          calculateAll();
+        });
+      });
+
+      document.querySelectorAll('.debt-rate-input').forEach(el => {
+        el.addEventListener('input', (e) => {
+          const idx = parseInt((e.target as HTMLInputElement).dataset.index || '0');
+          userDebts[idx].rate = parseFloat((e.target as HTMLInputElement).value) || 0;
+          calculateAll();
+        });
+      });
+
+      document.querySelectorAll('.debt-min-input').forEach(el => {
+        el.addEventListener('input', (e) => {
+          const idx = parseInt((e.target as HTMLInputElement).dataset.index || '0');
+          userDebts[idx].min = parseFloat((e.target as HTMLInputElement).value) || 0;
+          calculateAll();
+        });
+      });
+
+      document.querySelectorAll('.btn-delete-debt').forEach(el => {
+        el.addEventListener('click', (e) => {
+          const idx = parseInt((e.target as HTMLButtonElement).dataset.index || '0');
+          userDebts.splice(idx, 1);
+          renderDebtsList();
+          calculateAll();
+        });
+      });
+    }
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('dr-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        // Reset single
+        balanceInput.value = '10000';
+        balanceSlider.value = '10000';
+        rateInput.value = '15';
+        rateSlider.value = '15';
+        minInput.value = '200';
+        minSlider.value = '200';
+        extraInput.value = '100';
+        extraSlider.value = '100';
+
+        // Reset multi
+        userDebts = [
+          { name: 'Credit Card', balance: 5000, rate: 18, min: 150 },
+          { name: 'Medical Bill', balance: 2000, rate: 5, min: 50 }
+        ];
+        multiExtraInput.value = '200';
+        multiExtraSlider.value = '200';
+        strategySelect.value = 'snowball';
+
+        currentMode = 'single';
+        btnSingleMode.classList.add('active');
+        btnMultiMode.classList.remove('active');
+        updateSegmentColors(btnSingleMode, btnMultiMode);
+        singleWrapper.classList.remove('hidden');
+        multiWrapper.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function simulatePayoff(debts: any[], extraMonthly: number, strategy: string) {
+      // Deep clone to prevent mutating original array
+      let activeDebts = debts.map(d => ({
+        name: d.name,
+        balance: d.balance,
+        rate: d.rate,
+        min: d.min,
+        currentBalance: d.balance,
+        interestPaid: 0
+      }));
+
+      let months = 0;
+      let totalInterest = 0;
+      let schedule = [];
+      let totalPayments = 0;
+      let isInfinite = false;
+
+      while (activeDebts.some(d => d.currentBalance > 0)) {
+        months++;
+        if (months > 360) {
+          isInfinite = true;
+          break;
+        }
+
+        let monthStartBalance = activeDebts.reduce((sum, d) => sum + d.currentBalance, 0);
+        let monthInterestAdded = 0;
+        let monthPaymentsMade = 0;
+
+        // 1. Calculate and add monthly interest to active debts
+        activeDebts.forEach(d => {
+          if (d.currentBalance > 0) {
+            const interest = d.currentBalance * (d.rate / 100 / 12);
+            d.currentBalance += interest;
+            d.interestPaid += interest;
+            monthInterestAdded += interest;
+            totalInterest += interest;
+          }
+        });
+
+        // Infinite loop detection
+        if (monthInterestAdded >= (activeDebts.reduce((sum, d) => sum + d.min, 0) + extraMonthly)) {
+          isInfinite = true;
+          break;
+        }
+
+        // 2. Pay minimums first
+        let leftoverExtraPot = extraMonthly;
+        activeDebts.forEach(d => {
+          if (d.currentBalance > 0) {
+            const minPay = Math.min(d.currentBalance, d.min);
+            d.currentBalance -= minPay;
+            monthPaymentsMade += minPay;
+            totalPayments += minPay;
+
+            if (minPay < d.min) {
+              // Remaining minimum budget is added to our extra payment pot
+              leftoverExtraPot += (d.min - minPay);
+            }
+          } else {
+            // Debt already paid off, so its full minimum goes to the extra pot
+            leftoverExtraPot += d.min;
+          }
+        });
+
+        // 3. Apply extra pot according to priority strategy
+        if (leftoverExtraPot > 0 && activeDebts.some(d => d.currentBalance > 0)) {
+          // Sort active debts
+          let sorted = [...activeDebts].filter(d => d.currentBalance > 0);
+          if (strategy === 'snowball') {
+            // Smallest balance first
+            sorted.sort((a, b) => a.currentBalance - b.currentBalance);
+          } else if (strategy === 'avalanche') {
+            // Highest interest rate first
+            sorted.sort((a, b) => b.rate - a.rate);
+          }
+
+          // Apply to highest priority active debt
+          for (let d of sorted) {
+            if (leftoverExtraPot <= 0) break;
+            const originalDebt = activeDebts.find(od => od.name === d.name);
+            if (originalDebt) {
+              const extraPay = Math.min(originalDebt.currentBalance, leftoverExtraPot);
+              originalDebt.currentBalance -= extraPay;
+              leftoverExtraPot -= extraPay;
+              monthPaymentsMade += extraPay;
+              totalPayments += extraPay;
+            }
+          }
+        }
+
+        let monthEndBalance = activeDebts.reduce((sum, d) => sum + d.currentBalance, 0);
+
+        schedule.push({
+          month: months,
+          start: monthStartBalance,
+          interest: monthInterestAdded,
+          payment: monthPaymentsMade,
+          end: monthEndBalance
+        });
+      }
+
+      return {
+        months,
+        totalInterest,
+        totalPayments,
+        schedule,
+        isInfinite
+      };
+    }
+
+    function calculateAll() {
+      let debtsToSimulate = [];
+      let extra = 0;
+      let strategy = 'snowball';
+
+      if (currentMode === 'single') {
+        const balance = parseFloat(balanceInput.value) || 0;
+        const rate = parseFloat(rateInput.value) || 0;
+        const minPay = parseFloat(minInput.value) || 0;
+        extra = parseFloat(extraInput.value) || 0;
+
+        debtsToSimulate = [{ name: 'Single Debt', balance, rate, min: minPay }];
+        strategy = 'avalanche'; // doesn't matter for single debt
+      } else {
+        debtsToSimulate = userDebts.map(d => ({ ...d }));
+        extra = parseFloat(multiExtraInput.value) || 0;
+        strategy = strategySelect.value;
+      }
+
+      // Run simulation with Extra
+      const result = simulatePayoff(debtsToSimulate, extra, strategy);
+      // Run baseline with NO extra payments
+      const baseline = simulatePayoff(debtsToSimulate, 0, 'minimums-only');
+
+      if (result.isInfinite) {
+        if (warningBox) warningBox.classList.remove('hidden');
+        return;
+      } else {
+        if (warningBox) warningBox.classList.add('hidden');
+      }
+
+      // 1. DOM Primary Updates
+      const resTime = document.getElementById('res-dr-time');
+      const lblTimeDesc = document.getElementById('lbl-dr-time-desc');
+      const resInterest = document.getElementById('res-dr-interest');
+      const resVerdictText = document.getElementById('res-dr-verdict-text');
+
+      if (resTime) {
+        resTime.textContent = `${result.schedule.length} months`;
+      }
+      if (lblTimeDesc) {
+        const years = (result.schedule.length / 12).toFixed(1);
+        lblTimeDesc.textContent = `${years} years with extra budget`;
+      }
+      if (resInterest) {
+        resInterest.textContent = formatCurrency(result.totalInterest);
+      }
+
+      // 2. Savings and metrics updates
+      const totalRepay = result.totalPayments;
+      const interestSaved = Math.max(0, baseline.totalInterest - result.totalInterest);
+      const timeSaved = Math.max(0, baseline.schedule.length - result.schedule.length);
+
+      const tileRepayment = document.getElementById('tile-dr-repayment');
+      const tileInterestSaved = document.getElementById('tile-dr-interest-saved');
+      const tileTimeSaved = document.getElementById('tile-dr-time-saved');
+      const tilePayoffDate = document.getElementById('tile-dr-date');
+
+      if (tileRepayment) tileRepayment.textContent = formatCurrency(totalRepay).split('.')[0];
+      if (tileInterestSaved) tileInterestSaved.textContent = formatCurrency(interestSaved).split('.')[0];
+      if (tileTimeSaved) tileTimeSaved.textContent = `${timeSaved} months`;
+
+      // Project date
+      const date = new Date();
+      date.setMonth(date.getMonth() + result.schedule.length);
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      if (tilePayoffDate) {
+        tilePayoffDate.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+      }
+
+      if (resVerdictText) {
+        resVerdictText.innerHTML = `Adding extra monthly payments will save you <strong>${formatCurrency(interestSaved)}</strong> in interest and shave <strong>${timeSaved} months</strong> off your debt payoff timeline compared to minimums only.`;
+      }
+
+      // 3. Render Month-by-Month Schedule
+      const scheduleBody = document.getElementById('dr-schedule-body');
+      if (scheduleBody) {
+        scheduleBody.innerHTML = '';
+        result.schedule.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid var(--color-border)';
+          tr.innerHTML = `
+            <td style="padding: var(--space-2) var(--space-3); font-weight: 600; color: var(--color-text-muted);">Month ${row.month}</td>
+            <td style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-text-base); font-weight: 600;">${formatCurrency(row.start)}</td>
+            <td style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-text-base); font-weight: 600;">${formatCurrency(row.interest)}</td>
+            <td style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-text-base); font-weight: 600;">${formatCurrency(row.payment)}</td>
+            <td style="padding: var(--space-2) var(--space-3); text-align: right; color: var(--color-text-base); font-weight: 600;">${formatCurrency(row.end)}</td>
+          `;
+          scheduleBody.appendChild(tr);
+        });
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      const modeText = currentMode === 'single' ? 'Single Debt Mode' : 'Multiple Debts Portfolio Mode';
+      const strategyText = currentMode === 'single' ? 'Avalanche (Direct Pay)' : strategySelect.options[strategySelect.selectedIndex].text;
+      const extraBudgetVal = currentMode === 'single' ? extraInput.value : multiExtraInput.value;
+
+      const report = `Debt Reduction Repayment Report:\n` +
+                     `Planning Mode: ${modeText} | Strategy: ${strategyText}\n` +
+                     `Extra Monthly Payment: ${extraBudgetVal}\n` +
+                     `Estimated Time to Debt-Free: ${document.getElementById('res-dr-time')?.textContent} (${document.getElementById('lbl-dr-time-desc')?.textContent})\n` +
+                     `Total Interest Paid: ${document.getElementById('res-dr-interest')?.textContent}\n` +
+                     `Total Repayment: ${document.getElementById('tile-dr-repayment')?.textContent}\n` +
+                     `Interest Saved: ${document.getElementById('tile-dr-interest-saved')?.textContent}\n` +
+                     `Payoff Time Saved: ${document.getElementById('tile-dr-time-saved')?.textContent}\n` +
+                     `Projected Payoff Completion: ${document.getElementById('tile-dr-date')?.textContent}\n` +
+                     `Diagnosis: ${document.getElementById('res-dr-verdict-text')?.textContent}`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initDrCalculator);
+  document.addEventListener('astro:after-swap', initDrCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .segment-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base);
+  }
+
+  .segment-btn:not(.active) {
+    color: var(--color-text-base);
+  }
+
+  .segment-btn:not(.active):hover {
+    background-color: var(--color-border);
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

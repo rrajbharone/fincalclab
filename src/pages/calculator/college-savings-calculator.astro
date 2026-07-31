@@ -1,0 +1,307 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CollegeSavingsCalculator from '../../components/calculator/CollegeSavingsCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'College Savings Calculator', path: '/calculator/college-savings-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the main purpose of having a college savings calculator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The main purpose of a college savings calculator is to help parents estimate the future inflated cost of tuition and fees, project the compound growth of their current savings and monthly contributions, identify any savings shortfalls, and determine the exact monthly savings rate required to cover the gap before their child turns 18."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does inflation impact future college tuition costs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Historically, college tuition costs rise at an annual rate of 4% to 6%, which is significantly higher than standard consumer price inflation. This means that a college education costing $100,000 today could easily exceed $180,000 in 13 years, making inflation calculations a critical component of educational planning."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a 529 plan and how does it help with college savings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A 529 plan is a tax-advantaged investment account designed to encourage saving for future higher education expenses. Contributions grow tax-deferred, and withdrawals are 100% tax-free at the federal (and usually state) level when used to pay for qualified educational expenses like tuition, fees, books, and room & board."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much should I save for college per month?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The amount you need to save per month depends on your child's current age, your initial savings balance, your investment return rate, and the type of college targeted. For a toddler, saving $300 to $600 per month is often recommended to build a substantial fund, whereas starting later for a teenager may require $1,000+ per month."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I have a savings shortfall when my child turns 18?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you experience a savings shortfall, you can bridge the educational funding gap through a combination of student loans, parent PLUS loans, academic and athletic scholarships, work-study programs, or by choosing lower-cost alternatives like in-state community colleges for the first two years."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="College Savings Calculator - Project Future Tuition & Growth"
+  description="Free online College Savings Calculator. Estimate future inflated tuition costs, projected compound savings, savings shortfalls, and recommended monthly contributions."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <CollegeSavingsCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured College Savings Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Educational Amortization: How We Planned College Funding for Our 5-Year-Old</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of parents who planned college savings for their 5-year-old child—discovering how inflating a $100,000 current college cost at 5% yields a future cost of $188,564, saving $300/month at 7% return grows to $100,454, and reconciling a shortfall of $88,110 by adjusting monthly savings to $648.
+            </p>
+            <a href="/blog/college-savings-calculator-planning" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Model College Savings Growth & Neutralize Tuition Inflation
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is College Savings Planning?</h2>
+        <p>
+          Planning for a child's college education is one of the most significant long-term financial commitments a family can make. Higher education costs have historically risen at a rate of <strong>4% to 6% annually</strong>, which is nearly double the rate of general consumer price inflation. 
+        </p>
+        <p>
+          Because tuition fees rise so quickly, simply saving cash in a traditional bank account is insufficient. To stay ahead of tuition inflation, parents must leverage compound interest by investing in tax-advantaged vehicles like 529 plans, projecting savings timelines, and calculating recommended monthly savings targets.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your projected college fund and determine if you are saving enough:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results.
+          </li>
+          <li>
+            <strong>Input Child's Ages:</strong> Enter your child's current age and their expected college entrance age (standard is 18). The calculator computes the exact number of years and months available to save.
+          </li>
+          <li>
+            <strong>Enter Costs & Savings:</strong>
+            <ul>
+              <li>
+                <strong>Current Total Cost:</strong> Enter what a 4-year degree at your target university costs today (e.g., $100,000 for in-state public, or $250,000 for private).
+              </li>
+              <li>
+                <strong>Current Savings Balance:</strong> Enter what you have set aside for college so far.
+              </li>
+              <li>
+                <strong>Monthly Contribution:</strong> Enter your planned monthly savings rate.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Set Growth Rates:</strong>
+            <ul>
+              <li>
+                <strong>Expected Annual Return:</strong> The average yearly interest rate you expect to earn on your investments (typically 5% to 8% for diversified portfolios).
+              </li>
+              <li>
+                <strong>Annual Tuition Inflation:</strong> The rate at which college costs are expected to rise annually (average is 5%).
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Review Projections:</strong> The calculator outputs your projected savings at entrance, the future inflated college cost, your shortfall or surplus, a progress bar, and the exact recommended monthly contribution needed to eliminate the shortfall.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of College Cost & Growth</h2>
+        <p>
+          The calculator applies standard compound interest and future value equations:
+        </p>
+        
+        <h3>1. Future Inflated College Cost Formula</h3>
+        <p>
+          Let {"\\(C_{curr}\\)"} represent current total college cost, {"\\(i\\)"} represent the annual tuition inflation rate, and {"\\(Y\\)"} represent years to save:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(FC = C_{curr} \\times (1 + \\frac{i}{100})^Y\\)"}
+        </p>
+
+        <h3>2. Projected Savings Formula (Compounded Monthly)</h3>
+        <p>
+          Let {"\\(P\\)"} represent initial savings, {"\\(PMT\\)"} represent monthly contribution, {"\\(r\\)"} represent the monthly return rate (annual return / 12), and {"\\(N\\)"} represent months to save (years × 12):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(FV_{total} = P(1 + r)^N + PMT \\times \\frac{(1 + r)^N - 1}{r}\\)"}
+        </p>
+
+        <h3>3. Recommended Monthly Savings Formula</h3>
+        <p>
+          To find the required monthly payment to fully cover the future cost gap:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(PMT_{req} = (FC - P(1 + r)^N) \\times \\frac{r}{(1 + r)^N - 1}\\)"}
+        </p>
+
+        <h2>Real-World Calculation Example</h2>
+        <p>
+          Suppose you start saving for a 5-year-old child who will enter college at age 18 (13 years to save):
+        </p>
+        <ul>
+          <li>
+            <strong>Current Total Cost:</strong> $100,000
+          </li>
+          <li>
+            <strong>Future Inflated Cost (5% inflation):</strong> $188,564.91
+          </li>
+          <li>
+            <strong>Current Savings:</strong> $10,000
+          </li>
+          <li>
+            <strong>Planned Monthly Payment:</strong> $300
+          </li>
+          <li>
+            <strong>Expected Annual Return:</strong> 7% (compounded monthly)
+          </li>
+        </ul>
+        <p>
+          Reconciling these numbers:
+        </p>
+        <ol>
+          <li>
+            <strong>Projected Savings at Age 18:</strong> **$100,454.62** (Initial savings grows to $24,725.17, contributions grow to $75,729.45).
+          </li>
+          <li>
+            <strong>Savings Shortfall:</strong> **$88,110.29** ($188,564.91 cost minus $100,454.62 savings).
+          </li>
+          <li>
+            <strong>Recommended Monthly Savings:</strong> **$648.97** per month to fully cover the gap.
+          </li>
+        </ol>
+
+        <h2>3 Highly Effective College Saving Strategies</h2>
+        <ol>
+          <li>
+            <strong>529 College Savings Plans:</strong> These state-sponsored plans are the most popular educational investment vehicles. Contributions are made with post-tax dollars, but all earnings grow tax-free, and withdrawals are tax-free when used for qualified higher education costs (tuition, fees, room, books).
+          </li>
+          <li>
+            <strong>Prepaid Tuition Plans:</strong> Offered by some states and university coalitions, these plans allow you to lock in current tuition rates by purchasing tuition credits in advance, shielding your budget from future tuition inflation.
+          </li>
+          <li>
+            <strong>UGMA / UTMA Custodial Accounts:</strong> Assets are held in the child's name under a custodian. While these accounts offer tax benefits for initial investment growth, they count heavily against the child's eligibility for federal financial aid.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">College Savings FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the main purpose of having a college savings calculator?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The main purpose of a college savings calculator is to help parents estimate the future inflated cost of tuition and fees, project the compound growth of their current savings and monthly contributions, identify any savings shortfalls, and determine the exact monthly savings rate required to cover the gap before their child turns 18.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does inflation impact future college tuition costs?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Historically, college tuition costs rise at an annual rate of 4% to 6%, which is significantly higher than standard consumer price inflation. This means that a college education costing $100,000 today could easily exceed $180,000 in 13 years, making inflation calculations a critical component of educational planning.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a 529 plan and how does it help with college savings?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A 529 plan is a tax-advantaged investment account designed to encourage saving for future higher education expenses. Contributions grow tax-deferred, and withdrawals are 100% tax-free at the federal (and usually state) level when used to pay for qualified educational expenses like tuition, fees, books, and room & board.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How much should I save for college per month?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The amount you need to save per month depends on your child's current age, your initial savings balance, your investment return rate, and the type of college targeted. For a toddler, saving $300 to $600 per month is often recommended to build a substantial fund, whereas starting later for a teenager may require $1,000+ per month.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What happens if I have a savings shortfall when my child turns 18?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              If you experience a savings shortfall, you can bridge the educational funding gap through a combination of student loans, parent PLUS loans, academic and athletic scholarships, work-study programs, or by choosing lower-cost alternatives like in-state community colleges for the first two years.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

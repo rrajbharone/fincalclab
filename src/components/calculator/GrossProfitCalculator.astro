@@ -1,0 +1,519 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Gross Profit Calculator"
+  description="Determine your business profitability. Calculate gross profit dollars, gross profit margin percentages, cost of goods sold (COGS) ratios, and product markup factors instantly."
+  category="Finance"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="gross-profit-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gp-currency-select">Currency</label>
+          <select id="gp-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Revenue / Sales -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gp-revenue-input">Total Revenue / Sales</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="gp-revenue-input" min="0" step="1000" value="150000" aria-label="Total Revenue or Sales" />
+          </div>
+        </div>
+        <input type="range" id="gp-revenue-slider" min="0" max="500000" step="5000" value="150000" class="slider-range" aria-label="Revenue Slider" />
+      </div>
+
+      <!-- Cost of Goods Sold (COGS) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="gp-cogs-input">Cost of Goods Sold (COGS)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="gp-cogs-input" min="0" step="1000" value="90000" aria-label="Cost of Goods Sold" />
+          </div>
+        </div>
+        <input type="range" id="gp-cogs-slider" min="0" max="500000" step="5000" value="90000" class="slider-range" aria-label="COGS Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="gp-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Profitability summary</h3>
+
+    <!-- Primary Margin Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Gross Profit</span>
+        <div id="res-gp-profit" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$60,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Revenue minus COGS</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Gross Profit Margin</span>
+        <div id="res-gp-margin" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">40.00%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Share of revenue kept as profit</span>
+      </div>
+    </div>
+
+    <!-- Revenue Breakdown Bar -->
+    <div style="margin-bottom: var(--space-5);">
+      <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 6px;">
+        <span>Revenue Breakdown (Profit vs COGS)</span>
+        <span id="gp-progress-percent">Profit: 40% | COGS: 60%</span>
+      </div>
+      <div style="width: 100%; height: 12px; background: var(--color-border); border-radius: var(--radius-full); overflow: hidden; display: flex;">
+        <div id="gp-profit-bar" style="width: 40%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+        <div id="gp-cogs-bar" style="width: 60%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="gp-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Margin Health Diagnosis</span>
+        <p id="res-gp-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your business generated <strong>$60,000.00</strong> in Gross Profit from <strong>$150,000.00</strong> in sales. This yields a healthy Gross Profit Margin of <strong>40.00%</strong>, meaning you retain $0.40 of every dollar earned to cover operating expenses.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Profitability Metrics</h4>
+    <div class="results-grid gp-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Gross Profit</span>
+        <div class="tile-value" id="tile-gp-profit" style="color: var(--color-success);">$60,000</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Revenue minus COGS</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Gross Margin</span>
+        <div class="tile-value" id="tile-gp-margin" style="color: var(--color-primary);">40.00%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Profit-to-Revenue ratio</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">COGS % of Revenue</span>
+        <div class="tile-value" id="tile-gp-cogs-pct" style="color: var(--color-primary);">60.00%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Production cost share</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Product Markup</span>
+        <div class="tile-value" id="tile-gp-markup" style="color: var(--color-success);">66.67%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Price added above cost</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initGpCalculator() {
+    const currencySelect = document.getElementById('gp-currency-select') as HTMLSelectElement;
+
+    // Inputs
+    const revenueInput = document.getElementById('gp-revenue-input') as HTMLInputElement;
+    const revenueSlider = document.getElementById('gp-revenue-slider') as HTMLInputElement;
+    const cogsInput = document.getElementById('gp-cogs-input') as HTMLInputElement;
+    const cogsSlider = document.getElementById('gp-cogs-slider') as HTMLInputElement;
+
+    if (!revenueInput || !currencySelect) return;
+
+    // Helper functions for sliders
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    // Bind inputs
+    bindSlider(revenueInput, revenueSlider, calculateAll);
+    bindSlider(cogsInput, cogsSlider, calculateAll);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('gp-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        revenueInput.value = '150000';
+        revenueSlider.value = '150000';
+        cogsInput.value = '90000';
+        cogsSlider.value = '90000';
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      const isNegative = val < 0;
+      const formatted = Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return (isNegative ? '-' : '') + symbol + formatted;
+    }
+
+    function calculateAll() {
+      const revenue = parseFloat(revenueInput.value) || 0;
+      const cogs = parseFloat(cogsInput.value) || 0;
+
+      // 1. Calculate Gross Profit
+      const grossProfit = revenue - cogs;
+
+      // 2. Margin percentages
+      let grossMarginPct = 0;
+      let cogsPct = 0;
+
+      if (revenue > 0) {
+        grossMarginPct = (grossProfit / revenue) * 100;
+        cogsPct = (cogs / revenue) * 100;
+      } else if (revenue === 0 && cogs > 0) {
+        grossMarginPct = -100;
+        cogsPct = 100;
+      }
+
+      // 3. Markup percentage
+      let markupPct = 0;
+      if (cogs > 0) {
+        markupPct = (grossProfit / cogs) * 100;
+      }
+
+      // DOM Updates
+      const resProfit = document.getElementById('res-gp-profit');
+      const resMargin = document.getElementById('res-gp-margin');
+      const progressPercentLabel = document.getElementById('gp-progress-percent');
+      const profitBar = document.getElementById('gp-profit-bar');
+      const cogsBar = document.getElementById('gp-cogs-bar');
+      const resVerdictText = document.getElementById('res-gp-verdict-text');
+      const verdictCard = document.getElementById('gp-verdict-card');
+
+      const tileProfit = document.getElementById('tile-gp-profit');
+      const tileMargin = document.getElementById('tile-gp-margin');
+      const tileCogsPct = document.getElementById('tile-gp-cogs-pct');
+      const tileMarkup = document.getElementById('tile-gp-markup');
+
+      if (resProfit) {
+        resProfit.textContent = formatCurrency(grossProfit);
+        resProfit.style.color = grossProfit >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+      if (resMargin) {
+        resMargin.textContent = grossMarginPct.toFixed(2) + '%';
+        resMargin.style.color = grossMarginPct >= 0 ? 'var(--color-primary)' : 'var(--color-danger)';
+      }
+
+      // Progress bar sizing (handled safely)
+      let profitBarWidth = Math.max(0, Math.min(100, grossMarginPct));
+      let cogsBarWidth = Math.max(0, Math.min(100, cogsPct));
+
+      if (grossProfit < 0) {
+        profitBarWidth = 0;
+        cogsBarWidth = 100;
+      }
+
+      if (profitBar) profitBar.style.width = profitBarWidth.toFixed(2) + '%';
+      if (cogsBar) cogsBar.style.width = cogsBarWidth.toFixed(2) + '%';
+
+      if (progressPercentLabel) {
+        progressPercentLabel.textContent = `Profit: ${grossMarginPct.toFixed(1)}% | COGS: ${cogsPct.toFixed(1)}%`;
+      }
+
+      // Diagnosis text
+      if (verdictCard) {
+        verdictCard.style.borderLeftColor = grossProfit >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+
+      if (resVerdictText) {
+        if (grossProfit >= 0) {
+          resVerdictText.innerHTML = `Your business generated <strong>${formatCurrency(grossProfit)}</strong> in Gross Profit from <strong>${formatCurrency(revenue)}</strong> in sales. This yields a healthy Gross Profit Margin of <strong>${grossMarginPct.toFixed(2)}%</strong>, meaning you retain ${getCurrencySymbol(currencySelect.value)}${(grossMarginPct/100).toFixed(2)} of every dollar earned to cover operating expenses.`;
+        } else {
+          resVerdictText.innerHTML = `Your business generated a <strong>Gross Loss</strong> of <strong>${formatCurrency(Math.abs(grossProfit))}</strong> because Cost of Goods Sold exceeded sales revenue. Your Gross Profit Margin is <strong>${grossMarginPct.toFixed(2)}%</strong>. You are losing money on every unit produced; consider increasing unit prices or auditing production costs.`;
+        }
+      }
+
+      // Tiles
+      if (tileProfit) {
+        tileProfit.textContent = formatCurrency(grossProfit).split('.')[0];
+        tileProfit.style.color = grossProfit >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+      if (tileMargin) {
+        tileMargin.textContent = grossMarginPct.toFixed(2) + '%';
+        tileMargin.style.color = grossMarginPct >= 0 ? 'var(--color-primary)' : 'var(--color-danger)';
+      }
+      if (tileCogsPct) tileCogsPct.textContent = cogsPct.toFixed(2) + '%';
+      if (tileMarkup) {
+        tileMarkup.textContent = markupPct.toFixed(2) + '%';
+        tileMarkup.style.color = markupPct >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      const rev = revenueInput.value;
+      const cogsVal = cogsInput.value;
+
+      const report = `Gross Profit Analysis Report:\n` +
+                     `Total Revenue: ${rev} | Cost of Goods Sold (COGS): ${cogsVal}\n` +
+                     `Gross Profit: ${document.getElementById('res-gp-profit')?.textContent}\n` +
+                     `Gross Profit Margin: ${document.getElementById('res-gp-margin')?.textContent}\n` +
+                     `COGS % of Revenue: ${document.getElementById('tile-gp-cogs-pct')?.textContent}\n` +
+                     `Product Markup: ${document.getElementById('tile-gp-markup')?.textContent}\n` +
+                     `Diagnosis: ${document.getElementById('res-gp-verdict-text')?.textContent}`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initGpCalculator);
+  document.addEventListener('astro:after-swap', initGpCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

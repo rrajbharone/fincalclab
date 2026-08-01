@@ -1,0 +1,301 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GrossProfitCalculator from '../../components/calculator/GrossProfitCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Gross Profit Calculator', path: '/calculator/gross-profit-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the difference between gross profit and net profit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gross profit only subtracts the direct cost of producing goods or services (COGS) from revenue. Net profit subtracts all business costs—including operating expenses (rent, marketing, administrative salaries), interest, taxes, and depreciation—from revenue, representing the final bottom-line profitability."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate Cost of Goods Sold (COGS)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "COGS is calculated using the formula: Beginning Inventory + Purchases During the Period - Ending Inventory. It includes raw materials, direct manufacturing labor, and direct factory overhead costs directly associated with unit production."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a healthy gross profit margin for a business?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A healthy margin depends on the industry. Software (SaaS) companies often boast margins of 70% to 90%, whereas grocery stores or retail shops operate on thin margins of 15% to 30%. E-commerce brands typically target a healthy margin of 50% to 60%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you have a negative gross profit margin?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. A negative margin (Gross Loss) occurs when the Cost of Goods Sold (COGS) exceeds total sales revenue. This means the business is selling products below cost, which is unsustainable unless it is a deliberate 'loss leader' strategy to acquire customers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does increasing markup affect gross profit margin?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Increasing the markup (the price added above cost) directly increases the final retail price. Because revenue increases while unit cost stays the same, the gross profit margin expands. However, higher prices may reduce sales volume."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Gross Profit Calculator - Analyze Margin & COGS Ratios"
+  description="Free online Gross Profit Calculator. Calculate gross profit, gross profit margin percentages, cost of goods sold ratios, and product markups instantly."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <GrossProfitCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Prominent Blog Post Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Featured Profitability Case Study</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Pricing Audit: How We Boosted Our Gross Profit Margin from 30% to 40%</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Read the first-person story of a manufacturing company that audited their product pricing—discovering how a $150,000 revenue with a $90,000 COGS generated $60,000 in gross profit, a 40% margin, and a 66.67% markup, and illustrating how reducing raw material overhead optimized their bottom line.
+            </p>
+            <a href="/blog/calculating-gross-profit-margins" style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px; width: fit-content; text-decoration: underline;">
+              Read: How to Analyze COGS & Optimize Sales Markups
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>Understanding Gross Profit and Margins</h2>
+        <p>
+          In corporate finance and accounting, <strong>Gross Profit</strong> represents the core financial return of a business before taking administrative expenses, marketing, rent, or taxes into account. It measures how efficiently a company produces its goods or delivers its services relative to the prices it charges customers.
+        </p>
+        <p>
+          Calculating gross profit is the first step in assessing a business’s economic viability. If a company cannot generate a healthy gross profit, it will never cover its operating overhead or achieve net profitability, regardless of its marketing success or sales volume.
+        </p>
+
+        <h2>How This Calculator Works (Step-by-Step)</h2>
+        <p>
+          To calculate your business margins and markup ratios:
+        </p>
+        <ol>
+          <li>
+            <strong>Select Currency:</strong> Choose your preferred currency from the dropdown menu (e.g. USD, EUR, INR) to format all input fields and results.
+          </li>
+          <li>
+            <strong>Input Total Revenue:</strong> Enter your total sales or revenue generated during the period (either using the slider or numeric input).
+          </li>
+          <li>
+            <strong>Input Cost of Goods Sold (COGS):</strong> Enter the total direct costs associated with producing those goods or services (raw materials, factory labor, direct manufacturing overhead).
+          </li>
+          <li>
+            <strong>Review Outputs:</strong> The calculator instantly outputs:
+            <ul>
+              <li>
+                <strong>Gross Profit:</strong> The absolute dollar amount remaining after subtracting COGS.
+              </li>
+              <li>
+                <strong>Gross Profit Margin (%):</strong> The percentage of revenue kept as profit.
+              </li>
+              <li>
+                <strong>COGS as % of Revenue:</strong> The share of sales consumed by production costs.
+              </li>
+              <li>
+                <strong>Product Markup (%):</strong> The percentage added to COGS to set the selling price.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Examine Diagnosis Card:</strong> Read the custom margin health diagnosis card to assess if your pricing structure is sustainable.
+          </li>
+        </ol>
+
+        <h2>The Mathematics of Profitability</h2>
+        <p>
+          The calculator applies standard corporate finance margin and markup formulas:
+        </p>
+        
+        <h3>1. Gross Profit Formula</h3>
+        <p>
+          Let {"\\(R\\)"} represent total revenue, and {"\\(COGS\\)"} represent Cost of Goods Sold:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(GP = R - COGS\\)"}
+        </p>
+
+        <h3>2. Gross Profit Margin Formula</h3>
+        <p>
+          The margin measures profit relative to sales price:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(GPM = \\frac{GP}{R} \\times 100\\)"}
+        </p>
+
+        <h3>3. Product Markup Formula</h3>
+        <p>
+          Markup measures profit relative to production cost:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Markup} = \\frac{GP}{COGS} \\times 100\\)"}
+        </p>
+
+        <h2>Real-World Calculation Example</h2>
+        <p>
+          Suppose your business generates **$150,000.00** in revenue with a **$90,000.00** Cost of Goods Sold:
+        </p>
+        <ul>
+          <li>
+            <strong>Gross Profit:</strong> {"\\(\\$150,000 - \\$90,000 = \\mathbf{\\$60,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Gross Profit Margin:</strong> {"\\((\\$60,000 \\div \\$150,000) \\times 100 = \\mathbf{40.00\\%}\\)"}
+          </li>
+          <li>
+            <strong>COGS as % of Revenue:</strong> {"\\((\\$90,000 \\div \\$150,000) \\times 100 = \\mathbf{60.00\\%}\\)"}
+          </li>
+          <li>
+            <strong>Product Markup:</strong> {"\\((\\$60,000 \\div \\$90,000) \\times 100 = \\mathbf{66.67\\%}\\)"}
+          </li>
+        </ul>
+        <p>
+          This means that for every dollar you earn, you spend $0.60 on production costs and retain $0.40 in profit to fund operations. To achieve this price, you marked up the base production cost of your goods by 66.67%.
+        </p>
+
+        <h2>Gross Profit vs. Net Profit</h2>
+        <p>
+          It is crucial not to confuse gross profit with net profit. 
+        </p>
+        <ul>
+          <li>
+            <strong>Gross Profit</strong> only accounts for the direct variable cost of goods sold. It shows if a product's price makes sense relative to its direct cost.
+          </li>
+          <li>
+            <strong>Net Profit</strong> accounts for every expense in the entire business. It subtracts fixed operating overhead (rent, marketing, payroll, utilities, insurance), interest on debt, taxes, and depreciation. Net profit represents the final "bottom line" return that can be distributed to owners or reinvested in growth.
+          </li>
+        </ul>
+
+        <h2>3 Ways to Improve Your Gross Profit Margin</h2>
+        <ol>
+          <li>
+            <strong>Optimize Supplier Pricing:</strong> Negotiate bulk discounts, source materials from alternative vendors, or establish long-term contract rates with suppliers to lower raw material COGS.
+          </li>
+          <li>
+            <strong>Reduce Manufacturing Waste:</strong> Implement lean manufacturing guidelines, automate repetitive tasks, or invest in higher-quality production equipment to lower factory labor and material scrap rates.
+          </li>
+          <li>
+            <strong>Increase Sales Price:</strong> If your brand carries strong consumer loyalty, raising prices directly expands your margin since unit COGS stays constant. Ensure you monitor price elasticity to avoid significant drop-offs in sales volume.
+          </li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Gross Profit FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between gross profit and net profit?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Gross profit only subtracts the direct cost of producing goods or services (COGS) from revenue. Net profit subtracts all business costs—including operating expenses (rent, marketing, administrative salaries), interest, taxes, and depreciation—from revenue, representing the final bottom-line profitability.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you calculate Cost of Goods Sold (COGS)?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              COGS is calculated using the formula: Beginning Inventory + Purchases During the Period - Ending Inventory. It includes raw materials, direct manufacturing labor, and direct factory overhead costs directly associated with unit production.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is a healthy gross profit margin for a business?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              A healthy margin depends on the industry. Software (SaaS) companies often boast margins of 70% to 90%, whereas grocery stores or retail shops operate on thin margins of 15% to 30%. E-commerce brands typically target a healthy margin of 50% to 60%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Can you have a negative gross profit margin?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Yes. A negative margin (Gross Loss) occurs when the Cost of Goods Sold (COGS) exceeds total sales revenue. This means the business is selling products below cost, which is unsustainable unless it is a deliberate 'loss leader' strategy to acquire customers.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does increasing markup affect gross profit margin?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Increasing the markup (the price added above cost) directly increases the final retail price. Because revenue increases while unit cost stays the same, the gross profit margin expands. However, higher prices may reduce sales volume.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,686 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Cost Per Use Calculator"
+  description="Determine the true value of your purchases. Compare cost per use side-by-side, analyze long-term value, and calculate lifetime savings."
+  category="Finance"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="cost-per-use-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cpu-currency-select">Currency</label>
+          <select id="cpu-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Planning Mode Selector -->
+      <div class="input-group">
+        <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base); margin-bottom: 2px;">Calculator Mode</label>
+        <div class="mode-segment-container" style="display: flex; background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px; gap: 4px;">
+          <button type="button" id="btn-cpu-mode-single" class="segment-btn active" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Single Product</button>
+          <button type="button" id="btn-cpu-mode-compare" class="segment-btn" style="flex: 1; border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition-fast);">Compare Two Products</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2A: Single Product Input Wrapper -->
+    <div id="cpu-single-inputs-wrapper" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Purchase Details</h3>
+      
+      <!-- Purchase Price -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cpu-single-price-input">Purchase Price</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="cpu-single-price-input" min="0" step="10" value="200" aria-label="Purchase Price" />
+          </div>
+        </div>
+        <input type="range" id="cpu-single-price-slider" min="10" max="5000" step="10" value="200" class="slider-range" aria-label="Price Slider" />
+      </div>
+
+      <!-- Expected Uses -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cpu-single-uses-input">Expected Number of Uses</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="cpu-single-uses-input" min="1" step="5" value="50" aria-label="Expected Uses" style="text-align: left;" />
+            <span class="percent-symbol">uses</span>
+          </div>
+        </div>
+        <input type="range" id="cpu-single-uses-slider" min="1" max="1000" step="5" value="50" class="slider-range" aria-label="Uses Slider" />
+      </div>
+    </div>
+
+    <!-- Step 2B: Comparison Mode Input Wrapper (Hidden initially) -->
+    <div id="cpu-compare-inputs-wrapper" class="hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Product Comparison</h3>
+      
+      <!-- Product A Box -->
+      <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); display: flex; flex-direction: column; gap: var(--space-3);">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted);">Product A (e.g. Higher Quality)</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); width: 100%;">
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Purchase Price</label>
+            <div class="input-symbol-wrapper" style="width: 100%; box-sizing: border-box; height: 32px;">
+              <span class="currency-symbol" style="font-size:0.8rem;">$</span>
+              <input type="number" id="cpu-a-price-input" value="400" style="height:28px; font-size:0.82rem; font-weight:600;" aria-label="Product A Price" />
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Expected Uses</label>
+            <div class="input-symbol-wrapper" style="width: 100%; box-sizing: border-box; height: 32px;">
+              <input type="number" id="cpu-a-uses-input" value="200" style="height:28px; font-size:0.82rem; font-weight:600; text-align: left;" aria-label="Product A Uses" />
+              <span class="percent-symbol" style="font-size:0.75rem;">uses</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product B Box -->
+      <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); display: flex; flex-direction: column; gap: var(--space-3);">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted);">Product B (e.g. Budget Brand)</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); width: 100%;">
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Purchase Price</label>
+            <div class="input-symbol-wrapper" style="width: 100%; box-sizing: border-box; height: 32px;">
+              <span class="currency-symbol" style="font-size:0.8rem;">$</span>
+              <input type="number" id="cpu-b-price-input" value="80" style="height:28px; font-size:0.82rem; font-weight:600;" aria-label="Product B Price" />
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <label style="font-size:0.7rem; font-weight:700; color:var(--color-text-light);">Expected Uses</label>
+            <div class="input-symbol-wrapper" style="width: 100%; box-sizing: border-box; height: 32px;">
+              <input type="number" id="cpu-b-uses-input" value="25" style="height:28px; font-size:0.82rem; font-weight:600; text-align: left;" aria-label="Product B Uses" />
+              <span class="percent-symbol" style="font-size:0.75rem;">uses</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error check for zero uses -->
+    <div id="cpu-uses-error" class="hidden" style="color: var(--color-danger); font-size: 0.85rem; font-weight: 700; border-left: 3px solid var(--color-danger); padding-left: 8px; margin-top: var(--space-4);">
+      Error: Number of uses must be strictly greater than 0.
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="cpu-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Value estimation summary</h3>
+
+    <!-- Primary Cost Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);" id="lbl-cpu-primary">Cost Per Use</span>
+        <div id="res-cpu-value" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$4.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cpu-primary-desc">Unit price amortized over uses</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);" id="box-cpu-secondary">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);" id="lbl-cpu-secondary">Expected Uses</span>
+        <div id="res-cpu-secondary" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">50</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-cpu-secondary-desc">Planned utilization horizon</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="cpu-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Purchase Diagnosis</span>
+        <p id="res-cpu-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your cost per use is <strong>$4.00</strong>. This means you amortize your purchase price of <strong>$200.00</strong> over <strong>50 expected uses</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid (Compare Mode Only - Hidden initially) -->
+    <div id="cpu-compare-metrics-wrapper" class="hidden">
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Comparison Breakdown</h4>
+      <div class="results-grid cpu-metrics-grid">
+        <div class="result-tile">
+          <span class="tile-label">Product A Cost/Use</span>
+          <div class="tile-value" id="tile-cpu-a-val" style="color: var(--color-success);">$2.00</div>
+          <span style="font-size: 0.65rem; color: var(--color-text-light);">Amortized unit cost</span>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Product B Cost/Use</span>
+          <div class="tile-value" id="tile-cpu-b-val" style="color: var(--color-primary);">$3.20</div>
+          <span style="font-size: 0.65rem; color: var(--color-text-light);">Amortized unit cost</span>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Difference Per Use</span>
+          <div class="tile-value" id="tile-cpu-diff" style="color: var(--color-primary);">$1.20</div>
+          <span style="font-size: 0.65rem; color: var(--color-text-light);">Savings margin per use</span>
+        </div>
+
+        <div class="result-tile">
+          <span class="tile-label">Lifetime Savings</span>
+          <div class="tile-value" id="tile-cpu-savings" style="color: var(--color-success);">$240.00</div>
+          <span style="font-size: 0.65rem; color: var(--color-text-light);">Total potential value</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initCpuCalculator() {
+    const currencySelect = document.getElementById('cpu-currency-select') as HTMLSelectElement;
+
+    // Mode Selector Buttons
+    const btnSingleMode = document.getElementById('btn-cpu-mode-single') as HTMLButtonElement;
+    const btnCompareMode = document.getElementById('btn-cpu-mode-compare') as HTMLButtonElement;
+
+    // Mode containers
+    const singleWrapper = document.getElementById('cpu-single-inputs-wrapper') as HTMLDivElement;
+    const compareWrapper = document.getElementById('cpu-compare-inputs-wrapper') as HTMLDivElement;
+
+    // Single mode inputs
+    const priceInput = document.getElementById('cpu-single-price-input') as HTMLInputElement;
+    const priceSlider = document.getElementById('cpu-single-price-slider') as HTMLInputElement;
+    const usesInput = document.getElementById('cpu-single-uses-input') as HTMLInputElement;
+    const usesSlider = document.getElementById('cpu-single-uses-slider') as HTMLInputElement;
+
+    // Compare mode inputs
+    const aPriceInput = document.getElementById('cpu-a-price-input') as HTMLInputElement;
+    const aUsesInput = document.getElementById('cpu-a-uses-input') as HTMLInputElement;
+    const bPriceInput = document.getElementById('cpu-b-price-input') as HTMLInputElement;
+    const bUsesInput = document.getElementById('cpu-b-uses-input') as HTMLInputElement;
+
+    const usesError = document.getElementById('cpu-uses-error') as HTMLDivElement;
+    const compareMetrics = document.getElementById('cpu-compare-metrics-wrapper') as HTMLDivElement;
+
+    let currentMode: 'single' | 'compare' = 'single';
+
+    if (!priceInput || !btnSingleMode) return;
+
+    // Toggle segment logic
+    function updateSegmentColors(activeBtn: HTMLButtonElement, otherBtn: HTMLButtonElement) {
+      activeBtn.style.background = 'var(--color-primary)';
+      activeBtn.style.color = 'var(--color-bg-base)';
+      otherBtn.style.background = 'transparent';
+      otherBtn.style.color = 'var(--color-text-base)';
+    }
+
+    btnSingleMode.addEventListener('click', () => {
+      currentMode = 'single';
+      btnSingleMode.classList.add('active');
+      btnCompareMode.classList.remove('active');
+      updateSegmentColors(btnSingleMode, btnCompareMode);
+      singleWrapper.classList.remove('hidden');
+      compareWrapper.classList.add('hidden');
+      compareMetrics.classList.add('hidden');
+      
+      // Restore default single metrics labels
+      const lblCpuPrimary = document.getElementById('lbl-cpu-primary');
+      const lblCpuPrimaryDesc = document.getElementById('lbl-cpu-primary-desc');
+      const boxCpuSecondary = document.getElementById('box-cpu-secondary');
+      if (lblCpuPrimary) lblCpuPrimary.textContent = 'Cost Per Use';
+      if (lblCpuPrimaryDesc) lblCpuPrimaryDesc.textContent = 'Unit price amortized over uses';
+      if (boxCpuSecondary) boxCpuSecondary.classList.remove('hidden');
+
+      calculateAll();
+    });
+
+    btnCompareMode.addEventListener('click', () => {
+      currentMode = 'compare';
+      btnCompareMode.classList.add('active');
+      btnSingleMode.classList.remove('active');
+      updateSegmentColors(btnCompareMode, btnSingleMode);
+      singleWrapper.classList.add('hidden');
+      compareWrapper.classList.remove('hidden');
+      compareMetrics.classList.remove('hidden');
+
+      // Change labels to reflect comparison results
+      const lblCpuPrimary = document.getElementById('lbl-cpu-primary');
+      const lblCpuPrimaryDesc = document.getElementById('lbl-cpu-primary-desc');
+      const boxCpuSecondary = document.getElementById('box-cpu-secondary');
+      if (lblCpuPrimary) lblCpuPrimary.textContent = 'Best Value Product';
+      if (lblCpuPrimaryDesc) lblCpuPrimaryDesc.textContent = 'Option with the lower cost per use';
+      if (boxCpuSecondary) boxCpuSecondary.classList.add('hidden');
+
+      calculateAll();
+    });
+
+    // Style segment controller initially
+    updateSegmentColors(btnSingleMode, btnCompareMode);
+
+    // Bind Single Mode Inputs
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    bindSlider(priceInput, priceSlider, calculateAll);
+    bindSlider(usesInput, usesSlider, calculateAll);
+
+    // Bind Compare Mode Inputs
+    aPriceInput.addEventListener('input', calculateAll);
+    aUsesInput.addEventListener('input', calculateAll);
+    bPriceInput.addEventListener('input', calculateAll);
+    bUsesInput.addEventListener('input', calculateAll);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('cpu-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        priceInput.value = '200';
+        priceSlider.value = '200';
+        usesInput.value = '50';
+        usesSlider.value = '50';
+
+        aPriceInput.value = '400';
+        aUsesInput.value = '200';
+        bPriceInput.value = '80';
+        bUsesInput.value = '25';
+
+        currentMode = 'single';
+        btnSingleMode.classList.add('active');
+        btnCompareMode.classList.remove('active');
+        updateSegmentColors(btnSingleMode, btnCompareMode);
+        singleWrapper.classList.remove('hidden');
+        compareWrapper.classList.add('hidden');
+        compareMetrics.classList.add('hidden');
+
+        const lblCpuPrimary = document.getElementById('lbl-cpu-primary');
+        const lblCpuPrimaryDesc = document.getElementById('lbl-cpu-primary-desc');
+        const boxCpuSecondary = document.getElementById('box-cpu-secondary');
+        if (lblCpuPrimary) lblCpuPrimary.textContent = 'Cost Per Use';
+        if (lblCpuPrimaryDesc) lblCpuPrimaryDesc.textContent = 'Unit price amortized over uses';
+        if (boxCpuSecondary) boxCpuSecondary.classList.remove('hidden');
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      return symbol + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculateAll() {
+      let isError = false;
+
+      if (currentMode === 'single') {
+        const price = parseFloat(priceInput.value) || 0;
+        const uses = parseInt(usesInput.value) || 0;
+
+        if (uses <= 0) {
+          isError = true;
+          if (usesError) usesError.classList.remove('hidden');
+        } else {
+          if (usesError) usesError.classList.add('hidden');
+        }
+
+        if (isError) return;
+
+        const costPerUse = price / uses;
+
+        // DOM Updates
+        const resValue = document.getElementById('res-cpu-value');
+        const resSecondary = document.getElementById('res-cpu-secondary');
+        const resVerdictText = document.getElementById('res-cpu-verdict-text');
+        const verdictCard = document.getElementById('cpu-verdict-card');
+
+        if (resValue) resValue.textContent = formatCurrency(costPerUse);
+        if (resSecondary) resSecondary.textContent = uses.toLocaleString();
+        
+        if (verdictCard) verdictCard.style.borderLeftColor = 'var(--color-success)';
+
+        if (resVerdictText) {
+          resVerdictText.innerHTML = `Your cost per use is <strong>${formatCurrency(costPerUse)}</strong>. This means you amortize your purchase price of <strong>${formatCurrency(price)}</strong> over <strong>${uses} expected uses</strong>.`;
+        }
+
+      } else {
+        const aPrice = parseFloat(aPriceInput.value) || 0;
+        const aUses = parseInt(aUsesInput.value) || 0;
+        const bPrice = parseFloat(bPriceInput.value) || 0;
+        const bUses = parseInt(bUsesInput.value) || 0;
+
+        if (aUses <= 0 || bUses <= 0) {
+          isError = true;
+          if (usesError) usesError.classList.remove('hidden');
+        } else {
+          if (usesError) usesError.classList.add('hidden');
+        }
+
+        if (isError) return;
+
+        const cpuA = aPrice / aUses;
+        const cpuB = bPrice / bUses;
+
+        const bestChoice = cpuA <= cpuB ? 'Product A' : 'Product B';
+        const worstChoice = cpuA > cpuB ? 'Product A' : 'Product B';
+        const costDiff = Math.abs(cpuA - cpuB);
+
+        // Potential savings if we use the best option for the maximum of the two uses
+        const targetUses = Math.max(aUses, bUses);
+        const lifetimeSavings = costDiff * targetUses;
+
+        // DOM Updates
+        const resValue = document.getElementById('res-cpu-value');
+        const resVerdictText = document.getElementById('res-cpu-verdict-text');
+        const verdictCard = document.getElementById('cpu-verdict-card');
+
+        if (resValue) resValue.textContent = bestChoice;
+        if (verdictCard) verdictCard.style.borderLeftColor = 'var(--color-success)';
+
+        if (resVerdictText) {
+          resVerdictText.innerHTML = `<strong>${bestChoice}</strong> offers the better value at <strong>${formatCurrency(Math.min(cpuA, cpuB))}</strong> per use, compared to <strong>${worstChoice}</strong> at <strong>${formatCurrency(Math.max(cpuA, cpuB))}</strong>. Choosing ${bestChoice} saves you <strong>${formatCurrency(costDiff)}</strong> per use, yielding a potential lifetime savings of <strong>${formatCurrency(lifetimeSavings)}</strong> over ${targetUses} uses.`;
+        }
+
+        // Tiles
+        const tileCpuA = document.getElementById('tile-cpu-a-val');
+        const tileCpuB = document.getElementById('tile-cpu-b-val');
+        const tileCpuDiff = document.getElementById('tile-cpu-diff');
+        const tileCpuSavings = document.getElementById('tile-cpu-savings');
+
+        if (tileCpuA) tileCpuA.textContent = formatCurrency(cpuA);
+        if (tileCpuB) tileCpuB.textContent = formatCurrency(cpuB);
+        if (tileCpuDiff) tileCpuDiff.textContent = formatCurrency(costDiff);
+        if (tileCpuSavings) tileCpuSavings.textContent = formatCurrency(lifetimeSavings);
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      const modeText = currentMode === 'single' ? 'Single Product Mode' : 'Product Comparison Mode';
+      let report = '';
+
+      if (currentMode === 'single') {
+        report = `Cost Per Use Analysis Report:\n` +
+                 `Purchase Price: ${priceInput.value} | Expected Uses: ${usesInput.value}\n` +
+                 `Cost Per Use: ${document.getElementById('res-cpu-value')?.textContent}\n` +
+                 `Diagnosis: ${document.getElementById('res-cpu-verdict-text')?.textContent}`;
+      } else {
+        report = `Cost Per Use Comparison Report:\n` +
+                 `Product A: Price ${aPriceInput.value} / Uses ${aUsesInput.value} (CPU: ${document.getElementById('tile-cpu-a-val')?.textContent})\n` +
+                 `Product B: Price ${bPriceInput.value} / Uses ${bUsesInput.value} (CPU: ${document.getElementById('tile-cpu-b-val')?.textContent})\n` +
+                 `Best Value: ${document.getElementById('res-cpu-value')?.textContent}\n` +
+                 `Difference Per Use: ${document.getElementById('tile-cpu-diff')?.textContent}\n` +
+                 `Lifetime Savings: ${document.getElementById('tile-cpu-savings')?.textContent}\n` +
+                 `Diagnosis: ${document.getElementById('res-cpu-verdict-text')?.textContent}`;
+      }
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCpuCalculator);
+  document.addEventListener('astro:after-swap', initCpuCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .segment-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base);
+  }
+
+  .segment-btn:not(.active) {
+    color: var(--color-text-base);
+  }
+
+  .segment-btn:not(.active):hover {
+    background-color: var(--color-border);
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

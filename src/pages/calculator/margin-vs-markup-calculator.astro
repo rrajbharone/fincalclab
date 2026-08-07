@@ -1,0 +1,286 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MarginMarkupCalculator from '../../components/calculator/MarginMarkupCalculator.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Margin vs Markup Calculator', path: '/calculator/margin-vs-markup-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the difference between margin and markup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Margin (profit margin) calculates profit relative to the selling price. Markup calculates profit relative to the item's cost. For example, if a product costs $10.00 to buy and sells for $15.00, your markup is 50%, but your profit margin is 33.3%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you convert markup to margin?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To convert a markup percentage to profit margin, use the formula: Margin = Markup / (1 + Markup). For example, a 50% markup (0.50) converted is 0.50 / 1.50 = 33.3%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you convert margin to markup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To convert a profit margin percentage to markup, use the formula: Markup = Margin / (1 - Margin). For example, a 30% margin (0.30) converted is 0.30 / 0.70 = 42.86%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do businesses confuse margin and markup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Businesses often confuse the two because they use the same variables (Cost and Selling Price). Confusing them can lead to underpricing. If a business needs a 30% profit margin to cover overhead and mistakenly applies a 30% markup, they will earn less profit dollars than required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When should a business use margin instead of markup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Margin is best used for high-level financial reporting and accounting because it aligns directly with your income statements (e.g. gross profit margins). Markup is best used for day-to-day product pricing decisions because it is easy to apply directly to unit costs."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Margin vs Markup Calculator - Calculate Profit Ratios"
+  description="Free online Margin vs Markup Calculator. Calculate profit margins, markups, and final retail pricing. Convert markup to margin and vice-versa instantly."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <MarginMarkupCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      <div class="prose">
+        <h2>What Is Profit Margin?</h2>
+        <p>
+          In corporate finance and business operations, <strong>profit margin</strong> (specifically gross profit margin) measures profitability relative to the <strong>selling price</strong> of a product or service. It answers the question: <em>What percentage of each dollar of revenue does the business keep as profit?</em>
+        </p>
+        <p>
+          Using a <strong>Profit Margin Calculator</strong> is critical for assessing the long-term viability of your business. Because margins are calculated based on top-line revenue, they align directly with how corporate financial statements, tax reporting, and investor reviews analyze company health.
+        </p>
+
+        <h2>What Is Markup?</h2>
+        <p>
+          Conversely, <strong>markup</strong> measures profitability relative to the <strong>cost</strong> of producing or acquiring a product. It answers the question: <em>What percentage do we add to the base item cost to set the final selling price?</em>
+        </p>
+        <p>
+          A <strong>Markup Percentage Calculator</strong> is highly useful for daily product pricing decisions. Retailers, e-commerce store owners, and manufacturers find it simpler to calculate unit pricing by adding a fixed markup percentage to their raw cost of goods sold.
+        </p>
+
+        <h2>Margin vs. Markup Difference</h2>
+        <p>
+          The fundamental difference between margin and markup lies in the <strong>denominator</strong> of their mathematical formulas:
+        </p>
+        <ul>
+          <li>
+            For <strong>Margin</strong>, the profit is divided by the <strong>Selling Price</strong>.
+          </li>
+          <li>
+            For <strong>Markup</strong>, the profit is divided by the <strong>Cost</strong>.
+          </li>
+        </ul>
+        <p>
+          Because the selling price is always higher than the cost (assuming you are operating at a profit), the markup percentage will always be higher than the profit margin percentage. Confusing these two ratios is one of the most common pricing mistakes in business, often leading to underpriced products and squeezed cash flow.
+        </p>
+
+        <h2>How to Calculate Profit Margin</h2>
+        <p>
+          To calculate your margin, subtract the cost from the selling price to find your gross profit, and then divide by the selling price:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Margin Formula: } \\text{Margin \%} = \\frac{\\text{Selling Price} - \\text{Cost}}{\\text{Selling Price}} \\times 100\\)"}
+        </p>
+
+        <h2>How to Calculate Markup</h2>
+        <p>
+          To calculate your markup, subtract the cost from the selling price to find your gross profit, and then divide by the cost:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Markup Formula: } \\text{Markup \%} = \\frac{\\text{Selling Price} - \\text{Cost}}{\\text{Cost}} \\times 100\\)"}
+        </p>
+
+        <h2>Why Margin and Markup Are Different: An Example</h2>
+        <p>
+          Suppose you buy an item for a cost of $100.00 and sell it for a retail price of $150.00. The profit amount is $50.00:
+        </p>
+        <ul>
+          <li>
+            <strong>Markup %:</strong> {"\\(\\frac{\\$50.00}{\\$100.00} \\times 100 = \\mathbf{50.00\\%}\\)"}. You marked up the item by 50% of its base cost.
+          </li>
+          <li>
+            <strong>Profit Margin %:</strong> {"\\(\\frac{\\$50.00}{\\$150.00} \\times 100 = \\mathbf{33.33\\%}\\)"}. You kept 33.33% of the final sales price as profit.
+          </li>
+        </ul>
+        <p>
+          In this scenario, the markup is 50%, but the profit margin is only 33.33%. If your business overhead requires a 50% profit margin and you simply apply a 50% markup, you will fall short of your financial targets.
+        </p>
+
+        <h2>How to Convert Markup to Margin</h2>
+        <p>
+          If you know your product's markup percentage, you can convert it to its equivalent profit margin using this formula (where markup is expressed as a decimal):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Margin} = \\frac{\\text{Markup}}{1 + \\text{Markup}}\\)"}
+        </p>
+        <p>
+          For example, a 50% markup (0.50) is converted as:
+          {"\\(\\text{Margin} = \\frac{0.50}{1 + 0.50} = \\frac{0.50}{1.50} = 0.3333 \\text{ or } \\mathbf{33.33\\%}\\)"}.
+        </p>
+
+        <h2>How to Convert Margin to Markup</h2>
+        <p>
+          If you know your target profit margin, you can determine what markup percentage to apply to your cost using this formula (where margin is expressed as a decimal):
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Markup} = \\frac{\\text{Margin}}{1 - \\text{Margin}}\\)"}
+        </p>
+        <p>
+          For example, if you want a 40% margin (0.40), the required markup is:
+          {"\\(\\text{Markup} = \\frac{0.40}{1 - 0.40} = \\frac{0.40}{0.60} = 0.6667 \\text{ or } \\mathbf{66.67\\%}\\)"}.
+        </p>
+
+        <h2>How to Calculate Selling Price</h2>
+        <p>
+          Depending on your pricing strategy, you can calculate your final selling price using one of two methods:
+        </p>
+        
+        <h3>1. From Desired Markup</h3>
+        <p>
+          If you want to apply a specific markup percentage to your base unit cost:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Selling Price} = \\text{Cost} \\times (1 + \\frac{\\text{Markup \%}}{100})\\)"}
+        </p>
+
+        <h3>2. From Desired Profit Margin</h3>
+        <p>
+          If you want to ensure your final price preserves a specific gross profit margin:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Selling Price} = \\frac{\\text{Cost}}{1 - \\frac{\\text{Margin \%}}{100}}\\)"}
+        </p>
+
+        <h2>Related Financial Calculators</h2>
+        <p>
+          To manage your business operations and explore related cash flow calculations, check out these free tools:
+        </p>
+        <ul>
+          <li>
+            Calculate direct variable production margins using the <a href="/calculator/gross-profit-calculator">Gross Profit Calculator</a>.
+          </li>
+          <li>
+            Understand how sticker prices translate into personal utility using the <a href="/calculator/cost-per-use-calculator">Cost Per Use Calculator</a> or <a href="/calculator/cost-per-day-calculator">Cost Per Day Calculator</a>.
+          </li>
+          <li>
+            Evaluate payroll wage changes or hikes using the <a href="/calculator/salary-hike-calculator">Salary Hike Calculator</a> or <a href="/calculator/overtime-rate-calculator">Overtime Rate Calculator</a>.
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Margin vs Markup FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between margin and markup?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Margin (profit margin) calculates profit relative to the selling price. Markup calculates profit relative to the item's cost. For example, if a product costs $10.00 to buy and sells for $15.00, your markup is 50%, but your profit margin is 33.3%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you convert markup to margin?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              To convert a markup percentage to profit margin, use the formula: Margin = Markup / (1 + Markup). For example, a 50% markup (0.50) converted is 0.50 / 1.50 = 33.3%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you convert margin to markup?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              To convert a profit margin percentage to markup, use the formula: Markup = Margin / (1 - Margin). For example, a 30% margin (0.30) converted is 0.30 / 0.70 = 42.86%.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why do businesses confuse margin and markup?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Businesses often confuse the two because they use the same variables (Cost and Selling Price). Confusing them can lead to underpricing. If a business needs a 30% profit margin to cover overhead and mistakenly applies a 30% markup, they will earn less profit dollars than required.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">When should a business use margin instead of markup?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Margin is best used for high-level financial reporting and accounting because it aligns directly with your income statements (e.g. gross profit margins). Markup is best used for day-to-day product pricing decisions because it is easy to apply directly to unit costs.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

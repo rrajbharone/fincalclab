@@ -1,0 +1,725 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Margin vs Markup Calculator"
+  description="Compute business profit margins, markups, and final retail pricing. Convert markups to margins side-by-side and calculate selling prices."
+  category="Finance"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="margin-markup-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mmc-currency-select">Currency</label>
+          <select id="mmc-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Planning Mode Selector -->
+      <div class="input-group">
+        <label style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-base); margin-bottom: 2px;">Calculator Mode</label>
+        <div class="mode-segment-container" style="display: flex; flex-direction: column; background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px; gap: 4px;">
+          <button type="button" id="btn-mmc-mode-costprice" class="segment-btn active" style="border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; text-align: left; transition: all var(--transition-fast);">1. Enter Cost & Selling Price</button>
+          <button type="button" id="btn-mmc-mode-costmarkup" class="segment-btn" style="border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; text-align: left; transition: all var(--transition-fast);">2. Enter Cost & Markup %</button>
+          <button type="button" id="btn-mmc-mode-costmargin" class="segment-btn" style="border: none; background: transparent; padding: var(--space-2); font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-sm); cursor: pointer; text-align: left; transition: all var(--transition-fast);">3. Enter Cost & Desired Margin %</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2A: Mode 1 Inputs (Cost & Selling Price) -->
+    <div id="mmc-inputs-costprice" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Cost & Selling Price</h3>
+      
+      <!-- Cost -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mmc-cp-cost-input">Item Cost</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="mmc-cp-cost-input" min="0" step="5" value="100" aria-label="Cost" />
+          </div>
+        </div>
+        <input type="range" id="mmc-cp-cost-slider" min="5" max="1000" step="5" value="100" class="slider-range" aria-label="Cost Slider" />
+      </div>
+
+      <!-- Selling Price -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mmc-cp-price-input">Selling Price</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="mmc-cp-price-input" min="0" step="5" value="150" aria-label="Selling Price" />
+          </div>
+        </div>
+        <input type="range" id="mmc-cp-price-slider" min="5" max="1500" step="5" value="150" class="slider-range" aria-label="Price Slider" />
+      </div>
+    </div>
+
+    <!-- Step 2B: Mode 2 Inputs (Cost & Desired Markup %) -->
+    <div id="mmc-inputs-costmarkup" class="hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Cost & Desired Markup</h3>
+      
+      <!-- Cost -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mmc-cm-cost-input">Item Cost</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="mmc-cm-cost-input" min="0" step="5" value="100" aria-label="Cost" />
+          </div>
+        </div>
+        <input type="range" id="mmc-cm-cost-slider" min="5" max="1000" step="5" value="100" class="slider-range" aria-label="Cost Slider" />
+      </div>
+
+      <!-- Desired Markup -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mmc-cm-markup-input">Desired Markup</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="mmc-cm-markup-input" min="0" step="1" value="50" aria-label="Desired Markup" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="mmc-cm-markup-slider" min="0" max="300" step="1" value="50" class="slider-range" aria-label="Markup Slider" />
+      </div>
+    </div>
+
+    <!-- Step 2C: Mode 3 Inputs (Cost & Desired Margin %) -->
+    <div id="mmc-inputs-costmargin" class="hidden" style="display: flex; flex-direction: column; gap: var(--space-5); margin-top: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">2. Cost & Desired Margin</h3>
+      
+      <!-- Cost -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mmc-cn-cost-input">Item Cost</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="mmc-cn-cost-input" min="0" step="5" value="100" aria-label="Cost" />
+          </div>
+        </div>
+        <input type="range" id="mmc-cn-cost-slider" min="5" max="1000" step="5" value="100" class="slider-range" aria-label="Cost Slider" />
+      </div>
+
+      <!-- Desired Margin -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mmc-cn-margin-input">Desired Profit Margin</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="mmc-cn-margin-input" min="0" max="99.9" step="0.5" value="33.3" aria-label="Desired Profit Margin" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="mmc-cn-margin-slider" min="0" max="95" step="0.5" value="33.3" class="slider-range" aria-label="Margin Slider" />
+      </div>
+    </div>
+
+    <!-- Validation Error Alert -->
+    <div id="mmc-error-alert" class="hidden" style="color: var(--color-danger); font-size: 0.85rem; font-weight: 700; border-left: 3px solid var(--color-danger); padding-left: 8px; margin-top: var(--space-4);">
+      Error: Desired margin must be strictly less than 100%.
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="mmc-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Markup vs margin summary</h3>
+
+    <!-- Primary Income Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Gross Profit</span>
+        <div id="res-mmc-profit" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$50.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Absolute profit dollars</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Margin vs Markup</span>
+        <div id="res-mmc-comparison" style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">33.3% vs 50.0%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Side-by-side ratios</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="mmc-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Pricing Analysis</span>
+        <p id="res-mmc-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          A cost of <strong>$100.00</strong> sold for <strong>$150.00</strong> yields a Gross Profit of <strong>$50.00</strong>. This equals a <strong>33.33% Profit Margin</strong> and a <strong>50.00% Markup</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Calculated Pricing Details</h4>
+    <div class="results-grid mmc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Selling Price</span>
+        <div class="tile-value" id="tile-mmc-price" style="color: var(--color-success);">$150.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Final retail price</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Cost of Item</span>
+        <div class="tile-value" id="tile-mmc-cost" style="color: var(--color-primary);">$100.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Base product cost</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Profit Amount</span>
+        <div class="tile-value" id="tile-mmc-profit" style="color: var(--color-primary);">$50.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Revenue minus cost</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Profit Margin</span>
+        <div class="tile-value" id="tile-mmc-margin" style="color: var(--color-success);">33.33%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Profit relative to price</span>
+      </div>
+
+      <div class="result-tile" style="grid-column: span 2;">
+        <span class="tile-label">Markup Percentage</span>
+        <div class="tile-value" id="tile-mmc-markup" style="color: var(--color-success); font-size: 1.25rem;">50.00%</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Price added above cost</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initMmcCalculator() {
+    const currencySelect = document.getElementById('mmc-currency-select') as HTMLSelectElement;
+
+    // Mode Selector Buttons
+    const btnCostPrice = document.getElementById('btn-mmc-mode-costprice') as HTMLButtonElement;
+    const btnCostMarkup = document.getElementById('btn-mmc-mode-costmarkup') as HTMLButtonElement;
+    const btnCostMargin = document.getElementById('btn-mmc-mode-costmargin') as HTMLButtonElement;
+
+    // Mode containers
+    const costPriceWrapper = document.getElementById('mmc-inputs-costprice') as HTMLDivElement;
+    const costMarkupWrapper = document.getElementById('mmc-inputs-costmarkup') as HTMLDivElement;
+    const costMarginWrapper = document.getElementById('mmc-inputs-costmargin') as HTMLDivElement;
+
+    // Mode 1 Inputs
+    const cpCostInput = document.getElementById('mmc-cp-cost-input') as HTMLInputElement;
+    const cpCostSlider = document.getElementById('mmc-cp-cost-slider') as HTMLInputElement;
+    const cpPriceInput = document.getElementById('mmc-cp-price-input') as HTMLInputElement;
+    const cpPriceSlider = document.getElementById('mmc-cp-price-slider') as HTMLInputElement;
+
+    // Mode 2 Inputs
+    const cmCostInput = document.getElementById('mmc-cm-cost-input') as HTMLInputElement;
+    const cmCostSlider = document.getElementById('mmc-cm-cost-slider') as HTMLInputElement;
+    const cmMarkupInput = document.getElementById('mmc-cm-markup-input') as HTMLInputElement;
+    const cmMarkupSlider = document.getElementById('mmc-cm-markup-slider') as HTMLInputElement;
+
+    // Mode 3 Inputs
+    const cnCostInput = document.getElementById('mmc-cn-cost-input') as HTMLInputElement;
+    const cnCostSlider = document.getElementById('mmc-cn-cost-slider') as HTMLInputElement;
+    const cnMarginInput = document.getElementById('mmc-cn-margin-input') as HTMLInputElement;
+    const cnMarginSlider = document.getElementById('mmc-cn-margin-slider') as HTMLInputElement;
+
+    const errorAlert = document.getElementById('mmc-error-alert') as HTMLDivElement;
+
+    let currentMode: 'costprice' | 'costmarkup' | 'costmargin' = 'costprice';
+
+    if (!cpCostInput || !btnCostPrice) return;
+
+    // Toggle segment logic
+    function updateSegmentColors(activeBtn: HTMLButtonElement, otherBtn1: HTMLButtonElement, otherBtn2: HTMLButtonElement) {
+      activeBtn.style.background = 'var(--color-primary)';
+      activeBtn.style.color = 'var(--color-bg-base)';
+      otherBtn1.style.background = 'transparent';
+      otherBtn1.style.color = 'var(--color-text-base)';
+      otherBtn2.style.background = 'transparent';
+      otherBtn2.style.color = 'var(--color-text-base)';
+    }
+
+    btnCostPrice.addEventListener('click', () => {
+      currentMode = 'costprice';
+      btnCostPrice.classList.add('active');
+      btnCostMarkup.classList.remove('active');
+      btnCostMargin.classList.remove('active');
+      updateSegmentColors(btnCostPrice, btnCostMarkup, btnCostMargin);
+      costPriceWrapper.classList.remove('hidden');
+      costMarkupWrapper.classList.add('hidden');
+      costMarginWrapper.classList.add('hidden');
+      calculateAll();
+    });
+
+    btnCostMarkup.addEventListener('click', () => {
+      currentMode = 'costmarkup';
+      btnCostMarkup.classList.add('active');
+      btnCostPrice.classList.remove('active');
+      btnCostMargin.classList.remove('active');
+      updateSegmentColors(btnCostMarkup, btnCostPrice, btnCostMargin);
+      costPriceWrapper.classList.add('hidden');
+      costMarkupWrapper.classList.remove('hidden');
+      costMarginWrapper.classList.add('hidden');
+      calculateAll();
+    });
+
+    btnCostMargin.addEventListener('click', () => {
+      currentMode = 'costmargin';
+      btnCostMargin.classList.add('active');
+      btnCostPrice.classList.remove('active');
+      btnCostMarkup.classList.remove('active');
+      updateSegmentColors(btnCostMargin, btnCostPrice, btnCostMarkup);
+      costPriceWrapper.classList.add('hidden');
+      costMarkupWrapper.classList.add('hidden');
+      costMarginWrapper.classList.remove('hidden');
+      calculateAll();
+    });
+
+    // Style segment controller initially
+    updateSegmentColors(btnCostPrice, btnCostMarkup, btnCostMargin);
+
+    // Helper functions for sliders
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    // Bind inputs
+    bindSlider(cpCostInput, cpCostSlider, calculateAll);
+    bindSlider(cpPriceInput, cpPriceSlider, calculateAll);
+    bindSlider(cmCostInput, cmCostSlider, calculateAll);
+    bindSlider(cmMarkupInput, cmMarkupSlider, calculateAll);
+    bindSlider(cnCostInput, cnCostSlider, calculateAll);
+    bindSlider(cnMarginInput, cnMarginSlider, calculateAll);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('mmc-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        cpCostInput.value = '100';
+        cpCostSlider.value = '100';
+        cpPriceInput.value = '150';
+        cpPriceSlider.value = '150';
+
+        cmCostInput.value = '100';
+        cmCostSlider.value = '100';
+        cmMarkupInput.value = '50';
+        cmMarkupSlider.value = '50';
+
+        cnCostInput.value = '100';
+        cnCostSlider.value = '100';
+        cnMarginInput.value = '33.3';
+        cnMarginSlider.value = '33.3';
+
+        currentMode = 'costprice';
+        btnCostPrice.classList.add('active');
+        btnCostMarkup.classList.remove('active');
+        btnCostMargin.classList.remove('active');
+        updateSegmentColors(btnCostPrice, btnCostMarkup, btnCostMargin);
+        costPriceWrapper.classList.remove('hidden');
+        costMarkupWrapper.classList.add('hidden');
+        costMarginWrapper.classList.add('hidden');
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      const isNegative = val < 0;
+      const formatted = Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return (isNegative ? '-' : '') + symbol + formatted;
+    }
+
+    function calculateAll() {
+      let cost = 0;
+      let price = 0;
+      let marginPct = 0;
+      let markupPct = 0;
+      let profit = 0;
+      let isError = false;
+
+      if (currentMode === 'costprice') {
+        cost = parseFloat(cpCostInput.value) || 0;
+        price = parseFloat(cpPriceInput.value) || 0;
+
+        profit = price - cost;
+
+        if (price > 0) {
+          marginPct = (profit / price) * 100;
+        } else if (price === 0 && cost > 0) {
+          marginPct = -100;
+        }
+
+        if (cost > 0) {
+          markupPct = (profit / cost) * 100;
+        }
+        if (errorAlert) errorAlert.classList.add('hidden');
+
+      } else if (currentMode === 'costmarkup') {
+        cost = parseFloat(cmCostInput.value) || 0;
+        markupPct = parseFloat(cmMarkupInput.value) || 0;
+
+        price = cost * (1 + markupPct / 100);
+        profit = price - cost;
+
+        if (price > 0) {
+          marginPct = (profit / price) * 100;
+        }
+        if (errorAlert) errorAlert.classList.add('hidden');
+
+      } else if (currentMode === 'costmargin') {
+        cost = parseFloat(cnCostInput.value) || 0;
+        marginPct = parseFloat(cnMarginInput.value) || 0;
+
+        if (marginPct >= 100) {
+          isError = true;
+          if (errorAlert) errorAlert.classList.remove('hidden');
+        } else {
+          if (errorAlert) errorAlert.classList.add('hidden');
+        }
+
+        if (isError) return;
+
+        price = cost / (1 - marginPct / 100);
+        profit = price - cost;
+
+        if (cost > 0) {
+          markupPct = (profit / cost) * 100;
+        }
+      }
+
+      // DOM Updates
+      const resProfit = document.getElementById('res-mmc-profit');
+      const resComparison = document.getElementById('res-mmc-comparison');
+      const resVerdictText = document.getElementById('res-mmc-verdict-text');
+      const verdictCard = document.getElementById('mmc-verdict-card');
+
+      const tilePrice = document.getElementById('tile-mmc-price');
+      const tileCost = document.getElementById('tile-mmc-cost');
+      const tileProfit = document.getElementById('tile-mmc-profit');
+      const tileMargin = document.getElementById('tile-mmc-margin');
+      const tileMarkup = document.getElementById('tile-mmc-markup');
+
+      if (resProfit) {
+        resProfit.textContent = formatCurrency(profit);
+        resProfit.style.color = profit >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+      if (resComparison) {
+        resComparison.textContent = `${marginPct.toFixed(1)}% vs ${markupPct.toFixed(1)}%`;
+      }
+
+      // Verdict card colors
+      if (verdictCard) {
+        verdictCard.style.borderLeftColor = profit >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+
+      if (resVerdictText) {
+        if (profit >= 0) {
+          resVerdictText.innerHTML = `An item costing <strong>${formatCurrency(cost)}</strong> sold at <strong>${formatCurrency(price)}</strong> yields a profit of <strong>${formatCurrency(profit)}</strong>. This equates to a <strong>${marginPct.toFixed(2)}% profit margin</strong> and a <strong>${markupPct.toFixed(2)}% markup</strong>.`;
+        } else {
+          resVerdictText.innerHTML = `An item costing <strong>${formatCurrency(cost)}</strong> sold at <strong>${formatCurrency(price)}</strong> yields a Gross Loss of <strong>${formatCurrency(Math.abs(profit))}</strong>. The markup is <strong>${markupPct.toFixed(2)}%</strong> and the profit margin is <strong>${marginPct.toFixed(2)}%</strong>. You are selling below cost.`;
+        }
+      }
+
+      // Tiles
+      if (tilePrice) tilePrice.textContent = formatCurrency(price);
+      if (tileCost) tileCost.textContent = formatCurrency(cost);
+      if (tileProfit) {
+        tileProfit.textContent = formatCurrency(profit);
+        tileProfit.style.color = profit >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+      if (tileMargin) {
+        tileMargin.textContent = marginPct.toFixed(2) + '%';
+        tileMargin.style.color = marginPct >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+      if (tileMarkup) {
+        tileMarkup.textContent = markupPct.toFixed(2) + '%';
+        tileMarkup.style.color = markupPct >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+      }
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      const report = `Margin vs Markup Analysis Report:\n` +
+                     `Product Cost: ${cpCostInput.value || cmCostInput.value || cnCostInput.value}\n` +
+                     `Selling Price: ${document.getElementById('tile-mmc-price')?.textContent}\n` +
+                     `Profit Amount: ${document.getElementById('tile-mmc-profit')?.textContent}\n` +
+                     `Profit Margin: ${document.getElementById('tile-mmc-margin')?.textContent}\n` +
+                     `Markup Percentage: ${document.getElementById('tile-mmc-markup')?.textContent}\n` +
+                     `Diagnosis: ${document.getElementById('res-mmc-verdict-text')?.textContent}`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initMmcCalculator);
+  document.addEventListener('astro:after-swap', initMmcCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .segment-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-bg-base);
+  }
+
+  .segment-btn:not(.active) {
+    color: var(--color-text-base);
+  }
+
+  .segment-btn:not(.active):hover {
+    background-color: var(--color-border);
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .results-grid .result-tile[style*="grid-column: span 2;"] {
+      grid-column: span 1 !important;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

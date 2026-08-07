@@ -1,0 +1,568 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Overtime Rate Calculator"
+  description="Calculate your overtime hourly rate, total overtime pay, and blended effective hourly rate. Customize overtime multipliers (1.5x, 2.0x) and estimate gross earnings."
+  category="Salary & Exit"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="overtime-rate-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+      <h3 style="font-size: 1rem; font-weight: 700; border-bottom: 1px solid var(--color-border); padding-bottom: 6px; margin-bottom: 0;">1. Calculator Settings</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="otr-currency-select">Currency</label>
+          <select id="otr-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Regular Hourly Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="otr-rate-input">Regular Hourly Pay Rate</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="otr-rate-input" min="0" step="0.50" value="25" aria-label="Regular Hourly Pay Rate" />
+          </div>
+        </div>
+        <input type="range" id="otr-rate-slider" min="5" max="150" step="1" value="25" class="slider-range" aria-label="Regular Rate Slider" />
+      </div>
+
+      <!-- Overtime Hours Worked -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="otr-hours-input">Overtime Hours Worked</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="otr-hours-input" min="0" step="0.5" value="10" aria-label="Overtime Hours Worked" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="otr-hours-slider" min="0" max="60" step="0.5" value="10" class="slider-range" aria-label="Overtime Hours Slider" />
+      </div>
+
+      <!-- Overtime Multiplier -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="otr-multiplier-input">Overtime Multiplier</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="otr-multiplier-input" min="1.0" max="3.0" step="0.1" value="1.5" aria-label="Overtime Multiplier" style="text-align: left;" />
+            <span class="percent-symbol">x</span>
+          </div>
+        </div>
+        <input type="range" id="otr-multiplier-slider" min="1.0" max="3.0" step="0.1" value="1.5" class="slider-range" aria-label="Multiplier Slider" />
+      </div>
+
+      <!-- Optional: Regular Hours Worked -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="otr-reg-hours-input">Regular Hours Worked <span style="font-size: 0.72rem; font-weight: normal; color: var(--color-text-light);">(Optional)</span></label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="otr-reg-hours-input" min="0" step="1" value="40" aria-label="Regular Hours Worked" style="text-align: left;" />
+            <span class="percent-symbol">hrs</span>
+          </div>
+        </div>
+        <input type="range" id="otr-reg-hours-slider" min="0" max="60" step="1" value="40" class="slider-range" aria-label="Regular Hours Slider" />
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="otr-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+
+    <!-- Jurisdiction Disclaimer -->
+    <p style="margin-top: var(--space-4); font-size: 0.7rem; line-height: 1.4; color: var(--color-text-light); font-style: italic;">
+      * Note: Overtime rules, pay thresholds, and statutory multipliers vary significantly by employer, union contract, state, and national jurisdiction. This tool is provided for general estimation and comparison purposes only.
+    </p>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Earnings breakdown summary</h3>
+
+    <!-- Primary Income Displays -->
+    <div class="net-value-container" style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5);">
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-success);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Overtime Rate</span>
+        <div id="res-otr-rate" style="font-size: 1.75rem; font-weight: 800; color: var(--color-success); margin-top: 4px;">$37.50/hr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="res-otr-rate-desc">Premium hourly wage rate</span>
+      </div>
+      <div class="net-value-box" style="flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background: var(--color-bg-base); border-top: 4px solid var(--color-primary);">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-light);">Overtime Pay</span>
+        <div id="res-otr-pay" style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">$375.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="res-otr-pay-desc">Earnings from 10.0 overtime hours</span>
+      </div>
+    </div>
+
+    <!-- Earnings Comparison Progress Bar -->
+    <div style="margin-bottom: var(--space-5);">
+      <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 6px;">
+        <span>Earnings Breakdown (Regular vs Overtime)</span>
+        <span id="otr-progress-percent">Regular: 72.7% | Overtime: 27.3%</span>
+      </div>
+      <div style="width: 100%; height: 12px; background: var(--color-border); border-radius: var(--radius-full); overflow: hidden; display: flex;">
+        <div id="otr-reg-bar" style="width: 72.7%; height: 100%; background: var(--color-success); transition: width 0.3s ease;"></div>
+        <div id="otr-ot-bar" style="width: 27.3%; height: 100%; background: var(--color-primary); transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="otr-verdict-card" style="border-left: 4px solid var(--color-success); padding: var(--space-4) var(--space-5); background: var(--color-bg-base);">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-muted);">Earnings Analysis</span>
+        <p id="res-otr-verdict-text" style="margin: 4px 0 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+          Your overtime rate is <strong>$37.50/hr</strong> (1.5x of $25.00/hr). For 10.0 overtime hours, you earn <strong>$375.00</strong>. Combined with regular earnings of <strong>$1,000.00</strong> for 40 hours, your total gross pay is <strong>$1,375.00</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: var(--space-3);">Calculated Pay Details</h4>
+    <div class="results-grid otr-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Overtime Rate</span>
+        <div class="tile-value" id="tile-otr-rate" style="color: var(--color-success);">$37.50</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-tile-otr-rate-desc">Multiplier premium rate</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Overtime Earnings</span>
+        <div class="tile-value" id="tile-otr-pay" style="color: var(--color-primary);">$375.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-tile-otr-pay-desc">From premium hours</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Regular Earnings</span>
+        <div class="tile-value" id="tile-otr-regular" style="color: var(--color-primary);">$1,000.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-tile-otr-reg-desc">From standard hours</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Total Gross Pay</span>
+        <div class="tile-value" id="tile-otr-gross" style="color: var(--color-success);">$1,375.00</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);">Total pre-tax earnings</span>
+      </div>
+      
+      <div class="result-tile" style="grid-column: span 2;">
+        <span class="tile-label">Effective Hourly Rate</span>
+        <div class="tile-value" id="tile-otr-effective" style="color: var(--color-success); font-size: 1.25rem;">$27.50/hr</div>
+        <span style="font-size: 0.65rem; color: var(--color-text-light);" id="lbl-tile-otr-eff-desc">Blended rate ($1,375.00 / 50.0 total hours)</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initOtrCalculator() {
+    const currencySelect = document.getElementById('otr-currency-select') as HTMLSelectElement;
+
+    // Inputs
+    const rateInput = document.getElementById('otr-rate-input') as HTMLInputElement;
+    const rateSlider = document.getElementById('otr-rate-slider') as HTMLInputElement;
+    const hoursInput = document.getElementById('otr-hours-input') as HTMLInputElement;
+    const hoursSlider = document.getElementById('otr-hours-slider') as HTMLInputElement;
+    const multiplierInput = document.getElementById('otr-multiplier-input') as HTMLInputElement;
+    const multiplierSlider = document.getElementById('otr-multiplier-slider') as HTMLInputElement;
+    const regHoursInput = document.getElementById('otr-reg-hours-input') as HTMLInputElement;
+    const regHoursSlider = document.getElementById('otr-reg-hours-slider') as HTMLInputElement;
+
+    if (!rateInput || !currencySelect) return;
+
+    // Helper functions for sliders
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    // Bind inputs
+    bindSlider(rateInput, rateSlider, calculateAll);
+    bindSlider(hoursInput, hoursSlider, calculateAll);
+    bindSlider(multiplierInput, multiplierSlider, calculateAll);
+    bindSlider(regHoursInput, regHoursSlider, calculateAll);
+
+    // Currency updates
+    currencySelect.addEventListener('change', () => {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = symbol);
+      calculateAll();
+    });
+
+    function getCurrencySymbol(curr: string) {
+      switch (curr) {
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'INR': return '₹';
+        case 'JPY': return '¥';
+        case 'AUD': return 'A$';
+        case 'CAD': return 'C$';
+        case 'SGD': return 'S$';
+        case 'CHF': return 'CHF';
+        default: return '$';
+      }
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('otr-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currencySelect.value = 'USD';
+        document.querySelectorAll('.currency-symbol').forEach(el => el.textContent = '$');
+
+        rateInput.value = '25';
+        rateSlider.value = '25';
+        hoursInput.value = '10';
+        hoursSlider.value = '10';
+        multiplierInput.value = '1.5';
+        multiplierSlider.value = '1.5';
+        regHoursInput.value = '40';
+        regHoursSlider.value = '40';
+
+        calculateAll();
+      });
+    }
+
+    function formatCurrency(val: number) {
+      const symbol = getCurrencySymbol(currencySelect.value);
+      const isNegative = val < 0;
+      const formatted = Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return (isNegative ? '-' : '') + symbol + formatted;
+    }
+
+    function calculateAll() {
+      const regRate = parseFloat(rateInput.value) || 0;
+      const otHours = parseFloat(hoursInput.value) || 0;
+      const multiplier = parseFloat(multiplierInput.value) || 1.5;
+      const regHours = parseFloat(regHoursInput.value) || 0;
+
+      // 1. Calculate Overtime Hourly Rate
+      const otRate = regRate * multiplier;
+
+      // 2. Calculate Earnings
+      const otPay = otHours * otRate;
+      const regPay = regHours * regRate;
+      const grossPay = regPay + otPay;
+      const totalHours = regHours + otHours;
+
+      // Blended effective hourly rate
+      const effectiveRate = totalHours > 0 ? (grossPay / totalHours) : 0;
+
+      // Percentages for breakdown
+      let regPct = 0;
+      let otPct = 0;
+      if (grossPay > 0) {
+        regPct = (regPay / grossPay) * 100;
+        otPct = (otPay / grossPay) * 100;
+      }
+
+      // DOM Updates
+      const resRate = document.getElementById('res-otr-rate');
+      const resPay = document.getElementById('res-otr-pay');
+      const resRateDesc = document.getElementById('res-otr-rate-desc');
+      const resPayDesc = document.getElementById('res-otr-pay-desc');
+      
+      const progressPercentLabel = document.getElementById('otr-progress-percent');
+      const regBar = document.getElementById('otr-reg-bar');
+      const otBar = document.getElementById('otr-ot-bar');
+      const resVerdictText = document.getElementById('res-otr-verdict-text');
+      const verdictCard = document.getElementById('otr-verdict-card');
+
+      const tileRate = document.getElementById('tile-otr-rate');
+      const tilePay = document.getElementById('tile-otr-pay');
+      const tileRegular = document.getElementById('tile-otr-regular');
+      const tileGross = document.getElementById('tile-otr-gross');
+      const tileEffective = document.getElementById('tile-otr-effective');
+
+      const lblTileRateDesc = document.getElementById('lbl-tile-otr-rate-desc');
+      const lblTilePayDesc = document.getElementById('lbl-tile-otr-pay-desc');
+      const lblTileRegDesc = document.getElementById('lbl-tile-otr-reg-desc');
+      const lblTileEffDesc = document.getElementById('lbl-tile-otr-eff-desc');
+
+      if (resRate) resRate.textContent = formatCurrency(otRate) + '/hr';
+      if (resPay) resPay.textContent = formatCurrency(otPay);
+      if (resRateDesc) resRateDesc.textContent = `${multiplier.toFixed(1)}x of ${formatCurrency(regRate)}/hr`;
+      if (resPayDesc) resPayDesc.textContent = `Earnings from ${otHours.toFixed(1)} overtime hours`;
+
+      // Progress bar sizing
+      if (regBar) regBar.style.width = regPct.toFixed(2) + '%';
+      if (otBar) otBar.style.width = otPct.toFixed(2) + '%';
+
+      if (progressPercentLabel) {
+        progressPercentLabel.textContent = `Regular: ${regPct.toFixed(1)}% | Overtime: ${otPct.toFixed(1)}%`;
+      }
+
+      // Diagnosis text
+      if (resVerdictText) {
+        const symbol = getCurrencySymbol(currencySelect.value);
+        resVerdictText.innerHTML = `Your overtime rate is <strong>${formatCurrency(otRate)}/hr</strong> (${multiplier.toFixed(1)}x of ${formatCurrency(regRate)}/hr). For <strong>${otHours.toFixed(1)} overtime hours</strong>, you earn <strong>${formatCurrency(otPay)}</strong> in overtime pay. Combined with regular pay of <strong>${formatCurrency(regPay)}</strong> for ${regHours.toFixed(1)} hours, your total gross pay is <strong>${formatCurrency(grossPay)}</strong> (effective blended rate: <strong>${formatCurrency(effectiveRate)}/hr</strong> for ${totalHours.toFixed(1)} total hours).`;
+      }
+
+      // Tiles
+      if (tileRate) tileRate.textContent = formatCurrency(otRate);
+      if (tilePay) tilePay.textContent = formatCurrency(otPay);
+      if (tileRegular) tileRegular.textContent = formatCurrency(regPay);
+      if (tileGross) tileGross.textContent = formatCurrency(grossPay);
+      if (tileEffective) tileEffective.textContent = formatCurrency(effectiveRate) + '/hr';
+
+      // Descriptions
+      if (lblTileRateDesc) lblTileRateDesc.textContent = `${multiplier.toFixed(1)}x premium rate`;
+      if (lblTilePayDesc) lblTilePayDesc.textContent = `For ${otHours.toFixed(1)} overtime hours`;
+      if (lblTileRegDesc) lblTileRegDesc.textContent = `For ${regHours.toFixed(1)} regular hours`;
+      if (lblTileEffDesc) lblTileEffDesc.textContent = `Blended rate (${formatCurrency(grossPay)} / ${totalHours.toFixed(1)} total hours)`;
+    }
+
+    // Trigger initial calculation
+    calculateAll();
+
+    // Clipboard Copy Handler
+    window.addEventListener('copy-calculator-results', () => {
+      const reg = rateInput.value;
+      const otHrs = hoursInput.value;
+      const mult = multiplierInput.value;
+      const regHrs = regHoursInput.value;
+
+      const report = `Overtime Rate Analysis Report:\n` +
+                     `Regular Hourly Rate: ${reg} | Overtime Hours: ${otHrs} | Multiplier: ${mult}x | Regular Hours: ${regHrs}\n` +
+                     `Overtime Hourly Rate: ${document.getElementById('res-otr-rate')?.textContent}\n` +
+                     `Total Overtime Pay: ${document.getElementById('res-otr-pay')?.textContent}\n` +
+                     `Regular Earnings: ${document.getElementById('tile-otr-regular')?.textContent}\n` +
+                     `Total Gross Pay: ${document.getElementById('tile-otr-gross')?.textContent}\n` +
+                     `Effective Hourly Rate: ${document.getElementById('tile-otr-effective')?.textContent}\n` +
+                     `Diagnosis: ${document.getElementById('res-otr-verdict-text')?.textContent}`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initOtrCalculator);
+  document.addEventListener('astro:after-swap', initOtrCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  /* Input symbol wrapper */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 145px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* Currency select menu */
+  .currency-select {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Slider range */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .tile-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 600px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .results-grid .result-tile[style*="grid-column: span 2;"] {
+      grid-column: span 1 !important;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      max-width: 100% !important;
+    }
+  }
+</style>

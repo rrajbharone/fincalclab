@@ -1,0 +1,293 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DoubleTimeCalculator from '../../components/calculator/DoubleTimeCalculator.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Double Time Pay Calculator', path: '/calculator/double-time-pay-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is double-time pay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Double-time pay is a premium wage rate where an employee is paid twice their standard hourly rate for working specific hours, such as holidays, Sundays, or extreme overtime shifts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate a double-time rate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To calculate your double-time hourly rate, multiply your regular base hourly rate by 2. For example, if you earn $30.00/hr, your double-time rate is $60.00/hr."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between double time and standard overtime?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Standard overtime (time and a half) uses a 1.5x multiplier, typically legally mandated for hours worked beyond 40 in a single workweek. Double time uses a 2.0x multiplier and is usually offered voluntarily by employers, union contracts, or required for specific holiday shifts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is double time legally required?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In most jurisdictions, including under federal FLSA rules in the US, double time is not legally mandated. However, California law requires double-time pay for any hours worked beyond 12 in a single workday, or for hours worked beyond 8 on the seventh consecutive day of work in a workweek."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does double time affect my progressive tax bracket?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Working heavy double-time hours can temporarily spike your tax withholding rate on that specific paycheck. However, your actual tax liability is calculated annually, meaning any over-withheld tax will be returned to you as a refund in the spring."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Double Time Pay Calculator - Calculate Double Time Hourly Wage"
+  description="Free online Double Time Pay Calculator. Calculate your double-time hourly rate, total premium earnings, and blended effective hourly rate instantly."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <DoubleTimeCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      <div class="prose">
+        <h2>What Is Double-Time Pay?</h2>
+        <p>
+          In employment accounting and compensation management, <strong>double-time pay</strong> is a premium wage structure where an employee is paid exactly twice their regular hourly pay rate for hours worked during specific periods. These periods usually include public holidays, weekend shifts, or hours worked after exceeding extreme daily or weekly limits.
+        </p>
+        <p>
+          Using a <strong>Double Time Pay Calculator</strong> helps workers, payroll administrators, and contractors forecast their gross compensation. Understanding how double-time rates compound with regular wages allows you to negotiate union agreements, price contract assignments, and evaluate the financial return of working holiday shifts.
+        </p>
+
+        <h2>What a Double-Time Rate Means</h2>
+        <p>
+          A double-time rate represents a 2.0x multiplier applied to your base hourly wage. While standard overtime is typically set at a 1.5x multiplier (time and a half), double-time rates are reserved as an premium incentive for working during highly inconvenient times or under demanding conditions.
+        </p>
+        <p>
+          For instance, working on Thanksgiving, Christmas, or New Year's Day often triggers double-time wages. In other cases, collective bargaining agreements mandate that any work performed on a Sunday must be compensated at double the standard rate.
+        </p>
+
+        <h2>How to Calculate Double-Time Pay</h2>
+        <p>
+          To calculate your premium earnings for a pay period, you can apply the standard <strong>double time pay formula</strong>:
+        </p>
+        <ol>
+          <li>
+            <strong>Identify the Base Rate:</strong> Locate your regular contract hourly pay rate (e.g., $30.00/hr).
+          </li>
+          <li>
+            <strong>Apply the Multiplier:</strong> Multiply the base rate by your double-time multiplier (typically 2.0x) to determine the premium rate.
+          </li>
+          <li>
+            <strong>Multiply by Premium Hours:</strong> Multiply the double-time hourly rate by the total double-time hours worked.
+          </li>
+        </ol>
+
+        <h2>The Double-Time Pay Formula</h2>
+        <p>
+          The mathematical representation of double-time earnings is straightforward:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Double Time Rate} = \\text{Base Hourly Rate} \\times 2\\)"}
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Double Time Pay} = \\text{Double Time Rate} \\times \\text{Double Time Hours Worked}\\)"}
+        </p>
+        <p>
+          If you are working a combination of standard and double-time shifts, your total gross earnings are the sum of both:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total Gross Pay} = (\\text{Regular Hours} \\times \\text{Regular Rate}) + (\\text{Double Time Hours} \\times \\text{Double Time Rate})\\)"}
+        </p>
+
+        <h2>How the 2x Rate Works in Practice</h2>
+        <p>
+          Let's explore a practical example using a regular base pay of $30.00 per hour:
+        </p>
+        <ul>
+          <li>
+            Your double-time rate is: {"\\(\\$30.00 \\times 2.0 = \\mathbf{\\$60.00/hr}\\)"}.
+          </li>
+          <li>
+            If you work 5 hours of double-time during a holiday shift, you earn: {"\\(5 \\text{ hours} \\times \\$60.00/\\text{hr} = \\mathbf{\\$300.00}\\)"}.
+          </li>
+          <li>
+            If you also worked 40 standard hours, your regular pay is: {"\\(40 \\text{ hours} \\times \\$30.00/\\text{hr} = \\mathbf{\\$1,200.00}\\)"}.
+          </li>
+          <li>
+            Your combined gross pay is: {"\\(\\$1,200.00 + \\$300.00 = \\mathbf{\\$1,500.00}\\)"}.
+          </li>
+          <li>
+            Your blended effective hourly rate across all 45 hours is: {"\\(\\$1,500.00 \\div 45 = \\mathbf{\\$33.33/hr}\\)"}.
+          </li>
+        </ul>
+
+        <h2>Double Time vs. Standard Overtime</h2>
+        <p>
+          It is critical to distinguish double time from standard overtime (time and a half):
+        </p>
+        <ul>
+          <li>
+            <strong>Overtime (Time and a Half):</strong> Employs a 1.5x multiplier. Under federal FLSA guidelines, this is the legal minimum for non-exempt workers logging more than 40 hours in a single workweek.
+          </li>
+          <li>
+            <strong>Double Time:</strong> Employs a 2.0x multiplier. In most states, it is not legally mandated and is instead governed by company policies, employment contracts, or union agreements. However, California is a notable exception: employers must pay double time for any hours worked beyond 12 in a single day, or for hours worked beyond 8 on the seventh consecutive day of a workweek.
+          </li>
+        </ul>
+
+        <h2>When Double Time May Apply</h2>
+        <p>
+          Typically, double-time wages are offered under the following circumstances:
+        </p>
+        <ol>
+          <li>
+            <strong>Working on Federal or Statutory Holidays:</strong> Many companies offer double-time pay on major holidays (e.g., Thanksgiving, Christmas, New Year's) as a premium incentive for staff coverage.
+          </li>
+          <li>
+            <strong>Extreme Shift Lengths:</strong> Working extended shifts (e.g., healthcare workers logging more than 12 or 16 consecutive hours) often triggers double-time surcharges.
+          </li>
+          <li>
+            <strong>Consecutive Workdays:</strong> Under specific state laws or collective agreements, working seven consecutive days in a single week triggers double-time wages on the final day.
+          </li>
+        </ol>
+
+        <h2>Common Double-Time Calculation Mistakes</h2>
+        <ul>
+          <li>
+            <strong>Miscalculating the Regular Rate of Pay:</strong> If you receive shift differentials, production bonuses, or commission, your employer must calculate your blended regular rate of pay first, and then double that blended rate, rather than just doubling your baseline dayshift rate.
+          </li>
+          <li>
+            <strong>Confusing 1.5x and 2.0x Hours:</strong> Ensure you separate standard overtime hours from holiday or double-time hours. Combining them into a single bucket will lead to incorrect payroll totals.
+          </li>
+        </ul>
+
+        <h2>Related Payroll and Salary Tools</h2>
+        <p>
+          To manage your hourly wages, paycheck allocations, and other employment compensation calculations, check out these related tools:
+        </p>
+        <ul>
+          <li>
+            If you are tracking standard overtime hours (at 1.5x), try our specialized <a href="/calculator/overtime-rate-calculator">Overtime Rate Calculator</a>.
+          </li>
+          <li>
+            To model progressive tax withholdings and take-home pay, use the <a href="/calculator/overtime-pay-calculator">Overtime Pay Calculator</a>.
+          </li>
+          <li>
+            Analyze daily, monthly, and minute-by-minute wage equivalents using the <a href="/calculator/daily-salary-calculator">Daily Salary Calculator</a>.
+          </li>
+          <li>
+            Calculate shift differentials, evening premiums, and weekend surcharges with the <a href="/calculator/shift-differential-calculator">Shift Differential Calculator</a>.
+          </li>
+          <li>
+            Model pay raises and merit-based adjustments using the <a href="/calculator/pay-raise-calculator">Pay Raise Calculator</a> or <a href="/calculator/salary-hike-calculator">Salary Hike Calculator</a>.
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Double Time FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is double-time pay?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Double-time pay is a premium wage rate where an employee is paid twice their standard hourly rate for working specific hours, such as holidays, Sundays, or extreme overtime shifts.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How do you calculate a double-time rate?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              To calculate your double-time hourly rate, multiply your regular base hourly rate by 2. For example, if you earn $30.00/hr, your double-time rate is $60.00/hr.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between double time and standard overtime?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Standard overtime (time and a half) uses a 1.5x multiplier, typically legally mandated for hours worked beyond 40 in a single workweek. Double time uses a 2.0x multiplier and is usually offered voluntarily by employers, union contracts, or required for specific holiday shifts.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Is double time legally required?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              In most jurisdictions, including under federal FLSA rules in the US, double time is not legally mandated. However, California law requires double-time pay for any hours worked beyond 12 in a single workday, or for hours worked beyond 8 on the seventh consecutive day of work in a workweek.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does double time affect my progressive tax bracket?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Working heavy double-time hours can temporarily spike your tax withholding rate on that specific paycheck. However, your actual tax liability is calculated annually, meaning any over-withheld tax will be returned to you as a refund in the spring.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

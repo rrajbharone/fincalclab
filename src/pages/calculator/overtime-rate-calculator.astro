@@ -1,0 +1,324 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import OvertimeRateCalculator from '../../components/calculator/OvertimeRateCalculator.astro';
+
+const breadcrumbs = [
+  { label: 'Home', path: '/' },
+  { label: 'Calculators', path: '/all-calculators' },
+  { label: 'Overtime Rate Calculator', path: '/calculator/overtime-rate-calculator' }
+];
+
+// JSON-LD Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How is overtime rate calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The overtime rate is calculated by multiplying your regular hourly pay rate by the overtime multiplier. The standard multiplier is 1.5x (time and a half), meaning if your base rate is $20.00/hr, your overtime rate is $30.00/hr."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between time and a half and double time?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Time and a half uses a multiplier of 1.5x, which is standard for hours worked beyond 40 in a single workweek. Double time uses a multiplier of 2.0x, which employers typically offer for working on holidays, Sundays, or after logging extreme overtime hours."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the calculator account for tax deductions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This calculator focuses on gross overtime earnings. If you need to estimate tax withholding or net take-home pay, we recommend using our Overtime Pay Calculator which features comprehensive progressive tax rate simulations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are salaried employees eligible for overtime pay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under the Fair Labor Standards Act (FLSA), salaried employees are only eligible for overtime pay if they are classified as non-exempt. Salaried workers who earn below the statutory threshold or do not meet specific administrative, executive, or professional duty tests must receive overtime pay for hours worked over 40."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is an effective hourly rate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An effective hourly rate (or blended rate) is your total gross earnings (regular pay + overtime pay) divided by the total hours worked. It shows your average earning rate per hour across the entire pay period."
+      }
+    }
+  ]
+};
+---
+
+<Layout
+  title="Overtime Rate Calculator - Calculate Overtime Hourly Wage"
+  description="Free online Overtime Rate Calculator. Calculate your premium overtime hourly wage, total overtime earnings, and blended effective hourly rate instantly."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Inject JSON-LD Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Component Slot -->
+    <OvertimeRateCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      <div class="prose">
+        <h2>What Is an Overtime Rate?</h2>
+        <p>
+          An <strong>overtime rate</strong> is the premium hourly wage paid to an employee for working hours that exceed the standard workweek limit. In many jurisdictions, including under the United States Fair Labor Standards Act (FLSA), standard work hours are capped at 40 hours per week. Any additional hours logged beyond this threshold must be compensated at a higher premium rate.
+        </p>
+        <p>
+          Using an <strong>Overtime Hourly Rate Calculator</strong> makes it simple for hourly wage earners and freelancers to forecast their gross income. Understanding how premium wage structures compound helps you evaluate if volunteering for extra shifts or weekend coverage makes financial sense for your household budget.
+        </p>
+
+        <h2>What Overtime Pay Means</h2>
+        <p>
+          Historically, overtime pay was established to protect workers from overwork and incentivize employers to hire more staff rather than overextending their existing workforce. Today, it represents a crucial opportunity for workers to boost their savings, pay down debt, or fund personal goals.
+        </p>
+        <p>
+          For many industries—such as healthcare, manufacturing, hospitality, and construction—overtime shifts are a regular part of operations. Calculating these earnings accurately ensures that your payroll department is compensating you correctly.
+        </p>
+
+        <h2>How to Calculate Overtime Pay</h2>
+        <p>
+          The basic calculation involves determining your premium rate and multiplying it by the extra hours worked. You can follow this straightforward three-step method:
+        </p>
+        <ol>
+          <li>
+            <strong>Determine the Regular Rate of Pay:</strong> This is your base hourly contract rate (e.g., $25.00/hr).
+          </li>
+          <li>
+            <strong>Apply the Overtime Multiplier:</strong> Multiply your regular rate by the employer's overtime multiplier (typically 1.5x) to find your overtime hourly wage.
+          </li>
+          <li>
+            <strong>Multiply by Overtime Hours:</strong> Multiply the premium overtime hourly wage by the total overtime hours logged during the pay period.
+          </li>
+        </ol>
+
+        <h2>How the 1.5x Overtime Rate Works</h2>
+        <p>
+          The most common premium structure is <strong>time and a half</strong>, which uses an overtime multiplier of 1.5x. Under this rule, for every hour of overtime you work, you earn your regular hourly wage plus an additional 50% premium surcharge.
+        </p>
+        <p>
+          For example, if your base hourly rate is $30.00/hr, your time-and-a-half rate is calculated as:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Overtime Rate} = \\$30.00 \\times 1.5 = \\$45.00\\text{ per hour}\\)"}
+        </p>
+        <p>
+          If you work 10 hours of overtime, you receive $450.00 in premium compensation on top of your standard paycheck.
+        </p>
+
+        <h2>How to Calculate Overtime Rate from an Hourly Wage</h2>
+        <p>
+          Depending on your company's policy or union agreements, you may qualify for different multipliers. The most common rates include:
+        </p>
+        <ul>
+          <li>
+            <strong>Time and a Half (1.5x):</strong> The legal minimum in many countries for hourly workers exceeding 40 hours a week.
+          </li>
+          <li>
+            <strong>Double Time (2.0x):</strong> Often offered for holiday shifts, weekend emergencies, or hours exceeding a secondary threshold (e.g., working more than 12 hours in a single day).
+          </li>
+          <li>
+            <strong>Triple Time (3.0x):</strong> Rare, but sometimes offered during critical labor shortages or high-risk emergency responses.
+          </li>
+        </ul>
+        <p>
+          To calculate your rate for any multiplier, apply the standard formula:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-6) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Overtime Hourly Rate} = \\text{Regular Hourly Rate} \\times \\text{Overtime Multiplier}\\)"}
+        </p>
+
+        <h2>Practical Examples of Overtime Calculation</h2>
+        <p>
+          Let's review two typical real-world scenarios to illustrate how these formulas compound:
+        </p>
+
+        <h3>Example 1: Standard Time-and-a-Half Workweek</h3>
+        <p>
+          Suppose an employee works 40 regular hours and 10 overtime hours at a base rate of $25.00/hr with a standard 1.5x multiplier:
+        </p>
+        <ul>
+          <li>
+            <strong>Regular Pay:</strong> {"\\(40 \\text{ hours} \\times \\$25.00/\\text{hr} = \\mathbf{\\$1,000.00}\\)"}
+          </li>
+          <li>
+            <strong>Overtime Rate:</strong> {"\\(\\$25.00/\\text{hr} \\times 1.5 = \\mathbf{\\$37.50/\\text{hr}}\\)"}
+          </li>
+          <li>
+            <strong>Overtime Pay:</strong> {"\\(10 \\text{ hours} \\times \\$37.50/\\text{hr} = \\mathbf{\\$375.00}\\)"}
+          </li>
+          <li>
+            <strong>Total Gross Pay:</strong> {"\\(\\$1,000.00 + \\$375.00 = \\mathbf{\\$1,375.00}\\)"}
+          </li>
+          <li>
+            <strong>Effective Hourly Rate:</strong> {"\\(\\$1,375.00 \\div 50 \\text{ hours} = \\mathbf{\\$27.50/\\text{hr}}\\)"}
+          </li>
+        </ul>
+
+        <h3>Example 2: Holiday Double-Time Shifts</h3>
+        <p>
+          Suppose a nurse works 36 regular hours at $45.00/hr and logs 8 hours of holiday overtime at a double-time (2.0x) rate:
+        </p>
+        <ul>
+          <li>
+            <strong>Regular Pay:</strong> {"\\(36 \\text{ hours} \\times \\$45.00/\\text{hr} = \\mathbf{\\$1,620.00}\\)"}
+          </li>
+          <li>
+            <strong>Overtime Rate:</strong> {"\\(\\$45.00/\\text{hr} \\times 2.0 = \\mathbf{\\$90.00/\\text{hr}}\\)"}
+          </li>
+          <li>
+            <strong>Overtime Pay:</strong> {"\\(8 \\text{ hours} \\times \\$90.00/\\text{hr} = \\mathbf{\\$720.00}\\)"}
+          </li>
+          <li>
+            <strong>Total Gross Pay:</strong> {"\\(\\$1,620.00 + \\$720.00 = \\mathbf{\\$2,340.00}\\)"}
+          </li>
+          <li>
+            <strong>Effective Hourly Rate:</strong> {"\\(\\$2,340.00 \\div 44 \\text{ hours} = \\mathbf{\\$53.18/\\text{hr}}\\)"}
+          </li>
+        </ul>
+
+        <h2>Regular Pay vs. Overtime Pay</h2>
+        <p>
+          It is important to track these two categories separately on your pay stub. Regular pay represents your guaranteed income baseline, whereas overtime pay is highly variable and depends on scheduling needs, seasonal demand, or volunteer availability.
+        </p>
+        <p>
+          Relying too heavily on overtime to fund recurring fixed costs (like rent or car payments) can lead to financial strain if your employer suddenly cuts back on overtime hours. Financial advisors recommend using regular pay to cover essential expenses, and earmarking overtime premiums for savings, debt reduction, or investments.
+        </p>
+
+        <h2>Overtime for Salaried Employees</h2>
+        <p>
+          A common misconception is that salaried employees never receive overtime. Under labor laws like the FLSA, salaried employees are divided into two categories:
+        </p>
+        <ul>
+          <li>
+            <strong>Exempt Employees:</strong> Salaried workers who earn above a statutory threshold (currently $43,888/year in the US, rising to $58,656 on Jan 1, 2025) and perform administrative, professional, or executive job duties. These workers are exempt from overtime laws and do not receive extra pay for working more than 40 hours.
+          </li>
+          <li>
+            <strong>Non-Exempt Employees:</strong> Workers who earn below the salary threshold or do not meet the duty tests. Employers must pay non-exempt salaried workers overtime premiums for hours worked over 40.
+          </li>
+        </ul>
+        <p>
+          To calculate the overtime rate for a non-exempt salaried employee, first convert their annual salary to an equivalent hourly rate, and then apply the standard multiplier.
+        </p>
+
+        <h2>Related Financial Tools</h2>
+        <p>
+          To manage your paycheck earnings and explore related salary metrics, check out these related calculations:
+        </p>
+        <ul>
+          <li>
+            If you want to simulate tax deductions, allowances, or progressive tax brackets on your extra shifts, try our interactive <a href="/calculator/overtime-pay-calculator">Overtime Pay Calculator</a>.
+          </li>
+          <li>
+            Evaluate your hourly wages against shift-based premiums using the <a href="/calculator/shift-differential-calculator">Shift Differential Calculator</a>.
+          </li>
+          <li>
+            If you need to calculate premium double-time (2.0x) hours specifically, use our <a href="/calculator/double-time-pay-calculator">Double Time Pay Calculator</a>.
+          </li>
+          <li>
+            Convert salary and wage rates into daily income equivalents using the <a href="/calculator/daily-salary-calculator">Daily Salary Calculator</a>.
+          </li>
+          <li>
+            Calculate pay rises, raises, or salary hikes with the <a href="/calculator/salary-hike-calculator">Salary Hike Calculator</a> or <a href="/calculator/pay-raise-calculator">Pay Raise Calculator</a>.
+          </li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Overtime Rate FAQs</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How is overtime rate calculated?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              The overtime rate is calculated by multiplying your regular hourly pay rate by the overtime multiplier. The standard multiplier is 1.5x (time and a half), meaning if your base rate is $20.00/hr, your overtime rate is $30.00/hr.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between time and a half and double time?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Time and a half uses a multiplier of 1.5x, which is standard for hours worked beyond 40 in a single workweek. Double time uses a multiplier of 2.0x, which employers typically offer for working on holidays, Sundays, or after logging extreme overtime hours.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Does the calculator account for tax deductions?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              This calculator focuses on gross overtime earnings. If you need to estimate tax withholding or net take-home pay, we recommend using our Overtime Pay Calculator which features comprehensive progressive tax rate simulations.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Are salaried employees eligible for overtime pay?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              Under the Fair Labor Standards Act (FLSA), salaried employees are only eligible for overtime pay if they are classified as non-exempt. Salaried workers who earn below the statutory threshold or do not meet specific administrative, executive, or professional duty tests must receive overtime pay for hours worked over 40.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is an effective hourly rate?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.5; color: var(--color-text-muted);">
+              An effective hourly rate (or blended rate) is your total gross earnings (regular pay + overtime pay) divided by the total hours worked. It shows your average earning rate per hour across the entire pay period.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

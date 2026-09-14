@@ -622,25 +622,25 @@ import Card from '../ui/Card.astro';
         const allPoints = [...prePoints, ...postPoints];
 
         const maxBalance = Math.max(...allPoints.map(p => p.balance), 100000);
-        const wrapperWidth = chartWrapper.clientWidth || 360;
-        const wrapperHeight = 200;
+        const svgWidth = 400;
+        const svgHeight = 200;
 
         // Compute SVG path coordinates
         // X maps to age (curAge to expectancy)
         // Y maps to balance (0 to maxBalance)
         const totalAges = expectancy - curAge;
         const pointsSvgStr = allPoints.map((p, idx) => {
-          const x = ((p.age - curAge) / totalAges) * wrapperWidth;
-          const y = wrapperHeight - (p.balance / maxBalance) * (wrapperHeight - 20) - 10;
+          const x = ((p.age - curAge) / totalAges) * svgWidth;
+          const y = svgHeight - (p.balance / maxBalance) * (svgHeight - 20) - 10;
           return `${x.toFixed(1)},${y.toFixed(1)}`;
         }).join(' ');
 
         // Draw vertical retirement line
-        const retireX = ((retAge - curAge) / totalAges) * wrapperWidth;
+        const retireX = ((retAge - curAge) / totalAges) * svgWidth;
 
         // HTML injection
         chartWrapper.innerHTML = `
-          <svg width="100%" height="100%" viewBox="0 0 ${wrapperWidth} ${wrapperHeight}" preserveAspectRatio="none" style="overflow: visible;">
+          <svg width="100%" height="100%" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none" style="overflow: visible;">
             <!-- Gradients -->
             <defs>
               <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
@@ -650,17 +650,17 @@ import Card from '../ui/Card.astro';
             </defs>
 
             <!-- Grid Lines -->
-            <line x1="0" y1="${wrapperHeight - 10}" x2="${wrapperWidth}" y2="${wrapperHeight - 10}" stroke="var(--color-border)" stroke-width="1" />
-            <line x1="${retireX.toFixed(1)}" y1="10" x2="${retireX.toFixed(1)}" y2="${wrapperHeight - 10}" stroke="var(--color-border)" stroke-dasharray="4" stroke-width="1.5" />
+            <line x1="0" y1="${svgHeight - 10}" x2="${svgWidth}" y2="${svgHeight - 10}" stroke="var(--color-border)" stroke-width="1" />
+            <line x1="${retireX.toFixed(1)}" y1="10" x2="${retireX.toFixed(1)}" y2="${svgHeight - 10}" stroke="var(--color-border)" stroke-dasharray="4" stroke-width="1.5" />
 
             <!-- Path Area -->
-            <path d="M 0,${wrapperHeight - 10} L ${pointsSvgStr} L ${wrapperWidth},${wrapperHeight - 10} Z" fill="url(#area-grad)" />
+            <path d="M 0,${svgHeight - 10} L ${pointsSvgStr} L ${svgWidth},${svgHeight - 10} Z" fill="url(#area-grad)" />
 
             <!-- Path Line -->
             <polyline points="${pointsSvgStr}" fill="none" stroke="var(--color-primary)" stroke-width="3" stroke-linecap="round" />
 
             <!-- Highlight Dot at retirement age -->
-            <circle cx="${retireX.toFixed(1)}" cy="${(wrapperHeight - (projectedEgg / maxBalance) * (wrapperHeight - 20) - 10).toFixed(1)}" r="6" fill="var(--color-accent)" stroke="white" stroke-width="2" />
+            <circle cx="${retireX.toFixed(1)}" cy="${(svgHeight - (projectedEgg / maxBalance) * (svgHeight - 20) - 10).toFixed(1)}" r="6" fill="var(--color-accent)" stroke="white" stroke-width="2" />
           </svg>
         `;
       }

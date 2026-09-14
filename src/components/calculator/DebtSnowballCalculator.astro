@@ -398,18 +398,18 @@ import Card from '../ui/Card.astro';
       if (endLabel) endLabel.textContent = `Month ${snowballMonths}`;
 
       if (chartWrapper && simulation.schedule.length > 0) {
-        const wrapperWidth = chartWrapper.clientWidth || 360;
-        const wrapperHeight = 180;
+        const svgWidth = 400;
+        const svgHeight = 180;
         const maxBalance = Math.max(totalOwedInitial, ...simulation.schedule.map(pt => pt.balance), 1);
 
         const points = simulation.schedule.map((pt, idx) => {
-          const x = (pt.month / snowballMonths) * wrapperWidth;
-          const y = wrapperHeight - (pt.balance / maxBalance) * (wrapperHeight - 20) - 10;
+          const x = (pt.month / snowballMonths) * svgWidth;
+          const y = svgHeight - (pt.balance / maxBalance) * (svgHeight - 20) - 10;
           return `${x.toFixed(1)},${y.toFixed(1)}`;
         }).join(' ');
 
         chartWrapper.innerHTML = `
-          <svg width="100%" height="100%" viewBox="0 0 ${wrapperWidth} ${wrapperHeight}" preserveAspectRatio="none" style="overflow: hidden;">
+          <svg width="100%" height="100%" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none" style="overflow: hidden;">
             <defs>
               <linearGradient id="debt-grad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.25"/>
@@ -418,10 +418,10 @@ import Card from '../ui/Card.astro';
             </defs>
 
             <!-- Bottom axis line -->
-            <line x1="0" y1="${wrapperHeight - 10}" x2="${wrapperWidth}" y2="${wrapperHeight - 10}" stroke="var(--color-border)" stroke-width="1.5" />
+            <line x1="0" y1="${svgHeight - 10}" x2="${svgWidth}" y2="${svgHeight - 10}" stroke="var(--color-border)" stroke-width="1.5" />
 
             <!-- Path Area -->
-            <path d="M 0,${wrapperHeight - 10} L ${points} L ${wrapperWidth},${wrapperHeight - 10} Z" fill="url(#debt-grad)" />
+            <path d="M 0,${svgHeight - 10} L ${points} L ${svgWidth},${svgHeight - 10} Z" fill="url(#debt-grad)" />
 
             <!-- Path Line -->
             <polyline points="${points}" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />

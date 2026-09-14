@@ -1,0 +1,421 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SinkingFundCalculator from '../../components/calculator/SinkingFundCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Sinking Fund Calculator', item: '/calculator/sinking-fund-calculator' }
+];
+
+// Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a sinking fund?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A sinking fund is a strategic personal savings technique where you set aside a specific amount of money every month or pay period toward an anticipated future expense or financial goal. Unlike an emergency fund, which is reserved for unexpected emergencies, a sinking fund pays for known, predictable costs like car insurance, holidays, home repairs, or property taxes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a sinking fund and an emergency fund?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An emergency fund protects you against unforeseen financial crises such as sudden job loss, urgent medical bills, or major unexpected catastrophes. A sinking fund is designated for planned, foreseeable expenses that you know will happen at a specific future date, such as annual car registration, holiday gifting, or scheduled vehicle maintenance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate monthly sinking fund contributions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The basic formula is: Monthly Contribution = (Total Target Expense - Current Savings) / Number of Months Remaining. When saving in an interest-bearing account such as a High-Yield Savings Account (HYSA), compound interest accelerates your balance, reducing the out-of-pocket monthly contribution required according to the ordinary annuity formula."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many sinking funds should I have?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most households benefit from having 3 to 6 active sinking funds. Common categories include car maintenance and replacement, annual insurance premiums, property taxes, vacation travel, home repairs, and holiday expenses. Having dedicated sub-accounts or digital savings buckets prevents accidental spending."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where should I keep my sinking fund money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sinking fund money is best kept in a high-yield savings account (HYSA) or a money market account (MMA) that is FDIC or NCUA insured. This provides liquidity, safety of principal, and high annual interest yield (often 3.5% to 5.0% APY) without market volatility risks."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you earn compound interest in a sinking fund?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Storing your sinking fund in a high-yield savings account allows your balance to earn compound interest every month. As your balance grows from monthly deposits and compounding interest, the total interest earned reduces the amount of cash you must contribute out of your own paycheck."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Sinking Fund Calculator",
+  "url": "https://fincalclab.com/calculator/sinking-fund-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free interactive Sinking Fund Calculator. Calculate required periodic contributions, compound interest, target deadlines, and progress toward future expenses.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Sinking Fund Calculator - Calculate Monthly Savings & Interest"
+  description="Calculate your required monthly sinking fund savings. Accurately plan for upcoming expenses, holidays, car repairs, and taxes with compound interest growth."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Tool -->
+    <SinkingFundCalculator />
+
+    <!-- Educational & Technical SEO Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Cross-Link Featured Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Proactive Wealth & Debt Defense</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Why Sinking Funds Are Your Best Shield Against Credit Card Debt</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Most budget failures happen not because of daily lattes, but because of predictable non-monthly bills: car insurance renewals, tire replacements, holiday gifting, and annual vet visits. When you build sinking funds alongside your <a href="/calculator/debt-reduction-planner-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Debt Reduction Plan</a>, you eliminate the vicious cycle of paying down credit card balances only to re-borrow when routine bills arrive.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What is a Sinking Fund?</h2>
+        <p>
+          A <strong>sinking fund</strong> is a proactive, purpose-driven budgeting strategy where you set aside small, regular amounts of money over time to cover a specific, anticipated future expense. Rather than suffering an overwhelming financial shock when a large bill arrives, a sinking fund breaks the expenditure into manageable monthly or paycheck-sized bites.
+        </p>
+        <p>
+          The term originated in corporate finance and government accounting, where organizations established dedicated capital reserve funds to pay off bonds, retire debts, or replace large machinery over a multi-year horizon. In modern personal finance, sinking funds have become the cornerstone of stress-free budgeting, transforming irregular and seasonal expenses into predictable monthly line items.
+        </p>
+
+        <h2>How a Sinking Fund Works: Smoothing Irregular Expenses</h2>
+        <p>
+          In traditional household cash flow management, most people experience what financial planners describe as "budget rollercoasters." While your paycheck arrives on a steady weekly, bi-weekly, or monthly cadence, your actual expenses fluctuate drastically throughout the year:
+        </p>
+        <ul>
+          <li><strong>March:</strong> Car insurance semi-annual premium ($850)</li>
+          <li><strong>July:</strong> Summer family vacation travel ($2,400)</li>
+          <li><strong>September:</strong> Property taxes & school registration ($1,600)</li>
+          <li><strong>December:</strong> Holiday travel and gifting ($1,200)</li>
+        </ul>
+        <p>
+          When you fail to anticipate these expenses, they feel like emergencies. You may be forced to draw down your emergency savings or rely on high-interest credit cards. With a <strong>sinking fund savings calculator</strong>, you calculate the annualized total of these predictable costs and save a fraction every pay period. When the bill arrives, the money is already sitting in your designated account, fully paid without stress.
+        </p>
+
+        <h2>How to Calculate a Sinking Fund: Step-by-Step</h2>
+        <p>
+          Calculating your required sinking fund savings contribution is straightforward. Whether you are saving for a new vehicle, home HVAC replacement, or holiday travel, follow these four basic steps:
+        </p>
+        <ol>
+          <li>
+            <strong>Define the Target Expense:</strong> Determine the exact price or realistic budget for the item or bill. For instance, if you plan to pay $1,200 for your annual auto insurance policy.
+          </li>
+          <li>
+            <strong>Inventory Any Current Savings:</strong> Deduct any cash you have already accumulated toward that specific goal. If you currently have $200 set aside, your remaining gap is $1,000.
+          </li>
+          <li>
+            <strong>Establish the Time Horizon (Deadline):</strong> Count the number of weeks, months, or paychecks between today and the date the payment is due. For an expense due in 10 months, your time horizon is 10.
+          </li>
+          <li>
+            <strong>Apply the Sinking Fund Formula:</strong> Divide the remaining gap by the number of contribution periods. In this example, $1,000 divided by 10 months equals a <strong>monthly sinking fund contribution</strong> of $100.
+          </li>
+        </ol>
+
+        <h2>The Sinking Fund Formula: With & Without Compound Interest</h2>
+        <p>
+          Depending on where you hold your money and the duration of your savings timeline, you can calculate your sinking fund with simple division or using time value of money equations.
+        </p>
+
+        <h3>1. The Basic Zero-Interest Formula</h3>
+        <p>
+          If you keep your sinking funds in a cash envelope or standard non-interest-bearing checking account:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 1rem;">
+          <strong>PMT = (FV - PV) / n</strong>
+        </div>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>PMT:</strong> Required periodic payment / contribution</li>
+          <li><strong>FV:</strong> Future target goal amount</li>
+          <li><strong>PV:</strong> Present value (current savings already accumulated)</li>
+          <li><strong>n:</strong> Total number of payment periods (e.g., 12 months)</li>
+        </ul>
+
+        <h3>2. The Compound Interest Annuity Formula</h3>
+        <p>
+          When you hold your sinking fund in a competitive <strong>High-Yield Savings Account (HYSA)</strong> or short-term Treasury instrument yielding 4% to 5% APY, compound interest does part of the heavy lifting. The formula for the required periodic deposit under an ordinary annuity (end-of-period deposits) is:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; overflow-x: auto;">
+          <strong>PMT = [ FV - PV &times; (1 + i)<sup>n</sup> ] / [ ((1 + i)<sup>n</sup> - 1) / i ]</strong>
+        </div>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>i:</strong> Periodic interest rate (Annual Nominal Rate / Contribution Frequency, e.g., 0.045 / 12 for 4.5% APY monthly)</li>
+          <li><strong>PV &times; (1 + i)<sup>n</sup>:</strong> Compounded future value of your initial savings</li>
+          <li><strong>((1 + i)<sup>n</sup> - 1) / i:</strong> Sinking fund ordinary annuity factor</li>
+        </ul>
+        <p>
+          Our <strong>Sinking Fund Calculator</strong> automates this compound interest calculation instantly, showing both your total principal contributions and the exact amount of free interest earned over the duration. If you want to compare how different interest yields impact compound growth, test our <a href="/calculator/nominal-interest-rate-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Nominal Interest Rate Calculator</a> or see how fast principal multiplies with our <a href="/calculator/money-doubling-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Money Doubling Calculator</a>.
+        </p>
+
+        <h2>Sinking Fund vs. Emergency Fund: What Is the Difference?</h2>
+        <p>
+          One of the most frequent personal finance confusions is blending sinking funds with an emergency fund. While both protect your financial stability, their purpose, timeline, and accessibility are fundamentally different:
+        </p>
+
+        <div style="overflow-x: auto; margin: var(--space-6) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 12px; font-weight: 700;">Feature</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-primary);">Sinking Fund</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-success);">Emergency Fund</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Purpose</td>
+                <td style="padding: 10px 12px;">Known, planned, predictable expenses</td>
+                <td style="padding: 10px 12px;">Unforeseen, sudden emergencies</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Examples</td>
+                <td style="padding: 10px 12px;">Car maintenance, vacation, taxes, holidays</td>
+                <td style="padding: 10px 12px;">Job loss, sudden surgery, major storm damage</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Timeline</td>
+                <td style="padding: 10px 12px;">Specific deadline (e.g., 6 months, 2 years)</td>
+                <td style="padding: 10px 12px;">Indefinite / permanent safety cushion</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Target Amount</td>
+                <td style="padding: 10px 12px;">Exact cost of the upcoming purchase</td>
+                <td style="padding: 10px 12px;">3 to 6 months of basic living expenses</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Spending Frequency</td>
+                <td style="padding: 10px 12px;">Spent and refilled regularly</td>
+                <td style="padding: 10px 12px;">Rarely touched; replenished immediately if tapped</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">Psychological Role</td>
+                <td style="padding: 10px 12px;">Permission to spend guilt-free</td>
+                <td style="padding: 10px 12px;">Peace of mind and crisis survival</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          If your emergency fund is depleted when unexpected life events hit, you can estimate your household survival timeline with our <a href="/calculator/runway-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Financial Runway Calculator</a>.
+        </p>
+
+        <h2>Sinking Fund vs. General Savings Account</h2>
+        <p>
+          A general savings account is typically a single pool of money with no defined purpose. While having generic savings is better than having nothing, behavioral finance studies show that money without a concrete name or goal is easily rationalized away on discretionary purchases.
+        </p>
+        <p>
+          A sinking fund assigns every dollar a distinct mission before you spend it. When your money is categorized into "Car Replacement," "Christmas Gifting," and "Veterinary Buffer," you are far less tempted to raid your vacation savings for impulse dining or retail purchases. Many modern digital banks allow you to create separate sub-accounts or "savings vaults" within a single login, making organization seamless.
+        </p>
+
+        <h2>Real-Life Sinking Fund Examples & Categories</h2>
+        <p>
+          Here are the most common and effective sinking fund categories used by successful budgeters:
+        </p>
+
+        <h3>1. Vehicle Replacement & Repairs</h3>
+        <p>
+          Every vehicle requires oil changes, new brake pads, fluid flushes, and tire replacements. A rule of thumb is saving <strong>$75 to $150 per month per vehicle</strong> for maintenance. If you also want to purchase your next car with cash, setting aside $350 per month into a vehicle replacement sinking fund accumulates over $21,000 in 5 years.
+        </p>
+
+        <h3>2. Home Maintenance & Upgrades</h3>
+        <p>
+          Property experts recommend budgeting <strong>1% to 2% of your home's total value each year</strong> for ongoing repairs (roof replacement, water heater failures, HVAC servicing, painting). On a $350,000 home, saving $300 to $500 monthly prevents emergency contractor financing.
+        </p>
+
+        <h3>3. Annual or Semi-Annual Insurance Premiums</h3>
+        <p>
+          Most auto, life, and homeowner insurance providers offer a <strong>5% to 15% discount</strong> if you pay your premium annually or semi-annually upfront rather than in monthly installments. A sinking fund lets you capture this discount effortlessly.
+        </p>
+
+        <h3>4. Vacation & Travel</h3>
+        <p>
+          Vacations are supposed to relieve stress, not generate credit card debt that takes three years to pay off. If an annual family trip costs $3,600, contributing $300 each month ensures your flights, lodging, and activities are 100% paid before you leave the airport.
+        </p>
+
+        <h3>5. Holidays & Special Occasions</h3>
+        <p>
+          Gift-giving holidays, birthdays, anniversaries, and wedding celebrations happen on the exact same dates every year. Calculating your total annual gift list and dividing by 12 turns December into a peaceful month rather than a financial crisis.
+        </p>
+
+        <h3>6. Higher Education & Family Goals</h3>
+        <p>
+          For long-term educational funds for children, sinking funds can be paired with dedicated tax-sheltered accounts. Explore our dedicated <a href="/calculator/college-savings-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">College Savings Calculator</a> to estimate tuition inflation and multi-year investment growth, or teach younger children the fundamentals of compounding with the <a href="/calculator/kids-pocket-money-compounder-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Kids Pocket Money Compounder Calculator</a>.
+        </p>
+
+        <h2>The Impact of Interest and Inflation</h2>
+        <p>
+          When planning sinking funds over timelines longer than 12 months, two economic forces interact: <strong>interest earnings</strong> and <strong>inflation</strong>.
+        </p>
+        <p>
+          At an interest rate of 4.5% APY, saving for a $15,000 expense over three years earns nearly $1,000 in total compound growth. That interest directly reduces the cash you must contribute out of your paychecks. However, if goods and services inflate by 3% annually, an expense costing $5,000 today will cost approximately $5,463 in three years. You can model this purchasing power erosion using our <a href="/calculator/inflation-impact-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Inflation Impact Calculator</a> to adjust your target goal upwards accordingly.
+        </p>
+
+        <h2>How Much Should I Save for a Sinking Fund Each Month?</h2>
+        <p>
+          The total amount of money you should allocate toward all your sinking funds combined depends on your net income and upcoming lifestyle milestones. For most households, sinking fund contributions represent <strong>10% to 20% of net monthly take-home pay</strong>.
+        </p>
+        <p>
+          If you use the popular <strong>50/30/20 budget framework</strong>:
+        </p>
+        <ul>
+          <li><strong>50% Needs:</strong> Housing, groceries, utilities, basic transportation</li>
+          <li><strong>30% Wants:</strong> Dining out, entertainment, hobbies</li>
+          <li><strong>20% Savings & Debt:</strong> Emergency fund, retirement, debt reduction, and sinking funds</li>
+        </ul>
+        <p>
+          Sinking funds for essential obligations (property taxes, insurance premiums, vehicle repairs) can be categorized within the 50% "Needs" bucket, while sinking funds for luxury vacations and new gadgets fit inside the 30% "Wants" allocation. If you are currently aggressively paying off high-interest debt, check out our <a href="/calculator/debt-snowball-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Debt Snowball Calculator</a> to prioritize debt elimination while maintaining small bare-minimum sinking funds for car repairs.
+        </p>
+
+        <h2>5 Common Sinking Fund Mistakes to Avoid</h2>
+        <ol>
+          <li>
+            <strong>Creating Too Many Micro-Funds:</strong> Having 25 separate sinking funds for small items like pet grooming, haircuts, and video games leads to cognitive overload. Stick to 3 to 6 major categories, grouping smaller expenses into a general "Buffer" fund.
+          </li>
+          <li>
+            <strong>Leaving Funds in Everyday Checking:</strong> If your sinking fund balance sits in your primary checking account, you are likely to spend it on impulse purchases. Transfer contributions to a separate high-yield account immediately upon receiving your paycheck.
+          </li>
+          <li>
+            <strong>Relying on Volatile Stock Investments:</strong> For any financial goal with a horizon under 3 to 5 years, do not invest in volatile equities or cryptocurrencies. A 20% market correction right when your car insurance or property tax bill is due will wipe out your savings. Keep short-term funds in FDIC-insured cash vehicles.
+          </li>
+          <li>
+            <strong>Forgetting to Automate Transfers:</strong> Relying on willpower to manually transfer $150 every two weeks rarely lasts. Set up recurring automated bank transfers timed with your direct deposit.
+          </li>
+          <li>
+            <strong>Feeling Guilty When Spending the Money:</strong> The entire point of a sinking fund is to spend it when the planned occasion arrives! You saved specifically for this purpose, so enjoy your vacation, pay your taxes, or replace your tires with zero guilt.
+          </li>
+        </ol>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion" style="display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4);">
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Can I have multiple sinking funds in one bank account?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes. You can track individual balances inside a single high-yield savings account using a simple spreadsheet or budgeting app. Alternatively, many modern banks offer sub-savings accounts or digital envelopes that let you partition a single account into distinct virtual buckets without opening multiple bank accounts.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What happens if an expense arrives earlier than expected?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              If a planned expense occurs ahead of schedule (such as your car transmission failing at month 6 of a 12-month savings plan), spend what you have accumulated in that sinking fund first. Any shortfall can be temporarily bridged by your emergency fund or by reallocating money from non-essential sinking funds (like vacation or entertainment).
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Should I pay off debt or build sinking funds first?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              You should do both strategically. While aggressively attacking high-interest debt (e.g. credit cards over 15% APR), you must maintain small sinking funds for inevitable expenses like auto maintenance and medical deductibles. Without these small safety reserves, the first routine car repair will immediately land back on a credit card, restarting the debt cycle.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Is a Certificate of Deposit (CD) good for a sinking fund?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              A Certificate of Deposit (CD) can be an excellent option if your target expense has a fixed, non-negotiable date (for example, a wedding or home down payment in exactly 12 months) and the CD provides a higher guaranteed yield than a savings account. However, ensure the CD maturity date strictly precedes your payment deadline to avoid early withdrawal penalties.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

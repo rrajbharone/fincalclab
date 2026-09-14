@@ -207,7 +207,7 @@ const latestPosts = posts
               <a href={`/blog/${post.id}`} class="latest-post-link">
                 {post.data.image && (
                   <div class="blog-thumbnail-wrapper">
-                    <img src={post.data.image} alt="" class="blog-thumbnail" loading="lazy" />
+                    <img src={post.data.image} alt={post.data.title} class="blog-thumbnail" width="688" height="384" loading="lazy" decoding="async" />
                   </div>
                 )}
                 <span class="post-meta-cat">{post.data.category}</span>

@@ -45,7 +45,7 @@ const categories = ['All', ...new Set(posts.map(post => post.data.category))];
               <a href={`/blog/${post.id}`} class="blog-card-link-wrapper">
                 {post.data.image && (
                   <div class="blog-thumbnail-wrapper">
-                    <img src={post.data.image} alt="" class="blog-thumbnail" loading="lazy" />
+                    <img src={post.data.image} alt={post.data.title} class="blog-thumbnail" width="688" height="384" loading="lazy" decoding="async" />
                   </div>
                 )}
                 <div class="blog-card-meta">

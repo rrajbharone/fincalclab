@@ -71,16 +71,28 @@ import Button from '../ui/Button.astro';
 
     if (!header || !mobileBtn || !drawer || !themeBtn) return;
 
-    // Sticky header shadow on scroll
+    // Optimized sticky header shadow on scroll (zero layout thrashing)
+    let ticking = false;
+    let isScrolled = false;
+
+    const updateScrollState = () => {
+      const scrolled = window.scrollY > 10;
+      if (scrolled !== isScrolled) {
+        isScrolled = scrolled;
+        header.classList.toggle('scrolled', scrolled);
+      }
+      ticking = false;
+    };
+
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
+      if (!ticking) {
+        window.requestAnimationFrame(updateScrollState);
+        ticking = true;
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    updateScrollState(); // Initial check
 
     // Mobile menu toggle
     mobileBtn.addEventListener('click', () => {

@@ -1,0 +1,1347 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Sinking Fund Calculator"
+  description="Calculate exactly how much you need to save each month, week, or paycheck to hit your future savings goals on time with compound interest."
+  category="Savings & Budgeting"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="sinking-fund-calculator">
+    
+    <!-- Step 1: Base Configuration -->
+    <div class="input-section">
+      <h3 class="section-title">1. Target Goal & Timeline</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sf-currency-select">Currency</label>
+          <select id="sf-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Savings Goal -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sf-goal-input">Savings Goal / Future Expense</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sf-cur-symbol-1">$</span>
+            <input type="number" id="sf-goal-input" min="100" max="10000000" step="100" value="6000" aria-label="Savings Goal" />
+          </div>
+        </div>
+        <input type="range" id="sf-goal-slider" min="500" max="50000" step="250" value="6000" class="slider-range" aria-label="Savings Goal Slider" />
+      </div>
+
+      <!-- Current Savings -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sf-current-input">Current Savings (Optional)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sf-cur-symbol-2">$</span>
+            <input type="number" id="sf-current-input" min="0" max="10000000" step="50" value="500" aria-label="Current Savings" />
+          </div>
+        </div>
+        <input type="range" id="sf-current-slider" min="0" max="25000" step="100" value="500" class="slider-range" aria-label="Current Savings Slider" />
+      </div>
+
+      <!-- Timeline Mode Switcher -->
+      <div class="input-group">
+        <label class="control-label">Timeline Mode</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Timeline Mode">
+          <button type="button" class="toggle-pill active" id="mode-duration-btn" aria-checked="true" role="radio">By Duration</button>
+          <button type="button" class="toggle-pill" id="mode-target-date-btn" aria-checked="false" role="radio">By Target Date</button>
+        </div>
+      </div>
+
+      <!-- Duration Inputs -->
+      <div id="sf-duration-container" class="input-group">
+        <div class="input-label-row">
+          <label for="sf-duration-input">Time Horizon</label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <div class="input-symbol-wrapper" style="width: 90px;">
+              <input type="number" id="sf-duration-input" min="1" max="600" step="1" value="12" aria-label="Duration Value" />
+            </div>
+            <select id="sf-duration-unit" class="unit-select" aria-label="Duration Unit">
+              <option value="months" selected>Months</option>
+              <option value="years">Years</option>
+            </select>
+          </div>
+        </div>
+        <input type="range" id="sf-duration-slider" min="1" max="60" step="1" value="12" class="slider-range" aria-label="Duration Slider" />
+      </div>
+
+      <!-- Target Date Input (Hidden by default) -->
+      <div id="sf-target-date-container" class="input-group hidden">
+        <div class="input-label-row">
+          <label for="sf-target-date-input">Target Deadline Date</label>
+          <input type="date" id="sf-target-date-input" class="date-input" aria-label="Target Deadline Date" />
+        </div>
+        <div id="sf-target-date-hint" class="input-subtext">Calculates remaining time automatically.</div>
+      </div>
+
+    </div>
+
+    <!-- Step 2: Frequency & Interest Rate -->
+    <div class="input-section" style="margin-top: var(--space-5);">
+      <h3 class="section-title">2. Contributions & Growth</h3>
+
+      <!-- Contribution Frequency -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sf-frequency-select">Contribution Frequency</label>
+          <select id="sf-frequency-select" class="currency-select" aria-label="Contribution Frequency">
+            <option value="12" selected>Monthly (12/yr)</option>
+            <option value="26">Bi-Weekly (Every 2 weeks, 26/yr)</option>
+            <option value="52">Weekly (52/yr)</option>
+            <option value="24">Semi-Monthly (Twice a month, 24/yr)</option>
+            <option value="4">Quarterly (4/yr)</option>
+            <option value="1">Annually (1/yr)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Expected Annual Interest Rate (APY) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sf-interest-input">Expected Annual Return / APY</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sf-interest-input" min="0" max="25" step="0.1" value="4.0" aria-label="Expected Annual Interest Rate" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="sf-interest-slider" min="0" max="15" step="0.1" value="4.0" class="slider-range" aria-label="Interest Rate Slider" />
+        <span class="input-subtext">Set to 0% for checking or cash envelope funds. Standard HYSA yields ~3.5% - 5.0%.</span>
+      </div>
+
+      <!-- Contribution Timing -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sf-timing-select">Contribution Timing</label>
+          <select id="sf-timing-select" class="currency-select" aria-label="Contribution Timing">
+            <option value="end" selected>End of Period (Standard)</option>
+            <option value="beginning">Beginning of Period</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Reset Button -->
+      <div style="margin-top: var(--space-4);">
+        <Button variant="outline" size="sm" id="sf-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Sinking Fund Breakdown</h3>
+
+    <!-- Primary Metric: Required Contribution -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label" id="res-sf-hero-label">Required Monthly Savings</span>
+      <div class="hero-metric-value" id="res-sf-periodic-pmt">$448.32</div>
+      <span class="hero-metric-subtext" id="res-sf-hero-sub">Per month for 12 months</span>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-success">
+        <span class="net-box-label">Goal Target Amount</span>
+        <div id="res-sf-total-goal" class="net-box-value text-success">$6,000.00</div>
+        <span class="net-box-desc" id="res-sf-goal-desc">Target accumulation</span>
+      </div>
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label">Estimated Interest Earned</span>
+        <div id="res-sf-total-interest" class="net-box-value text-primary">$120.11</div>
+        <span class="net-box-desc">Compound growth bonus</span>
+      </div>
+    </div>
+
+    <!-- Goal Progress Bar -->
+    <div class="progress-section">
+      <div class="progress-label-row">
+        <span>Current Goal Progress</span>
+        <span id="sf-progress-percent">8.33%</span>
+      </div>
+      <div class="progress-bar-track">
+        <div id="sf-progress-bar-fill" class="progress-bar-fill" style="width: 8.33%;"></div>
+      </div>
+      <div class="progress-sub-row">
+        <span id="sf-progress-current-label">Funded: $500.00</span>
+        <span id="sf-progress-gap-label">Still Needed: $5,500.00</span>
+      </div>
+    </div>
+
+    <!-- Savings Diagnosis / Verdict -->
+    <div class="verdict-container">
+      <Card elevation="sm" id="sf-verdict-card" class="verdict-card">
+        <span class="verdict-tag">Savings Roadmap</span>
+        <p id="res-sf-verdict-text" class="verdict-paragraph">
+          To reach your <strong>$6,000.00</strong> goal in <strong>12 months</strong>, deposit <strong>$448.32 every month</strong>. With a 4.0% APY, compound interest will earn you <strong>$120.11</strong>, reducing the total amount you need to save out-of-pocket to <strong>$5,379.89</strong>!
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 class="metrics-grid-title">Financial Summary Breakdown</h4>
+    <div class="results-grid sf-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Required Contribution</span>
+        <div class="tile-value" id="tile-sf-contribution" style="color: var(--color-primary);">$448.32</div>
+        <span class="tile-sub" id="tile-sf-contribution-sub">Per payment period</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">You Deposit (Principal)</span>
+        <div class="tile-value" id="tile-sf-total-deposits" style="color: var(--color-text-base);">$5,879.89</div>
+        <span class="tile-sub">Initial + ongoing savings</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Interest Earned</span>
+        <div class="tile-value" id="tile-sf-interest" style="color: var(--color-success);">+$120.11</div>
+        <span class="tile-sub">Compound interest yield</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Target Balance</span>
+        <div class="tile-value" id="tile-sf-target" style="color: var(--color-primary);">$6,000.00</div>
+        <span class="tile-sub">Accumulated balance</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Amount Still Needed</span>
+        <div class="tile-value" id="tile-sf-gap" style="color: var(--color-warning);">$5,500.00</div>
+        <span class="tile-sub">Goal minus initial cash</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Total Payment Periods</span>
+        <div class="tile-value" id="tile-sf-periods" style="color: var(--color-text-base);">12 payments</div>
+        <span class="tile-sub" id="tile-sf-periods-sub">1.0 years</span>
+      </div>
+    </div>
+
+    <!-- Visual Progress Distribution -->
+    <div class="breakdown-bar-card">
+      <span class="tile-label">Funding Source Distribution</span>
+      <div class="stacked-bar-track">
+        <div id="bar-initial" class="bar-segment segment-initial" style="width: 8.33%;" title="Initial Savings"></div>
+        <div id="bar-deposits" class="bar-segment segment-deposits" style="width: 89.98%;" title="Your Ongoing Deposits"></div>
+        <div id="bar-interest" class="bar-segment segment-interest" style="width: 1.69%;" title="Interest Earned"></div>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-dot dot-initial"></span> Current (<span id="leg-initial-val">$500</span>)</div>
+        <div class="legend-item"><span class="legend-dot dot-deposits"></span> New Deposits (<span id="leg-deposits-val">$5,399</span>)</div>
+        <div class="legend-item"><span class="legend-dot dot-interest"></span> Interest (<span id="leg-interest-val">$101</span>)</div>
+      </div>
+    </div>
+
+    <!-- Optional Schedule Toggle -->
+    <div class="schedule-section">
+      <button type="button" id="toggle-schedule-btn" class="schedule-toggle-btn" aria-expanded="false">
+        <span>View Month-by-Month Amortization Schedule</span>
+        <svg id="schedule-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div id="schedule-table-wrapper" class="schedule-table-wrapper hidden">
+        <table class="schedule-table" aria-label="Sinking Fund Growth Schedule">
+          <thead>
+            <tr>
+              <th scope="col">Period</th>
+              <th scope="col">Deposit</th>
+              <th scope="col">Interest</th>
+              <th scope="col">Total Deposits</th>
+              <th scope="col">Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-tbody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSinkingFundCalculator() {
+    // Currencies
+    const currencySelect = document.getElementById('sf-currency-select') as HTMLSelectElement;
+    const curSymbol1 = document.getElementById('sf-cur-symbol-1');
+    const curSymbol2 = document.getElementById('sf-cur-symbol-2');
+
+    // Inputs
+    const goalInput = document.getElementById('sf-goal-input') as HTMLInputElement;
+    const goalSlider = document.getElementById('sf-goal-slider') as HTMLInputElement;
+    const currentInput = document.getElementById('sf-current-input') as HTMLInputElement;
+    const currentSlider = document.getElementById('sf-current-slider') as HTMLInputElement;
+
+    // Timeline Mode
+    const modeDurationBtn = document.getElementById('mode-duration-btn') as HTMLButtonElement;
+    const modeTargetDateBtn = document.getElementById('mode-target-date-btn') as HTMLButtonElement;
+    const durationContainer = document.getElementById('sf-duration-container') as HTMLElement;
+    const targetDateContainer = document.getElementById('sf-target-date-container') as HTMLElement;
+    const durationInput = document.getElementById('sf-duration-input') as HTMLInputElement;
+    const durationSlider = document.getElementById('sf-duration-slider') as HTMLInputElement;
+    const durationUnit = document.getElementById('sf-duration-unit') as HTMLSelectElement;
+    const targetDateInput = document.getElementById('sf-target-date-input') as HTMLInputElement;
+    const targetDateHint = document.getElementById('sf-target-date-hint') as HTMLElement;
+
+    // Rates & Frequency
+    const frequencySelect = document.getElementById('sf-frequency-select') as HTMLSelectElement;
+    const interestInput = document.getElementById('sf-interest-input') as HTMLInputElement;
+    const interestSlider = document.getElementById('sf-interest-slider') as HTMLInputElement;
+    const timingSelect = document.getElementById('sf-timing-select') as HTMLSelectElement;
+    const resetBtn = document.getElementById('sf-reset-btn') as HTMLButtonElement;
+
+    // Displays
+    const resPeriodicPmt = document.getElementById('res-sf-periodic-pmt');
+    const resHeroLabel = document.getElementById('res-sf-hero-label');
+    const resHeroSub = document.getElementById('res-sf-hero-sub');
+    const resTotalGoal = document.getElementById('res-sf-total-goal');
+    const resGoalDesc = document.getElementById('res-sf-goal-desc');
+    const resTotalInterest = document.getElementById('res-sf-total-interest');
+    const sfProgressBarFill = document.getElementById('sf-progress-bar-fill');
+    const sfProgressPercent = document.getElementById('sf-progress-percent');
+    const sfProgressCurrentLabel = document.getElementById('sf-progress-current-label');
+    const sfProgressGapLabel = document.getElementById('sf-progress-gap-label');
+    const resVerdictText = document.getElementById('res-sf-verdict-text');
+    const verdictCard = document.getElementById('sf-verdict-card');
+
+    // Tiles
+    const tileContribution = document.getElementById('tile-sf-contribution');
+    const tileContributionSub = document.getElementById('tile-sf-contribution-sub');
+    const tileTotalDeposits = document.getElementById('tile-sf-total-deposits');
+    const tileInterest = document.getElementById('tile-sf-interest');
+    const tileTarget = document.getElementById('tile-sf-target');
+    const tileGap = document.getElementById('tile-sf-gap');
+    const tilePeriods = document.getElementById('tile-sf-periods');
+    const tilePeriodsSub = document.getElementById('tile-sf-periods-sub');
+
+    // Visual Distribution Bar
+    const barInitial = document.getElementById('bar-initial');
+    const barDeposits = document.getElementById('bar-deposits');
+    const barInterest = document.getElementById('bar-interest');
+    const legInitialVal = document.getElementById('leg-initial-val');
+    const legDepositsVal = document.getElementById('leg-deposits-val');
+    const legInterestVal = document.getElementById('leg-interest-val');
+
+    // Schedule
+    const toggleScheduleBtn = document.getElementById('toggle-schedule-btn');
+    const scheduleTableWrapper = document.getElementById('schedule-table-wrapper');
+    const scheduleChevron = document.getElementById('schedule-chevron');
+    const scheduleTbody = document.getElementById('schedule-tbody');
+
+    if (!goalInput || !currencySelect) return;
+
+    let currentTimelineMode = 'duration'; // 'duration' | 'date'
+
+    // Set default target date to 1 year from today
+    const today = new Date();
+    const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+    const dateFormatted = nextYear.toISOString().split('T')[0];
+    if (targetDateInput) {
+      targetDateInput.min = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString().split('T')[0];
+      targetDateInput.value = dateFormatted;
+    }
+
+    // Currency symbols dictionary
+    const currencySymbols: Record<string, string> = {
+      USD: '$',
+      EUR: '€',
+      GBP: '£',
+      CAD: 'C$',
+      AUD: 'A$',
+      INR: '₹',
+      JPY: '¥',
+      SGD: 'S$',
+      CHF: 'CHF '
+    };
+
+    function getCurrencySymbol(): string {
+      return currencySymbols[currencySelect.value] || '$';
+    }
+
+    function formatCurrency(val: number): string {
+      const sym = getCurrencySymbol();
+      const absVal = Math.abs(val);
+      const isJPY = currencySelect.value === 'JPY';
+      const formatted = absVal.toLocaleString(undefined, {
+        minimumFractionDigits: isJPY ? 0 : 2,
+        maximumFractionDigits: isJPY ? 0 : 2
+      });
+      return `${val < 0 ? '-' : ''}${sym}${formatted}`;
+    }
+
+    function formatCompactCurrency(val: number): string {
+      const sym = getCurrencySymbol();
+      const isJPY = currencySelect.value === 'JPY';
+      const formatted = Math.round(Math.abs(val)).toLocaleString(undefined, {
+        maximumFractionDigits: 0
+      });
+      return `${val < 0 ? '-' : ''}${sym}${formatted}`;
+    }
+
+    // Connect slider with inputs
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    bindSlider(goalInput, goalSlider, calculateAll);
+    bindSlider(currentInput, currentSlider, calculateAll);
+    bindSlider(interestInput, interestSlider, calculateAll);
+
+    // Duration slider binding
+    function updateDurationSliderRange() {
+      const unit = durationUnit.value;
+      if (unit === 'years') {
+        durationSlider.min = '1';
+        durationSlider.max = '30';
+        durationSlider.step = '1';
+      } else {
+        durationSlider.min = '1';
+        durationSlider.max = '120';
+        durationSlider.step = '1';
+      }
+    }
+
+    bindSlider(durationInput, durationSlider, calculateAll);
+
+    durationUnit.addEventListener('change', () => {
+      const unit = durationUnit.value;
+      let val = parseFloat(durationInput.value) || 12;
+      if (unit === 'years') {
+        val = Math.max(1, Math.round(val / 12));
+      } else {
+        val = Math.max(1, Math.round(val * 12));
+      }
+      durationInput.value = val.toString();
+      updateDurationSliderRange();
+      durationSlider.value = val.toString();
+      calculateAll();
+    });
+
+    // Timeline mode toggles
+    modeDurationBtn.addEventListener('click', () => {
+      currentTimelineMode = 'duration';
+      modeDurationBtn.classList.add('active');
+      modeDurationBtn.setAttribute('aria-checked', 'true');
+      modeTargetDateBtn.classList.remove('active');
+      modeTargetDateBtn.setAttribute('aria-checked', 'false');
+      durationContainer.classList.remove('hidden');
+      targetDateContainer.classList.add('hidden');
+      calculateAll();
+    });
+
+    modeTargetDateBtn.addEventListener('click', () => {
+      currentTimelineMode = 'date';
+      modeTargetDateBtn.classList.add('active');
+      modeTargetDateBtn.setAttribute('aria-checked', 'true');
+      modeDurationBtn.classList.remove('active');
+      modeDurationBtn.setAttribute('aria-checked', 'false');
+      durationContainer.classList.add('hidden');
+      targetDateContainer.classList.remove('hidden');
+      calculateAll();
+    });
+
+    targetDateInput.addEventListener('change', calculateAll);
+    targetDateInput.addEventListener('input', calculateAll);
+
+    currencySelect.addEventListener('change', () => {
+      const sym = getCurrencySymbol();
+      if (curSymbol1) curSymbol1.textContent = sym;
+      if (curSymbol2) curSymbol2.textContent = sym;
+      calculateAll();
+    });
+
+    frequencySelect.addEventListener('change', calculateAll);
+    timingSelect.addEventListener('change', calculateAll);
+
+    // Reset button handler
+    resetBtn.addEventListener('click', () => {
+      goalInput.value = '6000';
+      goalSlider.value = '6000';
+      currentInput.value = '500';
+      currentSlider.value = '500';
+      interestInput.value = '4.0';
+      interestSlider.value = '4.0';
+      durationUnit.value = 'months';
+      updateDurationSliderRange();
+      durationInput.value = '12';
+      durationSlider.value = '12';
+      frequencySelect.value = '12';
+      timingSelect.value = 'end';
+      currencySelect.value = 'USD';
+      if (curSymbol1) curSymbol1.textContent = '$';
+      if (curSymbol2) curSymbol2.textContent = '$';
+      if (targetDateInput) {
+        targetDateInput.value = dateFormatted;
+      }
+      if (currentTimelineMode !== 'duration') {
+        modeDurationBtn.click();
+      } else {
+        calculateAll();
+      }
+    });
+
+    // Toggle Schedule Table
+    if (toggleScheduleBtn && scheduleTableWrapper && scheduleChevron) {
+      toggleScheduleBtn.addEventListener('click', () => {
+        const isExpanded = toggleScheduleBtn.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+          toggleScheduleBtn.setAttribute('aria-expanded', 'false');
+          scheduleTableWrapper.classList.add('hidden');
+          scheduleChevron.style.transform = 'rotate(0deg)';
+        } else {
+          toggleScheduleBtn.setAttribute('aria-expanded', 'true');
+          scheduleTableWrapper.classList.remove('hidden');
+          scheduleChevron.style.transform = 'rotate(180deg)';
+        }
+      });
+    }
+
+    // Helper for frequency display text
+    function getFrequencyDetails(freqVal: number): { label: string; periodName: string; perPeriodText: string } {
+      switch (freqVal) {
+        case 52:
+          return { label: 'Weekly Savings', periodName: 'weeks', perPeriodText: 'every week' };
+        case 26:
+          return { label: 'Bi-Weekly Savings', periodName: 'bi-weekly periods', perPeriodText: 'every 2 weeks' };
+        case 24:
+          return { label: 'Semi-Monthly Savings', periodName: 'semi-monthly periods', perPeriodText: 'twice a month' };
+        case 4:
+          return { label: 'Quarterly Savings', periodName: 'quarters', perPeriodText: 'every quarter' };
+        case 1:
+          return { label: 'Annual Savings', periodName: 'years', perPeriodText: 'every year' };
+        case 12:
+        default:
+          return { label: 'Monthly Savings', periodName: 'months', perPeriodText: 'every month' };
+      }
+    }
+
+    // Main calculation engine
+    function calculateAll() {
+      const goal = Math.max(0, parseFloat(goalInput.value) || 0);
+      const currentSavings = Math.max(0, parseFloat(currentInput.value) || 0);
+      const annualRate = Math.max(0, parseFloat(interestInput.value) || 0) / 100;
+      const freq = parseInt(frequencySelect.value) || 12;
+      const isBeginning = timingSelect.value === 'beginning';
+      const freqMeta = getFrequencyDetails(freq);
+
+      // Determine time horizon in years
+      let years = 1;
+      let totalMonths = 12;
+
+      if (currentTimelineMode === 'duration') {
+        const unit = durationUnit.value;
+        const durVal = Math.max(0.01, parseFloat(durationInput.value) || 1);
+        if (unit === 'years') {
+          years = durVal;
+          totalMonths = Math.round(durVal * 12);
+        } else {
+          totalMonths = durVal;
+          years = durVal / 12;
+        }
+      } else {
+        // Date mode
+        const selectedDate = new Date(targetDateInput.value);
+        const currDate = new Date();
+        // Clear times
+        currDate.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        const diffTime = selectedDate.getTime() - currDate.getTime();
+        const diffDays = Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)));
+        
+        years = diffDays / 365.25;
+        totalMonths = Math.max(1, Math.round(diffDays / (365.25 / 12)));
+
+        if (targetDateHint) {
+          const daysText = diffDays === 1 ? '1 day' : `${diffDays} days`;
+          const monthsText = totalMonths === 1 ? '1 month' : `${totalMonths} months`;
+          targetDateHint.textContent = `Deadline in approx. ${daysText} (~${monthsText}, ${years.toFixed(2)} years).`;
+        }
+      }
+
+      // Total payment periods
+      let n = Math.round(years * freq);
+      if (n < 1) n = 1;
+
+      // Rate per contribution period
+      // Using standard nominal compounding i = annualRate / freq
+      const i = annualRate / freq;
+
+      // Future value of existing savings
+      let fvPV = currentSavings;
+      if (i > 0) {
+        fvPV = currentSavings * Math.pow(1 + i, n);
+      }
+
+      let remainingGoal = goal - fvPV;
+      let periodicPmt = 0;
+      let totalDeposits = currentSavings;
+      let totalInterest = 0;
+      let finalBalance = goal;
+
+      if (goal <= 0) {
+        periodicPmt = 0;
+        finalBalance = 0;
+        remainingGoal = 0;
+      } else if (remainingGoal <= 0) {
+        // Current savings already grow to or exceed the goal
+        periodicPmt = 0;
+        finalBalance = fvPV;
+        totalDeposits = currentSavings;
+        totalInterest = Math.max(0, fvPV - currentSavings);
+      } else {
+        if (i === 0) {
+          // Zero interest / simple division
+          periodicPmt = (goal - currentSavings) / n;
+          totalDeposits = currentSavings + (periodicPmt * n);
+          totalInterest = 0;
+          finalBalance = goal;
+        } else {
+          // Compound interest ordinary annuity / annuity due
+          let annuityFactor = (Math.pow(1 + i, n) - 1) / i;
+          if (isBeginning) {
+            annuityFactor *= (1 + i);
+          }
+          periodicPmt = remainingGoal / annuityFactor;
+          const totalNewContributions = periodicPmt * n;
+          totalDeposits = currentSavings + totalNewContributions;
+          totalInterest = Math.max(0, goal - totalDeposits);
+          finalBalance = goal;
+        }
+      }
+
+      // Progress %
+      const progressPercent = goal > 0 ? Math.min(100, (currentSavings / goal) * 100) : 0;
+      const amountStillNeeded = Math.max(0, goal - currentSavings);
+
+      // DOM Updates
+      if (resHeroLabel) resHeroLabel.textContent = `Required ${freqMeta.label}`;
+      if (resPeriodicPmt) resPeriodicPmt.textContent = formatCurrency(periodicPmt);
+      if (resHeroSub) {
+        const periodUnitStr = n === 1 ? 'period' : 'periods';
+        resHeroSub.textContent = `${freqMeta.perPeriodText} over ${n} ${periodUnitStr} (${years < 1 ? totalMonths + ' months' : years.toFixed(1) + ' years'})`;
+      }
+
+      if (resTotalGoal) resTotalGoal.textContent = formatCurrency(finalBalance);
+      if (resGoalDesc) resGoalDesc.textContent = `Total targeted for ${years < 1 ? totalMonths + ' months' : years.toFixed(1) + ' years'}`;
+      if (resTotalInterest) resTotalInterest.textContent = formatCurrency(totalInterest);
+
+      // Progress bar
+      if (sfProgressBarFill) sfProgressBarFill.style.width = `${progressPercent.toFixed(2)}%`;
+      if (sfProgressPercent) sfProgressPercent.textContent = `${progressPercent.toFixed(1)}%`;
+      if (sfProgressCurrentLabel) sfProgressCurrentLabel.textContent = `Funded: ${formatCurrency(currentSavings)}`;
+      if (sfProgressGapLabel) sfProgressGapLabel.textContent = `Still Needed: ${formatCurrency(amountStillNeeded)}`;
+
+      // Tiles
+      if (tileContribution) tileContribution.textContent = formatCurrency(periodicPmt);
+      if (tileContributionSub) tileContributionSub.textContent = `${freqMeta.perPeriodText}`;
+      if (tileTotalDeposits) tileTotalDeposits.textContent = formatCurrency(totalDeposits);
+      if (tileInterest) tileInterest.textContent = `+${formatCurrency(totalInterest)}`;
+      if (tileTarget) tileTarget.textContent = formatCurrency(finalBalance);
+      if (tileGap) tileGap.textContent = formatCurrency(amountStillNeeded);
+      if (tilePeriods) tilePeriods.textContent = `${n} payment${n > 1 ? 's' : ''}`;
+      if (tilePeriodsSub) tilePeriodsSub.textContent = `${years.toFixed(1)} years (${totalMonths} mo)`;
+
+      // Distribution Bar
+      if (finalBalance > 0) {
+        const initPct = Math.max(0, Math.min(100, (currentSavings / finalBalance) * 100));
+        const newContrib = Math.max(0, totalDeposits - currentSavings);
+        const contribPct = Math.max(0, Math.min(100, (newContrib / finalBalance) * 100));
+        const interestPct = Math.max(0, 100 - initPct - contribPct);
+
+        if (barInitial) barInitial.style.width = `${initPct.toFixed(2)}%`;
+        if (barDeposits) barDeposits.style.width = `${contribPct.toFixed(2)}%`;
+        if (barInterest) barInterest.style.width = `${interestPct.toFixed(2)}%`;
+
+        if (legInitialVal) legInitialVal.textContent = formatCompactCurrency(currentSavings);
+        if (legDepositsVal) legDepositsVal.textContent = formatCompactCurrency(newContrib);
+        if (legInterestVal) legInterestVal.textContent = formatCompactCurrency(totalInterest);
+      }
+
+      // Verdict text
+      if (resVerdictText && verdictCard) {
+        if (goal <= 0) {
+          resVerdictText.innerHTML = `Please enter a savings goal greater than zero to see your customized sinking fund plan.`;
+          verdictCard.style.borderLeftColor = 'var(--color-warning)';
+        } else if (remainingGoal <= 0) {
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+          resVerdictText.innerHTML = `Congratulations! Your current savings of <strong>${formatCurrency(currentSavings)}</strong> will grow with compound interest to <strong>${formatCurrency(fvPV)}</strong>, fully covering your <strong>${formatCurrency(goal)}</strong> goal without requiring any additional deposits!`;
+        } else if (annualRate === 0) {
+          verdictCard.style.borderLeftColor = 'var(--color-primary)';
+          resVerdictText.innerHTML = `To reach your <strong>${formatCurrency(goal)}</strong> goal in <strong>${n} ${freqMeta.periodName}</strong>, deposit <strong>${formatCurrency(periodicPmt)} ${freqMeta.perPeriodText}</strong>. Since your interest rate is 0%, all <strong>${formatCurrency(amountStillNeeded)}</strong> will come directly from your regular deposits.`;
+        } else {
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+          resVerdictText.innerHTML = `To reach your <strong>${formatCurrency(goal)}</strong> goal in <strong>${n} ${freqMeta.periodName}</strong>, deposit <strong>${formatCurrency(periodicPmt)} ${freqMeta.perPeriodText}</strong>. With a <strong>${(annualRate * 100).toFixed(1)}% APY</strong>, compound interest earns you <strong>${formatCurrency(totalInterest)}</strong> in free growth, lowering your total out-of-pocket deposits!`;
+        }
+      }
+
+      // Generate Amortization Schedule
+      generateScheduleTable(n, periodicPmt, currentSavings, i, isBeginning, freqMeta.periodName);
+    }
+
+    function generateScheduleTable(
+      periods: number,
+      pmt: number,
+      initial: number,
+      periodRate: number,
+      isBeginning: boolean,
+      periodName: string
+    ) {
+      if (!scheduleTbody) return;
+      scheduleTbody.innerHTML = '';
+
+      let balance = initial;
+      let cumulativeDeposits = initial;
+      const maxRows = Math.min(periods, 60); // Cap at 60 displayed periods for DOM performance
+
+      for (let p = 1; p <= maxRows; p++) {
+        let periodInterest = 0;
+        let depositThisPeriod = pmt;
+
+        if (isBeginning) {
+          balance += depositThisPeriod;
+          periodInterest = balance * periodRate;
+          balance += periodInterest;
+        } else {
+          periodInterest = balance * periodRate;
+          balance += periodInterest + depositThisPeriod;
+        }
+
+        cumulativeDeposits += depositThisPeriod;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${p}</strong></td>
+          <td>${formatCurrency(depositThisPeriod)}</td>
+          <td style="color: var(--color-success); font-weight: 600;">+${formatCurrency(periodInterest)}</td>
+          <td>${formatCurrency(cumulativeDeposits)}</td>
+          <td style="font-weight: 700; color: var(--color-primary);">${formatCurrency(balance)}</td>
+        `;
+        scheduleTbody.appendChild(row);
+      }
+
+      if (periods > 60) {
+        const remaining = periods - 60;
+        const noticeRow = document.createElement('tr');
+        noticeRow.innerHTML = `
+          <td colspan="5" style="text-align: center; color: var(--color-text-muted); font-size: 0.85rem; padding: 12px;">
+            ... Showing first 60 of ${periods} periods. Total target reached in period ${periods}.
+          </td>
+        `;
+        scheduleTbody.appendChild(noticeRow);
+      }
+    }
+
+    // Trigger Initial Calculation
+    calculateAll();
+
+    // Clipboard Copy Handler for Toolbar
+    window.addEventListener('copy-calculator-results', () => {
+      const goal = goalInput.value;
+      const current = currentInput.value;
+      const rate = interestInput.value;
+      const req = resPeriodicPmt?.textContent || '';
+      const goalText = resTotalGoal?.textContent || '';
+      const interestText = resTotalInterest?.textContent || '';
+      const diagnosis = resVerdictText?.textContent || '';
+
+      const report = `FinCalcLab Sinking Fund Plan:\n` +
+                     `Goal Amount: ${goalText} | Initial Balance: ${getCurrencySymbol()}${current}\n` +
+                     `Expected APY: ${rate}%\n` +
+                     `Required Contribution: ${req}\n` +
+                     `Estimated Interest Earned: ${interestText}\n` +
+                     `Roadmap: ${diagnosis}\n` +
+                     `Calculated online at FinCalcLab.com`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSinkingFundCalculator);
+  document.addEventListener('astro:after-swap', initSinkingFundCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .input-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+    margin-bottom: 0;
+    color: var(--color-text-base);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label,
+  .control-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 155px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  .currency-select,
+  .unit-select,
+  .date-input {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .unit-select {
+    max-width: 100px;
+  }
+
+  .date-input {
+    max-width: 180px;
+    cursor: text;
+  }
+
+  .currency-select:focus,
+  .unit-select:focus,
+  .date-input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .input-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .toggle-pill-group {
+    display: flex;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 3px;
+    gap: 4px;
+  }
+
+  .toggle-pill {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: var(--shadow-xs);
+  }
+
+  /* Results Styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--color-text-base);
+  }
+
+  .hero-metric-box {
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb, 14, 165, 233), 0.12) 0%, rgba(var(--color-primary-rgb, 14, 165, 233), 0.03) 100%);
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .hero-metric-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .hero-metric-value {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    margin: 4px 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+
+  .net-value-container {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .net-value-box {
+    flex: 1;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-bg-base);
+  }
+
+  .highlight-success {
+    border-top: 4px solid var(--color-success);
+  }
+
+  .highlight-primary {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .net-box-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+  }
+
+  .net-box-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 4px 0 2px 0;
+  }
+
+  .net-box-desc {
+    font-size: 0.7rem;
+    color: var(--color-text-light);
+  }
+
+  /* Progress Section */
+  .progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-3) 0;
+  }
+
+  .progress-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    height: 10px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--color-success);
+    transition: width 0.3s ease;
+    border-radius: var(--radius-full);
+  }
+
+  .progress-sub-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+  }
+
+  /* Verdict */
+  .verdict-card {
+    border-left: 4px solid var(--color-primary);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg-base);
+  }
+
+  .verdict-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .verdict-paragraph {
+    margin: 4px 0 0 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  /* Metrics Grid - Compliant with Rule 15 */
+  .metrics-grid-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: var(--space-2) 0 0 0;
+    color: var(--color-text-base);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-base);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tile-sub {
+    font-size: 0.68rem;
+    color: var(--color-text-light);
+  }
+
+  /* Stacked Distribution Bar */
+  .breakdown-bar-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .stacked-bar-track {
+    display: flex;
+    height: 12px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    background-color: var(--color-border);
+  }
+
+  .bar-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .segment-initial {
+    background-color: var(--color-text-light);
+  }
+
+  .segment-deposits {
+    background-color: var(--color-primary);
+  }
+
+  .segment-interest {
+    background-color: var(--color-success);
+  }
+
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-initial { background-color: var(--color-text-light); }
+  .dot-deposits { background-color: var(--color-primary); }
+  .dot-interest { background-color: var(--color-success); }
+
+  /* Schedule Table */
+  .schedule-section {
+    margin-top: var(--space-2);
+  }
+
+  .schedule-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .schedule-toggle-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  #schedule-chevron {
+    transition: transform 0.25s ease;
+  }
+
+  .schedule-table-wrapper {
+    margin-top: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--color-bg-base);
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: right;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .schedule-table th {
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+  }
+
+  .schedule-table th:first-child,
+  .schedule-table td:first-child {
+    text-align: left;
+  }
+
+  .schedule-table tr:hover {
+    background-color: rgba(var(--color-primary-rgb, 14, 165, 233), 0.04);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Responsive Breakpoints - Mobile-First & Rule 15 */
+  @media (max-width: 520px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper,
+    .currency-select,
+    .date-input {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .net-value-container {
+      flex-direction: column;
+    }
+
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-metric-value {
+      font-size: 1.85rem;
+    }
+  }
+
+  @media (min-width: 521px) and (max-width: 768px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

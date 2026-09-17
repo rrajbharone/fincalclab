@@ -1,0 +1,1839 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Savings Target Calculator"
+  description="Calculate how much you will accumulate by your target date, or determine how long it will take to reach your savings target with compound interest."
+  category="Savings & Wealth"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="savings-target-calculator">
+    
+    <!-- Planning Mode Switcher -->
+    <div class="input-section mode-switch-section">
+      <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">Choose Planning Mode</label>
+      <div class="toggle-pill-group" role="radiogroup" aria-label="Savings Planning Mode">
+        <button type="button" class="toggle-pill active" id="stc-mode-date-btn" aria-checked="true" role="radio">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          I know my target date
+        </button>
+        <button type="button" class="toggle-pill" id="stc-mode-time-btn" aria-checked="false" role="radio">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          I want to know how long it will take
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 1: Goal & Balances -->
+    <div class="input-section" style="margin-top: var(--space-5);">
+      <h3 class="section-title">1. Target & Balances</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="stc-currency-select">Currency</label>
+          <select id="stc-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Target Savings Goal Amount -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="stc-goal-input">Savings Target Goal</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="stc-cur-symbol-1">$</span>
+            <input type="number" id="stc-goal-input" min="100" max="10000000" step="100" value="20000" aria-label="Target Savings Goal Amount" />
+          </div>
+        </div>
+        <input type="range" id="stc-goal-slider" min="1000" max="100000" step="500" value="20000" class="slider-range" aria-label="Target Savings Goal Slider" />
+        
+        <!-- Preset Goal Buttons -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Presets:</span>
+          <button type="button" class="preset-pill" data-val="5000">$5k</button>
+          <button type="button" class="preset-pill" data-val="10000">$10k</button>
+          <button type="button" class="preset-pill active" data-val="20000">$20k</button>
+          <button type="button" class="preset-pill" data-val="50000">$50k</button>
+          <button type="button" class="preset-pill" data-val="100000">$100k</button>
+        </div>
+      </div>
+
+      <!-- Current Savings -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="stc-current-input">Current Savings (Optional)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="stc-cur-symbol-2">$</span>
+            <input type="number" id="stc-current-input" min="0" max="10000000" step="50" value="2500" aria-label="Current Savings" />
+          </div>
+        </div>
+        <input type="range" id="stc-current-slider" min="0" max="50000" step="250" value="2500" class="slider-range" aria-label="Current Savings Slider" />
+        <span class="input-subtext">Money you have already saved toward this specific target.</span>
+      </div>
+
+      <!-- Regular Contribution -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="stc-contrib-input">Regular Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="stc-cur-symbol-3">$</span>
+            <input type="number" id="stc-contrib-input" min="0" max="1000000" step="25" value="500" aria-label="Regular Contribution Amount" />
+          </div>
+        </div>
+        <input type="range" id="stc-contrib-slider" min="0" max="5000" step="25" value="500" class="slider-range" aria-label="Regular Contribution Slider" />
+        <span class="input-subtext" id="stc-contrib-subtext">Amount you deposit each payment period.</span>
+      </div>
+
+      <!-- Contribution Frequency -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="stc-frequency-select">Contribution Frequency</label>
+          <select id="stc-frequency-select" class="currency-select" aria-label="Contribution Frequency">
+            <option value="12" selected>Monthly (12 times per year)</option>
+            <option value="26">Biweekly (Every 2 weeks, 26 per year)</option>
+            <option value="52">Weekly (52 times per year)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Mode A Specific: Target Date or Duration -->
+      <div id="stc-date-mode-controls" class="input-group">
+        <div class="input-label-row">
+          <label for="stc-target-date-input">Target Deadline Date</label>
+          <input type="date" id="stc-target-date-input" class="date-input" aria-label="Target Deadline Date" />
+        </div>
+        <div id="stc-target-date-hint" class="input-subtext">Calculates remaining periods and projected balance by this date.</div>
+      </div>
+
+    </div>
+
+    <!-- Step 2: Growth & Interest Rate -->
+    <div class="input-section" style="margin-top: var(--space-5);">
+      <h3 class="section-title">2. Growth & Interest</h3>
+
+      <!-- Annual Interest Rate (APY) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="stc-interest-input">Expected Annual Return / APY</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="stc-interest-input" min="0" max="25" step="0.1" value="4.5" aria-label="Expected Annual Return or APY" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="stc-interest-slider" min="0" max="15" step="0.1" value="4.5" class="slider-range" aria-label="Interest Rate Slider" />
+        <span class="input-subtext">Set to 0% for standard checking accounts or cash. Typical High-Yield Savings Accounts (HYSA) earn 3.5% to 5.0%.</span>
+      </div>
+
+      <!-- Reset Inputs Button -->
+      <div style="margin-top: var(--space-4);">
+        <Button variant="outline" size="sm" id="stc-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Savings Target Projection</h3>
+
+    <!-- Primary Hero Metric -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label" id="res-stc-hero-label">Projected Savings by Target Date</span>
+      <div class="hero-metric-value" id="res-stc-hero-value">$20,892.40</div>
+      <span class="hero-metric-subtext" id="res-stc-hero-sub">You are on track to achieve your savings target!</span>
+    </div>
+
+    <!-- Secondary Callout Banner -->
+    <div id="res-stc-callout-banner" class="callout-banner success">
+      <div class="callout-icon" id="res-stc-callout-icon">✓</div>
+      <div class="callout-body">
+        <span class="callout-title" id="res-stc-callout-title">Target Reached</span>
+        <span class="callout-msg" id="res-stc-callout-msg">Your projected balance exceeds your $20,000.00 goal by $892.40.</span>
+      </div>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-success">
+        <span class="net-box-label">Savings Target Goal</span>
+        <div id="res-stc-total-goal" class="net-box-value text-success">$20,000.00</div>
+        <span class="net-box-desc">Target accumulation</span>
+      </div>
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label" id="res-stc-secondary-label">Estimated Interest Earned</span>
+        <div id="res-stc-secondary-value" class="net-box-value text-primary">$1,892.40</div>
+        <span class="net-box-desc" id="res-stc-secondary-desc">Compound growth benefit</span>
+      </div>
+    </div>
+
+    <!-- Goal Progress Bar -->
+    <div class="progress-section">
+      <div class="progress-label-row">
+        <span>Target Progress</span>
+        <span id="stc-progress-percent">104.5%</span>
+      </div>
+      <div class="progress-bar-track">
+        <div id="stc-progress-bar-fill" class="progress-bar-fill" style="width: 100%;"></div>
+      </div>
+      <div class="progress-sub-row">
+        <span id="stc-progress-current-label">Current Savings: $2,500.00</span>
+        <span id="stc-progress-gap-label">Amount Remaining: $0.00</span>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict Synthesis -->
+    <div class="verdict-container">
+      <Card elevation="sm" id="stc-verdict-card" class="verdict-card">
+        <span class="verdict-tag" id="stc-verdict-tag">Financial Roadmap</span>
+        <p id="res-stc-verdict-text" class="verdict-paragraph">
+          With your current savings of <strong>$2,500.00</strong> and ongoing contributions of <strong>$500.00 per month</strong>, you are projected to reach your <strong>$20,000.00</strong> target in approximately <strong>32 months</strong>. You will deposit <strong>$16,000.00</strong> out-of-pocket and earn <strong>$1,892.40</strong> in compound interest.
+        </p>
+        <span class="verdict-disclaimer">Interest and future balances are estimates based on compounding assumptions and do not constitute financial guarantees.</span>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid - Rule 15 Responsive (Wrap on Mobile) -->
+    <h4 class="metrics-grid-title">Financial Summary Breakdown</h4>
+    <div class="results-grid stc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Savings Target</span>
+        <div class="tile-value" id="tile-stc-target" style="color: var(--color-success);">$20,000.00</div>
+        <span class="tile-sub">Target Goal Amount</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-stc-proj-label">Projected Savings</span>
+        <div class="tile-value" id="tile-stc-proj" style="color: var(--color-primary);">$20,892.40</div>
+        <span class="tile-sub" id="tile-stc-proj-sub">At target date</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-stc-rem-label">Amount Remaining</span>
+        <div class="tile-value" id="tile-stc-rem" style="color: var(--color-warning);">$0.00</div>
+        <span class="tile-sub" id="tile-stc-rem-sub">Surplus of $892.40</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Total Contributions</span>
+        <div class="tile-value" id="tile-stc-contrib" style="color: var(--color-text-base);">$16,500.00</div>
+        <span class="tile-sub" id="tile-stc-contrib-sub">33 monthly deposits</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Estimated Interest Earned</span>
+        <div class="tile-value" id="tile-stc-interest" style="color: var(--color-success);">+$1,892.40</div>
+        <span class="tile-sub">Compound growth yield</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-stc-time-label">Estimated Time / Date</span>
+        <div class="tile-value" id="tile-stc-time" style="color: var(--color-primary);">32 Months</div>
+        <span class="tile-sub" id="tile-stc-time-sub">Est. Target Date</span>
+      </div>
+    </div>
+
+    <!-- Visual Funding Source Distribution Bar -->
+    <div class="breakdown-bar-card">
+      <span class="tile-label">Funding Source Distribution</span>
+      <div class="stacked-bar-track">
+        <div id="bar-stc-initial" class="bar-segment segment-initial" style="width: 12.0%;" title="Current Savings"></div>
+        <div id="bar-stc-deposits" class="bar-segment segment-deposits" style="width: 79.0%;" title="Regular Contributions"></div>
+        <div id="bar-stc-interest" class="bar-segment segment-interest" style="width: 9.0%;" title="Estimated Interest"></div>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-dot dot-initial"></span> Initial (<span id="leg-stc-initial-val">$2,500</span>)</div>
+        <div class="legend-item"><span class="legend-dot dot-deposits"></span> Contributions (<span id="leg-stc-deposits-val">$16,500</span>)</div>
+        <div class="legend-item"><span class="legend-dot dot-interest"></span> Interest (<span id="leg-stc-interest-val">$1,892</span>)</div>
+      </div>
+    </div>
+
+    <!-- Interactive Accumulation Schedule Table (Collapsible) -->
+    <div class="schedule-section">
+      <button type="button" class="schedule-toggle-btn" id="toggle-stc-schedule-btn" aria-expanded="false">
+        <span>View Detailed Savings Schedule</span>
+        <svg id="stc-schedule-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chevron-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div id="stc-schedule-wrapper" class="schedule-wrapper hidden">
+        <div class="schedule-table-container">
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th id="th-stc-period">Period</th>
+                <th>Deposit</th>
+                <th>Interest</th>
+                <th>Total Contributions</th>
+                <th>Total Balance</th>
+                <th>Goal Progress</th>
+              </tr>
+            </thead>
+            <tbody id="stc-schedule-tbody">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+        <div class="schedule-footnote">
+          Note: Showing period-by-period accumulation. For extended horizons, results are grouped or capped for optimal performance.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSavingsTargetCalculator() {
+    const calcRoot = document.getElementById('savings-target-calculator');
+    if (!calcRoot) return;
+
+    // Mode Buttons
+    const modeDateBtn = document.getElementById('stc-mode-date-btn');
+    const modeTimeBtn = document.getElementById('stc-mode-time-btn');
+    const dateModeControls = document.getElementById('stc-date-mode-controls');
+
+    // Inputs
+    const currencySelect = document.getElementById('stc-currency-select') as HTMLSelectElement;
+    const goalInput = document.getElementById('stc-goal-input') as HTMLInputElement;
+    const goalSlider = document.getElementById('stc-goal-slider') as HTMLInputElement;
+    const currentInput = document.getElementById('stc-current-input') as HTMLInputElement;
+    const currentSlider = document.getElementById('stc-current-slider') as HTMLInputElement;
+    const contribInput = document.getElementById('stc-contrib-input') as HTMLInputElement;
+    const contribSlider = document.getElementById('stc-contrib-slider') as HTMLInputElement;
+    const contribSubtext = document.getElementById('stc-contrib-subtext');
+    const frequencySelect = document.getElementById('stc-frequency-select') as HTMLSelectElement;
+    const targetDateInput = document.getElementById('stc-target-date-input') as HTMLInputElement;
+    const targetDateHint = document.getElementById('stc-target-date-hint');
+    const interestInput = document.getElementById('stc-interest-input') as HTMLInputElement;
+    const interestSlider = document.getElementById('stc-interest-slider') as HTMLInputElement;
+    const resetBtn = document.getElementById('stc-reset-btn');
+    const presetPills = document.querySelectorAll('.preset-pill');
+
+    // Displays
+    const heroLabel = document.getElementById('res-stc-hero-label');
+    const heroValue = document.getElementById('res-stc-hero-value');
+    const heroSub = document.getElementById('res-stc-hero-sub');
+    const calloutBanner = document.getElementById('res-stc-callout-banner');
+    const calloutIcon = document.getElementById('res-stc-callout-icon');
+    const calloutTitle = document.getElementById('res-stc-callout-title');
+    const calloutMsg = document.getElementById('res-stc-callout-msg');
+
+    const totalGoalVal = document.getElementById('res-stc-total-goal');
+    const secondaryLabel = document.getElementById('res-stc-secondary-label');
+    const secondaryValue = document.getElementById('res-stc-secondary-value');
+    const secondaryDesc = document.getElementById('res-stc-secondary-desc');
+
+    const progressBarFill = document.getElementById('stc-progress-bar-fill');
+    const progressPercentText = document.getElementById('stc-progress-percent');
+    const progressCurrentLabel = document.getElementById('stc-progress-current-label');
+    const progressGapLabel = document.getElementById('stc-progress-gap-label');
+
+    const verdictCard = document.getElementById('stc-verdict-card');
+    const verdictTag = document.getElementById('stc-verdict-tag');
+    const verdictText = document.getElementById('res-stc-verdict-text');
+
+    // Tiles
+    const tileTarget = document.getElementById('tile-stc-target');
+    const tileProjLabel = document.getElementById('tile-stc-proj-label');
+    const tileProj = document.getElementById('tile-stc-proj');
+    const tileProjSub = document.getElementById('tile-stc-proj-sub');
+    const tileRemLabel = document.getElementById('tile-stc-rem-label');
+    const tileRem = document.getElementById('tile-stc-rem');
+    const tileRemSub = document.getElementById('tile-stc-rem-sub');
+    const tileContrib = document.getElementById('tile-stc-contrib');
+    const tileContribSub = document.getElementById('tile-stc-contrib-sub');
+    const tileInterest = document.getElementById('tile-stc-interest');
+    const tileTimeLabel = document.getElementById('tile-stc-time-label');
+    const tileTime = document.getElementById('tile-stc-time');
+    const tileTimeSub = document.getElementById('tile-stc-time-sub');
+
+    // Visual Distribution Bar
+    const barInitial = document.getElementById('bar-stc-initial');
+    const barDeposits = document.getElementById('bar-stc-deposits');
+    const barInterest = document.getElementById('bar-stc-interest');
+    const legInitialVal = document.getElementById('leg-stc-initial-val');
+    const legDepositsVal = document.getElementById('leg-stc-deposits-val');
+    const legInterestVal = document.getElementById('leg-stc-interest-val');
+
+    // Schedule Table
+    const toggleScheduleBtn = document.getElementById('toggle-stc-schedule-btn');
+    const scheduleWrapper = document.getElementById('stc-schedule-wrapper');
+    const scheduleChevron = document.getElementById('stc-schedule-chevron');
+    const scheduleTbody = document.getElementById('stc-schedule-tbody');
+    const thPeriod = document.getElementById('th-stc-period');
+
+    if (!goalInput || !currencySelect) return;
+
+    let currentPlanningMode = 'date'; // 'date' | 'time'
+
+    // Default target date: exactly 3 years from today
+    const now = new Date();
+    const defaultFutureDate = new Date(now.getFullYear() + 3, now.getMonth(), now.getDate());
+    const minFutureDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14);
+    if (targetDateInput) {
+      targetDateInput.min = minFutureDate.toISOString().split('T')[0];
+      targetDateInput.value = defaultFutureDate.toISOString().split('T')[0];
+    }
+
+    const currencySymbols: Record<string, string> = {
+      USD: '$',
+      EUR: '€',
+      GBP: '£',
+      CAD: 'C$',
+      AUD: 'A$',
+      INR: '₹',
+      JPY: '¥',
+      SGD: 'S$',
+      CHF: 'CHF '
+    };
+
+    function getCurrencySymbol(): string {
+      return currencySymbols[currencySelect.value] || '$';
+    }
+
+    function formatCurrency(val: number): string {
+      const sym = getCurrencySymbol();
+      const isJPY = currencySelect.value === 'JPY';
+      const absVal = Math.abs(val);
+      const formatted = absVal.toLocaleString(undefined, {
+        minimumFractionDigits: isJPY ? 0 : 2,
+        maximumFractionDigits: isJPY ? 0 : 2
+      });
+      return `${val < 0 ? '-' : ''}${sym}${formatted}`;
+    }
+
+    function formatCompactCurrency(val: number): string {
+      const sym = getCurrencySymbol();
+      const formatted = Math.round(Math.abs(val)).toLocaleString(undefined, {
+        maximumFractionDigits: 0
+      });
+      return `${val < 0 ? '-' : ''}${sym}${formatted}`;
+    }
+
+    function updateCurrencySymbols() {
+      const sym = getCurrencySymbol();
+      ['stc-cur-symbol-1', 'stc-cur-symbol-2', 'stc-cur-symbol-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = sym;
+      });
+    }
+
+    // Connect slider with inputs
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    bindSlider(goalInput, goalSlider, calculateAll);
+    bindSlider(currentInput, currentSlider, calculateAll);
+    bindSlider(contribInput, contribSlider, calculateAll);
+    bindSlider(interestInput, interestSlider, calculateAll);
+
+    // Preset pills
+    presetPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        presetPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const val = pill.getAttribute('data-val');
+        if (val) {
+          goalInput.value = val;
+          goalSlider.value = val;
+          calculateAll();
+        }
+      });
+    });
+
+    goalInput.addEventListener('input', () => {
+      const currentVal = goalInput.value;
+      presetPills.forEach(pill => {
+        if (pill.getAttribute('data-val') === currentVal) {
+          pill.classList.add('active');
+        } else {
+          pill.classList.remove('active');
+        }
+      });
+    });
+
+    // Mode Switcher
+    if (modeDateBtn && modeTimeBtn && dateModeControls) {
+      modeDateBtn.addEventListener('click', () => {
+        if (currentPlanningMode === 'date') return;
+        currentPlanningMode = 'date';
+        modeDateBtn.classList.add('active');
+        modeDateBtn.setAttribute('aria-checked', 'true');
+        modeTimeBtn.classList.remove('active');
+        modeTimeBtn.setAttribute('aria-checked', 'false');
+        dateModeControls.classList.remove('hidden');
+        calculateAll();
+      });
+
+      modeTimeBtn.addEventListener('click', () => {
+        if (currentPlanningMode === 'time') return;
+        currentPlanningMode = 'time';
+        modeTimeBtn.classList.add('active');
+        modeTimeBtn.setAttribute('aria-checked', 'true');
+        modeDateBtn.classList.remove('active');
+        modeDateBtn.setAttribute('aria-checked', 'false');
+        dateModeControls.classList.add('hidden');
+        calculateAll();
+      });
+    }
+
+    currencySelect.addEventListener('change', () => {
+      updateCurrencySymbols();
+      calculateAll();
+    });
+
+    frequencySelect.addEventListener('change', () => {
+      updateContribSubtext();
+      calculateAll();
+    });
+
+    if (targetDateInput) {
+      targetDateInput.addEventListener('change', calculateAll);
+    }
+
+    function updateContribSubtext() {
+      const freq = frequencySelect.value;
+      if (contribSubtext) {
+        if (freq === '52') {
+          contribSubtext.textContent = 'Amount you deposit every week (52 deposits per year).';
+        } else if (freq === '26') {
+          contribSubtext.textContent = 'Amount you deposit every two weeks (26 deposits per year).';
+        } else {
+          contribSubtext.textContent = 'Amount you deposit each month (12 deposits per year).';
+        }
+      }
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currencySelect.value = 'USD';
+        goalInput.value = '20000';
+        goalSlider.value = '20000';
+        currentInput.value = '2500';
+        currentSlider.value = '2500';
+        contribInput.value = '500';
+        contribSlider.value = '500';
+        frequencySelect.value = '12';
+        interestInput.value = '4.5';
+        interestSlider.value = '4.5';
+        currentPlanningMode = 'date';
+        if (modeDateBtn && modeTimeBtn && dateModeControls) {
+          modeDateBtn.classList.add('active');
+          modeDateBtn.setAttribute('aria-checked', 'true');
+          modeTimeBtn.classList.remove('active');
+          modeTimeBtn.setAttribute('aria-checked', 'false');
+          dateModeControls.classList.remove('hidden');
+        }
+        if (targetDateInput) {
+          const rDate = new Date(now.getFullYear() + 3, now.getMonth(), now.getDate());
+          targetDateInput.value = rDate.toISOString().split('T')[0];
+        }
+        presetPills.forEach(p => {
+          if (p.getAttribute('data-val') === '20000') p.classList.add('active');
+          else p.classList.remove('active');
+        });
+        updateCurrencySymbols();
+        updateContribSubtext();
+        calculateAll();
+      });
+    }
+
+    if (toggleScheduleBtn && scheduleWrapper && scheduleChevron) {
+      toggleScheduleBtn.addEventListener('click', () => {
+        const isExpanded = toggleScheduleBtn.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+          toggleScheduleBtn.setAttribute('aria-expanded', 'false');
+          scheduleWrapper.classList.add('hidden');
+          scheduleChevron.classList.remove('rotate-180');
+          toggleScheduleBtn.querySelector('span')!.textContent = 'View Detailed Savings Schedule';
+        } else {
+          toggleScheduleBtn.setAttribute('aria-expanded', 'true');
+          scheduleWrapper.classList.remove('hidden');
+          scheduleChevron.classList.add('rotate-180');
+          toggleScheduleBtn.querySelector('span')!.textContent = 'Hide Detailed Savings Schedule';
+        }
+      });
+    }
+
+    // Calculation Engine
+    function calculateAll() {
+      const goal = Math.max(0, parseFloat(goalInput.value) || 0);
+      const current = Math.max(0, parseFloat(currentInput.value) || 0);
+      const contrib = Math.max(0, parseFloat(contribInput.value) || 0);
+      const freq = parseInt(frequencySelect.value, 10) || 12; // 12, 26, 52
+      const apy = Math.max(0, parseFloat(interestInput.value) || 0);
+      const r = apy / 100;
+      const periodicRate = r / freq;
+
+      const freqName = freq === 52 ? 'weekly' : freq === 26 ? 'biweekly' : 'monthly';
+      const freqPeriodLabel = freq === 52 ? 'weeks' : freq === 26 ? 'biweeks' : 'months';
+      const freqSingular = freq === 52 ? 'week' : freq === 26 ? 'two weeks' : 'month';
+
+      if (thPeriod) {
+        thPeriod.textContent = freq === 52 ? 'Week' : freq === 26 ? 'Biweek' : 'Month';
+      }
+
+      // Check if goal is already reached
+      if (current >= goal && goal > 0) {
+        renderGoalAlreadyReached(goal, current);
+        return;
+      }
+
+      if (currentPlanningMode === 'date') {
+        calculateModeTargetDate(goal, current, contrib, freq, periodicRate, apy, freqName, freqPeriodLabel);
+      } else {
+        calculateModeTimeToTarget(goal, current, contrib, freq, periodicRate, apy, freqName, freqPeriodLabel, freqSingular);
+      }
+    }
+
+    function renderGoalAlreadyReached(goal: number, current: number) {
+      if (!heroLabel || !heroValue || !heroSub || !calloutBanner || !calloutTitle || !calloutMsg) return;
+      const surplus = current - goal;
+      heroLabel.textContent = 'Savings Target Status';
+      heroValue.textContent = 'Goal Already Reached!';
+      heroSub.textContent = `Your current balance of ${formatCurrency(current)} meets or exceeds your ${formatCurrency(goal)} goal.`;
+
+      calloutBanner.className = 'callout-banner success';
+      if (calloutIcon) calloutIcon.textContent = '★';
+      calloutTitle.textContent = 'Target Achieved!';
+      calloutMsg.textContent = surplus > 0 
+        ? `You have a surplus of ${formatCurrency(surplus)} over your target goal.`
+        : 'Your existing savings match your target goal amount exactly.';
+
+      if (totalGoalVal) totalGoalVal.textContent = formatCurrency(goal);
+      if (secondaryLabel) secondaryLabel.textContent = 'Current Balance';
+      if (secondaryValue) secondaryValue.textContent = formatCurrency(current);
+      if (secondaryDesc) secondaryDesc.textContent = '100% of goal funded';
+
+      if (progressBarFill) progressBarFill.style.width = '100%';
+      if (progressPercentText) progressPercentText.textContent = '100.0%';
+      if (progressCurrentLabel) progressCurrentLabel.textContent = `Current Savings: ${formatCurrency(current)}`;
+      if (progressGapLabel) progressGapLabel.textContent = 'Amount Remaining: $0.00';
+
+      if (verdictCard) verdictCard.className = 'verdict-card verdict-success';
+      if (verdictTag) verdictTag.textContent = 'Target Reached';
+      if (verdictText) {
+        verdictText.innerHTML = `You have already achieved your <strong>${formatCurrency(goal)}</strong> savings target with your existing reserve of <strong>${formatCurrency(current)}</strong>! No additional contributions are strictly required to hit this target.`;
+      }
+
+      if (tileTarget) tileTarget.textContent = formatCurrency(goal);
+      if (tileProjLabel) tileProjLabel.textContent = 'Current Savings';
+      if (tileProj) tileProj.textContent = formatCurrency(current);
+      if (tileProjSub) tileProjSub.textContent = 'Goal met';
+      if (tileRemLabel) tileRemLabel.textContent = 'Amount Remaining';
+      if (tileRem) tileRem.textContent = '$0.00';
+      if (tileRemSub) tileRemSub.textContent = surplus > 0 ? `Surplus: ${formatCurrency(surplus)}` : 'Fully funded';
+      if (tileContrib) tileContrib.textContent = '$0.00';
+      if (tileContribSub) tileContribSub.textContent = 'No extra deposits needed';
+      if (tileInterest) tileInterest.textContent = '$0.00';
+      if (tileTimeLabel) tileTimeLabel.textContent = 'Time to Target';
+      if (tileTime) tileTime.textContent = '0 Months';
+      if (tileTimeSub) tileTimeSub.textContent = 'Achieved today';
+
+      if (barInitial) barInitial.style.width = '100%';
+      if (barDeposits) barDeposits.style.width = '0%';
+      if (barInterest) barInterest.style.width = '0%';
+      if (legInitialVal) legInitialVal.textContent = formatCompactCurrency(current);
+      if (legDepositsVal) legDepositsVal.textContent = '$0';
+      if (legInterestVal) legInterestVal.textContent = '$0';
+
+      if (scheduleTbody) {
+        scheduleTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 18px; color: var(--color-text-muted);">Goal is already 100% funded with current savings (${formatCurrency(current)}).</td></tr>`;
+      }
+    }
+
+    // MODE A: User Knows Target Date
+    function calculateModeTargetDate(
+      goal: number,
+      current: number,
+      contrib: number,
+      freq: number,
+      periodicRate: number,
+      apy: number,
+      freqName: string,
+      freqPeriodLabel: string
+    ) {
+      if (!targetDateInput) return;
+      const today = new Date();
+      const targetDate = new Date(targetDateInput.value);
+
+      // Validate date
+      if (isNaN(targetDate.getTime()) || targetDate <= today) {
+        if (targetDateHint) {
+          targetDateHint.textContent = 'Please choose a future deadline date.';
+          targetDateHint.style.color = 'var(--color-danger)';
+        }
+        return;
+      } else {
+        if (targetDateHint) {
+          targetDateHint.textContent = 'Calculates remaining periods and projected balance by this date.';
+          targetDateHint.style.color = 'var(--color-text-muted)';
+        }
+      }
+
+      // Calculate total elapsed days and periods
+      const diffTime = targetDate.getTime() - today.getTime();
+      const diffDays = Math.max(1, diffTime / (1000 * 60 * 60 * 24));
+      
+      let totalPeriods = 1;
+      if (freq === 52) {
+        totalPeriods = Math.max(1, Math.round(diffDays / 7));
+      } else if (freq === 26) {
+        totalPeriods = Math.max(1, Math.round(diffDays / 14));
+      } else {
+        const yearDiff = targetDate.getFullYear() - today.getFullYear();
+        const monthDiff = targetDate.getMonth() - today.getMonth();
+        const dayDiff = (targetDate.getDate() - today.getDate()) / 30.4375;
+        totalPeriods = Math.max(1, Math.round(yearDiff * 12 + monthDiff + dayDiff));
+      }
+
+      // Calculate Future Value of Current Savings
+      let fvCurrent = current;
+      if (periodicRate > 0) {
+        fvCurrent = current * Math.pow(1 + periodicRate, totalPeriods);
+      }
+
+      // Calculate Future Value of Regular Contributions (Ordinary Annuity)
+      let fvContrib = 0;
+      if (contrib > 0) {
+        if (periodicRate === 0) {
+          fvContrib = contrib * totalPeriods;
+        } else {
+          fvContrib = contrib * ((Math.pow(1 + periodicRate, totalPeriods) - 1) / periodicRate);
+        }
+      }
+
+      const projectedSavings = fvCurrent + fvContrib;
+      const totalNewDeposits = contrib * totalPeriods;
+      const totalInterestEarned = Math.max(0, projectedSavings - current - totalNewDeposits);
+      const isReached = projectedSavings >= goal;
+      const surplusOrShortfall = projectedSavings - goal;
+      const remainingAmount = Math.max(0, goal - projectedSavings);
+
+      // Calculate required contribution to hit exact target if shortfall exists
+      let requiredContribPerPeriod = 0;
+      if (!isReached && totalPeriods > 0) {
+        const neededFromDeposits = Math.max(0, goal - fvCurrent);
+        if (periodicRate === 0) {
+          requiredContribPerPeriod = neededFromDeposits / totalPeriods;
+        } else {
+          const annuityFactor = (Math.pow(1 + periodicRate, totalPeriods) - 1) / periodicRate;
+          requiredContribPerPeriod = neededFromDeposits / annuityFactor;
+        }
+      }
+
+      // Calculate Goal Progress %
+      const progressPercent = goal > 0 ? Math.min(200, (projectedSavings / goal) * 100) : 100;
+      const currentProgressPercent = goal > 0 ? Math.min(100, (current / goal) * 100) : 100;
+
+      // Update Hero Box
+      if (heroLabel) heroLabel.textContent = 'Projected Savings by Target Date';
+      if (heroValue) {
+        heroValue.textContent = formatCurrency(projectedSavings);
+        heroValue.style.color = isReached ? 'var(--color-success)' : 'var(--color-primary)';
+      }
+      if (heroSub) {
+        const dateStr = targetDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+        heroSub.textContent = `Projected balance by ${dateStr} (${totalPeriods} ${freqPeriodLabel})`;
+      }
+
+      // Update Callout Banner
+      if (calloutBanner && calloutTitle && calloutMsg) {
+        if (isReached) {
+          calloutBanner.className = 'callout-banner success';
+          if (calloutIcon) calloutIcon.textContent = '✓';
+          calloutTitle.textContent = 'Target Achieved on Time!';
+          calloutMsg.textContent = surplusOrShortfall > 1
+            ? `Your projected savings of ${formatCurrency(projectedSavings)} exceeds your target by ${formatCurrency(surplusOrShortfall)}.`
+            : `Your projected savings exactly reach your ${formatCurrency(goal)} goal.`;
+        } else {
+          calloutBanner.className = 'callout-banner warning';
+          if (calloutIcon) calloutIcon.textContent = '!';
+          calloutTitle.textContent = `Shortfall of ${formatCurrency(Math.abs(surplusOrShortfall))}`;
+          calloutMsg.textContent = `At your current savings rate, you will fall short by ${formatCurrency(remainingAmount)}. To hit your target by the deadline, increase your ${freqName} contribution to ${formatCurrency(requiredContribPerPeriod)}.`;
+        }
+      }
+
+      // Update Dual Summary Cards
+      if (totalGoalVal) totalGoalVal.textContent = formatCurrency(goal);
+      if (secondaryLabel) secondaryLabel.textContent = isReached ? 'Estimated Surplus' : 'Amount Remaining';
+      if (secondaryValue) {
+        secondaryValue.textContent = isReached ? `+${formatCurrency(surplusOrShortfall)}` : formatCurrency(remainingAmount);
+        secondaryValue.style.color = isReached ? 'var(--color-success)' : 'var(--color-warning)';
+      }
+      if (secondaryDesc) {
+        secondaryDesc.textContent = isReached ? 'Above target goal' : 'Shortfall to bridge';
+      }
+
+      // Update Progress Bar
+      if (progressBarFill) {
+        progressBarFill.style.width = `${Math.min(100, progressPercent)}%`;
+        progressBarFill.style.backgroundColor = isReached ? 'var(--color-success)' : 'var(--color-primary)';
+      }
+      if (progressPercentText) progressPercentText.textContent = `${progressPercent.toFixed(1)}%`;
+      if (progressCurrentLabel) progressCurrentLabel.textContent = `Initial: ${formatCurrency(current)} (${currentProgressPercent.toFixed(1)}%)`;
+      if (progressGapLabel) {
+        progressGapLabel.textContent = isReached ? `Surplus: ${formatCurrency(surplusOrShortfall)}` : `Gap: ${formatCurrency(remainingAmount)}`;
+      }
+
+      // Plain-English Verdict
+      if (verdictCard) {
+        verdictCard.className = `verdict-card ${isReached ? 'verdict-success' : 'verdict-warning'}`;
+      }
+      if (verdictTag) {
+        verdictTag.textContent = isReached ? 'On Track Roadmap' : 'Adjustment Recommended';
+      }
+      if (verdictText) {
+        const dateStr = targetDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+        if (isReached) {
+          verdictText.innerHTML = `By contributing <strong>${formatCurrency(contrib)} ${freqName}</strong> until <strong>${dateStr}</strong> (${totalPeriods} ${freqPeriodLabel}), you are projected to accumulate <strong>${formatCurrency(projectedSavings)}</strong>, successfully reaching your <strong>${formatCurrency(goal)}</strong> goal! Over this timeline, compound interest at ${apy}% APY contributes approximately <strong>${formatCurrency(totalInterestEarned)}</strong> in free growth.`;
+        } else {
+          verdictText.innerHTML = `Under your current contribution of <strong>${formatCurrency(contrib)} ${freqName}</strong>, you will reach <strong>${formatCurrency(projectedSavings)}</strong> by <strong>${dateStr}</strong>, leaving a shortfall of <strong>${formatCurrency(remainingAmount)}</strong>. To bridge this gap by your deadline, increase your regular deposit to <strong>${formatCurrency(requiredContribPerPeriod)} ${freqName}</strong>, or extend your deadline by several months.`;
+        }
+      }
+
+      // Update 6-tile metrics grid
+      if (tileTarget) tileTarget.textContent = formatCurrency(goal);
+      if (tileProjLabel) tileProjLabel.textContent = 'Projected Savings';
+      if (tileProj) tileProj.textContent = formatCurrency(projectedSavings);
+      if (tileProjSub) tileProjSub.textContent = `In ${totalPeriods} ${freqPeriodLabel}`;
+
+      if (tileRemLabel) tileRemLabel.textContent = isReached ? 'Projected Surplus' : 'Amount Remaining';
+      if (tileRem) {
+        tileRem.textContent = isReached ? `+${formatCurrency(surplusOrShortfall)}` : formatCurrency(remainingAmount);
+        tileRem.style.color = isReached ? 'var(--color-success)' : 'var(--color-warning)';
+      }
+      if (tileRemSub) tileRemSub.textContent = isReached ? 'Exceeds target' : 'Capital needed';
+
+      if (tileContrib) tileContrib.textContent = formatCurrency(totalNewDeposits);
+      if (tileContribSub) tileContribSub.textContent = `${totalPeriods} regular deposits`;
+
+      if (tileInterest) tileInterest.textContent = `+${formatCurrency(totalInterestEarned)}`;
+
+      if (tileTimeLabel) tileTimeLabel.textContent = isReached ? 'Target Deadline' : 'Required Deposit';
+      if (tileTime) {
+        if (isReached) {
+          tileTime.textContent = targetDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+          if (tileTimeSub) tileTimeSub.textContent = `${totalPeriods} ${freqPeriodLabel} away`;
+        } else {
+          tileTime.textContent = formatCurrency(requiredContribPerPeriod);
+          if (tileTimeSub) tileTimeSub.textContent = `Needed per ${freqSingularName(freq)}`;
+        }
+      }
+
+      // Visual Distribution Bar
+      updateDistributionBar(current, totalNewDeposits, totalInterestEarned, projectedSavings);
+
+      // Accumulation Schedule
+      renderScheduleTable(current, contrib, periodicRate, totalPeriods, goal, freqPeriodLabel);
+    }
+
+    // MODE B: User Wants to Know How Long It Will Take
+    function calculateModeTimeToTarget(
+      goal: number,
+      current: number,
+      contrib: number,
+      freq: number,
+      periodicRate: number,
+      apy: number,
+      freqName: string,
+      freqPeriodLabel: string,
+      freqSingular: string
+    ) {
+      if (!heroLabel || !heroValue || !heroSub || !calloutBanner || !calloutTitle || !calloutMsg) return;
+
+      const remainingGap = goal - current;
+
+      // Handle impossible scenario: contrib is 0 and periodicRate is 0 or current is 0
+      if (contrib <= 0 && (periodicRate <= 0 || current * periodicRate <= 0)) {
+        renderImpossibleScenario(goal, current);
+        return;
+      }
+
+      // If interest rate alone is generating interest, check if interest ever reaches goal
+      if (contrib <= 0 && current > 0 && periodicRate > 0) {
+        // PV * (1 + i)^n = FV  =>  (1+i)^n = FV / PV  =>  n = ln(FV / PV) / ln(1+i)
+        const periodsNeeded = Math.ceil(Math.log(goal / current) / Math.log(1 + periodicRate));
+        renderTimeResult(periodsNeeded, goal, current, 0, freq, periodicRate, apy, freqName, freqPeriodLabel, freqSingular);
+        return;
+      }
+
+      // With regular contributions:
+      // When periodicRate === 0:
+      let periodsNeeded = 0;
+      if (periodicRate === 0) {
+        periodsNeeded = Math.ceil(remainingGap / contrib);
+      } else {
+        // Logarithmic formula for annuity with present value:
+        // (1 + i)^n = (i * FV + PMT) / (i * PV + PMT)
+        // n = ln((i * FV + PMT) / (i * PV + PMT)) / ln(1 + i)
+        const numerator = (periodicRate * goal) + contrib;
+        const denominator = (periodicRate * current) + contrib;
+
+        if (denominator <= 0 || numerator <= 0) {
+          renderImpossibleScenario(goal, current);
+          return;
+        }
+
+        const ratio = numerator / denominator;
+        if (ratio <= 1) {
+          periodsNeeded = 0;
+        } else {
+          periodsNeeded = Math.ceil(Math.log(ratio) / Math.log(1 + periodicRate));
+        }
+      }
+
+      renderTimeResult(periodsNeeded, goal, current, contrib, freq, periodicRate, apy, freqName, freqPeriodLabel, freqSingular);
+    }
+
+    function renderTimeResult(
+      periodsNeeded: number,
+      goal: number,
+      current: number,
+      contrib: number,
+      freq: number,
+      periodicRate: number,
+      apy: number,
+      freqName: string,
+      freqPeriodLabel: string,
+      freqSingular: string
+    ) {
+      if (!heroLabel || !heroValue || !heroSub || !calloutBanner || !calloutTitle || !calloutMsg) return;
+
+      // Convert periods to years, months, weeks
+      let monthsNeeded = 0;
+      if (freq === 52) {
+        monthsNeeded = Math.round(periodsNeeded / 4.333);
+      } else if (freq === 26) {
+        monthsNeeded = Math.round(periodsNeeded / 2.167);
+      } else {
+        monthsNeeded = periodsNeeded;
+      }
+
+      const yearsNeeded = (monthsNeeded / 12);
+      let timeFormatted = '';
+      if (monthsNeeded < 12) {
+        timeFormatted = `${monthsNeeded} Month${monthsNeeded === 1 ? '' : 's'}`;
+      } else {
+        const fullYears = Math.floor(monthsNeeded / 12);
+        const remMonths = monthsNeeded % 12;
+        if (remMonths === 0) {
+          timeFormatted = `${fullYears} Year${fullYears === 1 ? '' : 's'}`;
+        } else {
+          timeFormatted = `${fullYears} Yr${fullYears === 1 ? '' : 's'}, ${remMonths} Mo${remMonths === 1 ? '' : 's'}`;
+        }
+      }
+
+      // Calculate Projected Target Date
+      const today = new Date();
+      let estTargetDate = new Date(today.getTime());
+      if (freq === 52) {
+        estTargetDate.setDate(estTargetDate.getDate() + (periodsNeeded * 7));
+      } else if (freq === 26) {
+        estTargetDate.setDate(estTargetDate.getDate() + (periodsNeeded * 14));
+      } else {
+        estTargetDate.setMonth(estTargetDate.getMonth() + periodsNeeded);
+      }
+      const targetDateFormatted = estTargetDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+      // Financial breakdown
+      const totalNewDeposits = contrib * periodsNeeded;
+      let finalProjectedBalance = current + totalNewDeposits;
+      if (periodicRate > 0) {
+        const fvCurrent = current * Math.pow(1 + periodicRate, periodsNeeded);
+        const fvContrib = contrib > 0 ? contrib * ((Math.pow(1 + periodicRate, periodsNeeded) - 1) / periodicRate) : 0;
+        finalProjectedBalance = fvCurrent + fvContrib;
+      }
+      const totalInterestEarned = Math.max(0, finalProjectedBalance - current - totalNewDeposits);
+
+      // Hero Metric
+      heroLabel.textContent = 'Estimated Time to Reach Target';
+      heroValue.textContent = timeFormatted;
+      heroValue.style.color = 'var(--color-primary)';
+      heroSub.textContent = `Projected completion date: ${targetDateFormatted} (${periodsNeeded} ${freqPeriodLabel})`;
+
+      // Callout Banner
+      calloutBanner.className = 'callout-banner success';
+      if (calloutIcon) calloutIcon.textContent = '✓';
+      calloutTitle.textContent = `Target Achievable in ${timeFormatted}`;
+      calloutMsg.textContent = `Saving ${formatCurrency(contrib)} ${freqName} will accumulate ${formatCurrency(finalProjectedBalance)} by ${targetDateFormatted}.`;
+
+      // Dual Summary Cards
+      if (totalGoalVal) totalGoalVal.textContent = formatCurrency(goal);
+      if (secondaryLabel) secondaryLabel.textContent = 'Estimated Target Date';
+      if (secondaryValue) {
+        secondaryValue.textContent = estTargetDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+        secondaryValue.style.color = 'var(--color-primary)';
+      }
+      if (secondaryDesc) secondaryDesc.textContent = `${periodsNeeded} total contribution periods`;
+
+      // Progress Bar
+      const currentPct = goal > 0 ? Math.min(100, (current / goal) * 100) : 0;
+      if (progressBarFill) {
+        progressBarFill.style.width = `${Math.max(5, currentPct)}%`;
+        progressBarFill.style.backgroundColor = 'var(--color-primary)';
+      }
+      if (progressPercentText) progressPercentText.textContent = `${currentPct.toFixed(1)}% funded today`;
+      if (progressCurrentLabel) progressCurrentLabel.textContent = `Current Savings: ${formatCurrency(current)}`;
+      if (progressGapLabel) progressGapLabel.textContent = `Amount Remaining: ${formatCurrency(goal - current)}`;
+
+      // Verdict Text
+      if (verdictCard) verdictCard.className = 'verdict-card verdict-info';
+      if (verdictTag) verdictTag.textContent = 'Time-to-Target Assessment';
+      if (verdictText) {
+        verdictText.innerHTML = `You are projected to reach your <strong>${formatCurrency(goal)}</strong> savings target in approximately <strong>${timeFormatted}</strong> (by <strong>${targetDateFormatted}</strong>). By saving <strong>${formatCurrency(contrib)} ${freqName}</strong>, your total out-of-pocket deposits will be <strong>${formatCurrency(totalNewDeposits)}</strong>, while compound interest at ${apy}% APY will generate <strong>${formatCurrency(totalInterestEarned)}</strong> in passive growth!`;
+      }
+
+      // 6-Tile Metrics Grid
+      if (tileTarget) tileTarget.textContent = formatCurrency(goal);
+      if (tileProjLabel) tileProjLabel.textContent = 'Final Balance';
+      if (tileProj) tileProj.textContent = formatCurrency(finalProjectedBalance);
+      if (tileProjSub) tileProjSub.textContent = `In ${periodsNeeded} ${freqPeriodLabel}`;
+
+      if (tileRemLabel) tileRemLabel.textContent = 'Estimated Date';
+      if (tileRem) {
+        tileRem.textContent = estTargetDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+        tileRem.style.color = 'var(--color-primary)';
+      }
+      if (tileRemSub) tileRemSub.textContent = `${timeFormatted} away`;
+
+      if (tileContrib) tileContrib.textContent = formatCurrency(totalNewDeposits);
+      if (tileContribSub) tileContribSub.textContent = `${periodsNeeded} ${freqPeriodLabel} contributed`;
+
+      if (tileInterest) tileInterest.textContent = `+${formatCurrency(totalInterestEarned)}`;
+
+      if (tileTimeLabel) tileTimeLabel.textContent = 'Total Periods';
+      if (tileTime) tileTime.textContent = `${periodsNeeded} ${freqPeriodLabel}`;
+      if (tileTimeSub) tileTimeSub.textContent = `${formatCurrency(contrib)} / ${freqSingular}`;
+
+      // Visual Distribution Bar
+      updateDistributionBar(current, totalNewDeposits, totalInterestEarned, finalProjectedBalance);
+
+      // Accumulation Schedule
+      renderScheduleTable(current, contrib, periodicRate, periodsNeeded, goal, freqPeriodLabel);
+    }
+
+    function renderImpossibleScenario(goal: number, current: number) {
+      if (!heroLabel || !heroValue || !heroSub || !calloutBanner || !calloutTitle || !calloutMsg) return;
+      heroLabel.textContent = 'Target Projection Status';
+      heroValue.textContent = 'Target Unreachable';
+      heroValue.style.color = 'var(--color-danger)';
+      heroSub.textContent = 'Zero contributions cannot grow to reach this target amount.';
+
+      calloutBanner.className = 'callout-banner warning';
+      if (calloutIcon) calloutIcon.textContent = '!';
+      calloutTitle.textContent = 'Contributions Insufficient';
+      calloutMsg.textContent = 'Your current savings and contribution amount are not sufficient to reach this target under the current assumptions.';
+
+      if (totalGoalVal) totalGoalVal.textContent = formatCurrency(goal);
+      if (secondaryLabel) secondaryLabel.textContent = 'Shortfall';
+      if (secondaryValue) {
+        secondaryValue.textContent = formatCurrency(goal - current);
+        secondaryValue.style.color = 'var(--color-danger)';
+      }
+      if (secondaryDesc) secondaryDesc.textContent = 'Amount still needed';
+
+      if (progressBarFill) progressBarFill.style.width = '0%';
+      if (progressPercentText) progressPercentText.textContent = '0.0%';
+      if (progressCurrentLabel) progressCurrentLabel.textContent = `Current Savings: ${formatCurrency(current)}`;
+      if (progressGapLabel) progressGapLabel.textContent = `Deficit: ${formatCurrency(goal - current)}`;
+
+      if (verdictCard) verdictCard.className = 'verdict-card verdict-warning';
+      if (verdictTag) verdictTag.textContent = 'Plan Revision Needed';
+      if (verdictText) {
+        verdictText.innerHTML = `Your current savings of <strong>${formatCurrency(current)}</strong> and regular contribution of <strong>${formatCurrency(0)}</strong> are not sufficient to reach your <strong>${formatCurrency(goal)}</strong> savings target. To make progress, enter a positive recurring contribution amount or increase your starting balance.`;
+      }
+
+      if (tileTarget) tileTarget.textContent = formatCurrency(goal);
+      if (tileProjLabel) tileProjLabel.textContent = 'Projected Savings';
+      if (tileProj) tileProj.textContent = formatCurrency(current);
+      if (tileProjSub) tileProjSub.textContent = 'No ongoing growth';
+      if (tileRemLabel) tileRemLabel.textContent = 'Amount Needed';
+      if (tileRem) tileRem.textContent = formatCurrency(goal - current);
+      if (tileRemSub) tileRemSub.textContent = 'Shortfall to bridge';
+      if (tileContrib) tileContrib.textContent = '$0.00';
+      if (tileContribSub) tileContribSub.textContent = '0 contributions';
+      if (tileInterest) tileInterest.textContent = '$0.00';
+      if (tileTimeLabel) tileTimeLabel.textContent = 'Time to Target';
+      if (tileTime) tileTime.textContent = 'Unreachable';
+      if (tileTimeSub) tileTimeSub.textContent = 'Increase contribution';
+
+      if (barInitial) barInitial.style.width = '100%';
+      if (barDeposits) barDeposits.style.width = '0%';
+      if (barInterest) barInterest.style.width = '0%';
+
+      if (scheduleTbody) {
+        scheduleTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 18px; color: var(--color-danger);">Target cannot be reached with $0 regular contribution and 0% return.</td></tr>`;
+      }
+    }
+
+    function updateDistributionBar(initial: number, deposits: number, interest: number, total: number) {
+      if (!barInitial || !barDeposits || !barInterest || total <= 0) return;
+      const pctInitial = Math.min(100, Math.max(0, (initial / total) * 100));
+      const pctDeposits = Math.min(100 - pctInitial, Math.max(0, (deposits / total) * 100));
+      const pctInterest = Math.max(0, 100 - pctInitial - pctDeposits);
+
+      barInitial.style.width = `${pctInitial.toFixed(1)}%`;
+      barDeposits.style.width = `${pctDeposits.toFixed(1)}%`;
+      barInterest.style.width = `${pctInterest.toFixed(1)}%`;
+
+      if (legInitialVal) legInitialVal.textContent = formatCompactCurrency(initial);
+      if (legDepositsVal) legDepositsVal.textContent = formatCompactCurrency(deposits);
+      if (legInterestVal) legInterestVal.textContent = formatCompactCurrency(interest);
+    }
+
+    function renderScheduleTable(
+      initial: number,
+      contrib: number,
+      periodicRate: number,
+      totalPeriods: number,
+      goal: number,
+      freqPeriodLabel: string
+    ) {
+      if (!scheduleTbody) return;
+      scheduleTbody.innerHTML = '';
+
+      let balance = initial;
+      let cumContrib = 0;
+      const rows: string[] = [];
+
+      // Determine step sampling for long schedules to avoid crashing browser DOM
+      let step = 1;
+      if (totalPeriods > 120) step = 12;
+      else if (totalPeriods > 60) step = 6;
+      else if (totalPeriods > 24) step = 2;
+
+      for (let p = 1; p <= totalPeriods; p++) {
+        const interestThisPeriod = balance * periodicRate;
+        balance += contrib + interestThisPeriod;
+        cumContrib += contrib;
+
+        if (p % step === 0 || p === totalPeriods) {
+          const pct = goal > 0 ? Math.min(100, (balance / goal) * 100) : 100;
+          rows.push(`
+            <tr>
+              <td><strong>#${p}</strong></td>
+              <td>${formatCurrency(contrib)}</td>
+              <td style="color: var(--color-success);">+${formatCurrency(interestThisPeriod)}</td>
+              <td>${formatCurrency(cumContrib)}</td>
+              <td style="font-weight: 700; color: var(--color-primary);">${formatCurrency(balance)}</td>
+              <td>
+                <span class="badge ${balance >= goal ? 'badge-success' : 'badge-neutral'}">${pct.toFixed(1)}%</span>
+              </td>
+            </tr>
+          `);
+        }
+      }
+
+      scheduleTbody.innerHTML = rows.join('');
+    }
+
+    function freqSingularName(freq: number): string {
+      if (freq === 52) return 'week';
+      if (freq === 26) return 'biweek';
+      return 'month';
+    }
+
+    // Initial run
+    updateCurrencySymbols();
+    updateContribSubtext();
+    calculateAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', initSavingsTargetCalculator);
+  if (document.readyState !== 'loading') {
+    initSavingsTargetCalculator();
+  }
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .input-section {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+  }
+
+  .mode-switch-section {
+    background-color: var(--color-bg-base);
+    border-color: var(--color-primary);
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-top: 0;
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-2);
+  }
+
+  .control-label {
+    font-size: 0.9rem;
+    color: var(--color-text-base);
+  }
+
+  .toggle-pill-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 480px) {
+    .toggle-pill-group {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+  }
+
+  .toggle-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text-base);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 140px;
+  }
+
+  .currency-symbol,
+  .percent-symbol {
+    position: absolute;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .currency-symbol {
+    left: 10px;
+  }
+
+  .percent-symbol {
+    right: 10px;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: 8px 10px 8px 26px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .currency-select,
+  .date-input {
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    -webkit-appearance: none;
+    margin-top: 4px;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .preset-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover,
+  .preset-pill.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Results Section Styles */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .hero-metric-box {
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb, 14, 165, 233), 0.12), rgba(var(--color-primary-rgb, 14, 165, 233), 0.03));
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-metric-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
+
+  .hero-metric-value {
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* Callout Banner */
+  .callout-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+
+  .callout-banner.success {
+    border-color: rgba(34, 197, 94, 0.4);
+    background-color: rgba(34, 197, 94, 0.08);
+  }
+
+  .callout-banner.warning {
+    border-color: rgba(245, 158, 11, 0.4);
+    background-color: rgba(245, 158, 11, 0.08);
+  }
+
+  .callout-icon {
+    font-size: 1.1rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .callout-banner.success .callout-icon {
+    color: var(--color-success, #22c55e);
+  }
+
+  .callout-banner.warning .callout-icon {
+    color: var(--color-warning, #f59e0b);
+  }
+
+  .callout-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .callout-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .callout-msg {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
+
+  /* Dual Net Value Box - Mobile-First: Stack vertically on mobile, 2 columns on tablet/desktop */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 641px) {
+    .net-value-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .net-value-box {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .net-value-box.highlight-success {
+    border-left: 4px solid var(--color-success, #22c55e);
+  }
+
+  .net-value-box.highlight-primary {
+    border-left: 4px solid var(--color-primary);
+  }
+
+  .net-box-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .net-box-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .net-box-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Progress Bar */
+  .progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .progress-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    height: 12px;
+    border-radius: 6px;
+    background-color: var(--color-border);
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: 6px;
+    transition: width 0.35s ease, background-color 0.25s ease;
+  }
+
+  .progress-sub-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Plain-English Verdict */
+  .verdict-card {
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+  }
+
+  .verdict-success {
+    border-left: 4px solid var(--color-success, #22c55e);
+  }
+
+  .verdict-warning {
+    border-left: 4px solid var(--color-warning, #f59e0b);
+  }
+
+  .verdict-info {
+    border-left: 4px solid var(--color-primary);
+  }
+
+  .verdict-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    margin-bottom: 6px;
+  }
+
+  .verdict-paragraph {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  /* Rule 15: Responsive Results Grid */
+  .metrics-grid-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+    color: var(--color-text-base);
+  }
+
+  .stc-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    word-break: break-word;
+  }
+
+  .tile-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  /* Distribution Stacked Bar */
+  .breakdown-bar-card {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .stacked-bar-track {
+    width: 100%;
+    height: 14px;
+    border-radius: 7px;
+    background-color: var(--color-border);
+    display: flex;
+    overflow: hidden;
+  }
+
+  .bar-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .segment-initial {
+    background-color: #64748b;
+  }
+
+  .segment-deposits {
+    background-color: var(--color-primary);
+  }
+
+  .segment-interest {
+    background-color: var(--color-success, #22c55e);
+  }
+
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-initial {
+    background-color: #64748b;
+  }
+
+  .dot-deposits {
+    background-color: var(--color-primary);
+  }
+
+  .dot-interest {
+    background-color: var(--color-success, #22c55e);
+  }
+
+  /* Schedule Table */
+  .schedule-section {
+    margin-top: var(--space-2);
+  }
+
+  .schedule-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-base);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+
+  .schedule-toggle-btn:hover {
+    background-color: var(--color-bg-base);
+    border-color: var(--color-primary);
+  }
+
+  .chevron-icon {
+    transition: transform var(--transition-fast);
+  }
+
+  .chevron-icon.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  .schedule-wrapper {
+    margin-top: var(--space-3);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+
+  .schedule-table-container {
+    max-height: 380px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+  }
+
+  .schedule-table th {
+    padding: 8px 10px;
+    background-color: var(--color-bg-base);
+    border-bottom: 2px solid var(--color-border);
+    font-weight: 700;
+    color: var(--color-text-base);
+    position: sticky;
+    top: 0;
+  }
+
+  .schedule-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .schedule-table tr:hover td {
+    background-color: rgba(var(--color-primary-rgb, 14, 165, 233), 0.04);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .badge-success {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: var(--color-success, #16a34a);
+  }
+
+  .badge-neutral {
+    background-color: rgba(100, 116, 139, 0.15);
+    color: var(--color-text-muted);
+  }
+
+  .schedule-footnote {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-top: var(--space-2);
+    text-align: right;
+  }
+</style>

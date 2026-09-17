@@ -1,0 +1,1375 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Monthly Savings Goal Calculator"
+  description="Calculate how much you need to save each month, biweekly, or weekly to reach your target savings goal on time with compound growth."
+  category="Savings & Wealth"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="monthly-savings-calculator">
+    
+    <!-- Step 1: Goal & Timeline -->
+    <div class="input-section">
+      <h3 class="section-title">1. Savings Goal & Target</h3>
+      
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="msg-currency-select">Currency</label>
+          <select id="msg-currency-select" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) - US Dollar</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="CAD">CAD (C$) - Canadian Dollar</option>
+            <option value="AUD">AUD (A$) - Australian Dollar</option>
+            <option value="INR">INR (₹) - Indian Rupee</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="SGD">SGD (S$) - Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) - Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Target Savings Goal -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="msg-goal-input">Target Savings Goal</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="msg-cur-symbol-1">$</span>
+            <input type="number" id="msg-goal-input" min="100" max="10000000" step="100" value="10000" aria-label="Target Savings Goal" />
+          </div>
+        </div>
+        <input type="range" id="msg-goal-slider" min="500" max="100000" step="500" value="10000" class="slider-range" aria-label="Target Savings Goal Slider" />
+      </div>
+
+      <!-- Current Savings -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="msg-current-input">Current Savings (Optional)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="msg-cur-symbol-2">$</span>
+            <input type="number" id="msg-current-input" min="0" max="10000000" step="50" value="1000" aria-label="Current Savings" />
+          </div>
+        </div>
+        <input type="range" id="msg-current-slider" min="0" max="50000" step="250" value="1000" class="slider-range" aria-label="Current Savings Slider" />
+        <span class="input-subtext">Money you have already saved toward this specific goal.</span>
+      </div>
+
+      <!-- Timeline Mode Switcher -->
+      <div class="input-group">
+        <label class="control-label">Target Timeline Mode</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Timeline Mode">
+          <button type="button" class="toggle-pill active" id="msg-mode-duration-btn" aria-checked="true" role="radio">By Duration</button>
+          <button type="button" class="toggle-pill" id="msg-mode-date-btn" aria-checked="false" role="radio">By Target Date</button>
+        </div>
+      </div>
+
+      <!-- Duration Inputs -->
+      <div id="msg-duration-container" class="input-group">
+        <div class="input-label-row">
+          <label for="msg-duration-input">Time Horizon</label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <div class="input-symbol-wrapper" style="width: 90px;">
+              <input type="number" id="msg-duration-input" min="1" max="600" step="1" value="12" aria-label="Duration Number" />
+            </div>
+            <select id="msg-duration-unit" class="unit-select" aria-label="Duration Unit">
+              <option value="months" selected>Months</option>
+              <option value="years">Years</option>
+            </select>
+          </div>
+        </div>
+        <input type="range" id="msg-duration-slider" min="1" max="60" step="1" value="12" class="slider-range" aria-label="Duration Slider" />
+      </div>
+
+      <!-- Target Date Input (Hidden by default) -->
+      <div id="msg-date-container" class="input-group hidden">
+        <div class="input-label-row">
+          <label for="msg-date-input">Target Deadline Date</label>
+          <input type="date" id="msg-date-input" class="date-input" aria-label="Target Deadline Date" />
+        </div>
+        <div id="msg-date-hint" class="input-subtext">Calculates remaining months and weeks automatically.</div>
+      </div>
+
+    </div>
+
+    <!-- Step 2: Interest & Frequency -->
+    <div class="input-section" style="margin-top: var(--space-5);">
+      <h3 class="section-title">2. Growth & Contributions</h3>
+
+      <!-- Annual Interest Rate (APY) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="msg-interest-input">Expected Annual Return / APY</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="msg-interest-input" min="0" max="25" step="0.1" value="4.5" aria-label="Expected Annual Interest Rate" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="msg-interest-slider" min="0" max="15" step="0.1" value="4.5" class="slider-range" aria-label="Interest Rate Slider" />
+        <span class="input-subtext">Set to 0% for standard checking accounts or cash. Typical High-Yield Savings Accounts (HYSA) earn ~3.5% to 5.0%.</span>
+      </div>
+
+      <!-- Contribution Frequency -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="msg-frequency-select">Contribution Frequency</label>
+          <select id="msg-frequency-select" class="currency-select" aria-label="Contribution Frequency">
+            <option value="12" selected>Monthly (12 per year)</option>
+            <option value="26">Biweekly (Every 2 weeks, 26 per year)</option>
+            <option value="52">Weekly (52 per year)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Reset Inputs Button -->
+      <div style="margin-top: var(--space-4);">
+        <Button variant="outline" size="sm" id="msg-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Required Savings Plan</h3>
+
+    <!-- Primary Hero Metric: Required Monthly Savings -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label">Required Savings Per Month</span>
+      <div class="hero-metric-value" id="res-msg-monthly-pmt">$730.91</div>
+      <span class="hero-metric-subtext" id="res-msg-hero-sub">Save $730.91 each month for 12 months</span>
+    </div>
+
+    <!-- Secondary Frequency Callout (Shown when Biweekly or Weekly is selected) -->
+    <div id="res-msg-freq-callout" class="freq-callout-box hidden">
+      <div class="freq-callout-content">
+        <span class="freq-callout-label" id="res-msg-freq-label">Biweekly Contribution:</span>
+        <span class="freq-callout-val" id="res-msg-freq-val">$337.15</span>
+        <span class="freq-callout-sub" id="res-msg-freq-sub">(26 payments)</span>
+      </div>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-success">
+        <span class="net-box-label">Savings Target Goal</span>
+        <div id="res-msg-total-goal" class="net-box-value text-success">$10,000.00</div>
+        <span class="net-box-desc" id="res-msg-goal-desc">Target accumulation</span>
+      </div>
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label">Estimated Interest Earned</span>
+        <div id="res-msg-total-interest" class="net-box-value text-primary">$229.12</div>
+        <span class="net-box-desc">Compound growth benefit</span>
+      </div>
+    </div>
+
+    <!-- Goal Progress Bar -->
+    <div class="progress-section">
+      <div class="progress-label-row">
+        <span>Current Goal Progress</span>
+        <span id="msg-progress-percent">10.0%</span>
+      </div>
+      <div class="progress-bar-track">
+        <div id="msg-progress-bar-fill" class="progress-bar-fill" style="width: 10.0%;"></div>
+      </div>
+      <div class="progress-sub-row">
+        <span id="msg-progress-current-label">Current Savings: $1,000.00</span>
+        <span id="msg-progress-gap-label">Amount Still Needed: $9,000.00</span>
+      </div>
+    </div>
+
+    <!-- Savings Diagnosis / Verdict -->
+    <div class="verdict-container">
+      <Card elevation="sm" id="msg-verdict-card" class="verdict-card">
+        <span class="verdict-tag">Savings Roadmap</span>
+        <p id="res-msg-verdict-text" class="verdict-paragraph">
+          To reach your <strong>$10,000.00</strong> goal in <strong>12 months</strong>, you need to save <strong>$730.91 every month</strong>. With a 4.5% APY, compound interest will earn you approximately <strong>$229.12</strong>, reducing the total amount you need to save out-of-pocket to <strong>$8,770.88</strong>!
+        </p>
+        <span class="verdict-disclaimer">Interest and returns are estimates based on compounding assumptions and do not constitute financial guarantees.</span>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid - Rule 15 Responsive -->
+    <h4 class="metrics-grid-title">Financial Summary Breakdown</h4>
+    <div class="results-grid msg-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Required Monthly Savings</span>
+        <div class="tile-value" id="tile-msg-monthly" style="color: var(--color-primary);">$730.91</div>
+        <span class="tile-sub">Per month requirement</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label" id="tile-msg-periodic-label">Contribution Per Period</span>
+        <div class="tile-value" id="tile-msg-periodic" style="color: var(--color-text-base);">$730.91</div>
+        <span class="tile-sub" id="tile-msg-periodic-sub">Monthly payment</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Amount Still Needed</span>
+        <div class="tile-value" id="tile-msg-gap" style="color: var(--color-warning);">$9,000.00</div>
+        <span class="tile-sub">Goal minus current cash</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Total New Contributions</span>
+        <div class="tile-value" id="tile-msg-new-contrib" style="color: var(--color-text-base);">$8,770.88</div>
+        <span class="tile-sub">Total deposits required</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Estimated Interest Earned</span>
+        <div class="tile-value" id="tile-msg-interest" style="color: var(--color-success);">+$229.12</div>
+        <span class="tile-sub">Compound interest yield</span>
+      </div>
+
+      <div class="result-tile">
+        <span class="tile-label">Projected Final Balance</span>
+        <div class="tile-value" id="tile-msg-final-balance" style="color: var(--color-primary);">$10,000.00</div>
+        <span class="tile-sub" id="tile-msg-timeline-sub">At 12 months</span>
+      </div>
+    </div>
+
+    <!-- Visual Funding Source Distribution Bar -->
+    <div class="breakdown-bar-card">
+      <span class="tile-label">Funding Source Distribution</span>
+      <div class="stacked-bar-track">
+        <div id="bar-msg-initial" class="bar-segment segment-initial" style="width: 10.0%;" title="Current Savings"></div>
+        <div id="bar-msg-deposits" class="bar-segment segment-deposits" style="width: 87.71%;" title="New Contributions"></div>
+        <div id="bar-msg-interest" class="bar-segment segment-interest" style="width: 2.29%;" title="Estimated Interest"></div>
+      </div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-dot dot-initial"></span> Current (<span id="leg-msg-initial-val">$1,000</span>)</div>
+        <div class="legend-item"><span class="legend-dot dot-deposits"></span> New Savings (<span id="leg-msg-deposits-val">$8,771</span>)</div>
+        <div class="legend-item"><span class="legend-dot dot-interest"></span> Interest (<span id="leg-msg-interest-val">$229</span>)</div>
+      </div>
+    </div>
+
+    <!-- Schedule Toggle -->
+    <div class="schedule-section">
+      <button type="button" id="toggle-msg-schedule-btn" class="schedule-toggle-btn" aria-expanded="false">
+        <span>View Month-by-Month Savings Schedule</span>
+        <svg id="msg-schedule-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div id="msg-schedule-wrapper" class="schedule-table-wrapper hidden">
+        <table class="schedule-table" aria-label="Monthly Savings Growth Schedule">
+          <thead>
+            <tr>
+              <th scope="col">Month</th>
+              <th scope="col">Deposit</th>
+              <th scope="col">Interest</th>
+              <th scope="col">Total Deposits</th>
+              <th scope="col">Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody id="msg-schedule-tbody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initMonthlySavingsCalculator() {
+    const currencySelect = document.getElementById('msg-currency-select') as HTMLSelectElement;
+    const curSymbol1 = document.getElementById('msg-cur-symbol-1');
+    const curSymbol2 = document.getElementById('msg-cur-symbol-2');
+
+    // Inputs
+    const goalInput = document.getElementById('msg-goal-input') as HTMLInputElement;
+    const goalSlider = document.getElementById('msg-goal-slider') as HTMLInputElement;
+    const currentInput = document.getElementById('msg-current-input') as HTMLInputElement;
+    const currentSlider = document.getElementById('msg-current-slider') as HTMLInputElement;
+
+    // Timeline Mode
+    const modeDurationBtn = document.getElementById('msg-mode-duration-btn') as HTMLButtonElement;
+    const modeDateBtn = document.getElementById('msg-mode-date-btn') as HTMLButtonElement;
+    const durationContainer = document.getElementById('msg-duration-container') as HTMLElement;
+    const dateContainer = document.getElementById('msg-date-container') as HTMLElement;
+    const durationInput = document.getElementById('msg-duration-input') as HTMLInputElement;
+    const durationSlider = document.getElementById('msg-duration-slider') as HTMLInputElement;
+    const durationUnit = document.getElementById('msg-duration-unit') as HTMLSelectElement;
+    const dateInput = document.getElementById('msg-date-input') as HTMLInputElement;
+    const dateHint = document.getElementById('msg-date-hint') as HTMLElement;
+
+    // Interest & Frequency
+    const interestInput = document.getElementById('msg-interest-input') as HTMLInputElement;
+    const interestSlider = document.getElementById('msg-interest-slider') as HTMLInputElement;
+    const frequencySelect = document.getElementById('msg-frequency-select') as HTMLSelectElement;
+    const resetBtn = document.getElementById('msg-reset-btn') as HTMLButtonElement;
+
+    // Displays
+    const resMonthlyPmt = document.getElementById('res-msg-monthly-pmt');
+    const resHeroSub = document.getElementById('res-msg-hero-sub');
+    const resFreqCallout = document.getElementById('res-msg-freq-callout');
+    const resFreqLabel = document.getElementById('res-msg-freq-label');
+    const resFreqVal = document.getElementById('res-msg-freq-val');
+    const resFreqSub = document.getElementById('res-msg-freq-sub');
+
+    const resTotalGoal = document.getElementById('res-msg-total-goal');
+    const resGoalDesc = document.getElementById('res-msg-goal-desc');
+    const resTotalInterest = document.getElementById('res-msg-total-interest');
+    const progressBarFill = document.getElementById('msg-progress-bar-fill');
+    const progressPercentText = document.getElementById('msg-progress-percent');
+    const progressCurrentLabel = document.getElementById('msg-progress-current-label');
+    const progressGapLabel = document.getElementById('msg-progress-gap-label');
+
+    const resVerdictText = document.getElementById('res-msg-verdict-text');
+    const verdictCard = document.getElementById('msg-verdict-card');
+
+    // Tiles
+    const tileMonthly = document.getElementById('tile-msg-monthly');
+    const tilePeriodicLabel = document.getElementById('tile-msg-periodic-label');
+    const tilePeriodic = document.getElementById('tile-msg-periodic');
+    const tilePeriodicSub = document.getElementById('tile-msg-periodic-sub');
+    const tileGap = document.getElementById('tile-msg-gap');
+    const tileNewContrib = document.getElementById('tile-msg-new-contrib');
+    const tileInterest = document.getElementById('tile-msg-interest');
+    const tileFinalBalance = document.getElementById('tile-msg-final-balance');
+    const tileTimelineSub = document.getElementById('tile-msg-timeline-sub');
+
+    // Visual Distribution Bar
+    const barInitial = document.getElementById('bar-msg-initial');
+    const barDeposits = document.getElementById('bar-msg-deposits');
+    const barInterest = document.getElementById('bar-msg-interest');
+    const legInitialVal = document.getElementById('leg-msg-initial-val');
+    const legDepositsVal = document.getElementById('leg-msg-deposits-val');
+    const legInterestVal = document.getElementById('leg-msg-interest-val');
+
+    // Schedule Table
+    const toggleScheduleBtn = document.getElementById('toggle-msg-schedule-btn');
+    const scheduleWrapper = document.getElementById('msg-schedule-wrapper');
+    const scheduleChevron = document.getElementById('msg-schedule-chevron');
+    const scheduleTbody = document.getElementById('msg-schedule-tbody');
+
+    if (!goalInput || !currencySelect) return;
+
+    let currentTimelineMode = 'duration'; // 'duration' | 'date'
+
+    // Set default target date to 1 year ahead
+    const today = new Date();
+    const oneYearLater = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+    const dateFormatted = oneYearLater.toISOString().split('T')[0];
+    if (dateInput) {
+      dateInput.min = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString().split('T')[0];
+      dateInput.value = dateFormatted;
+    }
+
+    const currencySymbols: Record<string, string> = {
+      USD: '$',
+      EUR: '€',
+      GBP: '£',
+      CAD: 'C$',
+      AUD: 'A$',
+      INR: '₹',
+      JPY: '¥',
+      SGD: 'S$',
+      CHF: 'CHF '
+    };
+
+    function getCurrencySymbol(): string {
+      return currencySymbols[currencySelect.value] || '$';
+    }
+
+    function formatCurrency(val: number): string {
+      const sym = getCurrencySymbol();
+      const isJPY = currencySelect.value === 'JPY';
+      const absVal = Math.abs(val);
+      const formatted = absVal.toLocaleString(undefined, {
+        minimumFractionDigits: isJPY ? 0 : 2,
+        maximumFractionDigits: isJPY ? 0 : 2
+      });
+      return `${val < 0 ? '-' : ''}${sym}${formatted}`;
+    }
+
+    function formatCompactCurrency(val: number): string {
+      const sym = getCurrencySymbol();
+      const isJPY = currencySelect.value === 'JPY';
+      const formatted = Math.round(Math.abs(val)).toLocaleString(undefined, {
+        maximumFractionDigits: 0
+      });
+      return `${val < 0 ? '-' : ''}${sym}${formatted}`;
+    }
+
+    // Connect slider with inputs
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, callback: () => void) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+    }
+
+    bindSlider(goalInput, goalSlider, calculateAll);
+    bindSlider(currentInput, currentSlider, calculateAll);
+    bindSlider(interestInput, interestSlider, calculateAll);
+
+    // Duration slider range updater
+    function updateDurationSliderRange() {
+      const unit = durationUnit.value;
+      if (unit === 'years') {
+        durationSlider.min = '1';
+        durationSlider.max = '30';
+        durationSlider.step = '1';
+      } else {
+        durationSlider.min = '1';
+        durationSlider.max = '120';
+        durationSlider.step = '1';
+      }
+    }
+
+    bindSlider(durationInput, durationSlider, calculateAll);
+
+    durationUnit.addEventListener('change', () => {
+      const unit = durationUnit.value;
+      let val = parseFloat(durationInput.value) || 12;
+      if (unit === 'years') {
+        val = Math.max(1, Math.round(val / 12));
+      } else {
+        val = Math.max(1, Math.round(val * 12));
+      }
+      durationInput.value = val.toString();
+      updateDurationSliderRange();
+      durationSlider.value = val.toString();
+      calculateAll();
+    });
+
+    // Timeline Mode Switcher
+    modeDurationBtn.addEventListener('click', () => {
+      currentTimelineMode = 'duration';
+      modeDurationBtn.classList.add('active');
+      modeDurationBtn.setAttribute('aria-checked', 'true');
+      modeDateBtn.classList.remove('active');
+      modeDateBtn.setAttribute('aria-checked', 'false');
+      durationContainer.classList.remove('hidden');
+      dateContainer.classList.add('hidden');
+      calculateAll();
+    });
+
+    modeDateBtn.addEventListener('click', () => {
+      currentTimelineMode = 'date';
+      modeDateBtn.classList.add('active');
+      modeDateBtn.setAttribute('aria-checked', 'true');
+      modeDurationBtn.classList.remove('active');
+      modeDurationBtn.setAttribute('aria-checked', 'false');
+      durationContainer.classList.add('hidden');
+      dateContainer.classList.remove('hidden');
+      calculateAll();
+    });
+
+    dateInput.addEventListener('change', calculateAll);
+    dateInput.addEventListener('input', calculateAll);
+
+    currencySelect.addEventListener('change', () => {
+      const sym = getCurrencySymbol();
+      if (curSymbol1) curSymbol1.textContent = sym;
+      if (curSymbol2) curSymbol2.textContent = sym;
+      calculateAll();
+    });
+
+    frequencySelect.addEventListener('change', calculateAll);
+
+    // Reset Handler
+    resetBtn.addEventListener('click', () => {
+      goalInput.value = '10000';
+      goalSlider.value = '10000';
+      currentInput.value = '1000';
+      currentSlider.value = '1000';
+      interestInput.value = '4.5';
+      interestSlider.value = '4.5';
+      durationUnit.value = 'months';
+      updateDurationSliderRange();
+      durationInput.value = '12';
+      durationSlider.value = '12';
+      frequencySelect.value = '12';
+      currencySelect.value = 'USD';
+      if (curSymbol1) curSymbol1.textContent = '$';
+      if (curSymbol2) curSymbol2.textContent = '$';
+      if (dateInput) {
+        dateInput.value = dateFormatted;
+      }
+      if (currentTimelineMode !== 'duration') {
+        modeDurationBtn.click();
+      } else {
+        calculateAll();
+      }
+    });
+
+    // Schedule Toggle
+    if (toggleScheduleBtn && scheduleWrapper && scheduleChevron) {
+      toggleScheduleBtn.addEventListener('click', () => {
+        const isExpanded = toggleScheduleBtn.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+          toggleScheduleBtn.setAttribute('aria-expanded', 'false');
+          scheduleWrapper.classList.add('hidden');
+          scheduleChevron.style.transform = 'rotate(0deg)';
+        } else {
+          toggleScheduleBtn.setAttribute('aria-expanded', 'true');
+          scheduleWrapper.classList.remove('hidden');
+          scheduleChevron.style.transform = 'rotate(180deg)';
+        }
+      });
+    }
+
+    function calculateAll() {
+      const goal = Math.max(0, parseFloat(goalInput.value) || 0);
+      const currentSavings = Math.max(0, parseFloat(currentInput.value) || 0);
+      const annualRate = Math.max(0, parseFloat(interestInput.value) || 0) / 100;
+      const freq = parseInt(frequencySelect.value) || 12;
+
+      // Determine timeline in years and months
+      let years = 1;
+      let totalMonths = 12;
+      let deadlineDateText = '';
+
+      if (currentTimelineMode === 'duration') {
+        const unit = durationUnit.value;
+        const durVal = Math.max(0.01, parseFloat(durationInput.value) || 1);
+        if (unit === 'years') {
+          years = durVal;
+          totalMonths = Math.max(1, Math.round(durVal * 12));
+        } else {
+          totalMonths = Math.max(1, Math.round(durVal));
+          years = totalMonths / 12;
+        }
+        const targetDate = new Date();
+        targetDate.setMonth(targetDate.getMonth() + totalMonths);
+        deadlineDateText = targetDate.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+      } else {
+        // Date Mode
+        const selectedDate = new Date(dateInput.value);
+        const currDate = new Date();
+        currDate.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        const diffTime = selectedDate.getTime() - currDate.getTime();
+        const diffDays = Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)));
+
+        years = diffDays / 365.25;
+        totalMonths = Math.max(1, Math.round(diffDays / (365.25 / 12)));
+        deadlineDateText = selectedDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+
+        if (dateHint) {
+          const daysText = diffDays === 1 ? '1 day' : `${diffDays} days`;
+          const monthsText = totalMonths === 1 ? '1 month' : `${totalMonths} months`;
+          dateHint.textContent = `Target in approx. ${daysText} (~${monthsText}, ${years.toFixed(2)} years).`;
+        }
+      }
+
+      // Total contribution periods for selected frequency
+      let n = Math.max(1, Math.round(years * freq));
+      let nMonths = totalMonths;
+
+      // Periodic interest rate for selected frequency
+      const i = annualRate / freq;
+      // Monthly interest rate
+      const iMonthly = annualRate / 12;
+
+      // Future value of existing savings under selected frequency
+      let fvPV = currentSavings;
+      let fvPVMonthly = currentSavings;
+      if (annualRate > 0) {
+        fvPV = currentSavings * Math.pow(1 + i, n);
+        fvPVMonthly = currentSavings * Math.pow(1 + iMonthly, nMonths);
+      }
+
+      let remainingGoal = goal - fvPV;
+      let remainingGoalMonthly = goal - fvPVMonthly;
+
+      let periodicPmt = 0;
+      let monthlyPmt = 0;
+      let totalNewContributions = 0;
+      let totalDeposits = currentSavings;
+      let totalInterest = 0;
+      let finalBalance = goal;
+
+      if (goal <= 0) {
+        periodicPmt = 0;
+        monthlyPmt = 0;
+        finalBalance = 0;
+      } else if (remainingGoal <= 0) {
+        // Current savings already cover or exceed goal
+        periodicPmt = 0;
+        monthlyPmt = 0;
+        finalBalance = fvPV;
+        totalDeposits = currentSavings;
+        totalInterest = Math.max(0, fvPV - currentSavings);
+      } else {
+        // Compute Required Monthly Savings (Primary Result)
+        if (annualRate === 0) {
+          monthlyPmt = (goal - currentSavings) / nMonths;
+          periodicPmt = (goal - currentSavings) / n;
+          totalNewContributions = periodicPmt * n;
+          totalDeposits = currentSavings + totalNewContributions;
+          totalInterest = 0;
+          finalBalance = goal;
+        } else {
+          // Monthly annuity calculation
+          const annuityFactorMonthly = (Math.pow(1 + iMonthly, nMonths) - 1) / iMonthly;
+          monthlyPmt = remainingGoalMonthly / annuityFactorMonthly;
+
+          // Frequency periodic payment
+          const annuityFactorPeriodic = (Math.pow(1 + i, n) - 1) / i;
+          periodicPmt = remainingGoal / annuityFactorPeriodic;
+
+          totalNewContributions = periodicPmt * n;
+          totalDeposits = currentSavings + totalNewContributions;
+          totalInterest = Math.max(0, goal - totalDeposits);
+          finalBalance = goal;
+        }
+      }
+
+      // Progress & Still Needed
+      const progressPercent = goal > 0 ? Math.min(100, (currentSavings / goal) * 100) : 0;
+      const amountStillNeeded = Math.max(0, goal - currentSavings);
+
+      // DOM Updates
+      if (resMonthlyPmt) resMonthlyPmt.textContent = formatCurrency(monthlyPmt);
+      if (resHeroSub) {
+        const monthWord = nMonths === 1 ? 'month' : 'months';
+        resHeroSub.textContent = `Save ${formatCurrency(monthlyPmt)} each month for ${nMonths} ${monthWord} (by ${deadlineDateText})`;
+      }
+
+      // Frequency callout (if user chose biweekly or weekly)
+      if (resFreqCallout && resFreqLabel && resFreqVal && resFreqSub) {
+        if (freq === 26) {
+          resFreqCallout.classList.remove('hidden');
+          resFreqLabel.textContent = 'Biweekly Savings:';
+          resFreqVal.textContent = formatCurrency(periodicPmt);
+          resFreqSub.textContent = `(${n} payments every 2 weeks)`;
+        } else if (freq === 52) {
+          resFreqCallout.classList.remove('hidden');
+          resFreqLabel.textContent = 'Weekly Savings:';
+          resFreqVal.textContent = formatCurrency(periodicPmt);
+          resFreqSub.textContent = `(${n} weekly payments)`;
+        } else {
+          resFreqCallout.classList.add('hidden');
+        }
+      }
+
+      if (resTotalGoal) resTotalGoal.textContent = formatCurrency(finalBalance);
+      if (resGoalDesc) resGoalDesc.textContent = `Target balance for ${totalMonths} months`;
+      if (resTotalInterest) resTotalInterest.textContent = formatCurrency(totalInterest);
+
+      // Progress bar
+      if (progressBarFill) progressBarFill.style.width = `${progressPercent.toFixed(1)}%`;
+      if (progressPercentText) progressPercentText.textContent = `${progressPercent.toFixed(1)}%`;
+      if (progressCurrentLabel) progressCurrentLabel.textContent = `Current Savings: ${formatCurrency(currentSavings)}`;
+      if (progressGapLabel) progressGapLabel.textContent = `Amount Still Needed: ${formatCurrency(amountStillNeeded)}`;
+
+      // Tiles
+      if (tileMonthly) tileMonthly.textContent = formatCurrency(monthlyPmt);
+      if (tilePeriodicLabel) {
+        tilePeriodicLabel.textContent = freq === 26 ? 'Biweekly Contribution' : freq === 52 ? 'Weekly Contribution' : 'Monthly Contribution';
+      }
+      if (tilePeriodic) tilePeriodic.textContent = formatCurrency(periodicPmt);
+      if (tilePeriodicSub) {
+        tilePeriodicSub.textContent = freq === 26 ? `${n} biweekly payments` : freq === 52 ? `${n} weekly payments` : `${nMonths} monthly payments`;
+      }
+      if (tileGap) tileGap.textContent = formatCurrency(amountStillNeeded);
+      if (tileNewContrib) tileNewContrib.textContent = formatCurrency(totalNewContributions);
+      if (tileInterest) tileInterest.textContent = `+${formatCurrency(totalInterest)}`;
+      if (tileFinalBalance) tileFinalBalance.textContent = formatCurrency(finalBalance);
+      if (tileTimelineSub) tileTimelineSub.textContent = `By ${deadlineDateText}`;
+
+      // Distribution Bar
+      if (finalBalance > 0) {
+        const initPct = Math.max(0, Math.min(100, (currentSavings / finalBalance) * 100));
+        const newContribPct = Math.max(0, Math.min(100, (totalNewContributions / finalBalance) * 100));
+        const intPct = Math.max(0, 100 - initPct - newContribPct);
+
+        if (barInitial) barInitial.style.width = `${initPct.toFixed(2)}%`;
+        if (barDeposits) barDeposits.style.width = `${newContribPct.toFixed(2)}%`;
+        if (barInterest) barInterest.style.width = `${intPct.toFixed(2)}%`;
+
+        if (legInitialVal) legInitialVal.textContent = formatCompactCurrency(currentSavings);
+        if (legDepositsVal) legDepositsVal.textContent = formatCompactCurrency(totalNewContributions);
+        if (legInterestVal) legInterestVal.textContent = formatCompactCurrency(totalInterest);
+      }
+
+      // Plain-English Verdict
+      if (resVerdictText && verdictCard) {
+        if (goal <= 0) {
+          verdictCard.style.borderLeftColor = 'var(--color-warning)';
+          resVerdictText.innerHTML = `Please enter a savings goal greater than zero to calculate your required savings plan.`;
+        } else if (remainingGoal <= 0) {
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+          resVerdictText.innerHTML = `Congratulations! Your current savings of <strong>${formatCurrency(currentSavings)}</strong> already meets or exceeds your <strong>${formatCurrency(goal)}</strong> goal. With compound interest, your balance will grow to <strong>${formatCurrency(fvPV)}</strong> without any additional contributions required!`;
+        } else if (annualRate === 0) {
+          verdictCard.style.borderLeftColor = 'var(--color-primary)';
+          const freqExtra = freq !== 12 ? ` (or <strong>${formatCurrency(periodicPmt)}</strong> ${freq === 26 ? 'biweekly' : 'weekly'})` : '';
+          resVerdictText.innerHTML = `To reach your <strong>${formatCurrency(goal)}</strong> goal by <strong>${deadlineDateText}</strong> (${nMonths} months), you need to save <strong>${formatCurrency(monthlyPmt)} every month</strong>${freqExtra}. Since interest is 0%, your entire remaining balance of <strong>${formatCurrency(amountStillNeeded)}</strong> comes directly from your deposits.`;
+        } else {
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+          const freqExtra = freq !== 12 ? ` (or <strong>${formatCurrency(periodicPmt)}</strong> ${freq === 26 ? 'biweekly' : 'weekly'})` : '';
+          resVerdictText.innerHTML = `To reach your <strong>${formatCurrency(goal)}</strong> goal by <strong>${deadlineDateText}</strong> (${nMonths} months), you need to save <strong>${formatCurrency(monthlyPmt)} every month</strong>${freqExtra}. With a <strong>${(annualRate * 100).toFixed(1)}% APY</strong>, compound interest will earn you approximately <strong>${formatCurrency(totalInterest)}</strong>, reducing your out-of-pocket savings requirement to <strong>${formatCurrency(totalNewContributions)}</strong>!`;
+        }
+      }
+
+      // Generate Amortization Schedule (Month by Month)
+      generateMonthlySchedule(nMonths, monthlyPmt, currentSavings, iMonthly);
+    }
+
+    function generateMonthlySchedule(months: number, pmt: number, initial: number, rateMonthly: number) {
+      if (!scheduleTbody) return;
+      scheduleTbody.innerHTML = '';
+
+      let balance = initial;
+      let cumDeposits = initial;
+      const maxRows = Math.min(months, 60);
+
+      for (let m = 1; m <= maxRows; m++) {
+        const periodInterest = balance * rateMonthly;
+        balance += periodInterest + pmt;
+        cumDeposits += pmt;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>Month ${m}</strong></td>
+          <td>${formatCurrency(pmt)}</td>
+          <td style="color: var(--color-success); font-weight: 600;">+${formatCurrency(periodInterest)}</td>
+          <td>${formatCurrency(cumDeposits)}</td>
+          <td style="font-weight: 700; color: var(--color-primary);">${formatCurrency(balance)}</td>
+        `;
+        scheduleTbody.appendChild(row);
+      }
+
+      if (months > 60) {
+        const remaining = months - 60;
+        const noteRow = document.createElement('tr');
+        noteRow.innerHTML = `
+          <td colspan="5" style="text-align: center; color: var(--color-text-muted); font-size: 0.85rem; padding: 12px;">
+            ... Showing first 60 of ${months} months. Target goal reached in Month ${months}.
+          </td>
+        `;
+        scheduleTbody.appendChild(noteRow);
+      }
+    }
+
+    // Trigger Initial Calculation
+    calculateAll();
+
+    // Copy Results Event
+    window.addEventListener('copy-calculator-results', () => {
+      const goal = goalInput.value;
+      const current = currentInput.value;
+      const rate = interestInput.value;
+      const reqMonthly = resMonthlyPmt?.textContent || '';
+      const totalGoal = resTotalGoal?.textContent || '';
+      const interestEarned = resTotalInterest?.textContent || '';
+      const diagnosis = resVerdictText?.textContent || '';
+
+      const report = `FinCalcLab Monthly Savings Goal Plan:\n` +
+                     `Target Goal: ${totalGoal} | Current Savings: ${getCurrencySymbol()}${current}\n` +
+                     `Expected APY: ${rate}%\n` +
+                     `Required Monthly Savings: ${reqMonthly}\n` +
+                     `Estimated Interest Earned: ${interestEarned}\n` +
+                     `Roadmap: ${diagnosis}\n` +
+                     `Calculated free at FinCalcLab.com`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initMonthlySavingsCalculator);
+  document.addEventListener('astro:after-swap', initMonthlySavingsCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .input-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+    margin-bottom: 0;
+    color: var(--color-text-base);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .input-label-row label,
+  .control-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    width: 155px;
+    height: 38px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .percent-symbol {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  .currency-select,
+  .unit-select,
+  .date-input {
+    width: 100%;
+    max-width: 250px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .unit-select {
+    max-width: 100px;
+  }
+
+  .date-input {
+    max-width: 180px;
+    cursor: text;
+  }
+
+  .currency-select:focus,
+  .unit-select:focus,
+  .date-input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  .input-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .toggle-pill-group {
+    display: flex;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 3px;
+    gap: 4px;
+  }
+
+  .toggle-pill {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: var(--shadow-xs);
+  }
+
+  /* Results Styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--color-text-base);
+  }
+
+  .hero-metric-box {
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb, 14, 165, 233), 0.12) 0%, rgba(var(--color-primary-rgb, 14, 165, 233), 0.03) 100%);
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .hero-metric-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .hero-metric-value {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    margin: 4px 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+
+  .freq-callout-box {
+    background: var(--color-bg-base);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    justify-content: center;
+  }
+
+  .freq-callout-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+  }
+
+  .freq-callout-label {
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .freq-callout-val {
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  .freq-callout-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+  }
+
+  .net-value-container {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .net-value-box {
+    flex: 1;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-bg-base);
+  }
+
+  .highlight-success {
+    border-top: 4px solid var(--color-success);
+  }
+
+  .highlight-primary {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .net-box-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+  }
+
+  .net-box-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 4px 0 2px 0;
+  }
+
+  .net-box-desc {
+    font-size: 0.7rem;
+    color: var(--color-text-light);
+  }
+
+  /* Progress Section */
+  .progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-2) 0;
+  }
+
+  .progress-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    height: 10px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--color-success);
+    transition: width 0.3s ease;
+    border-radius: var(--radius-full);
+  }
+
+  .progress-sub-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+  }
+
+  /* Verdict */
+  .verdict-card {
+    border-left: 4px solid var(--color-primary);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg-base);
+  }
+
+  .verdict-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .verdict-paragraph {
+    margin: 4px 0 0 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  .verdict-disclaimer {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: var(--color-text-light);
+    font-style: italic;
+  }
+
+  /* Metrics Grid - Compliant with Rule 15 */
+  .metrics-grid-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: var(--space-2) 0 0 0;
+    color: var(--color-text-base);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-base);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tile-sub {
+    font-size: 0.68rem;
+    color: var(--color-text-light);
+  }
+
+  /* Stacked Distribution Bar */
+  .breakdown-bar-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .stacked-bar-track {
+    display: flex;
+    height: 12px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    background-color: var(--color-border);
+  }
+
+  .bar-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .segment-initial { background-color: var(--color-text-light); }
+  .segment-deposits { background-color: var(--color-primary); }
+  .segment-interest { background-color: var(--color-success); }
+
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-initial { background-color: var(--color-text-light); }
+  .dot-deposits { background-color: var(--color-primary); }
+  .dot-interest { background-color: var(--color-success); }
+
+  /* Schedule Table */
+  .schedule-section {
+    margin-top: var(--space-2);
+  }
+
+  .schedule-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .schedule-toggle-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  #msg-schedule-chevron {
+    transition: transform 0.25s ease;
+  }
+
+  .schedule-table-wrapper {
+    margin-top: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--color-bg-base);
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: right;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .schedule-table th {
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+  }
+
+  .schedule-table th:first-child,
+  .schedule-table td:first-child {
+    text-align: left;
+  }
+
+  .schedule-table tr:hover {
+    background-color: rgba(var(--color-primary-rgb, 14, 165, 233), 0.04);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Responsive Breakpoints - Mobile-First & Rule 15 */
+  @media (max-width: 640px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-symbol-wrapper,
+    .currency-select,
+    .date-input {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .net-value-container {
+      flex-direction: column;
+    }
+
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-metric-value {
+      font-size: 1.85rem;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 768px) {
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

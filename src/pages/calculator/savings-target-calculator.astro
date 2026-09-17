@@ -1,0 +1,609 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SavingsTargetCalculator from '../../components/calculator/SavingsTargetCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Savings Target Calculator', item: '/calculator/savings-target-calculator' }
+];
+
+// Schema.org Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a savings target?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A savings target is a specific, quantifiable monetary milestone that an individual or family aims to accumulate by a predetermined future date. Common savings targets include an emergency safety fund, a home down payment, a car purchase, a vacation, wedding expenses, or college tuition."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does a Savings Target Calculator work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A Savings Target Calculator uses your target goal amount, initial savings balance, regular contribution amount, deposit frequency (monthly, biweekly, or weekly), and expected annual interest rate (APY) to solve for either: (1) your projected accumulated balance by a specific target deadline, or (2) the exact number of months and years required to reach that target."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I calculate how much I need to save to reach my target?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under zero interest, subtract current savings from your target amount and divide by the number of contribution periods: Required Contribution = (Target Amount - Current Savings) / Periods. When your money earns interest in a high-yield account, the required contribution is calculated using the ordinary annuity sinking fund formula, which incorporates compound growth and lowers your out-of-pocket savings."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long will it take to reach my savings goal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The time required depends on your regular contribution rate and your account's interest rate. Without interest, the duration is simply: Total Periods = (Target Amount - Current Savings) / Regular Contribution. With positive compound interest, the time is calculated using a logarithmic annuity formula: n = ln[(i * FV + PMT) / (i * PV + PMT)] / ln(1 + i), where compound growth progressively shortens your time horizon."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I include my current savings in the calculation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Any initial savings you already have immediately reduces the net dollar gap required to reach your target. In an interest-bearing account, that starting balance compounds continuously over the entire savings horizon, generating passive interest that speeds up your progress."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the calculator include interest?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can enter an expected annual return or APY (Annual Percentage Yield), such as 4.5% for a High-Yield Savings Account (HYSA) or 0% for standard non-interest-bearing checking accounts. The calculator correctly compounds interest on both your initial balance and every periodic deposit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I calculate weekly or biweekly savings instead of monthly?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can select Monthly (12 times/year), Biweekly (26 times/year), or Weekly (52 times/year). Aligning contributions with your biweekly or weekly paychecks accelerates compound growth and takes advantage of extra pay periods each year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I have already reached my savings target?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If your current savings equal or exceed your target amount, the calculator identifies that your goal is 100% funded today, showing a $0.00 required additional deposit and calculating any financial surplus you currently maintain."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if my regular contribution is zero?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If your contribution is zero and your current balance is below the target at 0% interest, the target is mathematically unreachable. If your initial balance earns positive interest, the calculator solves for how many years it will take for your starting balance alone to compound into the target sum."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a savings target and an emergency fund?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An emergency fund is a permanent financial safety cushion (usually 3 to 6 months of basic living expenses) held in cash to survive unexpected crises like job loss or medical emergencies. A savings target is a specific, planned goal that will usually be spent once reached, such as buying a vehicle, funding a vacation, or putting a down payment on a home."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I reach my savings goal faster?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can accelerate your savings target by: (1) automating transfers on payday, (2) moving balances from a 0.01% checking account to a 4% to 5% High-Yield Savings Account, (3) redirecting windfalls such as tax refunds and annual bonuses into your target account, and (4) cutting temporary discretionary spending."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Savings Target Calculator",
+  "url": "https://fincalclab.com/calculator/savings-target-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free interactive Savings Target Calculator. Calculate future accumulated savings by target date, or determine how long it will take to reach your savings target with compound interest.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Savings Target Calculator - Plan How to Reach Your Savings Goal"
+  description="Calculate how much you will accumulate by your target date or find out how long it takes to reach your savings target. Accurate compound interest calculations."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Tool -->
+    <SavingsTargetCalculator />
+
+    <!-- Educational & Technical SEO Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+      
+      <!-- Cross-Link Featured Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Purpose-Driven Wealth Planning</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Align Your Savings Targets With Structured Financial Roadmaps</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              A successful financial life requires balancing short-term targets with long-term security. If you need to calculate the exact fixed monthly contribution required for an upcoming deadline, test our <a href="/calculator/monthly-savings-goal-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Monthly Savings Goal Calculator</a>. If you are preparing for recurring annual bills like car insurance or holiday travel, explore our <a href="/calculator/sinking-fund-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Sinking Fund Calculator</a>, or verify your household emergency safety cushion with our <a href="/calculator/runway-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Runway Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is a Savings Target Calculator?</h2>
+        <p>
+          A <strong>savings target calculator</strong> is an interactive financial planning tool designed to help individuals, couples, and businesses quantify, forecast, and achieve concrete financial milestones. Rather than guessing how much money you will have in the future or wondering when you will finally afford a major purchase, a savings target calculator brings mathematical certainty to your budgeting process.
+        </p>
+        <p>
+          Whether your goal is assembling a $10,000 emergency fund, saving $35,000 for a home down payment, purchasing a new car with cash, or planning a dream overseas vacation, this calculator answers two of the most critical questions in personal finance:
+        </p>
+        <ol>
+          <li><strong>"How much will I accumulate by my chosen target deadline?"</strong> (Target Date Mode)</li>
+          <li><strong>"How long will it take me to reach my savings target at my current contribution pace?"</strong> (Time to Target Mode)</li>
+        </ol>
+        <p>
+          By incorporating your starting capital balance, regular contribution cadence (monthly, biweekly, or weekly), and the compounding power of an interest-bearing account (such as a High-Yield Savings Account), the calculator reveals the exact trajectory of your wealth accumulation.
+        </p>
+
+        <h2>How Does a Savings Target Calculator Work?</h2>
+        <p>
+          At its core, a savings target calculator models the financial interaction between four fundamental variables:
+        </p>
+        <ul>
+          <li><strong>Savings Target Amount (Future Value, FV):</strong> The total monetary amount you wish to have in hand at the conclusion of your savings timeline.</li>
+          <li><strong>Current Savings Balance (Present Value, PV):</strong> Any funds you have already earmarked for this goal, which serve as the starting base for future compound growth.</li>
+          <li><strong>Regular Contribution (Periodic Payment, PMT):</strong> The dollar amount you consistently deposit into the account every week, every two weeks, or every month.</li>
+          <li><strong>Expected Annual Return / APY (Interest Rate, r):</strong> The annual interest rate your deposits earn, compounded periodically over time.</li>
+        </ul>
+        <p>
+          Depending on which planning mode you select, the calculator treats either <strong>time</strong> or <strong>projected balance</strong> as the dependent variable to solve for the missing piece of your savings puzzle.
+        </p>
+
+        <h2>How to Calculate a Savings Target: Step-by-Step</h2>
+        <p>
+          Calculating your path to a savings target follows a structured three-step methodology:
+        </p>
+        <ol>
+          <li>
+            <strong>Define Your Net Dollar Gap:</strong> Subtract your existing savings balance from your target goal. For example, if you need $15,000 for a car purchase and currently hold $3,000, your remaining capital gap is $12,000.
+          </li>
+          <li>
+            <strong>Determine Your Contribution Rhythm:</strong> Align your savings schedule with your cash flow. If you are paid biweekly, saving every two weeks prevents cash crunches and captures 26 deposits per calendar year instead of just 12 monthly transfers.
+          </li>
+          <li>
+            <strong>Account for the Compounding Acceleration Effect:</strong> If your funds sit in an account yielding 4% to 5% APY, compound interest progressively reduces the amount of out-of-pocket cash you need to supply from your paychecks.
+          </li>
+        </ol>
+
+        <h2>The Mathematical Formulas Behind Savings Targets</h2>
+        <p>
+          The mathematical formulas applied by our Savings Target Calculator reflect standard financial mathematics and ordinary annuity equations.
+        </p>
+
+        <h3>1. Calculating Projected Balance by a Specific Date (Mode A)</h3>
+        <p>
+          When you specify a target deadline date, the calculator counts the total number of payment periods (n) between today and that date. The projected future value consists of two distinct components: the compounded growth of your starting balance plus the future value of your recurring annuity deposits:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; overflow-x: auto; text-align: center;">
+          <strong>FV<sub>projected</sub> = PV &times; (1 + i)<sup>n</sup> + PMT &times; [ ((1 + i)<sup>n</sup> - 1) / i ]</strong>
+        </div>
+        <p>
+          Where:
+        </p>
+        <ul>
+          <li><strong>PV:</strong> Present value (current savings already accumulated)</li>
+          <li><strong>PMT:</strong> Regular contribution per period (e.g., $500 per month)</li>
+          <li><strong>i:</strong> Periodic interest rate, equal to annual rate divided by contribution frequency (e.g., 0.045 / 12 for 4.5% annual APY compounded monthly)</li>
+          <li><strong>n:</strong> Total number of contribution periods elapsed</li>
+          <li><strong>((1 + i)<sup>n</sup> - 1) / i:</strong> The ordinary annuity accumulation factor (S<sub>n|i</sub>)</li>
+        </ul>
+        <p>
+          When the annual interest rate is 0%, the equation simplifies to linear arithmetic:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 1rem; text-align: center;">
+          <strong>FV<sub>projected</sub> = PV + (PMT &times; n)</strong>
+        </div>
+
+        <h3>2. Calculating Time Required to Reach a Savings Target (Mode B)</h3>
+        <p>
+          When you want to know how long it will take to hit your goal given a fixed regular contribution, we rearrange the future value formula to solve algebraically for the number of periods (n).
+        </p>
+        <p>
+          Under zero interest (0% APY), the timeline is straightforward simple division:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 1rem; text-align: center;">
+          <strong>n = (FV - PV) / PMT</strong>
+        </div>
+        <p>
+          Under positive compound interest (i &gt; 0), we use the natural logarithmic transformation:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; overflow-x: auto; text-align: center;">
+          <strong>n = ln[ (i &times; FV + PMT) / (i &times; PV + PMT) ] / ln(1 + i)</strong>
+        </div>
+        <p>
+          This logarithmic equation precisely accounts for how compounding interest accelerates your timeline. Because your balance increases each month, the interest payment earned in period 24 is substantially greater than in period 2, causing the accumulation curve to bend upwards exponentially. To see how fast lump sums double on their own under compounding, try our <a href="/calculator/money-doubling-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Money Doubling Calculator</a>.
+        </p>
+
+        <h2>How Long Does It Take to Reach a Savings Goal?</h2>
+        <p>
+          The duration required to achieve any financial goal depends on three core levers: your starting balance, your ongoing contribution size, and your account yield.
+        </p>
+        <p>
+          Consider saving for a <strong>$20,000 target</strong> starting with <strong>$2,000 in current savings</strong> at an account yield of <strong>4.5% APY</strong>:
+        </p>
+        <ul>
+          <li><strong>Saving $250 per month:</strong> Takes approximately <strong>60 months (5.0 years)</strong>. You contribute $15,000 and earn $3,054 in interest.</li>
+          <li><strong>Saving $500 per month:</strong> Takes approximately <strong>32 months (2.7 years)</strong>. You contribute $16,000 and earn $2,042 in interest.</li>
+          <li><strong>Saving $750 per month:</strong> Takes approximately <strong>22 months (1.8 years)</strong>. You contribute $16,500 and earn $1,532 in interest.</li>
+          <li><strong>Saving $1,000 per month:</strong> Takes approximately <strong>17 months (1.4 years)</strong>. You contribute $17,000 and earn $1,215 in interest.</li>
+        </ul>
+        <p>
+          Doubling your monthly savings from $250 to $500 slashes your waiting time from 5 years down to under 2.7 years!
+        </p>
+
+        <h2>How Much Should You Save Each Month?</h2>
+        <p>
+          A common guideline in financial planning is the <strong>50/30/20 budgeting rule</strong>, which allocates 50% of your take-home income to essential needs, 30% to discretionary lifestyle wants, and <strong>20% to savings and debt reduction</strong>.
+        </p>
+        <p>
+          When you have multiple simultaneous savings targets (e.g. building an emergency buffer while also saving for a vacation and a car replacement), distribute your 20% savings allocation strategically:
+        </p>
+        <ul>
+          <li><strong>Foundation First (Non-Negotiable):</strong> Direct the majority of your savings toward establishing a 3-to-6 month emergency reserve. If an emergency occurs without cash reserves, you risk taking on high-interest credit card debt. Model debt payoff strategies with our <a href="/calculator/debt-snowball-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Debt Snowball Calculator</a>.</li>
+          <li><strong>Upcoming Obligations (Sinking Funds):</strong> Allocate 5% to 10% toward predictable annual bills (insurance renewals, vehicle maintenance, property taxes).</li>
+          <li><strong>Aspirational Milestones (Goals):</strong> Direct remaining discretionary savings toward home down payments, travel, and luxury purchases.</li>
+        </ul>
+
+        <h2>Realistic Savings Target Examples by Category</h2>
+        <p>
+          To help you benchmark your own financial planning, the table below details standard savings target amounts, recommended time horizons, and suggested account structures across the eight most common savings goals:
+        </p>
+
+        <div style="overflow-x: auto; margin: var(--space-6) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 12px; font-weight: 700;">Goal Category</th>
+                <th style="padding: 12px; font-weight: 700;">Typical Target Amount</th>
+                <th style="padding: 12px; font-weight: 700;">Average Horizon</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-primary);">Recommended Account Vehicle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Emergency Safety Reserve</td>
+                <td style="padding: 10px 12px;">$10,000 – $25,000 (3-6 mo. expenses)</td>
+                <td style="padding: 10px 12px;">12 to 24 months</td>
+                <td style="padding: 10px 12px;">High-Yield Savings Account (Liquid)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Home Down Payment</td>
+                <td style="padding: 10px 12px;">$30,000 – $80,000 (10% to 20%)</td>
+                <td style="padding: 10px 12px;">2 to 5 years</td>
+                <td style="padding: 10px 12px;">HYSA + Short-Term CDs or Treasury Bills</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Used / New Car Cash Purchase</td>
+                <td style="padding: 10px 12px;">$12,000 – $25,000</td>
+                <td style="padding: 10px 12px;">24 to 36 months</td>
+                <td style="padding: 10px 12px;">High-Yield Savings Account</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Annual Family Vacation</td>
+                <td style="padding: 10px 12px;">$2,500 – $6,000</td>
+                <td style="padding: 10px 12px;">10 to 12 months</td>
+                <td style="padding: 10px 12px;">Dedicated Vacation Sub-Account</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Wedding & Honeymoon</td>
+                <td style="padding: 10px 12px;">$15,000 – $35,000</td>
+                <td style="padding: 10px 12px;">12 to 24 months</td>
+                <td style="padding: 10px 12px;">High-Yield Savings Account</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">College Tuition Gap</td>
+                <td style="padding: 10px 12px;">$15,000 – $50,000</td>
+                <td style="padding: 10px 12px;">3 to 8 years</td>
+                <td style="padding: 10px 12px;">529 College Savings Plan</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Home Improvement / Roof</td>
+                <td style="padding: 10px 12px;">$8,000 – $20,000</td>
+                <td style="padding: 10px 12px;">18 to 30 months</td>
+                <td style="padding: 10px 12px;">Money Market Account / HYSA</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">Annual Bills & Holiday Gifts</td>
+                <td style="padding: 10px 12px;">$1,500 – $4,500</td>
+                <td style="padding: 10px 12px;">12 months revolving</td>
+                <td style="padding: 10px 12px;">Dedicated Sinking Fund Account</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          For families planning educational funding, our dedicated <a href="/calculator/college-savings-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">College Savings Calculator</a> estimates multi-year tuition inflation and project 529 investment growth over 5 to 18 year timeframes.
+        </p>
+
+        <h2>Savings Target With Interest: The Power of APY</h2>
+        <p>
+          The interest rate you earn on your savings makes an enormous difference over medium and long-term horizons. Leaving money in a standard checking account earning 0.01% APY forfeits hundreds or thousands of dollars in passive compound growth.
+        </p>
+        <p>
+          The table below illustrates the dramatic difference between saving at <strong>0% APY</strong> versus <strong>4.5% APY</strong> (assuming $1,000 initial savings and a 36-month horizon):
+        </p>
+
+        <div style="overflow-x: auto; margin: var(--space-6) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 12px; font-weight: 700;">Target Goal</th>
+                <th style="padding: 12px; font-weight: 700;">Monthly Deposit (0% APY)</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-primary);">Monthly Deposit (4.5% APY)</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-success);">Total Free Interest Earned</th>
+                <th style="padding: 12px; font-weight: 700;">Cash Saved Out-of-Pocket</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">$5,000 (Vacation)</td>
+                <td style="padding: 10px 12px;">$111.11 / mo</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$100.16 / mo</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$394.24</td>
+                <td style="padding: 10px 12px;">$3,605.76</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">$15,000 (Emergency Fund)</td>
+                <td style="padding: 10px 12px;">$388.89 / mo</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$360.67 / mo</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$1,015.88</td>
+                <td style="padding: 10px 12px;">$12,984.12</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">$30,000 (Car / Wedding)</td>
+                <td style="padding: 10px 12px;">$805.56 / mo</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$751.44 / mo</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$1,948.16</td>
+                <td style="padding: 10px 12px;">$27,051.84</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">$60,000 (Down Payment)</td>
+                <td style="padding: 10px 12px;">$1,638.89 / mo</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$1,532.97 / mo</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$3,813.08</td>
+                <td style="padding: 10px 12px;">$55,186.92</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          On a $60,000 down payment target, choosing a 4.5% APY high-yield account delivers <strong>over $3,800 in free compound interest</strong>, effectively reducing your required monthly out-of-pocket commitment by more than $100 every single month! To explore nominal rate conversions across compounding frequencies, use our <a href="/calculator/nominal-interest-rate-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Nominal Interest Rate Calculator</a>.
+        </p>
+
+        <h2>Short-Term vs. Long-Term Savings Targets</h2>
+        <p>
+          The length of your savings timeline dictates not only how much you must save each month, but where your money should be stored:
+        </p>
+        <ul>
+          <li>
+            <strong>Short-Term Targets (0 to 2 Years):</strong>
+            Examples: Holiday gifting, upcoming vacation, vehicle repairs, moving costs.
+            <em>Strategy:</em> 100% capital preservation and liquidity. Keep funds in High-Yield Savings Accounts (HYSA) or Money Market Accounts (MMA) with FDIC or NCUA insurance. Never invest short-term target money into volatile stock market index funds, where a temporary correction could erase 20% of your capital right before your payment deadline.
+          </li>
+          <li>
+            <strong>Medium-Term Targets (2 to 5 Years):</strong>
+            Examples: Home down payment, new car purchase, major home renovation, wedding.
+            <em>Strategy:</em> Blend high-yield cash accounts with short-term Certificates of Deposit (CDs) or Treasury bills (T-bills) to lock in competitive yields without stock market downside risk.
+          </li>
+          <li>
+            <strong>Long-Term Targets (5+ Years):</strong>
+            Examples: Retirement nest eggs, child college funds, financial independence reserves.
+            <em>Strategy:</em> Incorporate diversified, low-cost index funds and tax-advantaged accounts (such as Roth IRAs or 529 plans). Over long horizons, equities historically provide returns that significantly outpace inflation. Model long-term systematic equity investments with our <a href="/calculator/sip-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">SIP Calculator</a>.
+          </li>
+        </ul>
+
+        <h2>7 Practical Tips for Reaching Your Savings Target Faster</h2>
+        <ol>
+          <li>
+            <strong>Automate On Payday:</strong> The single most effective behavioral finance strategy is setting up an automated transfer that moves money into your target savings account on the exact day your direct deposit lands. When you save automatically, you never miss the cash.
+          </li>
+          <li>
+            <strong>Separate Goal Accounts:</strong> Open dedicated digital savings sub-accounts (e.g. "Car Fund", "Vacation Fund", "Home Down Payment"). Grouping all your savings inside your primary checking account creates mental confusion and invites impulse spending.
+          </li>
+          <li>
+            <strong>Harness the Biweekly Advantage:</strong> If you receive 26 biweekly paychecks per year, saving on your pay cycle provides two months each year with three paychecks. Dedicating those "extra" paychecks toward your savings target accelerates your completion date by months.
+          </li>
+          <li>
+            <strong>Direct Windfalls to Your Target:</strong> Whenever you receive unexpected lump sums—such as tax refunds, work bonuses, overtime pay, or cash gifts—commit at least 50% directly to your primary savings goal.
+          </li>
+          <li>
+            <strong>Re-Evaluate Discretionary Subscriptions:</strong> Auditing streaming services, unused gym memberships, and dining subscriptions can easily unlock $100 to $200 per month of found money to channel into your target account.
+          </li>
+          <li>
+            <strong>Protect Against Inflation:</strong> If you are saving for a milestone 3 to 5 years out, remember that general consumer price inflation erodes purchasing power. Use our <a href="/calculator/inflation-impact-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Inflation Impact Calculator</a> to adjust your target amount upwards by 2.5% to 3.5% annually.
+          </li>
+          <li>
+            <strong>Track Visual Milestones:</strong> Celebrate reaching incremental thresholds—such as 25%, 50%, and 75% of your target. Visual progress indicators sustain motivation over multi-year savings journeys.
+          </li>
+        </ol>
+
+        <h2>5 Common Savings Goal Mistakes to Avoid</h2>
+        <ol>
+          <li>
+            <strong>Setting an Unrealistic Timeline:</strong> Demanding that you save $20,000 in six months on a $3,500 monthly take-home salary creates immediate budget failure. Be honest about your cash flow limits to build a sustainable, stress-free savings habit.
+          </li>
+          <li>
+            <strong>Ignoring Pre-Existing Debts:</strong> Attempting to build a non-urgent savings target while carrying credit card debt at 24% APR results in severe wealth destruction. The 4.5% interest you earn in a savings account is obliterated by the 24% interest you pay to the card issuer. Use our <a href="/calculator/debt-reduction-planner-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Debt Reduction Planner Calculator</a> to extinguish high-interest debt first.
+          </li>
+          <li>
+            <strong>Forgetting Incidental and Closing Expenses:</strong> When saving for a home down payment or car purchase, savers frequently forget about loan origination fees, closing costs, title transfers, and immediate maintenance. Always add a 5% to 10% contingency buffer to your target amount.
+          </li>
+          <li>
+            <strong>Relying on High-Risk Investments for Near-Term Needs:</strong> Stashing next year's wedding fund or house down payment into speculative stocks or cryptocurrency can turn a $30,000 target into $18,000 overnight. Keep short-term money in safe, insured cash vehicles.
+          </li>
+          <li>
+            <strong>Giving Up After One Disrupted Month:</strong> If an unexpected car repair forces you to pause savings contributions for a month, do not abandon your goal. Simply resume your regular deposits next month; the compounding engine will quickly regain momentum.
+          </li>
+        </ol>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion" style="display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4);">
+          
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is a savings target?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              A savings target is a specific, quantifiable monetary milestone that an individual or family aims to accumulate by a predetermined future date. Common savings targets include an emergency safety fund, a home down payment, a car purchase, a vacation, wedding expenses, or college tuition.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How does a Savings Target Calculator work?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              A Savings Target Calculator uses your target goal amount, initial savings balance, regular contribution amount, deposit frequency (monthly, biweekly, or weekly), and expected annual interest rate (APY) to solve for either: (1) your projected accumulated balance by a specific target deadline, or (2) the exact number of months and years required to reach that target.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do I calculate how much I need to save to reach my target?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Under zero interest, subtract current savings from your target amount and divide by the number of contribution periods: <strong>Required Contribution = (Target Amount - Current Savings) / Periods</strong>. When your money earns interest in a high-yield account, the required contribution is calculated using the ordinary annuity sinking fund formula, which incorporates compound growth and lowers your out-of-pocket savings.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How long will it take to reach my savings goal?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              The time required depends on your regular contribution rate and your account's interest rate. Without interest, the duration is simply: <strong>Total Periods = (Target Amount - Current Savings) / Regular Contribution</strong>. With positive compound interest, the time is calculated using a logarithmic annuity formula: <strong>n = ln[(i &times; FV + PMT) / (i &times; PV + PMT)] / ln(1 + i)</strong>, where compound growth progressively shortens your time horizon.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Can I include my current savings in the calculation?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes. Any initial savings you already have immediately reduces the net dollar gap required to reach your target. In an interest-bearing account, that starting balance compounds continuously over the entire savings horizon, generating passive interest that speeds up your progress.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Does the calculator include interest?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes. You can enter an expected annual return or APY (Annual Percentage Yield), such as 4.5% for a High-Yield Savings Account (HYSA) or 0% for standard non-interest-bearing checking accounts. The calculator correctly compounds interest on both your initial balance and every periodic deposit.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Can I calculate weekly or biweekly savings instead of monthly?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes. You can select Monthly (12 times/year), Biweekly (26 times/year), or Weekly (52 times/year). Aligning contributions with your biweekly or weekly paychecks accelerates compound growth and takes advantage of extra pay periods each year.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What happens if I have already reached my savings target?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              If your current savings equal or exceed your target amount, the calculator identifies that your goal is 100% funded today, showing a $0.00 required additional deposit and calculating any financial surplus you currently maintain.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What happens if my regular contribution is zero?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              If your contribution is zero and your current balance is below the target at 0% interest, the target is mathematically unreachable. If your initial balance earns positive interest, the calculator solves for how many years it will take for your starting balance alone to compound into the target sum.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is the difference between a savings target and an emergency fund?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              An emergency fund is a permanent financial safety cushion (usually 3 to 6 months of basic living expenses) held in cash to survive unexpected crises like job loss or medical emergencies. A savings target is a specific, planned goal that will usually be spent once reached, such as buying a vehicle, funding a vacation, or putting a down payment on a home.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How can I reach my savings goal faster?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              You can accelerate your savings target by: (1) automating transfers on payday, (2) moving balances from a 0.01% checking account to a 4% to 5% High-Yield Savings Account, (3) redirecting windfalls such as tax refunds and annual bonuses into your target account, and (4) cutting temporary discretionary spending.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

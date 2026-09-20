@@ -1,0 +1,1300 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Salary Sacrifice Pension Calculator"
+  description="Calculate your take-home pay, income tax savings, and National Insurance relief when contributing to a UK workplace pension via salary sacrifice."
+  category="Salary & Income"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="sspc-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">Salary &amp; Contribution Details</h3>
+
+      <!-- Tax Year Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sspc-tax-year">UK Tax Year</label>
+          <select id="sspc-tax-year" class="currency-select" aria-label="Select UK Tax Year">
+            <option value="2026_27" selected>2026/27 (Current: 8% Main NI)</option>
+            <option value="2025_26">2025/26 (8% Main NI)</option>
+            <option value="2024_25">2024/25 (8% Main NI)</option>
+            <option value="2023_24">2023/24 (Historical: 10%/12% NI)</option>
+          </select>
+        </div>
+        <span class="input-subtext">England, Wales &amp; Northern Ireland rates (standard Category A National Insurance).</span>
+      </div>
+
+      <!-- Annual Gross Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="sspc-gross-salary">Annual Gross Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="sspc-gross-salary" min="0" max="10000000" step="500" value="50000" aria-label="Annual Gross Salary" />
+          </div>
+        </div>
+        <input type="range" id="sspc-gross-slider" min="15000" max="150000" step="500" value="50000" class="slider-range" aria-label="Annual Gross Salary Slider" />
+        
+        <!-- Salary Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-salary="30000">£30k</button>
+          <button type="button" class="preset-pill active" data-salary="50000">£50k</button>
+          <button type="button" class="preset-pill" data-salary="65000">£65k</button>
+          <button type="button" class="preset-pill" data-salary="85000">£85k</button>
+          <button type="button" class="preset-pill" data-salary="100000">£100k</button>
+          <button type="button" class="preset-pill" data-salary="120000">£120k</button>
+        </div>
+      </div>
+
+      <!-- Contribution Mode Switcher -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">Pension Sacrifice Type</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Pension Sacrifice Type">
+          <button type="button" class="toggle-pill active" id="sspc-type-pct-btn" aria-checked="true" role="radio">
+            Percentage (%)
+          </button>
+          <button type="button" class="toggle-pill" id="sspc-type-fixed-btn" aria-checked="false" role="radio">
+            Fixed Amount (£)
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode A: Percentage Contribution -->
+      <div id="sspc-panel-pct" class="input-group">
+        <div class="input-label-row">
+          <label for="sspc-pct-val">Employee Sacrifice (%)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sspc-pct-val" min="0" max="80" step="0.5" value="5" aria-label="Employee Sacrifice Percentage" style="padding-right: 28px; padding-left: 10px;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="sspc-pct-slider" min="0" max="50" step="0.5" value="5" class="slider-range" aria-label="Employee Sacrifice Percentage Slider" />
+        
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-pct="3">3%</button>
+          <button type="button" class="preset-pill active" data-pct="5">5%</button>
+          <button type="button" class="preset-pill" data-pct="8">8%</button>
+          <button type="button" class="preset-pill" data-pct="10">10%</button>
+          <button type="button" class="preset-pill" data-pct="15">15%</button>
+          <button type="button" class="preset-pill" data-pct="20">20%</button>
+        </div>
+      </div>
+
+      <!-- Mode B: Fixed Amount Contribution -->
+      <div id="sspc-panel-fixed" class="input-group hidden">
+        <div class="input-label-row">
+          <label for="sspc-fixed-val">Employee Sacrifice (£/yr)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="sspc-fixed-val" min="0" max="100000" step="100" value="2500" aria-label="Employee Fixed Sacrifice Annual Amount" />
+          </div>
+        </div>
+        <input type="range" id="sspc-fixed-slider" min="0" max="25000" step="100" value="2500" class="slider-range" aria-label="Employee Fixed Sacrifice Slider" />
+        <span class="input-subtext">Annual amount of contractual salary surrendered into pension.</span>
+      </div>
+
+      <!-- Optional Employer Contribution -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="sspc-employer-pct">Employer Contribution (%) <span style="font-weight: 400; color: var(--color-text-muted); font-size: 0.8rem;">(Optional)</span></label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="sspc-employer-pct" min="0" max="50" step="0.5" value="3" aria-label="Employer Contribution Percentage" style="padding-right: 28px; padding-left: 10px;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="sspc-employer-slider" min="0" max="25" step="0.5" value="3" class="slider-range" aria-label="Employer Contribution Percentage Slider" />
+        <span class="input-subtext">Standard UK auto-enrolment employer minimum is 3%.</span>
+      </div>
+
+      <!-- Display Pay Frequency Selector -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">Display Results As</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Display Frequency" style="grid-template-columns: 1fr 1fr 1fr;">
+          <button type="button" class="toggle-pill active" id="sspc-freq-annual-btn" aria-checked="true" role="radio">
+            Annual
+          </button>
+          <button type="button" class="toggle-pill" id="sspc-freq-monthly-btn" aria-checked="false" role="radio">
+            Monthly
+          </button>
+          <button type="button" class="toggle-pill" id="sspc-freq-weekly-btn" aria-checked="false" role="radio">
+            Weekly
+          </button>
+        </div>
+      </div>
+
+      <!-- Warning / Error Callout (e.g., Minimum Wage or Salary Over-Sacrifice) -->
+      <div id="sspc-error-banner" class="callout-banner warning hidden" style="margin-top: var(--space-3);">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <span class="callout-title" id="sspc-error-title">Contribution Alert</span>
+          <span class="callout-msg" id="sspc-error-msg">Salary sacrifice cannot reduce contractual salary below zero or below National Living Wage.</span>
+        </div>
+      </div>
+
+      <!-- Reset Action -->
+      <div style="margin-top: var(--space-5);">
+        <Button variant="outline" size="sm" id="sspc-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Salary Sacrifice Pension Summary</h3>
+
+    <!-- Hero Metric Box: Net Take-Home Pay with Sacrifice -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label" id="sspc-hero-label">Estimated Take-Home Pay (With Sacrifice)</span>
+      <div class="hero-metric-value" id="sspc-hero-value">£37,719.60</div>
+      <span class="hero-metric-subtext" id="sspc-hero-sub">Annual net pay after tax and National Insurance</span>
+    </div>
+
+    <!-- Callout Banner: Tax and NI Saved -->
+    <div id="sspc-callout" class="callout-banner success">
+      <div class="callout-icon">✨</div>
+      <div class="callout-body">
+        <span class="callout-title" id="sspc-callout-title">£700.00 Total Tax &amp; NI Relief Saved</span>
+        <span class="callout-msg" id="sspc-callout-msg">
+          By sacrificing £2,500.00 into your pension, your take-home pay only falls by £1,800.00. The government effectively funds £700.00 in Income Tax and NI relief!
+        </span>
+      </div>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label" id="sspc-box1-label">Total Pension Inflow</span>
+        <div id="sspc-box1-value" class="net-box-value" style="color: var(--color-primary);">£4,000.00</div>
+        <span class="net-box-desc" id="sspc-box1-desc">Employee (£2,500) + Employer (£1,500)</span>
+      </div>
+      <div class="net-value-box highlight-warning">
+        <span class="net-box-label" id="sspc-box2-label">Take-Home Pay Impact</span>
+        <div id="sspc-box2-value" class="net-box-value" style="color: var(--color-warning);">-£1,800.00</div>
+        <span class="net-box-desc" id="sspc-box2-desc">Actual reduction in your pocket</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 class="metrics-grid-title">Comprehensive Breakdown</h4>
+    <div class="results-grid sspc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Original Gross Salary</span>
+        <div class="tile-value" id="tile-gross-before" style="color: var(--color-text-muted);">£50,000.00</div>
+        <span class="tile-sub">Contractual pre-sacrifice</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Adjusted Gross Salary</span>
+        <div class="tile-value" id="tile-gross-after" style="color: var(--color-primary);">£47,500.00</div>
+        <span class="tile-sub">Subject to Tax &amp; NI</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Employee Sacrifice</span>
+        <div class="tile-value" id="tile-employee-sacrifice" style="color: var(--color-text-base);">£2,500.00</div>
+        <span class="tile-sub" id="tile-employee-sub">5.00% of salary</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Employer Contribution</span>
+        <div class="tile-value" id="tile-employer-pension" style="color: var(--color-success);">£1,500.00</div>
+        <span class="tile-sub">3.00% paid by employer</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Estimated Income Tax</span>
+        <div class="tile-value" id="tile-tax-after" style="color: var(--color-text-base);">£6,986.00</div>
+        <span class="tile-sub" id="tile-tax-saved-sub">Saves £500.00</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Employee NI Paid</span>
+        <div class="tile-value" id="tile-ni-after" style="color: var(--color-text-base);">£2,794.40</div>
+        <span class="tile-sub" id="tile-ni-saved-sub">Saves £200.00</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Total Tax + NI Saved</span>
+        <div class="tile-value" id="tile-total-saved" style="color: var(--color-success);">£700.00</div>
+        <span class="tile-sub" id="tile-relief-pct">28.00% effective relief</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Net Take-Home Pay</span>
+        <div class="tile-value" id="tile-takehome-after" style="color: var(--color-primary);">£37,719.60</div>
+        <span class="tile-sub">With sacrifice applied</span>
+      </div>
+    </div>
+
+    <!-- Side-by-Side Comparison Table -->
+    <div class="table-section-container" style="margin-top: var(--space-4);">
+      <h4 class="metrics-grid-title" style="margin-bottom: var(--space-2);">Without vs. With Salary Sacrifice</h4>
+      <div class="comparison-table-wrapper">
+        <table class="comparison-table" id="sspc-compare-table">
+          <thead>
+            <tr>
+              <th>Pay Element</th>
+              <th style="text-align: right;">Without Sacrifice</th>
+              <th style="text-align: right; color: var(--color-primary);">With Sacrifice</th>
+              <th style="text-align: right; color: var(--color-success);">Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Gross Salary</strong></td>
+              <td style="text-align: right;" id="tbl-gross-without">£50,000.00</td>
+              <td style="text-align: right; font-weight: 700;" id="tbl-gross-with">£47,500.00</td>
+              <td style="text-align: right; color: var(--color-text-muted);" id="tbl-gross-diff">-£2,500.00</td>
+            </tr>
+            <tr>
+              <td>Employee Pension Sacrifice</td>
+              <td style="text-align: right;">£0.00</td>
+              <td style="text-align: right; color: var(--color-primary); font-weight: 700;" id="tbl-employee-pension">£2,500.00</td>
+              <td style="text-align: right; color: var(--color-success); font-weight: 700;" id="tbl-employee-diff">+£2,500.00</td>
+            </tr>
+            <tr>
+              <td>Employer Pension Contribution</td>
+              <td style="text-align: right;" id="tbl-employer-without">£1,500.00</td>
+              <td style="text-align: right; color: var(--color-primary); font-weight: 700;" id="tbl-employer-with">£1,500.00</td>
+              <td style="text-align: right; color: var(--color-text-muted);">£0.00</td>
+            </tr>
+            <tr style="background-color: rgba(37, 99, 235, 0.04);">
+              <td><strong>Total Pension Pot Addition</strong></td>
+              <td style="text-align: right;" id="tbl-pot-without">£1,500.00</td>
+              <td style="text-align: right; font-weight: 800; color: var(--color-primary);" id="tbl-pot-with">£4,000.00</td>
+              <td style="text-align: right; font-weight: 800; color: var(--color-success);" id="tbl-pot-diff">+£2,500.00</td>
+            </tr>
+            <tr>
+              <td>Income Tax (PAYE)</td>
+              <td style="text-align: right;" id="tbl-tax-without">£7,486.00</td>
+              <td style="text-align: right;" id="tbl-tax-with">£6,986.00</td>
+              <td style="text-align: right; color: var(--color-success); font-weight: 700;" id="tbl-tax-diff">-£500.00 (Saved)</td>
+            </tr>
+            <tr>
+              <td>Employee National Insurance</td>
+              <td style="text-align: right;" id="tbl-ni-without">£2,994.40</td>
+              <td style="text-align: right;" id="tbl-ni-with">£2,794.40</td>
+              <td style="text-align: right; color: var(--color-success); font-weight: 700;" id="tbl-ni-diff">-£200.00 (Saved)</td>
+            </tr>
+            <tr style="background-color: var(--color-bg-base); font-weight: 700;">
+              <td><strong>Take-Home Pay</strong></td>
+              <td style="text-align: right; font-weight: 800;" id="tbl-takehome-without">£39,519.60</td>
+              <td style="text-align: right; font-weight: 800; color: var(--color-primary);" id="tbl-takehome-with">£37,719.60</td>
+              <td style="text-align: right; font-weight: 800; color: var(--color-warning);" id="tbl-takehome-diff">-£1,800.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict -->
+    <div class="verdict-container" style="margin-top: var(--space-4);">
+      <Card elevation="sm" id="sspc-verdict-card" class="verdict-card verdict-info">
+        <span class="verdict-tag">Take-Home Impact Verdict</span>
+        <p id="sspc-verdict-text" class="verdict-paragraph">
+          If you sacrifice <strong>£2,500.00</strong> of your salary into your pension, your net take-home pay reduces by approximately <strong>£1,800.00</strong> (£150.00/month) rather than the full £2,500.00. This is because you save an estimated <strong>£500.00 in Income Tax</strong> and <strong>£200.00 in National Insurance</strong>.
+        </p>
+        <span class="verdict-disclaimer">
+          Estimate based on selected UK tax year (<span id="sspc-disclaimer-year">2026/27</span>) for a standard England/Wales/NI employee (Category A NI, standard £12,570 Personal Allowance). Actual payslip values vary based on personal tax code, student loans, and employer scheme specifics.
+        </span>
+      </Card>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Clean, maintainable UK Tax Configuration Structure
+  interface TaxYearConfig {
+    name: string;
+    personalAllowance: number;
+    paTaperThreshold: number; // £100,000
+    basicRateUpper: number;   // £50,270
+    higherRateUpper: number;  // £125,140
+    basicRate: number;        // 0.20
+    higherRate: number;       // 0.40
+    additionalRate: number;   // 0.45
+    niPrimaryThreshold: number;   // £12,570
+    niUpperEarningsLimit: number; // £50,270
+    niMainRate: number;           // 0.08 for 24/25, 25/26, 26/27
+    niHigherRate: number;         // 0.02
+    nlwAnnual: number;            // Full-time National Living Wage benchmark
+  }
+
+  const UK_TAX_YEARS: Record<string, TaxYearConfig> = {
+    '2026_27': {
+      name: '2026/27',
+      personalAllowance: 12570,
+      paTaperThreshold: 100000,
+      basicRateUpper: 50270,
+      higherRateUpper: 125140,
+      basicRate: 0.20,
+      higherRate: 0.40,
+      additionalRate: 0.45,
+      niPrimaryThreshold: 12570,
+      niUpperEarningsLimit: 50270,
+      niMainRate: 0.08,
+      niHigherRate: 0.02,
+      nlwAnnual: 24765 // Estimated NLW benchmark for 2026/27 (~£12.70/hr @ 37.5h)
+    },
+    '2025_26': {
+      name: '2025/26',
+      personalAllowance: 12570,
+      paTaperThreshold: 100000,
+      basicRateUpper: 50270,
+      higherRateUpper: 125140,
+      basicRate: 0.20,
+      higherRate: 0.40,
+      additionalRate: 0.45,
+      niPrimaryThreshold: 12570,
+      niUpperEarningsLimit: 50270,
+      niMainRate: 0.08,
+      niHigherRate: 0.02,
+      nlwAnnual: 23810 // NLW for 2025/26 (£12.21/hr @ 37.5h)
+    },
+    '2024_25': {
+      name: '2024/25',
+      personalAllowance: 12570,
+      paTaperThreshold: 100000,
+      basicRateUpper: 50270,
+      higherRateUpper: 125140,
+      basicRate: 0.20,
+      higherRate: 0.40,
+      additionalRate: 0.45,
+      niPrimaryThreshold: 12570,
+      niUpperEarningsLimit: 50270,
+      niMainRate: 0.08,
+      niHigherRate: 0.02,
+      nlwAnnual: 22308 // NLW for 2024/25 (£11.44/hr @ 37.5h)
+    },
+    '2023_24': {
+      name: '2023/24',
+      personalAllowance: 12570,
+      paTaperThreshold: 100000,
+      basicRateUpper: 50270,
+      higherRateUpper: 125140,
+      basicRate: 0.20,
+      higherRate: 0.40,
+      additionalRate: 0.45,
+      niPrimaryThreshold: 12570,
+      niUpperEarningsLimit: 50270,
+      niMainRate: 0.115, // Blended annual rate for 23/24 (12% to 10%)
+      niHigherRate: 0.02,
+      nlwAnnual: 20319 // NLW for 2023/24 (£10.42/hr @ 37.5h)
+    }
+  };
+
+  function initSSPC() {
+    const root = document.getElementById('sspc-root');
+    if (!root) return;
+
+    // Input elements
+    const taxYearSelect   = document.getElementById('sspc-tax-year') as HTMLSelectElement;
+    const grossInput      = document.getElementById('sspc-gross-salary') as HTMLInputElement;
+    const grossSlider     = document.getElementById('sspc-gross-slider') as HTMLInputElement;
+    const typePctBtn      = document.getElementById('sspc-type-pct-btn') as HTMLButtonElement;
+    const typeFixedBtn    = document.getElementById('sspc-type-fixed-btn') as HTMLButtonElement;
+    const panelPct        = document.getElementById('sspc-panel-pct') as HTMLElement;
+    const panelFixed      = document.getElementById('sspc-panel-fixed') as HTMLElement;
+    const pctInput        = document.getElementById('sspc-pct-val') as HTMLInputElement;
+    const pctSlider       = document.getElementById('sspc-pct-slider') as HTMLInputElement;
+    const fixedInput      = document.getElementById('sspc-fixed-val') as HTMLInputElement;
+    const fixedSlider     = document.getElementById('sspc-fixed-slider') as HTMLInputElement;
+    const employerPctInput= document.getElementById('sspc-employer-pct') as HTMLInputElement;
+    const employerSlider  = document.getElementById('sspc-employer-slider') as HTMLInputElement;
+    const resetBtn        = document.getElementById('sspc-reset-btn') as HTMLButtonElement;
+
+    // Frequency display buttons
+    const freqAnnualBtn   = document.getElementById('sspc-freq-annual-btn') as HTMLButtonElement;
+    const freqMonthlyBtn  = document.getElementById('sspc-freq-monthly-btn') as HTMLButtonElement;
+    const freqWeeklyBtn   = document.getElementById('sspc-freq-weekly-btn') as HTMLButtonElement;
+
+    // Presets
+    const salaryPills     = document.querySelectorAll<HTMLButtonElement>('.preset-pill[data-salary]');
+    const pctPills        = document.querySelectorAll<HTMLButtonElement>('.preset-pill[data-pct]');
+
+    // Error banner
+    const errorBanner     = document.getElementById('sspc-error-banner') as HTMLElement;
+    const errorMsg        = document.getElementById('sspc-error-msg') as HTMLElement;
+
+    // Results DOM elements
+    const heroLabel       = document.getElementById('sspc-hero-label') as HTMLElement;
+    const heroValue       = document.getElementById('sspc-hero-value') as HTMLElement;
+    const heroSub         = document.getElementById('sspc-hero-sub') as HTMLElement;
+    const calloutTitle    = document.getElementById('sspc-callout-title') as HTMLElement;
+    const calloutMsg      = document.getElementById('sspc-callout-msg') as HTMLElement;
+    const box1Label       = document.getElementById('sspc-box1-label') as HTMLElement;
+    const box1Value       = document.getElementById('sspc-box1-value') as HTMLElement;
+    const box1Desc        = document.getElementById('sspc-box1-desc') as HTMLElement;
+    const box2Label       = document.getElementById('sspc-box2-label') as HTMLElement;
+    const box2Value       = document.getElementById('sspc-box2-value') as HTMLElement;
+    const box2Desc        = document.getElementById('sspc-box2-desc') as HTMLElement;
+
+    // Tiles
+    const tileGrossBefore = document.getElementById('tile-gross-before') as HTMLElement;
+    const tileGrossAfter  = document.getElementById('tile-gross-after') as HTMLElement;
+    const tileSacrifice   = document.getElementById('tile-employee-sacrifice') as HTMLElement;
+    const tileEmployeeSub = document.getElementById('tile-employee-sub') as HTMLElement;
+    const tileEmployer    = document.getElementById('tile-employer-pension') as HTMLElement;
+    const tileTaxAfter    = document.getElementById('tile-tax-after') as HTMLElement;
+    const tileTaxSavedSub = document.getElementById('tile-tax-saved-sub') as HTMLElement;
+    const tileNiAfter     = document.getElementById('tile-ni-after') as HTMLElement;
+    const tileNiSavedSub  = document.getElementById('tile-ni-saved-sub') as HTMLElement;
+    const tileTotalSaved  = document.getElementById('tile-total-saved') as HTMLElement;
+    const tileReliefPct   = document.getElementById('tile-relief-pct') as HTMLElement;
+    const tileTakehomeAfter= document.getElementById('tile-takehome-after') as HTMLElement;
+
+    // Comparison Table
+    const tblGrossWithout = document.getElementById('tbl-gross-without') as HTMLElement;
+    const tblGrossWith    = document.getElementById('tbl-gross-with') as HTMLElement;
+    const tblGrossDiff    = document.getElementById('tbl-gross-diff') as HTMLElement;
+    const tblEmpPension   = document.getElementById('tbl-employee-pension') as HTMLElement;
+    const tblEmpDiff      = document.getElementById('tbl-employee-diff') as HTMLElement;
+    const tblEmplrWithout = document.getElementById('tbl-employer-without') as HTMLElement;
+    const tblEmplrWith    = document.getElementById('tbl-employer-with') as HTMLElement;
+    const tblPotWithout   = document.getElementById('tbl-pot-without') as HTMLElement;
+    const tblPotWith      = document.getElementById('tbl-pot-with') as HTMLElement;
+    const tblPotDiff      = document.getElementById('tbl-pot-diff') as HTMLElement;
+    const tblTaxWithout   = document.getElementById('tbl-tax-without') as HTMLElement;
+    const tblTaxWith      = document.getElementById('tbl-tax-with') as HTMLElement;
+    const tblTaxDiff      = document.getElementById('tbl-tax-diff') as HTMLElement;
+    const tblNiWithout    = document.getElementById('tbl-ni-without') as HTMLElement;
+    const tblNiWith       = document.getElementById('tbl-ni-with') as HTMLElement;
+    const tblNiDiff       = document.getElementById('tbl-ni-diff') as HTMLElement;
+    const tblNetWithout   = document.getElementById('tbl-takehome-without') as HTMLElement;
+    const tblNetWith      = document.getElementById('tbl-takehome-with') as HTMLElement;
+    const tblNetDiff      = document.getElementById('tbl-takehome-diff') as HTMLElement;
+
+    // Verdict
+    const verdictText     = document.getElementById('sspc-verdict-text') as HTMLElement;
+    const disclaimerYear  = document.getElementById('sspc-disclaimer-year') as HTMLElement;
+
+    // State
+    let contributionMode: 'pct' | 'fixed' = 'pct';
+    let displayFreq: 'annual' | 'monthly' | 'weekly' = 'annual';
+
+    function fmt(val: number): string {
+      const divisor = displayFreq === 'monthly' ? 12 : displayFreq === 'weekly' ? 52 : 1;
+      const displayVal = val / divisor;
+      const absVal = Math.abs(displayVal);
+      const formatted = absVal.toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${displayVal < 0 ? '-' : ''}£${formatted}`;
+    }
+
+    function fmtAnnual(val: number): string {
+      const absVal = Math.abs(val);
+      const formatted = absVal.toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${val < 0 ? '-' : ''}£${formatted}`;
+    }
+
+    function calculateUKTax(gross: number, cfg: TaxYearConfig): number {
+      if (gross <= 0) return 0;
+
+      // Personal Allowance Taper (reduces by £1 for every £2 over £100k)
+      let personalAllowance = cfg.personalAllowance;
+      if (gross > cfg.paTaperThreshold) {
+        const excess = gross - cfg.paTaperThreshold;
+        const reduction = Math.floor(excess / 2);
+        personalAllowance = Math.max(0, cfg.personalAllowance - reduction);
+      }
+
+      const taxableIncome = Math.max(0, gross - personalAllowance);
+      if (taxableIncome <= 0) return 0;
+
+      // Standard basic rate band width is £37,700 (£50,270 - £12,570)
+      const basicBandWidth = cfg.basicRateUpper - cfg.personalAllowance;
+      const basicBandLimit = personalAllowance + basicBandWidth;
+      const higherBandLimit = cfg.higherRateUpper;
+
+      let tax = 0;
+
+      if (gross <= basicBandLimit) {
+        tax = taxableIncome * cfg.basicRate;
+      } else if (gross <= higherBandLimit) {
+        const basicTax = basicBandWidth * cfg.basicRate;
+        const higherTax = (gross - basicBandLimit) * cfg.higherRate;
+        tax = basicTax + higherTax;
+      } else {
+        const basicTax = basicBandWidth * cfg.basicRate;
+        const higherTax = (higherBandLimit - basicBandLimit) * cfg.higherRate;
+        const additionalTax = (gross - higherBandLimit) * cfg.additionalRate;
+        tax = basicTax + higherTax + additionalTax;
+      }
+
+      return Math.max(0, tax);
+    }
+
+    function calculateUKNI(gross: number, cfg: TaxYearConfig): number {
+      if (gross <= cfg.niPrimaryThreshold) return 0;
+
+      let ni = 0;
+      if (gross <= cfg.niUpperEarningsLimit) {
+        ni = (gross - cfg.niPrimaryThreshold) * cfg.niMainRate;
+      } else {
+        const mainNI = (cfg.niUpperEarningsLimit - cfg.niPrimaryThreshold) * cfg.niMainRate;
+        const higherNI = (gross - cfg.niUpperEarningsLimit) * cfg.niHigherRate;
+        ni = mainNI + higherNI;
+      }
+
+      return Math.max(0, ni);
+    }
+
+    function bindSlider(inp: HTMLInputElement, sld: HTMLInputElement, cb: () => void) {
+      if (!inp || !sld) return;
+      inp.addEventListener('input', () => { sld.value = inp.value; cb(); });
+      sld.addEventListener('input', () => { inp.value = sld.value; cb(); });
+    }
+
+    function calculate() {
+      const yearKey = taxYearSelect.value || '2026_27';
+      const cfg = UK_TAX_YEARS[yearKey] || UK_TAX_YEARS['2026_27'];
+      if (disclaimerYear) disclaimerYear.textContent = cfg.name;
+
+      const rawGross = Math.max(0, parseFloat(grossInput.value) || 0);
+      const employerPct = Math.max(0, parseFloat(employerPctInput.value) || 0);
+
+      // Determine employee sacrifice amount
+      let employeeSacrificeAnnual = 0;
+      let employeeSacrificePct = 0;
+
+      if (contributionMode === 'pct') {
+        employeeSacrificePct = Math.max(0, parseFloat(pctInput.value) || 0);
+        employeeSacrificeAnnual = rawGross * (employeeSacrificePct / 100);
+      } else {
+        employeeSacrificeAnnual = Math.max(0, parseFloat(fixedInput.value) || 0);
+        employeeSacrificePct = rawGross > 0 ? (employeeSacrificeAnnual / rawGross) * 100 : 0;
+      }
+
+      // Check National Living Wage threshold warning
+      const nlwWarningThreshold = cfg.nlwAnnual || 24765;
+      const salaryAfterSacrifice = rawGross - employeeSacrificeAnnual;
+
+      if (salaryAfterSacrifice < 0) {
+        if (errorBanner) {
+          errorBanner.classList.remove('hidden');
+          if (errorMsg) errorMsg.textContent = 'Salary sacrifice cannot exceed your gross salary.';
+        }
+      } else if (salaryAfterSacrifice < nlwWarningThreshold && rawGross >= nlwWarningThreshold && employeeSacrificeAnnual > 0) {
+        if (errorBanner) {
+          errorBanner.classList.remove('hidden');
+          if (errorMsg) errorMsg.textContent = `Warning: Contractual salary after sacrifice (£${salaryAfterSacrifice.toLocaleString('en-GB')}) falls below the estimated full-time National Living Wage (£${nlwWarningThreshold.toLocaleString('en-GB')}) for ${cfg.name}. UK employers cannot legally reduce pay below NLW.`;
+        }
+      } else {
+        if (errorBanner) errorBanner.classList.add('hidden');
+      }
+
+      // Validated adjusted salary
+      const safeAdjustedSalary = Math.max(0, salaryAfterSacrifice);
+      const safeEmployeeSacrifice = rawGross - safeAdjustedSalary;
+
+      // Employer Contribution
+      const employerContributionAnnual = rawGross * (employerPct / 100);
+      const totalPensionAnnual = safeEmployeeSacrifice + employerContributionAnnual;
+
+      // Without Salary Sacrifice
+      const taxWithout = calculateUKTax(rawGross, cfg);
+      const niWithout  = calculateUKNI(rawGross, cfg);
+      const takeHomeWithout = rawGross - taxWithout - niWithout;
+
+      // With Salary Sacrifice
+      const taxWith = calculateUKTax(safeAdjustedSalary, cfg);
+      const niWith  = calculateUKNI(safeAdjustedSalary, cfg);
+      const takeHomeWith = safeAdjustedSalary - taxWith - niWith;
+
+      // Savings & Net Cost
+      const taxSaved = Math.max(0, taxWithout - taxWith);
+      const niSaved  = Math.max(0, niWithout - niWith);
+      const totalSaved = taxSaved + niSaved;
+      const netTakeHomeCost = takeHomeWithout - takeHomeWith;
+      const reliefPct = safeEmployeeSacrifice > 0 ? (totalSaved / safeEmployeeSacrifice) * 100 : 0;
+
+      const freqSuffix = displayFreq === 'monthly' ? '/mo' : displayFreq === 'weekly' ? '/wk' : '/yr';
+
+      // Update Hero Metric
+      if (heroLabel) {
+        heroLabel.textContent = `Estimated Take-Home Pay (${displayFreq.charAt(0).toUpperCase() + displayFreq.slice(1)})`;
+      }
+      if (heroValue) {
+        heroValue.textContent = fmt(takeHomeWith);
+      }
+      if (heroSub) {
+        heroSub.textContent = safeEmployeeSacrifice > 0
+          ? `After ${fmt(safeEmployeeSacrifice)} pension sacrifice (${employeeSacrificePct.toFixed(1)}%) in ${cfg.name}`
+          : `No pension salary sacrifice applied in ${cfg.name}`;
+      }
+
+      // Update Callout Banner
+      if (calloutTitle) {
+        calloutTitle.textContent = safeEmployeeSacrifice > 0
+          ? `${fmt(totalSaved)} Total Tax & NI Relief Saved ${freqSuffix}`
+          : 'No Salary Sacrifice Applied';
+      }
+      if (calloutMsg) {
+        calloutMsg.textContent = safeEmployeeSacrifice > 0
+          ? `By sacrificing ${fmt(safeEmployeeSacrifice)} of salary, your take-home pay reduces by only ${fmt(netTakeHomeCost)}. You save ${fmt(taxSaved)} in Income Tax and ${fmt(niSaved)} in National Insurance!`
+          : `Enter a pension sacrifice percentage or fixed amount above to see your tax and NI savings.`;
+      }
+
+      // Update Dual Summary Boxes
+      if (box1Label) box1Label.textContent = `Total Pension Inflow ${freqSuffix}`;
+      if (box1Value) box1Value.textContent = fmt(totalPensionAnnual);
+      if (box1Desc)  box1Desc.textContent = `You: ${fmt(safeEmployeeSacrifice)} | Employer: ${fmt(employerContributionAnnual)}`;
+
+      if (box2Label) box2Label.textContent = `Take-Home Pay Impact ${freqSuffix}`;
+      if (box2Value) box2Value.textContent = safeEmployeeSacrifice > 0 ? `-${fmt(netTakeHomeCost)}` : '£0.00';
+      if (box2Desc)  box2Desc.textContent = safeEmployeeSacrifice > 0
+        ? `Saves ${fmt(totalSaved)} (${reliefPct.toFixed(1)}% relief)`
+        : 'Zero salary sacrificed';
+
+      // Update Tiles
+      if (tileGrossBefore)  tileGrossBefore.textContent = fmt(rawGross);
+      if (tileGrossAfter)   tileGrossAfter.textContent = fmt(safeAdjustedSalary);
+      if (tileSacrifice)    tileSacrifice.textContent = fmt(safeEmployeeSacrifice);
+      if (tileEmployeeSub)  tileEmployeeSub.textContent = `${employeeSacrificePct.toFixed(2)}% of salary`;
+      if (tileEmployer)     tileEmployer.textContent = fmt(employerContributionAnnual);
+      if (tileTaxAfter)     tileTaxAfter.textContent = fmt(taxWith);
+      if (tileTaxSavedSub)  tileTaxSavedSub.textContent = `Saves ${fmt(taxSaved)}`;
+      if (tileNiAfter)      tileNiAfter.textContent = fmt(niWith);
+      if (tileNiSavedSub)   tileNiSavedSub.textContent = `Saves ${fmt(niSaved)}`;
+      if (tileTotalSaved)   tileTotalSaved.textContent = fmt(totalSaved);
+      if (tileReliefPct)    tileReliefPct.textContent = `${reliefPct.toFixed(2)}% effective relief`;
+      if (tileTakehomeAfter)tileTakehomeAfter.textContent = fmt(takeHomeWith);
+
+      // Update Comparison Table
+      if (tblGrossWithout) tblGrossWithout.textContent = fmt(rawGross);
+      if (tblGrossWith)    tblGrossWith.textContent = fmt(safeAdjustedSalary);
+      if (tblGrossDiff)    tblGrossDiff.textContent = `-${fmt(safeEmployeeSacrifice)}`;
+
+      if (tblEmpPension)   tblEmpPension.textContent = fmt(safeEmployeeSacrifice);
+      if (tblEmpDiff)      tblEmpDiff.textContent = `+${fmt(safeEmployeeSacrifice)}`;
+
+      if (tblEmplrWithout) tblEmplrWithout.textContent = fmt(employerContributionAnnual);
+      if (tblEmplrWith)    tblEmplrWith.textContent = fmt(employerContributionAnnual);
+
+      if (tblPotWithout)   tblPotWithout.textContent = fmt(employerContributionAnnual);
+      if (tblPotWith)      tblPotWith.textContent = fmt(totalPensionAnnual);
+      if (tblPotDiff)      tblPotDiff.textContent = `+${fmt(safeEmployeeSacrifice)}`;
+
+      if (tblTaxWithout)   tblTaxWithout.textContent = fmt(taxWithout);
+      if (tblTaxWith)      tblTaxWith.textContent = fmt(taxWith);
+      if (tblTaxDiff)      tblTaxDiff.textContent = `-${fmt(taxSaved)} (Saved)`;
+
+      if (tblNiWithout)    tblNiWithout.textContent = fmt(niWithout);
+      if (tblNiWith)       tblNiWith.textContent = fmt(niWith);
+      if (tblNiDiff)       tblNiDiff.textContent = `-${fmt(niSaved)} (Saved)`;
+
+      if (tblNetWithout)   tblNetWithout.textContent = fmt(takeHomeWithout);
+      if (tblNetWith)      tblNetWith.textContent = fmt(takeHomeWith);
+      if (tblNetDiff)      tblNetDiff.textContent = safeEmployeeSacrifice > 0 ? `-${fmt(netTakeHomeCost)}` : '£0.00';
+
+      // Update Verdict
+      if (verdictText) {
+        if (safeEmployeeSacrifice > 0) {
+          verdictText.innerHTML = `If you sacrifice <strong>${fmtAnnual(safeEmployeeSacrifice)} per year</strong> (${employeeSacrificePct.toFixed(1)}%) of your <strong>${fmtAnnual(rawGross)}</strong> salary, your take-home pay reduces by approximately <strong>${fmtAnnual(netTakeHomeCost)}/yr (${fmt(netTakeHomeCost)}/mo)</strong> rather than the full ${fmtAnnual(safeEmployeeSacrifice)}. You save an estimated <strong>${fmtAnnual(taxSaved)} in Income Tax</strong> and <strong>${fmtAnnual(niSaved)} in National Insurance</strong>, meaning <strong>${reliefPct.toFixed(1)}%</strong> of your pension contribution is funded by government tax relief.`;
+        } else {
+          verdictText.innerHTML = `On a gross annual salary of <strong>${fmtAnnual(rawGross)}</strong> without salary sacrifice, your estimated take-home pay is <strong>${fmtAnnual(takeHomeWithout)}/yr (${fmt(takeHomeWithout)}/mo)</strong> after £${taxWithout.toLocaleString('en-GB', {minimumFractionDigits: 2})} in Income Tax and £${niWithout.toLocaleString('en-GB', {minimumFractionDigits: 2})} in National Insurance.`;
+        }
+      }
+    }
+
+    // Bind sliders & text inputs
+    bindSlider(grossInput, grossSlider, calculate);
+    bindSlider(pctInput, pctSlider, calculate);
+    bindSlider(fixedInput, fixedSlider, calculate);
+    bindSlider(employerPctInput, employerSlider, calculate);
+
+    taxYearSelect?.addEventListener('change', calculate);
+
+    // Contribution Mode Toggles
+    typePctBtn?.addEventListener('click', () => {
+      contributionMode = 'pct';
+      typePctBtn.classList.add('active');
+      typePctBtn.setAttribute('aria-checked', 'true');
+      typeFixedBtn.classList.remove('active');
+      typeFixedBtn.setAttribute('aria-checked', 'false');
+      panelPct.classList.remove('hidden');
+      panelFixed.classList.add('hidden');
+      calculate();
+    });
+
+    typeFixedBtn?.addEventListener('click', () => {
+      contributionMode = 'fixed';
+      typeFixedBtn.classList.add('active');
+      typeFixedBtn.setAttribute('aria-checked', 'true');
+      typePctBtn.classList.remove('active');
+      typePctBtn.setAttribute('aria-checked', 'false');
+      panelFixed.classList.remove('hidden');
+      panelPct.classList.add('hidden');
+      calculate();
+    });
+
+    // Frequency Display Toggles
+    freqAnnualBtn?.addEventListener('click', () => {
+      displayFreq = 'annual';
+      freqAnnualBtn.classList.add('active');
+      freqMonthlyBtn.classList.remove('active');
+      freqWeeklyBtn.classList.remove('active');
+      calculate();
+    });
+
+    freqMonthlyBtn?.addEventListener('click', () => {
+      displayFreq = 'monthly';
+      freqMonthlyBtn.classList.add('active');
+      freqAnnualBtn.classList.remove('active');
+      freqWeeklyBtn.classList.remove('active');
+      calculate();
+    });
+
+    freqWeeklyBtn?.addEventListener('click', () => {
+      displayFreq = 'weekly';
+      freqWeeklyBtn.classList.add('active');
+      freqAnnualBtn.classList.remove('active');
+      freqMonthlyBtn.classList.remove('active');
+      calculate();
+    });
+
+    // Presets
+    salaryPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        salaryPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const sVal = pill.getAttribute('data-salary');
+        if (sVal) {
+          grossInput.value = sVal;
+          grossSlider.value = sVal;
+          calculate();
+        }
+      });
+    });
+
+    pctPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pctPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const pVal = pill.getAttribute('data-pct');
+        if (pVal) {
+          pctInput.value = pVal;
+          pctSlider.value = pVal;
+          calculate();
+        }
+      });
+    });
+
+    // Reset
+    resetBtn?.addEventListener('click', () => {
+      taxYearSelect.value = '2026_27';
+      grossInput.value = '50000';
+      grossSlider.value = '50000';
+      pctInput.value = '5';
+      pctSlider.value = '5';
+      fixedInput.value = '2500';
+      fixedSlider.value = '2500';
+      employerPctInput.value = '3';
+      employerSlider.value = '3';
+
+      contributionMode = 'pct';
+      typePctBtn.classList.add('active');
+      typeFixedBtn.classList.remove('active');
+      panelPct.classList.remove('hidden');
+      panelFixed.classList.add('hidden');
+
+      displayFreq = 'annual';
+      freqAnnualBtn.classList.add('active');
+      freqMonthlyBtn.classList.remove('active');
+      freqWeeklyBtn.classList.remove('active');
+
+      salaryPills.forEach(p => p.getAttribute('data-salary') === '50000' ? p.classList.add('active') : p.classList.remove('active'));
+      pctPills.forEach(p => p.getAttribute('data-pct') === '5' ? p.classList.add('active') : p.classList.remove('active'));
+
+      calculate();
+    });
+
+    // Initial Calculation
+    calculate();
+  }
+
+  document.addEventListener('DOMContentLoaded', initSSPC);
+  document.addEventListener('astro:page-load', initSSPC);
+</script>
+
+<style>
+  /* ── Inputs wrapper ─────────────────────────────────────────── */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-section {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-4) 0;
+    letter-spacing: -0.01em;
+  }
+
+  .control-label {
+    font-size: 0.9rem;
+    color: var(--color-text-base);
+  }
+
+  /* ── Mode toggle pills ──────────────────────────────────────── */
+  .toggle-pill-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 480px) {
+    .toggle-pill-group {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+    font-family: inherit;
+  }
+
+  .toggle-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text-base);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  /* ── Input groups ───────────────────────────────────────────── */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 140px;
+  }
+
+  .currency-symbol,
+  .percent-symbol {
+    position: absolute;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .currency-symbol { left: 10px; }
+  .percent-symbol  { right: 10px; }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: 8px 12px 8px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-align: right;
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .currency-select {
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.88rem;
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+    max-width: 250px;
+  }
+
+  html.dark .currency-select,
+  html.dark .input-symbol-wrapper input {
+    background-color: var(--color-bg-surface);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .preset-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover,
+  .preset-pill.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* ── Results section ────────────────────────────────────────── */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Hero Metric */
+  .hero-metric-box {
+    background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(37,99,235,0.03));
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .hero-metric-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
+
+  .hero-metric-value {
+    font-size: clamp(1.8rem, 5vw, 2.3rem);
+    font-weight: 900;
+    color: var(--color-primary);
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* Callout Banner */
+  .callout-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+
+  .callout-banner.success {
+    border-color: rgba(16,185,129,0.4);
+    background-color: rgba(16,185,129,0.07);
+  }
+
+  .callout-banner.warning {
+    border-color: rgba(245,158,11,0.4);
+    background-color: rgba(245,158,11,0.07);
+  }
+
+  .callout-icon {
+    font-size: 1.1rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .callout-banner.success .callout-icon { color: var(--color-success); }
+  .callout-banner.warning .callout-icon { color: var(--color-warning); }
+
+  .callout-body { display: flex; flex-direction: column; gap: 2px; }
+  .callout-title { font-size: 0.9rem; font-weight: 700; color: var(--color-text-base); }
+  .callout-msg   { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.45; }
+
+  /* Dual Summary Cards (Mobile-first responsive stacking) */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 641px) {
+    .net-value-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .net-value-box {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .net-value-box.highlight-primary { border-left: 4px solid var(--color-primary); }
+  .net-value-box.highlight-warning { border-left: 4px solid var(--color-warning); }
+
+  .net-box-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .net-box-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .net-box-desc { font-size: 0.75rem; color: var(--color-text-muted); }
+
+  /* Metrics Grid (Rule 15: Responsive Results Grid) */
+  .metrics-grid-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: var(--space-2) 0 0 0;
+    color: var(--color-text-base);
+    letter-spacing: -0.01em;
+  }
+
+  .sspc-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .tile-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .tile-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  /* Comparison Table */
+  .table-section-container {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .comparison-table-wrapper {
+    overflow-x: auto;
+    margin-top: var(--space-2);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .comparison-table th {
+    padding: 8px 10px;
+    background-color: var(--color-bg-base);
+    border-bottom: 2px solid var(--color-border);
+    font-weight: 700;
+    color: var(--color-text-base);
+    white-space: nowrap;
+  }
+
+  .comparison-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .comparison-table tr:hover td {
+    background-color: rgba(37, 99, 235, 0.04);
+  }
+
+  /* Verdict Card */
+  .verdict-container { margin-top: 0; }
+
+  .verdict-card {
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+  }
+
+  .verdict-info { border-left: 4px solid var(--color-primary); }
+
+  .verdict-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    margin-bottom: 6px;
+  }
+
+  .verdict-paragraph {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    line-height: 1.4;
+    display: block;
+  }
+</style>

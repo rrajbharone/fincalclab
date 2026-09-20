@@ -1,0 +1,497 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PensionTaxReliefCalculator from '../../components/calculator/PensionTaxReliefCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Pension Tax Relief Calculator', item: '/calculator/pension-tax-relief-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is UK pension tax relief?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "UK pension tax relief is a government incentive that refunds the Income Tax you would have otherwise paid on your earnings when you contribute money into an approved pension scheme, such as a Self-Invested Personal Pension (SIPP) or personal pension."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does relief at source work on personal pensions and SIPPs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under relief at source, you contribute net pay after tax. For every £80 you pay in from your bank account, the government adds £20 in basic-rate tax relief directly into your pension pot, creating a total gross contribution of £100 (£80 ÷ 0.80 = £100)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much pension tax relief do higher-rate taxpayers receive?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In 2026/27, higher-rate (40%) taxpayers receive 40% total tax relief on contributions within their higher-rate band. The pension provider automatically claims 20% into the pension pot, and the taxpayer can reclaim the remaining 20% directly from HMRC via Self Assessment or by requesting a PAYE tax code change."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much pension tax relief do I get on a £1,000 contribution?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To achieve a £1,000 gross pension pot under relief at source, a basic-rate taxpayer pays £800 and the government adds £200. A higher-rate taxpayer pays £800, gets £200 in the pot, and can reclaim an additional £200 from HMRC, making their effective out-of-pocket cost £600."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Scottish pension tax relief work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Scottish taxpayers have distinct income tax bands (19%, 20%, 21%, 42%, 45%, and 48%). Pension providers add 20% basic relief automatically into your pot regardless of rate. Scottish taxpayers paying intermediate rate (21%), higher rate (42%), advanced rate (45%), or top rate (48%) can reclaim the difference (1%, 22%, 25%, or 28%) through HMRC. Starter-rate taxpayers (19%) do not have to pay back the 1% difference."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I claim back higher-rate pension tax relief?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can claim additional higher-rate or additional-rate relief either on your annual Self Assessment tax return or by contacting HMRC directly to have your PAYE tax code adjusted. HMRC will either reduce the tax deducted from your monthly salary or refund the cash."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I receive pension tax relief if I have no earnings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Non-earners and low-earners can contribute up to £2,880 net per tax year into a personal pension or SIPP. The government will top it up by 20% (£720), creating a £3,600 gross pension pot, even if you paid zero Income Tax during the year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the maximum amount I can contribute into a pension with tax relief?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can receive tax relief on contributions up to 100% of your relevant UK earnings in the tax year (or up to £3,600 gross if earning less). In addition, total contributions across all your pensions (including employer contributions) cannot exceed the £60,000 Annual Allowance without incurring a tax charge, unless you carry forward unused allowance from the prior three tax years."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does pension tax relief affect the £100,000 to £125,140 tax trap?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Gross pension contributions reduce your adjusted net income for tax purposes. If you earn between £100,000 and £125,140, where the Personal Allowance is withdrawn by £1 for every £2 earned, contributing to a pension restores your Personal Allowance, providing an effective 60% tax relief on that portion of income."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between relief at source and salary sacrifice?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under relief at source, you pay from your net bank account and basic tax relief is added by the provider, but employee National Insurance is not saved. Under salary sacrifice, your contractual gross salary is reduced before payroll, saving both Income Tax and employee National Insurance (8% or 2%) automatically."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Pension Tax Relief Calculator UK",
+  "url": "https://fincalclab.com/calculator/pension-tax-relief-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free UK Pension Tax Relief Calculator for 2026/27. Calculate basic rate relief, higher/additional rate tax reclaims, and effective net cost of personal pension and SIPP contributions.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "GBP"
+  }
+};
+---
+
+<Layout
+  title="Pension Tax Relief Calculator UK (2026/27) – SIPP & Personal Pension"
+  description="Calculate your basic-rate tax relief, additional higher-rate tax reclaim, and the true net cost of your UK pension contribution for 2026/27."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <PensionTaxReliefCalculator />
+
+    <!-- Educational SEO Guide Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Featured Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">UK Retirement &amp; Tax Planning</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Compare Relief at Source vs. Workplace Salary Sacrifice</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Contributing to a personal pension or SIPP gives you powerful Income Tax relief. If your employer offers a salary sacrifice scheme, you can also save on employee National Insurance. Compare both strategies using our dedicated <a href="/calculator/salary-sacrifice-pension-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Sacrifice Pension Calculator</a>, model your net take-home salary with the <a href="/calculator/reverse-tax-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Reverse Tax Calculator</a>, or track salary increases with the <a href="/calculator/salary-percentage-increase-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Percentage Increase Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is Pension Tax Relief?</h2>
+        <p>
+          <strong>Pension tax relief</strong> is one of the most generous tax incentives provided by the UK government. When you contribute money into a registered UK pension scheme — such as a Self-Invested Personal Pension (SIPP), stakeholder pension, or personal pension — HMRC essentially refunds the Income Tax you previously paid on those earnings.
+        </p>
+        <p>
+          This tax relief boosts your retirement savings in two ways:
+        </p>
+        <ul>
+          <li><strong>Basic-Rate Relief (20%):</strong> Paid automatically into your pension pot by your pension provider, instantly increasing your invested balance.</li>
+          <li><strong>Higher-Rate (40%) and Additional-Rate (45%) Relief:</strong> Reclaimed directly by you from HMRC through your annual Self Assessment tax return or by adjusting your PAYE tax code.</li>
+        </ul>
+        <p>
+          Because of tax relief, putting £1,000 into your pension pot does not cost you £1,000 out of pocket. For basic-rate taxpayers, it costs <strong>£800</strong>. For higher-rate taxpayers, the net cost drops to just <strong>£600</strong>, and for additional-rate taxpayers, it is only <strong>£550</strong>.
+        </p>
+
+        <h2>How Does Relief at Source Work?</h2>
+        <p>
+          Most personal pensions and SIPPs (such as those offered by Hargreaves Lansdown, AJ Bell, Fidelity, and Vanguard) operate on the <strong>Relief at Source</strong> mechanism:
+        </p>
+        <ol>
+          <li>
+            <strong>You pay in net money from your bank account:</strong> Your contributions are made from income that has already been taxed through PAYE or self-employment.
+          </li>
+          <li>
+            <strong>Your pension provider claims basic-rate relief (20%):</strong> The provider claims 20% basic-rate tax relief directly from HMRC and adds it into your pension account. Because 20% relief on a £100 gross contribution equals £20, your personal payment represents 80% of the total:
+            <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); margin: var(--space-3) 0; font-family: monospace; font-size: 0.95rem; text-align: center;">
+              <strong>Gross Contribution = Net Payment ÷ 0.80</strong>
+            </div>
+            For example, if you transfer £800 into your SIPP, your provider claims £200 from HMRC, making your gross invested contribution <strong>£1,000</strong>.
+          </li>
+          <li>
+            <strong>Higher and additional rate taxpayers reclaim extra relief:</strong> If your earnings fall into higher tax bands, you claim the remaining relief (an extra 20% for 40% taxpayers, or an extra 25% for 45% taxpayers) directly from HMRC.
+          </li>
+        </ol>
+
+        <h2>How Much Pension Tax Relief Can You Get?</h2>
+        <p>
+          Your total tax relief entitlement depends on your marginal Income Tax rate across England, Wales, and Northern Ireland for the <strong>2026/27 tax year</strong>:
+        </p>
+
+        <div style="overflow-x: auto; margin: var(--space-4) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 10px 12px; font-weight: 700;">Tax Band</th>
+                <th style="padding: 10px 12px; font-weight: 700;">Taxable Income Range (2026/27)</th>
+                <th style="padding: 10px 12px; font-weight: 700;">Tax Rate</th>
+                <th style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">Total Relief</th>
+                <th style="padding: 10px 12px; font-weight: 700;">How Relief Is Received</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Personal Allowance</td>
+                <td style="padding: 10px 12px;">Up to £12,570</td>
+                <td style="padding: 10px 12px;">0%</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">20%*</td>
+                <td style="padding: 10px 12px;">Added by provider (up to £3,600 gross)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Basic Rate</td>
+                <td style="padding: 10px 12px;">£12,571 to £50,270</td>
+                <td style="padding: 10px 12px;">20%</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">20%</td>
+                <td style="padding: 10px 12px;">20% added by provider into pot</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Higher Rate</td>
+                <td style="padding: 10px 12px;">£50,271 to £125,140</td>
+                <td style="padding: 10px 12px;">40%</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">40%</td>
+                <td style="padding: 10px 12px;">20% by provider + 20% via Self Assessment</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">Additional Rate</td>
+                <td style="padding: 10px 12px;">Over £125,140</td>
+                <td style="padding: 10px 12px;">45%</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">45%</td>
+                <td style="padding: 10px 12px;">20% by provider + 25% via Self Assessment</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-text-muted);">
+          *Under the £3,600 non-earner rule, you receive 20% basic-rate relief on contributions up to £2,880 net (£3,600 gross) even if you earn zero or pay 0% income tax.
+        </p>
+
+        <h2>Scottish Pension Tax Relief</h2>
+        <p>
+          If you are a Scottish taxpayer, Scotland sets its own Income Tax rates and bands. Because UK pension providers operate a uniform 20% relief at source across the entire UK, Scottish taxpayers reconcile their relief as follows:
+        </p>
+        <ul>
+          <li><strong>Starter Rate (19% on £12,571 to £14,876):</strong> The pension provider still adds 20% relief. HMRC does not reclaim the 1% difference, giving you a slight bonus.</li>
+          <li><strong>Basic Rate (20% on £14,877 to £26,561):</strong> The 20% added by the provider covers your full relief.</li>
+          <li><strong>Intermediate Rate (21% on £26,562 to £43,662):</strong> You can reclaim an extra <strong>1%</strong> from HMRC.</li>
+          <li><strong>Higher Rate (42% on £43,663 to £75,000):</strong> You receive 20% in your pot and reclaim an extra <strong>22%</strong> through HMRC.</li>
+          <li><strong>Advanced Rate (45% on £75,001 to £125,140):</strong> You receive 20% in your pot and reclaim an extra <strong>25%</strong> through HMRC.</li>
+          <li><strong>Top Rate (48% over £125,140):</strong> You receive 20% in your pot and reclaim an extra <strong>28%</strong> through HMRC.</li>
+        </ul>
+
+        <h2>Worked Examples of Pension Tax Relief</h2>
+
+        <h3>Example 1: Pension Tax Relief on £1,000</h3>
+        <p>
+          Suppose you want to invest a £1,000 gross contribution into your SIPP:
+        </p>
+        <ul>
+          <li><strong>Basic-Rate Taxpayer (20%):</strong> You pay <strong>£800.00</strong> into your SIPP. The provider adds £200.00. Your net cost is £800.00.</li>
+          <li><strong>Higher-Rate Taxpayer (40%):</strong> You pay <strong>£800.00</strong> into your SIPP. The provider adds £200.00. You reclaim an extra £200.00 through Self Assessment. Your true effective net cost is <strong>£600.00</strong>.</li>
+          <li><strong>Additional-Rate Taxpayer (45%):</strong> You pay <strong>£800.00</strong> into your SIPP. The provider adds £200.00. You reclaim an extra £250.00 through Self Assessment. Your true effective net cost is <strong>£550.00</strong>.</li>
+        </ul>
+
+        <h3>Example 2: Pension Tax Relief on £5,000</h3>
+        <p>
+          A higher-rate earner on £65,000 contributes £5,000 gross into a personal pension:
+        </p>
+        <ul>
+          <li><strong>Personal Payment (Net 80%):</strong> £4,000.00</li>
+          <li><strong>Basic Relief Added to Pot (20%):</strong> £1,000.00</li>
+          <li><strong>Gross Amount Invested in Pension:</strong> £5,000.00</li>
+          <li><strong>Additional Relief Reclaimed via Self Assessment (20%):</strong> £1,000.00</li>
+          <li><strong>Effective Out-of-Pocket Cost:</strong> £4,000 − £1,000 = <strong>£3,000.00</strong></li>
+        </ul>
+        <p>
+          You gain £5,000 of productive investments in your retirement account for an out-of-pocket cost of only £3,000.
+        </p>
+
+        <h3>Example 3: Crossing Tax Bands (£53,000 Income, £5,000 Contribution)</h3>
+        <p>
+          Many people earn slightly over the higher-rate threshold (£50,270 in 2026/27). In this scenario, your contribution spans across multiple tax bands:
+        </p>
+        <ul>
+          <li>Income in 40% Higher Rate band: £53,000 − £50,270 = <strong>£2,730</strong>.</li>
+          <li>Remaining contribution falling into 20% Basic Rate band: £5,000 − £2,730 = <strong>£2,270</strong>.</li>
+          <li><strong>Relief on Higher Slice (£2,730):</strong> 40% relief = £1,092.00.</li>
+          <li><strong>Relief on Basic Slice (£2,270):</strong> 20% relief = £454.00.</li>
+          <li><strong>Total Tax Relief:</strong> £1,092.00 + £454.00 = <strong>£1,546.00</strong>.</li>
+          <li><strong>Basic Relief in Pot:</strong> £1,000.00 (20% of £5,000).</li>
+          <li><strong>Additional Relief Reclaimable:</strong> £1,546.00 − £1,000.00 = <strong>£546.00</strong>.</li>
+          <li><strong>Effective Net Cost:</strong> £4,000.00 − £546.00 = <strong>£3,454.00</strong> (30.92% effective relief).</li>
+        </ul>
+        <p>
+          Our calculator models this exact band-by-band apportionment automatically.
+        </p>
+
+        <h3>Example 4: The 60% Tax Relief Bonus (£100k to £125k)</h3>
+        <p>
+          If your income is between £100,000 and £125,140, every £2 you earn over £100k reduces your Personal Allowance by £1. This creates a notorious effective 60% Income Tax rate.
+        </p>
+        <p>
+          Making a gross pension contribution reduces your adjusted net income, restoring your Personal Allowance. If you earn £110,000 and contribute £10,000 gross into a SIPP:
+        </p>
+        <ul>
+          <li>You pay <strong>£8,000</strong> net into your pension.</li>
+          <li>Your provider adds <strong>£2,000</strong> basic relief, giving £10,000 in your pot.</li>
+          <li>HMRC restores £5,000 of your Personal Allowance.</li>
+          <li>You reclaim an extra <strong>£4,000</strong> through Self Assessment.</li>
+          <li>Your total effective tax relief is <strong>£6,000 (60%)</strong>, meaning £10,000 in your pension costs you only <strong>£4,000</strong> out of pocket!</li>
+        </ul>
+
+        <h2>Important UK Pension Contribution Limits</h2>
+        <p>
+          Before investing into a pension to claim tax relief, ensure you comply with HMRC limits:
+        </p>
+        <ol>
+          <li>
+            <strong>100% of Relevant UK Earnings:</strong> You can only receive tax relief on contributions up to 100% of your relevant UK earnings (salary, bonus, commission, trading profits; excluding dividends and rental income) in the tax year.
+          </li>
+          <li>
+            <strong>The £3,600 Minimum Low-Earner Rule:</strong> If you have no relevant earnings or earn under £3,600, you can still contribute up to £2,880 net (£3,600 gross) and receive the full 20% basic tax relief (£720).
+          </li>
+          <li>
+            <strong>The £60,000 Annual Allowance:</strong> For the 2026/27 tax year, the total amount contributed across all your pensions (including personal payments, tax relief, and employer contributions) cannot exceed £60,000 without incurring an annual allowance tax charge. If you have unused allowance from the previous three tax years, you may carry it forward.
+          </li>
+          <li>
+            <strong>Tapered Annual Allowance for Ultra-High Earners:</strong> If your threshold income exceeds £200,000 and your adjusted income exceeds £260,000, your annual allowance is tapered down to a minimum of £10,000.
+          </li>
+          <li>
+            <strong>Money Purchase Annual Allowance (MPAA):</strong> If you have already flexibly accessed taxable benefits from a defined contribution pension, your annual allowance for future money purchase contributions drops to £10,000.
+          </li>
+        </ol>
+
+        <h2>How to Claim Your Extra Higher-Rate Tax Relief</h2>
+        <p>
+          If you are eligible for higher or additional rate relief beyond the 20% basic relief in your pot, you must claim it manually:
+        </p>
+        <ul>
+          <li>
+            <strong>Via Self Assessment:</strong> Enter the total gross pension contributions made under relief at source during the tax year in the relevant pension section of your tax return (Form SA100). HMRC will apply the relief to reduce your tax bill or issue a rebate.
+          </li>
+          <li>
+            <strong>Via PAYE Tax Code Adjustment:</strong> If you do not normally file a Self Assessment return, you can contact HMRC (via your online personal tax account or by phone) and provide evidence of your regular personal pension contributions. HMRC will adjust your tax code, reducing the monthly Income Tax deducted from your wages.
+          </li>
+        </ul>
+
+        <h2>Common Mistakes to Avoid</h2>
+        <ul>
+          <li><strong>Forgetting to claim higher-rate relief:</strong> Millions of pounds in unclaimed pension tax relief are left with HMRC every year because higher-rate taxpayers assume their provider claims 40%. Providers only ever claim 20%; the rest is up to you!</li>
+          <li><strong>Confusing net and gross contributions:</strong> In Self Assessment forms, HMRC asks for the <em>gross</em> contribution (your payment plus 20% basic relief), not your net bank transfer. Entering the net amount results in under-claiming your tax refund.</li>
+          <li><strong>Exceeding relevant earnings:</strong> Contributing more than your taxable earnings in the expectation of tax relief. Any excess above earnings does not qualify for tax relief and may have to be refunded.</li>
+          <li><strong>Assuming salary sacrifice is relief at source:</strong> If your workplace pension uses salary sacrifice, your relief is already fully applied through lower gross PAYE deductions. You cannot claim further relief on a tax return.</li>
+        </ul>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion" style="display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4);">
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is pension tax relief?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Pension tax relief is a UK government incentive that refunds the Income Tax you would have paid on your earnings when you contribute to a registered pension. Basic-rate relief (20%) is added automatically into your pot, while higher and additional rate relief can be reclaimed through HMRC.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How does relief at source work on personal pensions and SIPPs?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              You pay 80% of your target contribution from your bank account, and your pension provider claims 20% basic relief directly from HMRC to top up your pot. For example, you pay £800 and the provider adds £200, giving £1,000 in your pension.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How much pension tax relief do higher-rate taxpayers receive?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Higher-rate (40%) taxpayers receive 40% total relief on contributions within their higher-rate band. Your provider adds 20% into your pension pot, and you claim an extra 20% back from HMRC via Self Assessment or a tax code adjustment, making your effective cost £600 for every £1,000 in your pot.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How much pension tax relief do I get on a £1,000 contribution?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              To get £1,000 gross into your pension, a basic-rate taxpayer pays £800 (net cost £800). A higher-rate taxpayer pays £800 and reclaims £200 (net cost £600). An additional-rate taxpayer pays £800 and reclaims £250 (net cost £550).
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How does Scottish pension tax relief work?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Scottish taxpayers have rates of 19%, 20%, 21%, 42%, 45%, and 48%. Pension providers automatically add 20% into your pot. If you pay 21%, 42%, 45%, or 48%, you can reclaim the remaining 1%, 22%, 25%, or 28% from HMRC. Starter-rate taxpayers (19%) do not have to repay the 1% difference.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do I claim back higher-rate pension tax relief?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              You can claim your additional relief by declaring your gross pension contributions on your Self Assessment tax return or by contacting HMRC to update your PAYE tax code so less tax is deducted from your monthly salary.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Can I receive pension tax relief if I have no earnings?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes. Non-earners and low earners can contribute up to £2,880 net per tax year. The government adds 20% (£720), creating a £3,600 gross pension pot, even if you paid zero Income Tax during the year.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is the maximum amount I can contribute with tax relief?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              You can contribute up to 100% of your relevant UK earnings (or £3,600 gross if earning less). Total contributions across all pensions are also subject to the £60,000 Annual Allowance for 2026/27.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How does pension tax relief affect the £100k to £125k tax trap?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Pension contributions reduce your adjusted net income, restoring £1 of your Personal Allowance for every £2 gross contributed. This generates an effective 60% tax relief on contributions in that income bracket.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is the difference between relief at source and salary sacrifice?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Relief at source is used by personal pensions/SIPPs where you contribute net pay and basic relief is added by the provider. Salary sacrifice reduces your contractual gross salary before PAYE, saving both Income Tax and employee National Insurance (8% or 2%) automatically.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Financial Disclaimer Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-base);">
+          <h4 style="margin: 0 0 var(--space-2) 0; font-size: 0.95rem; font-weight: 700; color: var(--color-text-base);">Important Financial &amp; Tax Disclaimer</h4>
+          <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
+            This calculator provides educational estimates based on official UK Income Tax rules for the 2026/27, 2025/26, and 2024/25 tax years under the Relief at Source pension regime. Actual tax relief and eligibility depend on your personal tax circumstances, total taxable earnings, tax residency (England/Wales/NI vs. Scotland), existing pension contributions, and future tax legislation. This tool does not constitute financial, investment, or tax advice. Users should consult a qualified Independent Financial Adviser (IFA) or official HMRC guidance before making pension investment decisions.
+          </p>
+        </div>
+
+        <!-- Related Tools Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-surface);">
+          <h3 style="margin: 0 0 var(--space-3) 0; font-size: 1.05rem; font-weight: 700;">Related Pension, Tax &amp; Salary Calculators</h3>
+          <ul style="margin: 0; padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2);">
+            <li><a href="/calculator/salary-sacrifice-pension-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Sacrifice Pension Calculator</a> — Calculate take-home pay, Income Tax savings, and employee National Insurance relief from workplace pension salary sacrifice.</li>
+            <li><a href="/calculator/reverse-tax-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Reverse Tax Calculator</a> — Back-calculate gross pre-tax income needed to hit a desired net take-home pay.</li>
+            <li><a href="/calculator/salary-percentage-increase-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Percentage Increase Calculator</a> — Compute your exact revised salary and paycheck changes after a pay raise.</li>
+            <li><a href="/calculator/daily-salary-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Daily Salary Calculator</a> — Convert your annual gross earnings into daily, hourly, and per-minute wages.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

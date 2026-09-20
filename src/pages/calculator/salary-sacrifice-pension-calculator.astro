@@ -1,0 +1,528 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalarySacrificePensionCalculator from '../../components/calculator/SalarySacrificePensionCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Salary Sacrifice Pension Calculator', item: '/calculator/salary-sacrifice-pension-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a salary sacrifice pension?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A salary sacrifice pension is an agreement between an employee and their UK employer where the employee formally agrees to reduce their contractual gross cash salary in exchange for the employer paying an equivalent contribution directly into their workplace pension scheme."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does salary sacrifice affect take-home pay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because salary sacrifice reduces your contractual gross salary before payroll deductions are calculated, you pay less Income Tax and less employee National Insurance. As a result, your take-home pay drops by substantially less than the full amount entering your pension pot. For example, a £2,500 annual sacrifice for a basic-rate taxpayer typically reduces take-home pay by only £1,800."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much tax and National Insurance do I save with salary sacrifice?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In the 2026/27 UK tax year, a basic-rate taxpayer saving via salary sacrifice saves 20% Income Tax plus 8% employee National Insurance, yielding a combined 28% relief. A higher-rate taxpayer (earning over £50,270) saves 40% Income Tax plus 2% National Insurance (42% total relief). High earners in the £100,000 to £125,140 Personal Allowance taper band can achieve effective relief of up to 62%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does salary sacrifice save National Insurance compared to relief at source?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Standard personal pension contributions (Relief at Source) only refund Income Tax; they do not save National Insurance. Salary sacrifice reduces your gross pay before National Insurance is calculated, permanently saving employee National Insurance (8% for basic-rate band, 2% for higher-rate band) on every pound sacrificed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can salary sacrifice reduce my salary below the National Minimum Wage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Under UK employment law, a salary sacrifice arrangement is legally invalid if it reduces an employee's cash earnings below the National Minimum Wage or National Living Wage in 2026/27. Employers must monitor and cap sacrifice amounts to ensure statutory compliance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does salary sacrifice help avoid the 60% tax trap between £100k and £125k?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In the UK, earnings between £100,000 and £125,140 trigger a £1 reduction in the £12,570 Personal Allowance for every £2 earned, creating an effective 60% Income Tax rate (plus 2% NI = 62% marginal deduction). Sacrificing salary into a pension reduces your adjusted net income, restoring your Personal Allowance and providing up to 62% effective tax relief."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does my employer have to offer salary sacrifice for pensions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Employers are required by law to offer an auto-enrolment workplace pension, but offering salary sacrifice (also called SMART pensions or exchange) is voluntary. Many employers offer it because it also saves the company 13.8% in employer National Insurance contributions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will salary sacrifice affect my mortgage application or life cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most UK mortgage lenders and workplace death-in-service insurers understand salary sacrifice schemes and will accept an employer reference stating your 'notional' or 'reference' salary before sacrifice. However, you should check your employer's scheme policy and your lender's criteria beforehand."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the annual pension allowance in the UK?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For the 2026/27 tax year, the standard UK annual pension allowance is £60,000 (or 100% of your UK relevant earnings, whichever is lower). Total contributions across employee sacrifice, employer contributions, and tax relief cannot exceed this allowance without triggering a tax charge, unless you have unused carry forward from the prior three tax years."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I salary sacrifice a percentage or a fixed monthly amount?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Workplace schemes generally allow you to elect either a fixed percentage of pensionable earnings (e.g., 5%, 10%, 15%) or a fixed cash amount per month or year. Our calculator lets you toggle between percentage and fixed inputs to model both choices accurately."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Salary Sacrifice Pension Calculator UK",
+  "url": "https://fincalclab.com/calculator/salary-sacrifice-pension-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free UK Salary Sacrifice Pension Calculator. Model take-home pay, income tax savings, and National Insurance relief across UK tax years.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "GBP"
+  }
+};
+---
+
+<Layout
+  title="Salary Sacrifice Pension Calculator UK – Tax & Take-Home Pay"
+  description="Calculate your take-home pay, Income Tax savings, and National Insurance relief with our free UK Salary Sacrifice Pension Calculator for 2026/27, 2025/26, and 2024/25."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <SalarySacrificePensionCalculator />
+
+    <!-- Educational SEO Guide Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Featured Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">UK Employment &amp; Salary Planning</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Maximize Your Net Pay and Workplace Pension Wealth</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Optimizing your workplace pension contributions is one of the most powerful tax-saving strategies available in the UK. Pair this tool with our <a href="/calculator/salary-percentage-increase-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Percentage Increase Calculator</a> to plan pay rises, evaluate appraisal bumps with the <a href="/calculator/salary-hike-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Hike Calculator</a>, or calculate daily pay rates with the <a href="/calculator/daily-salary-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Daily Salary Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is Salary Sacrifice?</h2>
+        <p>
+          <strong>Salary sacrifice</strong> (also known in the United Kingdom as <em>salary exchange</em> or a <em>SMART pension arrangement</em>) is a formal contractual agreement between an employee and their employer. Under this arrangement, the employee agrees to give up (or "sacrifice") a portion of their contractual gross cash salary in exchange for the employer providing a non-cash benefit of equal value — most commonly a direct contribution into an approved workplace pension scheme.
+        </p>
+        <p>
+          Because the employee's contractual gross salary is legally reduced before payroll calculations occur, both <strong>Income Tax</strong> and <strong>employee National Insurance contributions (NICs)</strong> are calculated on the smaller, adjusted salary. This results in significant, immediate tax efficiencies on every single pay slip.
+        </p>
+
+        <h2>What Is a Salary Sacrifice Pension?</h2>
+        <p>
+          In a conventional workplace pension scheme (known as <em>Relief at Source</em> or a <em>net pay arrangement</em>), employee pension deductions are taken from your pay, and tax relief is either reclaimed from HMRC or adjusted through PAYE. However, you still pay full employee National Insurance on your entire unreduced salary.
+        </p>
+        <p>
+          Under a <strong>salary sacrifice pension</strong>, the mechanics change completely:
+        </p>
+        <ul>
+          <li>Your contractual cash salary is officially reduced by the amount you choose to contribute (e.g., £2,500 per year).</li>
+          <li>Your employer pays that exact amount (£2,500) directly into your pension scheme as an <strong>employer pension contribution</strong>.</li>
+          <li>HMRC treats your gross earnings as the lower figure (e.g., £47,500 instead of £50,000).</li>
+          <li>You pay <strong>less Income Tax</strong> and <strong>less National Insurance</strong> because your taxable base is lower.</li>
+          <li>Your pension pot receives the full contribution, while the actual drop in your take-home pay is significantly smaller than the contribution itself.</li>
+        </ul>
+
+        <h2>How Does Salary Sacrifice Affect Your Take-Home Pay?</h2>
+        <p>
+          The most important insight for UK workers is that <strong>a £1 pension contribution through salary sacrifice does not reduce your take-home pay by £1</strong>.
+        </p>
+        <p>
+          Depending on your UK tax bracket, the government effectively co-funds between <strong>28% and 62%</strong> of your pension contribution through combined Income Tax relief and employee National Insurance savings:
+        </p>
+        <ul>
+          <li>
+            <strong>Basic Rate Taxpayers (earning between £12,570 and £50,270):</strong> In the 2026/27 tax year, you save 20% in Income Tax and 8% in employee National Insurance. Total tax relief equals <strong>28%</strong>. Every £100 contributed into your pension reduces your take-home pay by only <strong>£72.00</strong>.
+          </li>
+          <li>
+            <strong>Higher Rate Taxpayers (earning between £50,270 and £125,140):</strong> You save 40% in Income Tax and 2% in employee National Insurance, giving <strong>42% total relief</strong>. Every £100 contributed into your pension reduces your take-home pay by only <strong>£58.00</strong>.
+          </li>
+          <li>
+            <strong>High Earners in the Personal Allowance Taper (£100,000 to £125,140):</strong> You save 40% Income Tax, 20% in restored Personal Allowance, and 2% National Insurance — an astonishing <strong>62% total relief</strong>. Every £100 placed into your pension costs just <strong>£38.00</strong> in take-home pay!
+          </li>
+          <li>
+            <strong>Additional Rate Taxpayers (earning over £125,140):</strong> You save 45% in Income Tax plus 2% in employee National Insurance, representing <strong>47% total relief</strong>. Every £100 in pension costs only <strong>£53.00</strong> from your take-home pay.
+          </li>
+        </ul>
+
+        <h2>How Salary Sacrifice Pension Tax Savings Work</h2>
+        <p>
+          To understand the math behind our calculator, let's examine the two primary payroll deductions applied to UK employees under standard PAYE:
+        </p>
+
+        <h3>1. UK Income Tax Rates &amp; Thresholds (2026/27 Tax Year)</h3>
+        <p>
+          For residents in England, Wales, and Northern Ireland, UK Income Tax thresholds remain frozen through to April 2028 across standard marginal bands:
+        </p>
+        <div style="overflow-x: auto; margin: var(--space-4) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 10px 12px; font-weight: 700;">Band</th>
+                <th style="padding: 10px 12px; font-weight: 700;">Taxable Income Range</th>
+                <th style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">Tax Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px;">Personal Allowance</td>
+                <td style="padding: 10px 12px;">Up to £12,570</td>
+                <td style="padding: 10px 12px; font-weight: 700;">0%</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px;">Basic Rate</td>
+                <td style="padding: 10px 12px;">£12,571 to £50,270</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">20%</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px;">Higher Rate</td>
+                <td style="padding: 10px 12px;">£50,271 to £125,140</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">40%</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px;">Additional Rate</td>
+                <td style="padding: 10px 12px;">Over £125,140</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">45%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2. Employee National Insurance Contributions (Class 1, Category A)</h3>
+        <p>
+          Employee National Insurance rates for the 2026/27 tax year are:
+        </p>
+        <ul>
+          <li><strong>Below Primary Threshold (£12,570/year):</strong> 0% NICs paid.</li>
+          <li><strong>Between Primary Threshold and Upper Earnings Limit (£12,570 to £50,270):</strong> <strong>8%</strong> employee NICs.</li>
+          <li><strong>Above Upper Earnings Limit (Over £50,270/year):</strong> <strong>2%</strong> employee NICs.</li>
+        </ul>
+        <p>
+          When you use salary sacrifice, your contractual salary drops, avoiding both Income Tax and National Insurance across whichever band your sacrificed earnings sit in.
+        </p>
+
+        <h2>The 60% Tax Trap: How Salary Sacrifice Protects High Earners</h2>
+        <p>
+          One of the most valuable applications of salary sacrifice in the UK is dodging the punitive <strong>60% marginal tax trap</strong> between £100,000 and £125,140.
+        </p>
+        <p>
+          Under UK tax rules, your £12,570 Personal Allowance is withdrawn by £1 for every £2 your adjusted net income exceeds £100,000. By the time your income reaches £125,140, your Personal Allowance is reduced to zero:
+        </p>
+        <ul>
+          <li>On every £100 earned between £100k and £125k, you pay £40 in standard higher-rate Income Tax.</li>
+          <li>You also lose £50 of your tax-free Personal Allowance, exposing an extra £50 to 40% tax (costing another £20).</li>
+          <li>Combined with 2% employee National Insurance, your total marginal deduction is <strong>62%</strong>!</li>
+        </ul>
+        <p>
+          By sacrificing salary down to £100,000 into your workplace pension, you reclaim your full Personal Allowance. Sacrificing £10,000 from a £110,000 salary places £10,000 into your pension at an out-of-pocket take-home cost of just <strong>£3,800</strong> — an unbelievable 62% guaranteed immediate return on your money.
+        </p>
+
+        <h2>Step-by-Step Salary Sacrifice Pension Examples</h2>
+
+        <h3>Example 1: Basic Rate Taxpayer (£35,000 Gross Salary, 5% Sacrifice)</h3>
+        <p>
+          An employee earns £35,000 per year and elects to sacrifice 5% of their salary (£1,750 per year or £145.83 per month) into their pension:
+        </p>
+        <ul>
+          <li><strong>Original Gross Salary:</strong> £35,000.00</li>
+          <li><strong>Adjusted Gross Salary:</strong> £33,250.00</li>
+          <li><strong>Income Tax Before:</strong> £4,486.00 → <strong>Income Tax After:</strong> £4,136.00 (<strong>Saves £350.00</strong>)</li>
+          <li><strong>Employee NI Before:</strong> £1,794.40 → <strong>Employee NI After:</strong> £1,654.40 (<strong>Saves £140.00</strong>)</li>
+          <li><strong>Total Tax &amp; NI Saved:</strong> £490.00 per year (28.00% relief)</li>
+          <li><strong>Take-Home Pay Before:</strong> £28,719.60/year (£2,393.30/month)</li>
+          <li><strong>Take-Home Pay After:</strong> £27,459.60/year (£2,288.30/month)</li>
+          <li><strong>Actual Monthly Reduction in Take-Home Pay:</strong> <strong>£105.00</strong></li>
+          <li><strong>Monthly Pension Addition:</strong> <strong>£145.83</strong></li>
+        </ul>
+        <p>
+          The employee gains £145.83 every month in their pension pot, but their bank account only sees £105.00 less.
+        </p>
+
+        <h3>Example 2: Higher Rate Taxpayer (£60,000 Gross Salary, £5,000 Fixed Sacrifice)</h3>
+        <p>
+          A higher-rate earner on £60,000 sacrifices a fixed £5,000 into their pension:
+        </p>
+        <ul>
+          <li><strong>Adjusted Gross Salary:</strong> £55,000.00</li>
+          <li><strong>Income Tax Saved (40% of £5,000):</strong> £2,000.00</li>
+          <li><strong>Employee NI Saved (2% of £5,000):</strong> £100.00</li>
+          <li><strong>Total Tax &amp; NI Saved:</strong> <strong>£2,100.00</strong> (42.00% relief)</li>
+          <li><strong>Effective Cost from Take-Home Pay:</strong> £5,000 − £2,100 = <strong>£2,900.00</strong></li>
+        </ul>
+        <p>
+          A full £5,000 enters the pension, funded by £2,100 from tax/NI relief and only £2,900 out-of-pocket from take-home pay.
+        </p>
+
+        <h2>Salary Sacrifice vs. Normal Personal Pension Contributions</h2>
+        <p>
+          Many UK employees wonder how salary sacrifice differs from standard pension contributions. The primary distinction centers on <strong>National Insurance savings</strong> and <strong>administrative convenience</strong>:
+        </p>
+        <div style="overflow-x: auto; margin: var(--space-6) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 12px; font-weight: 700;">Feature</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-primary);">Salary Sacrifice Pension</th>
+                <th style="padding: 12px; font-weight: 700;">Relief at Source (SIPP / Personal)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Income Tax Relief</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">Immediate via reduced PAYE</td>
+                <td style="padding: 10px 12px;">Basic rate claimed by provider; higher rate via self-assessment</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Employee National Insurance Relief</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 700;">Yes (Saves 8% or 2% NICs)</td>
+                <td style="padding: 10px 12px; color: var(--color-error); font-weight: 600;">No NI savings whatsoever</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Employer NI Relief</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">Employer saves 13.8% NICs</td>
+                <td style="padding: 10px 12px;">None</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Self-Assessment Claim Required</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">No (Full relief applied automatically)</td>
+                <td style="padding: 10px 12px;">Yes for 40% / 45% taxpayers</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">Legal Effect on Contractual Salary</td>
+                <td style="padding: 10px 12px;">Contractually lowers cash gross salary</td>
+                <td style="padding: 10px 12px;">Contractual salary remains unchanged</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Employer Pension Contributions &amp; NI Reinvestment</h2>
+        <p>
+          In addition to employee tax savings, salary sacrifice saves employers <strong>13.8% in Class 1 Secondary National Insurance contributions</strong> on every pound sacrificed.
+        </p>
+        <p>
+          For instance, if an employee sacrifices £5,000, the employer avoids paying £690 in employer NI. Many progressive UK companies pass a portion or all of this 13.8% saving back to the employee's pension as an additional employer contribution, boosting your retirement fund even further at zero extra cost to you.
+        </p>
+
+        <h2>Advantages and Potential Limitations</h2>
+        <p>
+          While salary sacrifice offers compelling tax savings for the vast majority of UK employees, it is important to consider both the benefits and potential trade-offs:
+        </p>
+
+        <h3>Advantages</h3>
+        <ul>
+          <li><strong>Substantial NI Savings:</strong> Permanent reduction in employee National Insurance that cannot be achieved through personal pensions.</li>
+          <li><strong>Automated Higher-Rate Relief:</strong> Higher and additional rate taxpayers receive full 40% or 45% relief directly on their monthly payslip without submitting an annual Self Assessment tax return.</li>
+          <li><strong>Child Benefit Retention:</strong> High-income families can use salary sacrifice to keep their adjusted net income below £60,000 (the High Income Child Benefit Charge starting threshold in 2026/27), avoiding the clawback charge.</li>
+          <li><strong>Restoring Personal Allowance:</strong> Neutralizes the 60% marginal tax band for incomes between £100,000 and £125,140.</li>
+        </ul>
+
+        <h3>Important Things to Check Before Using Salary Sacrifice</h3>
+        <ul>
+          <li>
+            <strong>National Minimum Wage Compliance:</strong> Under UK law, salary sacrifice cannot reduce your cash pay below the National Minimum Wage. If you earn close to the NMW, your maximum contribution will be legally capped.
+          </li>
+          <li>
+            <strong>Mortgage Borrowing Multiples:</strong> Most UK mortgage lenders use your pre-sacrifice "reference salary" when applying income borrowing multiples (e.g. 4.5× salary). However, some automated underwriting systems may look only at the reduced contractual salary. Always ask your employer for a reference confirming your pre-sacrifice baseline pay.
+          </li>
+          <li>
+            <strong>Statutory Benefits:</strong> Statutory Maternity Pay (SMP), Statutory Paternity Pay, and Statutory Sick Pay are calculated based on your post-sacrifice earnings. A lower contractual salary during qualifying reference weeks could reduce statutory payment amounts.
+          </li>
+          <li>
+            <strong>Death-in-Service &amp; Life Assurance:</strong> Confirm that company life assurance and overtime multipliers are tied to your pre-sacrifice reference salary rather than the reduced post-sacrifice figure.
+          </li>
+        </ul>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion" style="display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4);">
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is salary sacrifice for a pension?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Salary sacrifice is a formal arrangement where you agree to lower your contractual gross salary, and in return, your employer pays an equivalent contribution directly into your pension. This reduces your Income Tax and National Insurance liabilities.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How does salary sacrifice affect take-home pay?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Your take-home pay drops by less than the amount contributed to your pension. Because of tax and National Insurance relief, a £2,500 contribution typically reduces take-home pay by only £1,800 for basic-rate taxpayers or £1,450 for higher-rate taxpayers.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How much tax can I save with pension salary sacrifice?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Basic rate taxpayers save 20% Income Tax plus 8% employee NI (28% total). Higher rate taxpayers save 40% Income Tax plus 2% employee NI (42% total). High earners between £100k and £125k can save up to 62% in effective combined relief.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Does salary sacrifice reduce National Insurance?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes. Unlike personal pension contributions which only refund Income Tax, salary sacrifice contractually reduces your gross pay, eliminating employee National Insurance on every pound sacrificed.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Is salary sacrifice better than a normal pension contribution?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              For most UK workers, yes, because you save National Insurance in addition to Income Tax, and higher-rate taxpayers receive their full relief automatically each month without filing a Self Assessment tax return.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How much can I salary sacrifice into my pension?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              You can sacrifice up to your total earnings, subject to two limits: (1) Your post-sacrifice salary cannot fall below the National Minimum Wage, and (2) Total annual pension contributions cannot exceed the UK annual allowance (£60,000 in 2026/27) without incurring tax charges.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Does salary sacrifice affect my State Pension?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              As long as your salary after sacrifice remains above the Lower Earnings Limit (£6,396/year in 2026/27), you will continue to build qualifying years toward the full UK State Pension without interruption.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Does salary sacrifice affect mortgage applications?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Most UK mortgage lenders accept your pre-sacrifice reference salary when determining maximum loan amounts, provided your employer confirms it on an employment reference letter.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Can higher-rate taxpayers benefit from salary sacrifice?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes, significantly. Higher-rate earners save 40% Income Tax plus 2% employee NI (42% relief total) automatically through payroll, avoiding the need to submit a manual tax return to claim higher-rate relief.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Are salary sacrifice pension calculations exact?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Our calculator provides highly accurate estimates based on standard UK PAYE tax bands and Category A National Insurance. Your exact payslip figures may differ slightly depending on student loan deductions, company car benefits, marriage allowance, or regional Scottish tax rates.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Financial Disclaimer Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-base);">
+          <h4 style="margin: 0 0 var(--space-2) 0; font-size: 0.95rem; font-weight: 700; color: var(--color-text-base);">Important Financial &amp; Tax Disclaimer</h4>
+          <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
+            This calculator provides an educational estimate based on selected UK tax years (2026/27, 2025/26, 2024/25, and 2023/24) and standard PAYE assumptions. Actual payslip results can vary depending on individual circumstances, employer arrangements, workplace pension scheme rules, personal tax codes, other income sources, taxable benefits in kind, student loan repayments, and changes in UK tax legislation. This tool does not constitute personalized financial or tax advice. Users should consult their employer's HR or payroll department and official HMRC guidance for their specific situation.
+          </p>
+        </div>
+
+        <!-- Related Tools Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-surface);">
+          <h3 style="margin: 0 0 var(--space-3) 0; font-size: 1.05rem; font-weight: 700;">Related Salary &amp; Income Calculators</h3>
+          <ul style="margin: 0; padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2);">
+            <li><a href="/calculator/pension-tax-relief-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Pension Tax Relief Calculator</a> — Calculate UK tax relief added by your pension provider and claimable from HMRC on personal SIPP contributions.</li>
+            <li><a href="/calculator/salary-percentage-increase-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Percentage Increase Calculator</a> — Calculate your revised salary and paycheck changes after a pay raise.</li>
+            <li><a href="/calculator/salary-hike-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Hike Calculator</a> — Model appraisal increases, promotion percentage jumps, and gross income changes.</li>
+            <li><a href="/calculator/daily-salary-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Daily Salary Calculator</a> — Convert annual gross pay into equivalent daily and hourly rates based on work days.</li>
+            <li><a href="/calculator/in-hand-salary-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">In-Hand Salary Calculator</a> — Compute comprehensive monthly take-home pay and tax slab deductions.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

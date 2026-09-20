@@ -1,0 +1,838 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SuperSalarySacrificeCalculator from '../../components/calculator/SuperSalarySacrificeCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Super Salary Sacrifice Calculator', item: '/calculator/super-salary-sacrifice-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is salary sacrifice into super?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Salary sacrifice into super is an arrangement between an Australian employee and employer where the employee agrees to direct a portion of their pre-tax salary straight into their superannuation fund instead of receiving it as take-home pay. Because the money is transferred before income tax is calculated, it reduces the employee's taxable income."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much tax can I save by salary sacrificing into super?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your tax saving depends on your marginal income tax bracket and Medicare levy. In Australia, salary sacrificed amounts are taxed in the super fund at a concessional rate of 15% instead of your marginal tax rate (e.g. 32%, 39%, or 47% including Medicare). For someone in the 30% bracket (32% with Medicare), you save 17% in tax on every dollar sacrificed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does salary sacrifice affect my take-home pay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Salary sacrifice reduces your take-home pay, but by less than the amount contributed to super. For example, sacrificing $10,000 reduces take-home pay by only $6,800 for an employee in the 30% bracket (+ 2% Medicare), while $8,500 net is deposited into their super account after 15% fund tax."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does salary sacrifice reduce taxable income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Salary sacrifice officially reduces your gross salary for income tax purposes, resulting in a lower taxable income on your annual ATO Notice of Assessment. This lowers both your personal income tax liability and your 2% Medicare levy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are salary sacrifice contributions taxed in super?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Salary sacrifice contributions are classified as concessional contributions and are generally taxed at 15% inside your super fund when received. For individuals earning over $250,000, an additional 15% Division 293 tax may apply, bringing the total super tax to 30%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the concessional contributions cap?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For the 2024–25 and 2025–26 Australian tax years, the general annual concessional contributions cap is $30,000. This cap includes employer Super Guarantee (SG) contributions, salary sacrifice contributions, and personal tax-deductible contributions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do employer super contributions count toward the concessional cap?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Your employer's compulsory Super Guarantee (SG) contributions (12.0% for 2025–26) count directly toward your $30,000 concessional contributions cap alongside your pre-tax salary sacrifice amounts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can salary sacrifice cause Division 293 tax?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Division 293 tax applies if your combined taxable income and concessional super contributions exceed $250,000 in a financial year. An extra 15% tax is levied on the lesser of the concessional contributions or the excess over $250,000, making the effective super tax 30%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I salary sacrifice all of my salary into super?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Legally, there is no set percentage limit under the Fair Work Act, but practical constraints apply. You must earn enough to meet your living expenses, and contributions beyond the $30,000 concessional cap lose their tax benefits and may attract excess concessional contributions tax."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is salary sacrifice the same as an employer super contribution?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Employer Super Guarantee (SG) is a mandatory minimum legal contribution paid by your employer on top of your base salary. Salary sacrifice is an optional voluntary arrangement where you choose to convert part of your own agreed salary into additional super."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Super Salary Sacrifice Calculator Australia",
+  "url": "https://fincalclab.com/calculator/super-salary-sacrifice-calculator",
+  "description": "Calculate your Australian tax savings from salary sacrificing into superannuation. See how salary sacrifice reduces income tax and Medicare levy, impacts take-home pay, and builds retirement wealth.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "AUD"
+  }
+};
+---
+
+<Layout
+  title="Super Salary Sacrifice Calculator Australia | FinCalcLab"
+  description="Calculate how salary sacrificing into superannuation reduces your Australian income tax and Medicare levy, affects take-home pay, and boosts your retirement balance."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <SuperSalarySacrificeCalculator />
+
+    <!-- Featured Australian Planning Callout -->
+    <section class="au-callout-section" aria-labelledby="super-guarantee-heading">
+      <Card elevation="sm" class="au-callout-card">
+        <div class="au-callout-header">
+          <div class="au-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="au-callout-heading-wrap">
+            <span class="au-callout-eyebrow">ATO Super Guarantee Law</span>
+            <h2 id="super-guarantee-heading" class="au-callout-title">Did You Know? Employers Cannot Reduce Super Guarantee Base</h2>
+          </div>
+        </div>
+
+        <p class="au-callout-desc">
+          Under Australian federal legislation, employers <strong>cannot</strong> use your salary-sacrificed amounts to reduce their compulsory Superannuation Guarantee (SG) obligations. Your employer must calculate their 12.0% SG contribution on your pre-sacrifice Ordinary Time Earnings (OTE) base.
+        </p>
+
+        <div class="au-callout-action">
+          <a href="/calculator/wealth-projection-calculator" class="au-callout-btn">
+            <span>Project Long-Term Wealth Compounding</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Australian Educational Guide -->
+    <article class="educational-guide">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is a Super Salary Sacrifice Calculator?</h2>
+        <p>
+          A <strong>Super Salary Sacrifice Calculator</strong> is an Australian financial planning tool designed for workers and employers. It simulates what happens when you voluntarily divert a portion of your pre-tax employment earnings directly into your complying superannuation fund.
+        </p>
+        <p>
+          By entering your gross annual salary and desired salary sacrifice amount (either as a fixed dollar amount or a percentage), the calculator models Australian Taxation Office (ATO) resident individual income tax brackets, the 2.0% Medicare levy, and the 15% super fund contributions tax. It shows you the exact tax you save, the reduction in your net take-home pay, and the net growth in your retirement balance.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>What Is Salary Sacrifice Into Super?</h2>
+        <p>
+          <strong>Salary sacrifice</strong> (also known as salary packaging or total remuneration packaging) is a formal, written arrangement between you and your employer. Under this agreement, you elect to forfeit a specified portion of your future gross wages in exchange for your employer making an equivalent pre-tax contribution directly into your super fund.
+        </p>
+        <p>
+          Because this arrangement occurs before income tax is calculated under Pay As You Go (PAYG) withholding rules, your taxable income is reduced. Instead of being taxed at your individual marginal tax rate (which can be up to 47% including the Medicare levy), the sacrificed amount is taxed inside your super fund at the concessional rate of <strong>15%</strong>.
+        </p>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How Does Salary Sacrifice to Super Work?</h2>
+        <p>
+          To understand the mechanics, consider an Australian employee earning <strong>$100,000 per year</strong> who chooses to salary sacrifice <strong>$10,000</strong> annually into super for the 2025–26 tax year:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Step-by-Step Salary Sacrifice Mechanics ($100k Salary)</div>
+          <ol class="callout-steps">
+            <li><strong>Gross Salary:</strong> $100,000</li>
+            <li><strong>Pre-Tax Salary Sacrificed:</strong> $10,000</li>
+            <li><strong>New Taxable Salary:</strong> $100,000 − $10,000 = <strong>$90,000</strong></li>
+            <li><strong>ATO Tax Saved:</strong> In the 30% bracket plus 2% Medicare levy (32% total marginal rate), the employee saves <strong>$3,200.00</strong> in income tax and Medicare levy.</li>
+            <li><strong>Reduction in Take-Home Pay:</strong> Because of the $3,200 tax shield, take-home pay falls by only <strong>$6,800.00</strong> ($10,000 − $3,200).</li>
+            <li><strong>Super Fund Tax (15%):</strong> When the super fund receives the $10,000 contribution, it deducts 15% ($1,500).</li>
+            <li><strong>Net Added to Super:</strong> <strong>$8,500.00</strong> is credited to the employee's retirement account.</li>
+            <li><strong>Net Wealth Advantage:</strong> Giving up $6,800 of take-home pay to gain $8,500 in super creates an immediate <strong>$1,700.00 net wealth benefit</strong>!</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>How Much Tax Can I Save by Salary Sacrificing Into Super?</h2>
+        <p>
+          The amount of tax you save depends entirely on which Australian income tax bracket your salary falls into. The table below illustrates the effective tax differential between your marginal tax rate (including the 2% Medicare levy) and the 15% super contributions tax under the 2024–25 and 2025–26 revised Stage 3 tax rates:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Taxable Income Tier</th>
+                <th scope="col">Marginal Tax Rate</th>
+                <th scope="col">Medicare Levy</th>
+                <th scope="col">Total Marginal Rate</th>
+                <th scope="col">Super Tax Rate</th>
+                <th scope="col">Net Tax Saving</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$0 – $18,200</strong></td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>0.0%</td>
+                <td>15.0%</td>
+                <td style="color: #ef4444; font-weight: 600;">−15.0% (Disadvantageous)</td>
+              </tr>
+              <tr>
+                <td><strong>$18,201 – $45,000</strong></td>
+                <td>16.0%</td>
+                <td>2.0%</td>
+                <td>18.0%</td>
+                <td>15.0%</td>
+                <td style="color: var(--color-success); font-weight: 600;">+3.0%</td>
+              </tr>
+              <tr>
+                <td><strong>$45,001 – $135,000</strong></td>
+                <td>30.0%</td>
+                <td>2.0%</td>
+                <td>32.0%</td>
+                <td>15.0%</td>
+                <td style="color: var(--color-success); font-weight: 600;">+17.0%</td>
+              </tr>
+              <tr>
+                <td><strong>$135,001 – $190,000</strong></td>
+                <td>37.0%</td>
+                <td>2.0%</td>
+                <td>39.0%</td>
+                <td>15.0%</td>
+                <td style="color: var(--color-success); font-weight: 600;">+24.0%</td>
+              </tr>
+              <tr>
+                <td><strong>$190,001 and above</strong></td>
+                <td>45.0%</td>
+                <td>2.0%</td>
+                <td>47.0%</td>
+                <td>15.0% / 30.0%*</td>
+                <td style="color: var(--color-success); font-weight: 600;">+32.0% / +17.0%*</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          *For income exceeding $250,000, Division 293 tax adds an extra 15% super tax (total 30%), leaving an effective 17% tax benefit against the 47% top marginal rate.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>Salary Sacrifice vs. Take-Home Pay: The Effective Cost</h2>
+        <p>
+          A critical truth about salary sacrifice is that it is not "free money." To build your superannuation, you must accept a reduction in your immediate net take-home pay. However, because you avoid income tax and Medicare levy, the reduction in take-home pay is significantly less than the gross amount deposited into your super.
+        </p>
+        <p>
+          This gap is known as the <strong>effective after-tax cost</strong>. For an Australian earning $120,000:
+        </p>
+        <ul class="bullet-list">
+          <li>Sacrificing <strong>$5,000</strong> saves $1,600 in tax ($5,000 × 32%).</li>
+          <li>Take-home pay drops by only <strong>$3,400</strong>.</li>
+          <li>Net super received is <strong>$4,250</strong> ($5,000 − 15% tax).</li>
+          <li>You convert $3,400 of cash into $4,250 of super investments—an instant 25% return on your out-of-pocket sacrifice!</li>
+        </ul>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>Salary Sacrifice and Concessional Contributions: The $30,000 Cap</h2>
+        <p>
+          All pre-tax contributions to superannuation are classified by the ATO as <strong>concessional contributions</strong>. These include:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Employer Super Guarantee (SG):</strong> 12.0% of Ordinary Time Earnings for the 2025–26 tax year (11.5% for 2024–25).</li>
+          <li><strong>Salary Sacrifice Contributions:</strong> Any voluntary pre-tax amounts deducted from your salary.</li>
+          <li><strong>Personal Deductible Contributions:</strong> Contributions made from post-tax bank accounts for which you submit an ATO Notice of Intent to claim a tax deduction.</li>
+        </ul>
+        <p>
+          For the 2024–25 and 2025–26 financial years, the general annual concessional contributions cap is <strong>$30,000</strong> per person.
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">What Happens If You Exceed the $30,000 Cap?</div>
+          <p>
+            If your combined employer super and salary sacrifice exceed $30,000, the ATO treats the excess as <strong>Excess Concessional Contributions (ECC)</strong>:
+          </p>
+          <ul class="bullet-list" style="margin-top: 6px;">
+            <li>The excess amount is added back to your assessable income and taxed at your marginal individual income tax rate.</li>
+            <li>You receive a 15% tax offset to recognize the contributions tax already paid by the super fund.</li>
+            <li>An ATO shortfall interest charge may apply.</li>
+            <li>You can choose to withdraw up to 85% of the excess from your fund to pay the tax.</li>
+          </ul>
+        </div>
+        <p>
+          <strong>Carry-Forward Rule:</strong> If your total super balance was under $500,000 on 30 June of the previous financial year, you may be eligible to carry forward unused concessional cap space from the past 5 years.
+        </p>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="guide-section">
+        <h2>Salary Sacrifice Super and Division 293 (High Income Earners)</h2>
+        <p>
+          Under Australian tax law, <strong>Division 293 tax</strong> is an additional tax levied on high-income earners to reduce the tax concession on super contributions.
+        </p>
+        <p>
+          Division 293 applies if your combined taxable income (after salary sacrifice) plus low-tax concessional contributions exceeds <strong>$250,000</strong>.
+        </p>
+        <p>
+          If your income crosses this threshold, an additional <strong>15% tax</strong> is levied on the lesser of:
+        </p>
+        <ol class="ordered-list">
+          <li>Your total concessional contributions for the financial year.</li>
+          <li>The amount by which your combined income and contributions exceed the $250,000 threshold.</li>
+        </ol>
+        <p>
+          This brings the total tax rate on concessional contributions to <strong>30%</strong> (15% standard fund tax + 15% Division 293 tax). Because high earners face a top marginal tax rate of 47% (45% income tax + 2% Medicare levy), salary sacrifice still provides a compelling <strong>17% tax saving</strong> ($0.47 − $0.30) even with Division 293 applied.
+        </p>
+      </section>
+
+      <!-- Section 8 -->
+      <section class="guide-section">
+        <h2>Is Salary Sacrifice Into Super Worth Considering?</h2>
+        <p>
+          While salary sacrifice offers clear mathematical tax advantages, it may not be suitable for every Australian worker. Consider these trade-offs:
+        </p>
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>Key Advantages</h3>
+            <ul class="bullet-list" style="padding-left: var(--space-3); margin-bottom: 0;">
+              <li><strong>Immediate Tax Relief:</strong> Pay 15% tax instead of 32%, 39%, or 47%.</li>
+              <li><strong>Lowers Medicare Levy:</strong> Decreases your overall taxable income base.</li>
+              <li><strong>Automated Compounding:</strong> Hands-off, regular investing inside a low-tax environment (15% earnings tax).</li>
+              <li><strong>Accelerated Retirement:</strong> Enhances long-term compound wealth significantly.</li>
+            </ul>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Important Considerations</h3>
+            <ul class="bullet-list" style="padding-left: var(--space-3); margin-bottom: 0;">
+              <li><strong>Preservation Age:</strong> Super funds are locked until you reach your preservation age (between 55 and 60) and satisfy a condition of release.</li>
+              <li><strong>Cash Flow Needs:</strong> Sacrificing too much can leave you short of liquid cash for daily living or an emergency fund.</li>
+              <li><strong>Low Income Earner:</strong> If your income is under $45,000, your tax savings are modest (only 3%). Below $18,200, it is disadvantageous.</li>
+              <li><strong>Cap Breaches:</strong> Requires tracking against the $30,000 annual concessional cap.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9: Worked Examples -->
+      <section class="guide-section">
+        <h2>Salary Sacrifice Superannuation Examples</h2>
+
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>Example 1: Sarah, $85,000 Salary (Mid-Career)</h3>
+            <p><strong>Salary Sacrificed:</strong> $5,000 / year</p>
+            <p><strong>Tax Bracket:</strong> 30% (+ 2% Medicare = 32%)</p>
+            <p><strong>Annual Tax Saved:</strong> <strong>$1,600.00</strong></p>
+            <p><strong>Take-Home Pay Drop:</strong> −$3,400.00 (−$130.77 / fortnight)</p>
+            <p><strong>Net Added to Super:</strong> +$4,250.00</p>
+            <p style="color: var(--color-success); font-weight: 600;">Net Wealth Gain: +$850.00 / year</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Example 2: Michael, $130,000 Salary (Senior Role)</h3>
+            <p><strong>Salary Sacrificed:</strong> $10,000 / year</p>
+            <p><strong>Tax Bracket:</strong> 30% (+ 2% Medicare = 32%)</p>
+            <p><strong>Annual Tax Saved:</strong> <strong>$3,200.00</strong></p>
+            <p><strong>Take-Home Pay Drop:</strong> −$6,800.00 (−$261.54 / fortnight)</p>
+            <p><strong>Net Added to Super:</strong> +$8,500.00</p>
+            <p style="color: var(--color-success); font-weight: 600;">Net Wealth Gain: +$1,700.00 / year</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Example 3: Elena, $170,000 Salary (Executive)</h3>
+            <p><strong>Salary Sacrificed:</strong> $9,600 / year (maxing $30k cap)</p>
+            <p><strong>Tax Bracket:</strong> 37% (+ 2% Medicare = 39%)</p>
+            <p><strong>Annual Tax Saved:</strong> <strong>$3,744.00</strong></p>
+            <p><strong>Take-Home Pay Drop:</strong> −$5,856.00 (−$225.23 / fortnight)</p>
+            <p><strong>Net Added to Super:</strong> +$8,160.00</p>
+            <p style="color: var(--color-success); font-weight: 600;">Net Wealth Gain: +$2,304.00 / year</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 10: FAQ -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          {faqSchema.mainEntity.map((item) => (
+            <div class="faq-item">
+              <h3>{item.name}</h3>
+              <p>{item.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Section 11: Related Tools -->
+      <section class="guide-section">
+        <h2>Related Financial Calculators</h2>
+        <p>
+          Explore companion tools on FinCalcLab to model wealth accumulation, investment compounding, and savings targets:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/wealth-projection-calculator" class="related-tool-card">
+            <h3>Wealth Projection Calculator</h3>
+            <p>Simulate long-term compound growth of your investments, comparing nominal returns against inflation-adjusted real purchasing power.</p>
+          </a>
+          <a href="/calculator/monthly-savings-goal-calculator" class="related-tool-card">
+            <h3>Monthly Savings Goal Calculator</h3>
+            <p>Calculate exactly how much you need to save each month to hit your target nest egg or investment balance.</p>
+          </a>
+          <a href="/calculator/salary-increase-calculator" class="related-tool-card">
+            <h3>Salary Increase Calculator</h3>
+            <p>Calculate the net impact of an upcoming pay raise or promotional increment on your gross and take-home pay.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Statutory Disclaimer -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Australian Tax &amp; Superannuation Disclaimer:</strong> This calculator provides an estimate based on the information entered and current Australian Taxation Office (ATO) and superannuation rules. Actual tax, Medicare levy, super contributions and Division 293 outcomes can vary depending on your personal circumstances, tax offsets, private health insurance status, and HECS/HELP repayments. Check the latest ATO guidance or speak with a qualified tax agent or licensed Australian financial planner for advice specific to your situation.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-8);
+  }
+
+  /* Featured Callout Banner */
+  .au-callout-section {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .au-callout-card {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .au-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .au-callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  :global(.dark) .au-callout-icon {
+    background: rgba(37, 99, 235, 0.18);
+  }
+
+  .au-callout-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .au-callout-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .au-callout-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .au-callout-desc {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 860px;
+  }
+
+  .au-callout-action {
+    display: flex;
+    align-items: center;
+    padding-top: var(--space-1);
+  }
+
+  .au-callout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 11px 22px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .au-callout-btn:hover {
+    background-color: var(--color-primary-hover, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+
+  .au-callout-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Educational Guide Styling */
+  .educational-guide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .guide-section h2 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .guide-section p {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+  }
+
+  .callout-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .callout-steps {
+    margin: 0;
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 0.92rem;
+  }
+
+  .bullet-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.92rem;
+  }
+
+  .ordered-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    font-size: 0.92rem;
+  }
+
+  /* Table Responsive Styling */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .growth-comparison-table th {
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--color-border);
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  :global(.dark) .growth-comparison-table th {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .growth-comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .growth-comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table-caption {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Scenario Grid */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+  }
+
+  .scenario-card {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .scenario-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .scenario-card p {
+    font-size: 0.85rem;
+    margin: 0 0 6px 0;
+    line-height: 1.45;
+  }
+
+  /* FAQ List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .related-tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .related-tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .related-tool-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Disclaimer Section */
+  .disclaimer-section {
+    padding: var(--space-4);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+  }
+
+  .disclaimer-text {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .au-callout-card {
+      padding: var(--space-4);
+      gap: var(--space-3);
+    }
+
+    .au-callout-header {
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .au-callout-icon {
+      width: 38px;
+      height: 38px;
+    }
+
+    .au-callout-title {
+      font-size: 1.05rem;
+    }
+
+    .au-callout-desc {
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .au-callout-action {
+      width: 100%;
+      padding-top: var(--space-2);
+    }
+
+    .au-callout-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+    }
+
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .au-callout-card {
+      padding: 12px;
+    }
+
+    .au-callout-title {
+      font-size: 0.98rem;
+    }
+
+    .au-callout-btn {
+      font-size: 0.82rem;
+      padding: 10px 12px;
+      gap: 6px;
+    }
+  }
+</style>

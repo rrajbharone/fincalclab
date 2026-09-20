@@ -1,0 +1,1653 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="TFSA Growth Calculator (Canada)"
+  description="Project the tax-free compound growth of your Canadian TFSA. Model regular contributions, compare expected returns, and track your year-by-year investment wealth."
+  category="Savings & Retirement"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="tfsa-growth-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">1. Starting Capital &amp; Contributions</h3>
+
+      <!-- Initial TFSA Balance -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="tfsa-initial-bal">Current TFSA Balance</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="tfsa-initial-bal" min="0" max="2000000" step="500" value="10000" aria-label="Current TFSA Balance" />
+          </div>
+        </div>
+        <input type="range" id="tfsa-initial-slider" min="0" max="100000" step="1000" value="10000" class="slider-range" aria-label="Initial Balance Slider" />
+        
+        <!-- Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-initial="0">$0 (Fresh Start)</button>
+          <button type="button" class="preset-pill" data-initial="5000">$5k</button>
+          <button type="button" class="preset-pill active" data-initial="10000">$10k</button>
+          <button type="button" class="preset-pill" data-initial="25000">$25k</button>
+          <button type="button" class="preset-pill" data-initial="50000">$50k</button>
+          <button type="button" class="preset-pill" data-initial="100000">$100k</button>
+        </div>
+        <span class="input-subtext">The market value of your existing TFSA portfolio today (or $0 if starting new).</span>
+      </div>
+
+      <!-- Regular Contribution Amount -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="tfsa-contrib-val">Regular Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="tfsa-contrib-val" min="0" max="50000" step="25" value="500" aria-label="Regular Contribution Amount" />
+          </div>
+        </div>
+        <input type="range" id="tfsa-contrib-slider" min="0" max="3000" step="25" value="500" class="slider-range" aria-label="Regular Contribution Slider" />
+
+        <!-- Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-contrib="0">$0 (Lump Sum Only)</button>
+          <button type="button" class="preset-pill" data-contrib="200">$200</button>
+          <button type="button" class="preset-pill active" data-contrib="500">$500</button>
+          <button type="button" class="preset-pill" data-contrib="583.33" title="$7,000 / 12 months">$583.33 (2026 Max/Mo)</button>
+          <button type="button" class="preset-pill" data-contrib="1000">$1,000</button>
+        </div>
+        <span class="input-subtext">The amount you plan to deposit on a recurring basis.</span>
+      </div>
+
+      <!-- Contribution Frequency -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="tfsa-freq-select">Contribution Frequency</label>
+          <select id="tfsa-freq-select" class="currency-select" aria-label="Select Contribution Frequency">
+            <option value="monthly" selected>Monthly (12 times/year)</option>
+            <option value="biweekly">Biweekly (every 2 weeks, 26 times/year)</option>
+            <option value="weekly">Weekly (52 times/year)</option>
+            <option value="annually">Annually (once a year)</option>
+          </select>
+        </div>
+        <span class="input-subtext">Assumes recurring deposits occur at the end of each payment period.</span>
+      </div>
+    </div>
+
+    <!-- Step 2: Time Horizon & Growth Assumptions -->
+    <div class="input-section" style="margin-top: var(--space-4);">
+      <h3 class="section-title">2. Investment Return &amp; Time Horizon</h3>
+
+      <!-- Expected Annual Return (%) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="tfsa-return-val">Expected Annual Return</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="tfsa-return-val" min="0" max="20" step="0.1" value="6.0" aria-label="Expected Annual Return Rate" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="tfsa-return-slider" min="0" max="15" step="0.25" value="6.0" class="slider-range" aria-label="Annual Return Slider" />
+
+        <!-- Return Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Asset Mix:</span>
+          <button type="button" class="preset-pill" data-return="3.0">3% (Cash/GIC)</button>
+          <button type="button" class="preset-pill" data-return="5.0">5% (Conservative)</button>
+          <button type="button" class="preset-pill active" data-return="6.0">6% (Balanced)</button>
+          <button type="button" class="preset-pill" data-return="7.0">7% (Growth)</button>
+          <button type="button" class="preset-pill" data-return="8.0">8% (All-Equity)</button>
+        </div>
+        <span class="input-subtext">Projected net compound annual return (after ETF/fund management fees).</span>
+      </div>
+
+      <!-- Investment Period (Years) -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="tfsa-years-val">Investment Horizon (Years)</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="tfsa-years-val" min="1" max="50" step="0.5" value="20" aria-label="Investment Period in Years" style="text-align: left;" />
+            <span class="percent-symbol">yrs</span>
+          </div>
+        </div>
+        <input type="range" id="tfsa-years-slider" min="1" max="40" step="1" value="20" class="slider-range" aria-label="Investment Horizon Slider" />
+
+        <!-- Horizon Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Horizon:</span>
+          <button type="button" class="preset-pill" data-years="5">5 yrs</button>
+          <button type="button" class="preset-pill" data-years="10">10 yrs</button>
+          <button type="button" class="preset-pill" data-years="15">15 yrs</button>
+          <button type="button" class="preset-pill active" data-years="20">20 yrs</button>
+          <button type="button" class="preset-pill" data-years="25">25 yrs</button>
+          <button type="button" class="preset-pill" data-years="30">30 yrs</button>
+        </div>
+        <span class="input-subtext">Number of years your money remains invested and compounding tax-free.</span>
+      </div>
+    </div>
+
+    <!-- Step 3: Optional Advanced Escalation -->
+    <div class="advanced-section" style="margin-top: var(--space-4);">
+      <button type="button" class="advanced-toggle-btn" id="tfsa-advanced-toggle" aria-expanded="false" aria-controls="tfsa-advanced-panel">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+          Annual Contribution Increase (Optional)
+        </span>
+        <svg class="chevron-icon" id="tfsa-advanced-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div class="advanced-panel hidden" id="tfsa-advanced-panel">
+        <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0 0 var(--space-3) 0; line-height: 1.45;">
+          Model increasing your recurring contributions each year to reflect salary raises, career growth, or inflation.
+        </p>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="tfsa-escalation-val">Annual Contribution Increase</label>
+            <div class="input-symbol-wrapper">
+              <input type="number" id="tfsa-escalation-val" min="0" max="15" step="0.5" value="0" aria-label="Annual Contribution Increase Percentage" style="text-align: left;" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+          <input type="range" id="tfsa-escalation-slider" min="0" max="10" step="0.5" value="0" class="slider-range" aria-label="Escalation Percentage Slider" />
+
+          <!-- Escalation Presets -->
+          <div class="preset-pills-row">
+            <span class="preset-label">Pace:</span>
+            <button type="button" class="preset-pill active" data-escalate="0">0% (Fixed)</button>
+            <button type="button" class="preset-pill" data-escalate="2">2% (Inflation)</button>
+            <button type="button" class="preset-pill" data-escalate="3">3% (Annual Raise)</button>
+            <button type="button" class="preset-pill" data-escalate="5">5% (Aggressive)</button>
+          </div>
+          <span class="input-subtext">Each year, your regular contribution increases by this percentage.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Button -->
+    <div style="margin-top: var(--space-4);">
+      <Button variant="secondary" size="sm" id="tfsa-growth-reset" class="w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset Calculator
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+
+    <!-- Primary Hero Card: Projected TFSA Balance -->
+    <Card elevation="md" class="primary-hero-card">
+      <div class="hero-top-row">
+        <span class="hero-label">Projected TFSA Balance</span>
+        <span class="hero-badge" id="tfsa-growth-badge">100% Tax-Free</span>
+      </div>
+      <div class="hero-main-metric" id="res-final-balance">$264,122.49</div>
+      <p class="hero-subtext" id="res-hero-subtext">
+        Estimated tax-free value after 20 years compounding at 6.0% return
+      </p>
+
+      <!-- Sub-Hero Comparison Highlights -->
+      <div class="sub-hero-container">
+        <div class="sub-hero-grid">
+          <div class="sub-hero-item">
+            <span class="sub-hero-label">Total Out-of-Pocket</span>
+            <span class="sub-hero-val text-primary" id="res-total-principal">$130,000.00</span>
+            <span class="sub-hero-desc">Your original capital &amp; deposits</span>
+          </div>
+          <div class="sub-hero-item">
+            <span class="sub-hero-label">Tax-Free Growth</span>
+            <span class="sub-hero-val text-success" id="res-total-growth">$134,122.49</span>
+            <span class="sub-hero-desc" id="res-growth-pct-desc">50.8% of final portfolio</span>
+          </div>
+        </div>
+      </div>
+    </Card>
+
+    <!-- Visual Portfolio Split Bar -->
+    <div class="breakdown-bar-card">
+      <div class="breakdown-bar-labels">
+        <span class="bar-lbl bar-lbl-principal">
+          <span class="bar-dot dot-principal"></span>
+          Your Capital: <strong id="bar-principal-val">$130,000 (49.2%)</strong>
+        </span>
+        <span class="bar-lbl bar-lbl-growth">
+          <span class="bar-dot dot-growth"></span>
+          Compound Growth: <strong id="bar-growth-val">$134,122 (50.8%)</strong>
+        </span>
+      </div>
+      <div class="breakdown-progress-track">
+        <div class="progress-segment progress-principal" id="bar-segment-principal" style="width: 49.2%;"></div>
+        <div class="progress-segment progress-growth" id="bar-segment-growth" style="width: 50.8%;"></div>
+      </div>
+      <div class="bar-caption">
+        In a TFSA, <strong>$0 tax</strong> is paid on this investment growth upon withdrawal.
+      </div>
+    </div>
+
+    <!-- Detailed 8-Tile Metrics Grid (Rule 15 Responsive) -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <span class="metric-label">Initial Investment</span>
+        <span class="metric-val" id="tile-initial-bal">$10,000.00</span>
+        <span class="metric-sub">Starting TFSA balance</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Total Contributions</span>
+        <span class="metric-val text-primary" id="tile-total-contrib">$120,000.00</span>
+        <span class="metric-sub" id="tile-contrib-sub">240 deposits of $500</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Total Capital Invested</span>
+        <span class="metric-val" id="tile-total-capital">$130,000.00</span>
+        <span class="metric-sub">Initial + contributions</span>
+      </div>
+
+      <div class="metric-tile highlight-tile">
+        <span class="metric-label">Estimated Investment Growth</span>
+        <span class="metric-val text-success" id="tile-total-growth">$134,122.49</span>
+        <span class="metric-sub">Pure compound interest</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Growth Share of Portfolio</span>
+        <span class="metric-val text-success" id="tile-growth-share">50.8%</span>
+        <span class="metric-sub">Generated by market return</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Investment Horizon</span>
+        <span class="metric-val" id="tile-horizon">20.0 yrs</span>
+        <span class="metric-sub" id="tile-periods-sub">240 compounding periods</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Expected Annual Return</span>
+        <span class="metric-val" id="tile-return">6.0%</span>
+        <span class="metric-sub">Compounded monthly</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Contribution Schedule</span>
+        <span class="metric-val" id="tile-schedule">$500.00 / mo</span>
+        <span class="metric-sub" id="tile-schedule-sub">Monthly frequency</span>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict Summary -->
+    <div class="verdict-container">
+      <Card elevation="sm" class="verdict-card verdict-info">
+        <div class="verdict-header">
+          <div class="verdict-badge">TFSA Projection Summary</div>
+          <span class="verdict-title">How Your Wealth Compounds</span>
+        </div>
+        <p class="verdict-desc" id="res-verdict-text">
+          Starting with an initial balance of <strong>$10,000.00</strong> and contributing <strong>$500.00 monthly</strong> over <strong>20 years</strong> at an assumed <strong>6.0% annual return</strong> grows your TFSA to <strong>$264,122.49</strong>. Your total out-of-pocket deposits equal <strong>$130,000.00</strong>, while compound investment growth generates <strong>$134,122.49</strong> in tax-free returns.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Comparison / Scenario Feature: What happens if I contribute more? -->
+    <div class="comparison-card">
+      <div class="comparison-header">
+        <div class="comparison-title-row">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+          <span class="comparison-title">Scenario Comparison: What If You Contribute More?</span>
+        </div>
+        <p class="comparison-sub">
+          See the compounding impact of boosting your regular contribution amount.
+        </p>
+      </div>
+
+      <div class="comparison-body">
+        <div class="comparison-input-row">
+          <label for="tfsa-boost-val" class="comparison-input-label">Higher Regular Contribution:</label>
+          <div class="input-symbol-wrapper" style="width: 160px;">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="tfsa-boost-val" min="0" max="100000" step="25" value="600" aria-label="Comparison Contribution Amount" />
+          </div>
+          <div class="boost-quick-pills">
+            <button type="button" class="preset-pill" id="btn-boost-add50">+$50</button>
+            <button type="button" class="preset-pill active" id="btn-boost-add100">+$100</button>
+            <button type="button" class="preset-pill" id="btn-boost-add200">+$200</button>
+          </div>
+        </div>
+
+        <div class="comparison-metrics-grid">
+          <div class="comparison-tile">
+            <span class="comp-label">Baseline Balance</span>
+            <span class="comp-val" id="comp-base-balance">$264,122</span>
+            <span class="comp-sub" id="comp-base-sub">With $500/mo</span>
+          </div>
+
+          <div class="comparison-tile highlight-comp">
+            <span class="comp-label">Boosted Balance</span>
+            <span class="comp-val text-success" id="comp-boost-balance">$310,327</span>
+            <span class="comp-sub" id="comp-boost-sub">With $600/mo</span>
+          </div>
+
+          <div class="comparison-tile">
+            <span class="comp-label">Extra Contributions</span>
+            <span class="comp-val text-primary" id="comp-extra-contrib">+$24,000</span>
+            <span class="comp-sub">Total added cash</span>
+          </div>
+
+          <div class="comparison-tile">
+            <span class="comp-label">Extra Growth Earned</span>
+            <span class="comp-val text-success" id="comp-extra-growth">+$22,204</span>
+            <span class="comp-sub">Free compound boost</span>
+          </div>
+        </div>
+
+        <div class="comparison-verdict" id="comp-verdict-msg">
+          Contributing an extra <strong>$100.00/month</strong> requires <strong>$24,000.00</strong> more in savings over 20 years, but delivers <strong>$46,204.09</strong> in additional tax-free wealth—a <strong>$22,204.09</strong> growth bonus!
+        </div>
+      </div>
+    </div>
+
+    <!-- Year-by-Year Growth Table -->
+    <div class="table-card">
+      <div class="table-header-row">
+        <div>
+          <h4 class="table-title">Year-by-Year TFSA Growth Schedule</h4>
+          <span class="table-sub">Annual snapshot of starting balance, deposits, compound gains, and ending balance.</span>
+        </div>
+        <button type="button" class="table-toggle-btn" id="table-toggle-btn">Show All Years</button>
+      </div>
+
+      <div class="table-responsive-wrapper">
+        <table class="growth-table" id="tfsa-growth-table">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: center;">Year</th>
+              <th scope="col" style="text-align: right;">Starting Balance</th>
+              <th scope="col" style="text-align: right;">Annual Deposits</th>
+              <th scope="col" style="text-align: right;">Investment Growth</th>
+              <th scope="col" style="text-align: right;">Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CRA Contribution Room & Tax Rule Notice -->
+    <div class="status-banner info-banner">
+      <div class="status-banner-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      </div>
+      <div class="status-banner-content">
+        <strong>TFSA Contribution Room Advisory:</strong> The CRA annual TFSA dollar limit is <strong>$7,000 for 2026</strong>. While investment growth inside your TFSA never consumes contribution room, your total regular deposits must stay within your accumulated CRA contribution limit. To verify your exact available room and prior carry-forwards, use our <a href="/calculator/tfsa-contribution-calculator" style="color: var(--color-primary); text-decoration: underline; font-weight: 600;">TFSA Contribution Calculator</a>.
+      </div>
+    </div>
+
+    <!-- Canada Statutory Disclaimer -->
+    <div class="disclaimer-text">
+      <strong>Canadian Tax &amp; Investment Disclaimer:</strong> This calculator provides simulated investment projections for educational and illustrative purposes only. All calculations assume a constant, steady rate of return; actual market returns will fluctuate, can be negative, and are not guaranteed. Calculations do not account for product fees, trading commissions, or changes to CRA legislation. This tool does not constitute investment, financial, or tax advice. Consult a licensed Canadian financial advisor or CPA to tailor an investment strategy to your specific risk tolerance and objectives.
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initTfsaGrowthCalculator() {
+    const initialInput = document.getElementById('tfsa-initial-bal') as HTMLInputElement;
+    const initialSlider = document.getElementById('tfsa-initial-slider') as HTMLInputElement;
+
+    const contribInput = document.getElementById('tfsa-contrib-val') as HTMLInputElement;
+    const contribSlider = document.getElementById('tfsa-contrib-slider') as HTMLInputElement;
+
+    const freqSelect = document.getElementById('tfsa-freq-select') as HTMLSelectElement;
+
+    const returnInput = document.getElementById('tfsa-return-val') as HTMLInputElement;
+    const returnSlider = document.getElementById('tfsa-return-slider') as HTMLInputElement;
+
+    const yearsInput = document.getElementById('tfsa-years-val') as HTMLInputElement;
+    const yearsSlider = document.getElementById('tfsa-years-slider') as HTMLInputElement;
+
+    const advancedToggle = document.getElementById('tfsa-advanced-toggle');
+    const advancedPanel = document.getElementById('tfsa-advanced-panel');
+    const advancedChevron = document.getElementById('tfsa-advanced-chevron');
+
+    const escalationInput = document.getElementById('tfsa-escalation-val') as HTMLInputElement;
+    const escalationSlider = document.getElementById('tfsa-escalation-slider') as HTMLInputElement;
+
+    const resetBtn = document.getElementById('tfsa-growth-reset');
+
+    // Comparison elements
+    const boostInput = document.getElementById('tfsa-boost-val') as HTMLInputElement;
+    const btnBoost50 = document.getElementById('btn-boost-add50');
+    const btnBoost100 = document.getElementById('btn-boost-add100');
+    const btnBoost200 = document.getElementById('btn-boost-add200');
+
+    // Table elements
+    const tableToggleBtn = document.getElementById('table-toggle-btn');
+    const tableBody = document.getElementById('table-body');
+
+    let showAllYears = false;
+
+    if (!initialInput || !contribInput || !returnInput || !yearsInput) return;
+
+    // Advanced Accordion Toggle
+    if (advancedToggle && advancedPanel && advancedChevron) {
+      advancedToggle.addEventListener('click', () => {
+        const isExpanded = advancedToggle.getAttribute('aria-expanded') === 'true';
+        advancedToggle.setAttribute('aria-expanded', String(!isExpanded));
+        advancedPanel.classList.toggle('hidden', isExpanded);
+        advancedChevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+      });
+    }
+
+    // Bidirectional Slider-Input Binding
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, maxSync = false) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        const val = parseFloat(input.value) || 0;
+        if (maxSync && val > parseFloat(slider.max)) {
+          slider.max = String(Math.ceil(val * 1.5));
+        }
+        slider.value = input.value;
+        syncBoostInput();
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        syncBoostInput();
+        calculateAll();
+      });
+    }
+
+    bindSlider(initialInput, initialSlider, true);
+    bindSlider(contribInput, contribSlider, true);
+    bindSlider(returnInput, returnSlider);
+    bindSlider(yearsInput, yearsSlider);
+    if (escalationInput && escalationSlider) {
+      bindSlider(escalationInput, escalationSlider);
+    }
+
+    freqSelect.addEventListener('change', () => {
+      syncBoostInput();
+      calculateAll();
+    });
+
+    // Preset Pills Handlers
+    document.querySelectorAll('[data-initial]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.initial;
+        if (val !== undefined) {
+          initialInput.value = val;
+          initialSlider.value = val;
+          document.querySelectorAll('[data-initial]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          calculateAll();
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-contrib]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.contrib;
+        if (val !== undefined) {
+          contribInput.value = val;
+          contribSlider.value = val;
+          document.querySelectorAll('[data-contrib]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          syncBoostInput();
+          calculateAll();
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-return]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.return;
+        if (val !== undefined) {
+          returnInput.value = val;
+          returnSlider.value = val;
+          document.querySelectorAll('[data-return]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          calculateAll();
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-years]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.years;
+        if (val !== undefined) {
+          yearsInput.value = val;
+          yearsSlider.value = val;
+          document.querySelectorAll('[data-years]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          calculateAll();
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-escalate]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.escalate;
+        if (val !== undefined && escalationInput && escalationSlider) {
+          escalationInput.value = val;
+          escalationSlider.value = val;
+          document.querySelectorAll('[data-escalate]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          calculateAll();
+        }
+      });
+    });
+
+    // Comparison Boost Input & Buttons
+    function syncBoostInput(offset = 100) {
+      if (!boostInput) return;
+      const base = parseFloat(contribInput.value) || 0;
+      boostInput.value = String(Math.round(base + offset));
+    }
+
+    if (boostInput) {
+      boostInput.addEventListener('input', () => {
+        document.querySelectorAll('.boost-quick-pills .preset-pill').forEach(b => b.classList.remove('active'));
+        calculateAll();
+      });
+    }
+
+    if (btnBoost50) {
+      btnBoost50.addEventListener('click', () => {
+        document.querySelectorAll('.boost-quick-pills .preset-pill').forEach(b => b.classList.remove('active'));
+        btnBoost50.classList.add('active');
+        syncBoostInput(50);
+        calculateAll();
+      });
+    }
+    if (btnBoost100) {
+      btnBoost100.addEventListener('click', () => {
+        document.querySelectorAll('.boost-quick-pills .preset-pill').forEach(b => b.classList.remove('active'));
+        btnBoost100.classList.add('active');
+        syncBoostInput(100);
+        calculateAll();
+      });
+    }
+    if (btnBoost200) {
+      btnBoost200.addEventListener('click', () => {
+        document.querySelectorAll('.boost-quick-pills .preset-pill').forEach(b => b.classList.remove('active'));
+        btnBoost200.classList.add('active');
+        syncBoostInput(200);
+        calculateAll();
+      });
+    }
+
+    // Table toggle handler
+    if (tableToggleBtn) {
+      tableToggleBtn.addEventListener('click', () => {
+        showAllYears = !showAllYears;
+        tableToggleBtn.textContent = showAllYears ? 'Show First 5 Years' : 'Show All Years';
+        calculateAll();
+      });
+    }
+
+    // Reset button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        initialInput.value = '10000';
+        initialSlider.value = '10000';
+
+        contribInput.value = '500';
+        contribSlider.value = '500';
+
+        freqSelect.value = 'monthly';
+
+        returnInput.value = '6.0';
+        returnSlider.value = '6.0';
+
+        yearsInput.value = '20';
+        yearsSlider.value = '20';
+
+        if (escalationInput && escalationSlider) {
+          escalationInput.value = '0';
+          escalationSlider.value = '0';
+        }
+
+        if (boostInput) {
+          boostInput.value = '600';
+        }
+
+        showAllYears = false;
+        if (tableToggleBtn) tableToggleBtn.textContent = 'Show All Years';
+
+        // Reset active pill styles
+        document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-initial="10000"]')?.classList.add('active');
+        document.querySelector('[data-contrib="500"]')?.classList.add('active');
+        document.querySelector('[data-return="6.0"]')?.classList.add('active');
+        document.querySelector('[data-years="20"]')?.classList.add('active');
+        document.querySelector('[data-escalate="0"]')?.classList.add('active');
+        btnBoost100?.classList.add('active');
+
+        calculateAll();
+      });
+    }
+
+    function formatCAD(val: number): string {
+      return '$' + Math.max(0, val).toLocaleString('en-CA', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatShortCAD(val: number): string {
+      return '$' + Math.max(0, Math.round(val)).toLocaleString('en-CA');
+    }
+
+    // Core Compound Simulation Engine
+    interface SimulationResult {
+      initialBalance: number;
+      totalContributions: number;
+      totalGrowth: number;
+      finalBalance: number;
+      totalCapital: number;
+      growthPct: number;
+      capitalPct: number;
+      yearlyRows: Array<{
+        year: number;
+        startBalance: number;
+        contributions: number;
+        growth: number;
+        endBalance: number;
+      }>;
+    }
+
+    function runSimulation(
+      P0: number,
+      PMT: number,
+      frequency: string,
+      rPct: number,
+      Y: number,
+      gPct: number
+    ): SimulationResult {
+      const p0 = Math.max(0, P0);
+      const pmt = Math.max(0, PMT);
+      const r = Math.max(0, rPct) / 100;
+      const yYears = Math.max(0, Y);
+      const g = Math.max(0, gPct) / 100;
+
+      const freqMap: Record<string, number> = {
+        monthly: 12,
+        biweekly: 26,
+        weekly: 52,
+        annually: 1
+      };
+      const m = freqMap[frequency] || 12;
+      const totalPeriods = Math.round(yYears * m);
+      const i = r / m;
+
+      let balance = p0;
+      let totalContrib = 0;
+      let totalGrowth = 0;
+
+      const yearlyRows: SimulationResult['yearlyRows'] = [];
+      let currentYearStart = p0;
+      let currentYearContrib = 0;
+      let currentYearGrowth = 0;
+
+      for (let k = 1; k <= totalPeriods; k++) {
+        const yIndex = Math.floor((k - 1) / m) + 1;
+        const pmt_k = pmt * Math.pow(1 + g, yIndex - 1);
+        const periodInterest = balance * i;
+
+        balance += periodInterest + pmt_k;
+        totalContrib += pmt_k;
+        totalGrowth += periodInterest;
+
+        currentYearContrib += pmt_k;
+        currentYearGrowth += periodInterest;
+
+        const isYearEnd = (k % m === 0) || (k === totalPeriods);
+        if (isYearEnd) {
+          yearlyRows.push({
+            year: yIndex,
+            startBalance: currentYearStart,
+            contributions: currentYearContrib,
+            growth: currentYearGrowth,
+            endBalance: balance
+          });
+          currentYearStart = balance;
+          currentYearContrib = 0;
+          currentYearGrowth = 0;
+        }
+      }
+
+      if (totalPeriods === 0) {
+        yearlyRows.push({
+          year: 0,
+          startBalance: p0,
+          contributions: 0,
+          growth: 0,
+          endBalance: p0
+        });
+      }
+
+      const finalBal = balance;
+      const totalCap = p0 + totalContrib;
+      const gPctFinal = finalBal > 0 ? (totalGrowth / finalBal) * 100 : 0;
+      const cPctFinal = finalBal > 0 ? (totalCap / finalBal) * 100 : 0;
+
+      return {
+        initialBalance: p0,
+        totalContributions: totalContrib,
+        totalGrowth,
+        finalBalance: finalBal,
+        totalCapital: totalCap,
+        growthPct: gPctFinal,
+        capitalPct: cPctFinal,
+        yearlyRows
+      };
+    }
+
+    function calculateAll() {
+      const p0 = parseFloat(initialInput.value) || 0;
+      const pmt = parseFloat(contribInput.value) || 0;
+      const freq = freqSelect.value;
+      const rPct = parseFloat(returnInput.value) || 0;
+      const years = parseFloat(yearsInput.value) || 0;
+      const gPct = escalationInput ? (parseFloat(escalationInput.value) || 0) : 0;
+
+      const res = runSimulation(p0, pmt, freq, rPct, years, gPct);
+
+      // DOM: Hero Elements
+      const resFinal = document.getElementById('res-final-balance');
+      const resHeroSub = document.getElementById('res-hero-subtext');
+      const resTotalPrincipal = document.getElementById('res-total-principal');
+      const resTotalGrowth = document.getElementById('res-total-growth');
+      const resGrowthPctDesc = document.getElementById('res-growth-pct-desc');
+
+      if (resFinal) resFinal.textContent = formatCAD(res.finalBalance);
+      if (resHeroSub) {
+        resHeroSub.textContent = `Estimated tax-free value after ${years.toFixed(1)} years compounding at ${rPct.toFixed(1)}% return`;
+      }
+      if (resTotalPrincipal) resTotalPrincipal.textContent = formatCAD(res.totalCapital);
+      if (resTotalGrowth) resTotalGrowth.textContent = formatCAD(res.totalGrowth);
+      if (resGrowthPctDesc) {
+        resGrowthPctDesc.textContent = `${res.growthPct.toFixed(1)}% of final portfolio`;
+      }
+
+      // Visual Split Bar
+      const barPrincipalVal = document.getElementById('bar-principal-val');
+      const barGrowthVal = document.getElementById('bar-growth-val');
+      const barSegPrincipal = document.getElementById('bar-segment-principal');
+      const barSegGrowth = document.getElementById('bar-segment-growth');
+
+      if (barPrincipalVal) {
+        barPrincipalVal.textContent = `${formatShortCAD(res.totalCapital)} (${res.capitalPct.toFixed(1)}%)`;
+      }
+      if (barGrowthVal) {
+        barGrowthVal.textContent = `${formatShortCAD(res.totalGrowth)} (${res.growthPct.toFixed(1)}%)`;
+      }
+      if (barSegPrincipal) barSegPrincipal.style.width = `${Math.min(100, Math.max(0, res.capitalPct))}%`;
+      if (barSegGrowth) barSegGrowth.style.width = `${Math.min(100, Math.max(0, res.growthPct))}%`;
+
+      // 8-Tile Metrics Grid
+      const tileInitial = document.getElementById('tile-initial-bal');
+      const tileContrib = document.getElementById('tile-total-contrib');
+      const tileContribSub = document.getElementById('tile-contrib-sub');
+      const tileCapital = document.getElementById('tile-total-capital');
+      const tileGrowth = document.getElementById('tile-total-growth');
+      const tileGrowthShare = document.getElementById('tile-growth-share');
+      const tileHorizon = document.getElementById('tile-horizon');
+      const tilePeriodsSub = document.getElementById('tile-periods-sub');
+      const tileReturn = document.getElementById('tile-return');
+      const tileSchedule = document.getElementById('tile-schedule');
+      const tileScheduleSub = document.getElementById('tile-schedule-sub');
+
+      const freqMap: Record<string, number> = { monthly: 12, biweekly: 26, weekly: 52, annually: 1 };
+      const m = freqMap[freq] || 12;
+      const totalPeriods = Math.round(years * m);
+
+      if (tileInitial) tileInitial.textContent = formatCAD(res.initialBalance);
+      if (tileContrib) tileContrib.textContent = formatCAD(res.totalContributions);
+      if (tileContribSub) {
+        const freqLabel = freq === 'monthly' ? 'monthly' : freq === 'biweekly' ? 'biweekly' : freq === 'weekly' ? 'weekly' : 'annual';
+        tileContribSub.textContent = `${totalPeriods} ${freqLabel} deposits`;
+      }
+      if (tileCapital) tileCapital.textContent = formatCAD(res.totalCapital);
+      if (tileGrowth) tileGrowth.textContent = formatCAD(res.totalGrowth);
+      if (tileGrowthShare) tileGrowthShare.textContent = `${res.growthPct.toFixed(1)}%`;
+      if (tileHorizon) tileHorizon.textContent = `${years.toFixed(1)} yrs`;
+      if (tilePeriodsSub) tilePeriodsSub.textContent = `${totalPeriods} total compounding periods`;
+      if (tileReturn) tileReturn.textContent = `${rPct.toFixed(2)}%`;
+      if (tileSchedule) {
+        const suffix = freq === 'monthly' ? '/ mo' : freq === 'biweekly' ? '/ 2 wks' : freq === 'weekly' ? '/ wk' : '/ yr';
+        tileSchedule.textContent = `${formatCAD(pmt)} ${suffix}`;
+      }
+      if (tileScheduleSub) {
+        tileScheduleSub.textContent = gPct > 0 ? `+${gPct.toFixed(1)}% annual escalation` : 'Fixed regular deposit';
+      }
+
+      // Plain-English Verdict Text
+      const verdictText = document.getElementById('res-verdict-text');
+      if (verdictText) {
+        const freqText = freq === 'monthly' ? 'monthly' : freq === 'biweekly' ? 'biweekly' : freq === 'weekly' ? 'weekly' : 'annually';
+        const escalationNote = gPct > 0 ? ` (increasing by <strong>${gPct.toFixed(1)}% each year</strong>)` : '';
+        verdictText.innerHTML = `Starting with an initial balance of <strong>${formatCAD(res.initialBalance)}</strong> and contributing <strong>${formatCAD(pmt)} ${freqText}</strong>${escalationNote} over <strong>${years.toFixed(1)} years</strong> at an assumed <strong>${rPct.toFixed(1)}% annual return</strong> grows your TFSA to <strong>${formatCAD(res.finalBalance)}</strong>. Your total out-of-pocket deposits equal <strong>${formatCAD(res.totalCapital)}</strong>, while compound investment growth generates <strong>${formatCAD(res.totalGrowth)}</strong> in tax-free returns.`;
+      }
+
+      // Scenario Comparison Feature
+      const boostVal = boostInput ? (parseFloat(boostInput.value) || 0) : (pmt + 100);
+      const boostRes = runSimulation(p0, boostVal, freq, rPct, years, gPct);
+
+      const compBaseBal = document.getElementById('comp-base-balance');
+      const compBaseSub = document.getElementById('comp-base-sub');
+      const compBoostBal = document.getElementById('comp-boost-balance');
+      const compBoostSub = document.getElementById('comp-boost-sub');
+      const compExtraContrib = document.getElementById('comp-extra-contrib');
+      const compExtraGrowth = document.getElementById('comp-extra-growth');
+      const compVerdictMsg = document.getElementById('comp-verdict-msg');
+
+      const extraContrib = boostRes.totalContributions - res.totalContributions;
+      const extraGrowth = boostRes.totalGrowth - res.totalGrowth;
+      const extraTotal = boostRes.finalBalance - res.finalBalance;
+
+      if (compBaseBal) compBaseBal.textContent = formatShortCAD(res.finalBalance);
+      if (compBaseSub) compBaseSub.textContent = `With ${formatShortCAD(pmt)}/${freq === 'monthly' ? 'mo' : freq === 'biweekly' ? '2wks' : freq === 'weekly' ? 'wk' : 'yr'}`;
+      if (compBoostBal) compBoostBal.textContent = formatShortCAD(boostRes.finalBalance);
+      if (compBoostSub) compBoostSub.textContent = `With ${formatShortCAD(boostVal)}/${freq === 'monthly' ? 'mo' : freq === 'biweekly' ? '2wks' : freq === 'weekly' ? 'wk' : 'yr'}`;
+      if (compExtraContrib) compExtraContrib.textContent = `+${formatShortCAD(extraContrib)}`;
+      if (compExtraGrowth) compExtraGrowth.textContent = `+${formatShortCAD(extraGrowth)}`;
+
+      if (compVerdictMsg) {
+        const deltaPmt = boostVal - pmt;
+        const sign = deltaPmt >= 0 ? '+' : '';
+        compVerdictMsg.innerHTML = `Adjusting your regular deposit by <strong>${sign}${formatCAD(deltaPmt)}</strong> per period changes your personal deposits by <strong>${formatCAD(Math.abs(extraContrib))}</strong> over ${years.toFixed(1)} years, but alters your final tax-free balance by <strong>${formatCAD(Math.abs(extraTotal))}</strong>—yielding <strong>${formatCAD(Math.abs(extraGrowth))}</strong> in additional compound market growth!`;
+      }
+
+      // Year-by-Year Growth Table Population
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        const rowsToShow = showAllYears ? res.yearlyRows : res.yearlyRows.slice(0, 5);
+
+        rowsToShow.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="text-align: center; font-weight: 600;">Year ${row.year}</td>
+            <td style="text-align: right; color: var(--color-text-muted);">${formatCAD(row.startBalance)}</td>
+            <td style="text-align: right; color: var(--color-primary);">${formatCAD(row.contributions)}</td>
+            <td style="text-align: right; color: var(--color-success); font-weight: 500;">+${formatCAD(row.growth)}</td>
+            <td style="text-align: right; font-weight: 700; color: var(--color-text);">${formatCAD(row.endBalance)}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+
+        if (tableToggleBtn) {
+          tableToggleBtn.style.display = res.yearlyRows.length > 5 ? 'inline-block' : 'none';
+        }
+      }
+    }
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const p0 = parseFloat(initialInput.value) || 0;
+      const pmt = parseFloat(contribInput.value) || 0;
+      const freq = freqSelect.value;
+      const rPct = parseFloat(returnInput.value) || 0;
+      const years = parseFloat(yearsInput.value) || 0;
+      const resFinal = document.getElementById('res-final-balance')?.textContent || '$0.00';
+      const resCap = document.getElementById('res-total-principal')?.textContent || '$0.00';
+      const resGrowth = document.getElementById('res-total-growth')?.textContent || '$0.00';
+
+      const text = `Canadian TFSA Growth Projection:\n` +
+                   `Current Balance: $${p0.toLocaleString('en-CA')} | Regular Deposit: $${pmt.toLocaleString('en-CA')} (${freq})\n` +
+                   `Expected Annual Return: ${rPct.toFixed(1)}% | Horizon: ${years.toFixed(1)} Years\n` +
+                   `Projected TFSA Balance: ${resFinal} (100% Tax-Free)\n` +
+                   `Total Capital Deposited: ${resCap}\n` +
+                   `Estimated Investment Growth: ${resGrowth}\n` +
+                   `Summary: Starting with $${p0.toLocaleString('en-CA')} and depositing $${pmt.toLocaleString('en-CA')} ${freq} projects to ${resFinal} after ${years.toFixed(1)} years at ${rPct.toFixed(1)}% annual return.`;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Trigger initial computation
+    calculateAll();
+  }
+
+  // Ensure DOM is ready across Astro page transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTfsaGrowthCalculator);
+  } else {
+    initTfsaGrowthCalculator();
+  }
+  document.addEventListener('astro:page-load', initTfsaGrowthCalculator);
+</script>
+
+<style>
+  /* Base Container & Grouping */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .input-label-row label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .percent-symbol {
+    position: absolute;
+    right: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .input-symbol-wrapper input {
+    padding-left: 24px;
+    padding-right: 10px;
+    height: 38px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-align: right;
+    width: 140px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  .currency-select {
+    height: 38px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .currency-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  .slider-range {
+    width: 100%;
+    margin-top: 4px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .preset-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .preset-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.05);
+  }
+
+  .preset-pill.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .input-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* Advanced Accordion Panel */
+  .advanced-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+
+  .advanced-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .advanced-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  :global(.dark) .advanced-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .chevron-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .advanced-panel {
+    padding: 12px 14px 16px 14px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* Primary Hero Card */
+  .primary-hero-card {
+    padding: var(--space-4);
+    border-left: 4px solid var(--color-success);
+    background: var(--color-surface);
+  }
+
+  .hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .hero-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .hero-badge {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--color-success);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+  }
+
+  .hero-main-metric {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-success);
+    margin: var(--space-2) 0 4px 0;
+    line-height: 1.15;
+    word-break: break-word;
+  }
+
+  .hero-subtext {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Sub-Hero Highlights */
+  .sub-hero-container {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--color-border);
+  }
+
+  .sub-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .sub-hero-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sub-hero-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .sub-hero-val {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .sub-hero-desc {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Visual Portfolio Split Bar */
+  .breakdown-bar-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .breakdown-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.8rem;
+  }
+
+  .bar-lbl {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+  }
+
+  .bar-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .dot-principal {
+    background: var(--color-primary);
+  }
+
+  .dot-growth {
+    background: var(--color-success);
+  }
+
+  .breakdown-progress-track {
+    width: 100%;
+    height: 14px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 9999px;
+    display: flex;
+    overflow: hidden;
+  }
+
+  :global(.dark) .breakdown-progress-track {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .progress-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-principal {
+    background: var(--color-primary);
+  }
+
+  .progress-growth {
+    background: var(--color-success);
+  }
+
+  .bar-caption {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  /* Rule 15 Compliant Responsive Results Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .metric-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .metric-tile.highlight-tile {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.03);
+  }
+
+  :global(.dark) .metric-tile.highlight-tile {
+    background: rgba(16, 185, 129, 0.06);
+  }
+
+  .metric-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .metric-val {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    word-break: break-word;
+  }
+
+  .metric-sub {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Colors */
+  .text-primary {
+    color: var(--color-primary);
+  }
+
+  .text-success {
+    color: var(--color-success);
+  }
+
+  /* Verdict Summary Card */
+  .verdict-card {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .verdict-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: 6px;
+  }
+
+  .verdict-badge {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .verdict-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .verdict-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Scenario Comparison Card */
+  .comparison-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .comparison-header {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .comparison-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .comparison-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .comparison-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .comparison-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .comparison-input-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+  }
+
+  :global(.dark) .comparison-input-row {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .comparison-input-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .boost-quick-pills {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .comparison-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .comparison-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .comparison-tile.highlight-comp {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.04);
+  }
+
+  .comp-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .comp-val {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .comp-sub {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+  }
+
+  .comparison-verdict {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    padding-top: 6px;
+    border-top: 1px dashed var(--color-border);
+  }
+
+  /* Year-by-Year Growth Table */
+  .table-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .table-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .table-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 2px 0;
+  }
+
+  .table-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .table-toggle-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .table-toggle-btn:hover {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.05);
+  }
+
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .growth-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .growth-table th {
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .growth-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .growth-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Status Banner */
+  .status-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .info-banner {
+    background: rgba(37, 99, 235, 0.06);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    color: var(--color-text);
+  }
+
+  :global(.dark) .info-banner {
+    background: rgba(37, 99, 235, 0.12);
+  }
+
+  .status-banner-icon {
+    flex-shrink: 0;
+    color: var(--color-primary);
+    margin-top: 1px;
+  }
+
+  .disclaimer-text {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Mobile Media Queries (Rule 15 Compliance) */
+  @media (max-width: 640px) {
+    .hero-main-metric {
+      font-size: 1.75rem;
+    }
+
+    .sub-hero-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .metrics-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .metric-tile {
+      padding: 10px 8px;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+    }
+
+    .comparison-metrics-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .comparison-input-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .comparison-input-row .input-symbol-wrapper {
+      width: 100% !important;
+    }
+
+    .growth-table th, .growth-table td {
+      padding: 6px 8px;
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .comparison-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

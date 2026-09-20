@@ -1,0 +1,936 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RrspTaxSavingsCalculator from '../../components/calculator/RrspTaxSavingsCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'RRSP Tax Savings Calculator', item: '/calculator/rrsp-tax-savings-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How is RRSP tax savings calculated in Canada?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "RRSP tax savings are calculated by subtracting your total income tax after the deduction from your total income tax before the contribution. Because Canada uses a progressive tax system at both federal and provincial/territorial levels, your deductible RRSP deposit reduces your income starting from your highest marginal tax bracket downward. Your total savings equal your federal tax reduction plus your provincial/territorial tax reduction."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much tax will I save if I put $5,000 into my RRSP?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The tax you save depends on your annual taxable income and your province of residence. For instance, if you live in Ontario and earn $50,000, your marginal tax rate is 20.05% (15% federal + 5.05% provincial), saving you approximately $1,002.50. If you earn $95,000 in Ontario with a ~37.9% combined marginal rate, a $5,000 contribution generates approximately $1,895 in tax savings."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much tax do I save on a $10,000 RRSP contribution?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On an annual taxable income of $100,000 in 2026, a $10,000 deductible contribution yields approximately $3,148 in Ontario, $3,050 in Alberta, $2,859 in British Columbia, and $3,612 in Quebec. High-income earners subject to top brackets can save over $5,000 on a $10,000 contribution."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is an RRSP tax refund the same as RRSP tax savings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. An RRSP contribution creates an income tax deduction, which reduces your total tax liability for the year. If your employer already withheld payroll taxes based on your pre-deduction salary, this reduction creates an overpayment, resulting in a tax refund from the CRA. If you owed taxes, the deduction lowers the balance due rather than creating a refund."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do RRSP tax savings depend on my province or territory?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. While federal tax brackets are standardized across Canada, each province and territory levies its own graduated income tax schedule. For example, Alberta features a 10% bottom bracket, British Columbia starts at 5.06%, and Ontario applies progressive surtaxes, resulting in different total savings across provinces for identical incomes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does an RRSP contribution reduce my taxable income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under the Canadian Income Tax Act, eligible RRSP contributions are deducted on Line 20800 of your T1 General Return. This directly lowers your net income and taxable income, reducing the amount subject to federal and provincial income tax."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the CRA RRSP deduction limit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The CRA RRSP deduction limit represents the maximum deductible amount you can claim in a tax year. It equals 18% of your prior year's earned income up to the statutory dollar cap ($33,810 for 2026), minus any pension adjustment (PA), plus accumulated unused contribution room carried forward from previous years."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I contribute more than my available RRSP room?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Contributions exceeding your available room cannot be deducted in the current tax year. The CRA grants a cumulative lifetime over-contribution buffer of $2,000 for individuals aged 18 and older. Any excess beyond $2,000 is subject to a 1% per month penalty tax under Part X.1 of the Income Tax Act until withdrawn or offset by new room."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is my after-tax cost lower than my RRSP contribution?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your after-tax cost is your actual out-of-pocket expenditure after accounting for the tax savings generated by your deduction. For example, if you contribute $10,000 and save $3,148 in income tax, your real cost to deposit $10,000 into your retirement investment account is only $6,852."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How are Quebec RRSP tax savings calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Quebec residents file separate provincial returns with Revenu Québec. On the federal return, Quebec filers receive a 16.5% federal abatement on basic federal tax. On the provincial return, contributions are deducted against Quebec's progressive tax brackets (14% to 25.75%). The total savings combine the abated federal reduction and the Quebec provincial tax reduction."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RRSP Tax Savings Calculator Canada",
+  "url": "https://fincalclab.com/rrsp-tax-savings-calculator",
+  "description": "Calculate your estimated Canadian RRSP tax savings, federal and provincial tax reductions, and net after-tax cost for 2026 across all 13 provinces and territories.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CAD"
+  }
+};
+---
+
+<Layout
+  title="RRSP Tax Savings Calculator Canada (2026) | FinCalcLab"
+  description="Calculate your Canadian RRSP tax savings, federal and provincial tax deductions, and net after-tax cost for 2026 across all 13 provinces and territories."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Calculator Interactive Tool -->
+    <RrspTaxSavingsCalculator />
+
+    <!-- Featured Cross-Link Callout Card -->
+    <section class="crosslink-section">
+      <Card elevation="sm" class="crosslink-card">
+        <div class="crosslink-content">
+          <div class="crosslink-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <div class="crosslink-text">
+            <h2 class="crosslink-heading">Planning Your Annual Contribution Room?</h2>
+            <p class="crosslink-desc">
+              Use our companion <strong>RRSP Contribution Calculator</strong> to estimate your maximum 18% earned income room, model pension adjustments, and review unused carryforward limits.
+            </p>
+          </div>
+        </div>
+        <div class="crosslink-btn-col">
+          <a href="/calculator/rrsp-contribution-calculator" class="crosslink-btn">
+            Open RRSP Contribution Calculator
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Canadian Educational Guide -->
+    <article class="educational-guide">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is an RRSP Tax Savings Calculator?</h2>
+        <p>
+          An <strong>RRSP Tax Savings Calculator</strong> is an essential financial tool designed specifically for Canadian taxpayers. It estimates the precise income tax savings generated when you deposit funds into an individual or spousal Registered Retirement Savings Plan (RRSP).
+        </p>
+        <p>
+          Unlike simple tax estimators that multiply your entire deposit by a single flat tax percentage, a comprehensive RRSP tax calculator models the Canadian progressive tax system. Because both the federal government and individual provinces levy graduated income tax brackets, a substantial RRSP contribution can cross multiple tax tiers. Our calculator determines your total tax liability before and after your deduction, providing an accurate calculation of your tax savings and your net after-tax cost.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>How RRSP Tax Savings Work</h2>
+        <p>
+          The fundamental benefit of contributing to an RRSP is that the Canada Revenue Agency (CRA) treats eligible contributions as a direct deduction from your taxable income under Line 20800 of your T1 General Return.
+        </p>
+        <p>
+          When you earn employment salary, freelance profits, or other taxable income, you pay income tax on that money at graduated marginal rates. By making a deductible RRSP contribution, you legally shelter that portion of your earnings from current-year taxation. Because deductions reduce your income starting from your highest tax bracket and work downward, every dollar contributed saves tax at your highest applicable marginal rate.
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">The Four-Stage Tax Savings Mechanism</div>
+          <ol class="callout-steps">
+            <li><strong>You Deposit Funds:</strong> You contribute money to an RRSP registered with the CRA.</li>
+            <li><strong>Taxable Income Drops:</strong> Your allowable deduction is subtracted dollar-for-dollar from your net income on Line 20800.</li>
+            <li><strong>Tax Liability Decreases:</strong> Federal and provincial taxes are recalculated on the reduced taxable income.</li>
+            <li><strong>Tax Savings Realized:</strong> You receive a tax refund from the CRA or owe less tax when filing your annual return.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How Much Tax Can an RRSP Contribution Save?</h2>
+        <p>
+          The exact amount of tax you save depends on three primary variables:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Your Annual Taxable Income:</strong> Taxpayers in higher earnings brackets face higher marginal rates (up to 54% combined), generating significantly larger tax savings per dollar contributed than those in lower brackets.</li>
+          <li><strong>Your Province or Territory of Residence:</strong> Because provincial tax schedules vary widely, identical contributions on identical incomes yield different savings across provinces.</li>
+          <li><strong>Your Contribution Amount:</strong> Contributions that span across bracket thresholds save tax at a blended rate rather than a single marginal percentage.</li>
+        </ul>
+        <p>
+          For example, an individual in Ontario earning $100,000 who makes a $10,000 contribution saves approximately <strong>$3,148.00</strong> in combined income tax, representing an effective tax relief rate of 31.48%. If that same person earned $250,000, their marginal tax rate would exceed 48%, saving nearly <strong>$4,800.00</strong> on the same $10,000 contribution.
+        </p>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>How RRSP Contributions Reduce Taxable Income</h2>
+        <p>
+          Canada uses a "gross-income to taxable-income" tax framework. You start with your total gross income (employment wages, commissions, bonuses, interest, rental income), subtract allowable deductions (including union dues, child care expenses, moving expenses, and RRSP deductions), and arrive at your <strong>taxable income</strong>.
+        </p>
+        <p>
+          Consider this illustrative calculation for an Ontario resident:
+        </p>
+        <div class="example-box">
+          <div class="example-header">Income Reduction Illustration (2026)</div>
+          <table class="example-table">
+            <tbody>
+              <tr>
+                <td>Gross Taxable Income</td>
+                <td style="text-align: right;">$100,000.00</td>
+              </tr>
+              <tr>
+                <td>Less: Deductible RRSP Contribution</td>
+                <td style="text-align: right; color: var(--color-primary);">- $10,000.00</td>
+              </tr>
+              <tr style="font-weight: 700; border-top: 1px solid var(--color-border);">
+                <td>New Taxable Income</td>
+                <td style="text-align: right;">$90,000.00</td>
+              </tr>
+              <tr>
+                <td>Tax Before RRSP (Federal + Ontario)</td>
+                <td style="text-align: right;">$25,188.83</td>
+              </tr>
+              <tr>
+                <td>Tax After RRSP (Federal + Ontario)</td>
+                <td style="text-align: right;">$22,040.83</td>
+              </tr>
+              <tr style="font-weight: 700; color: var(--color-success); border-top: 1px solid var(--color-border);">
+                <td>Total Tax Savings</td>
+                <td style="text-align: right;">$3,148.00</td>
+              </tr>
+              <tr style="font-weight: 700; color: var(--color-text);">
+                <td>Net Out-of-Pocket Cost ($10,000 − $3,148)</td>
+                <td style="text-align: right;">$6,852.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>RRSP Tax Savings by Province</h2>
+        <p>
+          In Canada, federal income tax is uniform across all provinces and territories, but provincial and territorial income taxes are set independently. On December 31 of each tax year, your province of residence determines your provincial tax rates and surtaxes.
+        </p>
+        <p>
+          The table below demonstrates how a <strong>$10,000 RRSP contribution</strong> on an annual income of <strong>$100,000</strong> yields varying tax savings across Canadian jurisdictions:
+        </p>
+        <div class="table-responsive">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Province / Territory</th>
+                <th>Estimated Tax Savings</th>
+                <th>Effective Savings Rate</th>
+                <th>Net Out-of-Pocket Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Ontario (ON)</strong></td>
+                <td>$3,148.00</td>
+                <td>31.48%</td>
+                <td>$6,852.00</td>
+              </tr>
+              <tr>
+                <td><strong>British Columbia (BC)</strong></td>
+                <td>$2,859.20</td>
+                <td>28.59%</td>
+                <td>$7,140.80</td>
+              </tr>
+              <tr>
+                <td><strong>Alberta (AB)</strong></td>
+                <td>$3,050.00</td>
+                <td>30.50%</td>
+                <td>$6,950.00</td>
+              </tr>
+              <tr>
+                <td><strong>Quebec (QC)*</strong></td>
+                <td>$3,611.75</td>
+                <td>36.12%</td>
+                <td>$6,388.25</td>
+              </tr>
+              <tr>
+                <td><strong>Manitoba (MB)</strong></td>
+                <td>$3,325.00</td>
+                <td>33.25%</td>
+                <td>$6,675.00</td>
+              </tr>
+              <tr>
+                <td><strong>Saskatchewan (SK)</strong></td>
+                <td>$3,300.00</td>
+                <td>33.00%</td>
+                <td>$6,700.00</td>
+              </tr>
+              <tr>
+                <td><strong>Nova Scotia (NS)</strong></td>
+                <td>$3,717.00</td>
+                <td>37.17%</td>
+                <td>$6,283.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="footnote-text">
+          *Quebec estimates reflect the combined abated federal income tax and Revenu Québec provincial tax schedule.
+        </p>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>RRSP Tax Savings in Ontario</h2>
+        <p>
+          Ontario taxpayers benefit from significant RRSP savings, but the provincial tax calculation is distinctive due to the <strong>Ontario Surtax</strong>.
+        </p>
+        <p>
+          Ontario levies basic progressive tax rates (5.05%, 9.15%, 11.16%, 12.16%, and 13.16%). In addition, Ontario imposes a progressive surtax on provincial tax liability:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>20% surtax</strong> on provincial tax in excess of $5,500.</li>
+          <li><strong>An additional 36% surtax</strong> on provincial tax in excess of $7,000 (creating an effective 56% surtax on tax over $7,000).</li>
+        </ul>
+        <p>
+          Because an RRSP contribution reduces your basic Ontario tax, it also reduces your surtax liability. This pushes the top marginal tax rate in Ontario to <strong>53.53%</strong> for income above $220,000.
+        </p>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="guide-section">
+        <h2>RRSP Tax Savings in Alberta</h2>
+        <p>
+          Alberta operates a graduated provincial income tax structure starting at <strong>10%</strong> on taxable income up to $151,900. Brackets step up to 12%, 13%, 14%, and 15% on income above $364,600.
+        </p>
+        <p>
+          For middle-income earners under $117,000, the federal rate is 20.5% and the Alberta provincial rate is 10%, producing a constant marginal savings rate of <strong>30.50%</strong>. A $10,000 RRSP contribution within this range consistently delivers $3,050.00 in tax savings.
+        </p>
+      </section>
+
+      <!-- Section 8 -->
+      <section class="guide-section">
+        <h2>RRSP Tax Savings in British Columbia</h2>
+        <p>
+          British Columbia features graduated provincial brackets starting at 5.06% and reaching 20.50% for high earners over $259,800.
+        </p>
+        <p>
+          For earners around $100,000, British Columbia provincial brackets transition from 7.70% to 10.50% at $98,600. When paired with the 20.5% federal bracket, marginal savings rates sit between 28.20% and 31.00%, offering competitive tax relief and substantial net cost reductions.
+        </p>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="guide-section">
+        <h2>RRSP Tax Savings in Quebec</h2>
+        <p>
+          Quebec has a distinct provincial tax administration managed directly by <strong>Revenu Québec</strong> rather than the CRA.
+        </p>
+        <p>
+          Residents of Quebec receive the <strong>Quebec Abatement</strong>, a 16.5% statutory reduction on basic federal tax. However, Quebec's provincial tax rates are higher (14%, 19%, 24%, and 25.75%). Because provincial deductions shelter income taxed at these higher provincial brackets, Quebec taxpayers frequently realize higher overall tax savings than residents in many other provinces.
+        </p>
+      </section>
+
+      <!-- Section 10 -->
+      <section class="guide-section">
+        <h2>How to Calculate RRSP Tax Savings</h2>
+        <p>
+          To calculate your RRSP tax savings accurately without relying on rough approximations, follow this step-by-step methodology:
+        </p>
+        <div class="steps-container">
+          <div class="guide-step">
+            <div class="step-num">Step 1</div>
+            <div class="step-content">
+              <h3>Calculate Federal Tax Before the Deduction</h3>
+              <p>Apply official 2026 federal brackets (15%, 20.5%, 26%, 29%, 33%) to your total gross taxable income.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">Step 2</div>
+            <div class="step-content">
+              <h3>Calculate Provincial Tax Before the Deduction</h3>
+              <p>Apply your province's progressive brackets (and provincial surtaxes where applicable) to your income.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">Step 3</div>
+            <div class="step-content">
+              <h3>Subtract the Deductible Contribution</h3>
+              <p>Reduce your taxable income by your contribution (capped at your available CRA contribution room).</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">Step 4</div>
+            <div class="step-content">
+              <h3>Recalculate Taxes on Reduced Income</h3>
+              <p>Re-evaluate federal and provincial tax liabilities on your new, lower taxable income.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">Step 5</div>
+            <div class="step-content">
+              <h3>Compute Total Tax Savings &amp; After-Tax Cost</h3>
+              <p>Subtract post-contribution tax from pre-contribution tax. Your net cost equals your deposit minus total savings.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 11 -->
+      <section class="guide-section">
+        <h2>RRSP Contribution vs Tax Savings</h2>
+        <p>
+          A frequent point of confusion for newer investors is conflating the <strong>RRSP Contribution</strong> with the <strong>RRSP Tax Savings</strong>:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>RRSP Contribution:</strong> The actual dollar amount you deposit into your investment account (e.g., $10,000). This full amount remains invested in your portfolio to earn compound growth tax-deferred.</li>
+          <li><strong>RRSP Tax Savings:</strong> The reduction in your tax liability resulting from the deduction (e.g., $3,148). You do not get 100% of your deposit back from the CRA; you recover a percentage corresponding to your marginal tax brackets.</li>
+          <li><strong>After-Tax Cost:</strong> Your true economic sacrifice (e.g., $6,852). You invested $10,000 in assets for an effective cost of under $7,000.</li>
+        </ul>
+      </section>
+
+      <!-- Section 12 -->
+      <section class="guide-section">
+        <h2>What Is the RRSP Deduction Limit?</h2>
+        <p>
+          Your <strong>RRSP deduction limit</strong> is the maximum allowable deduction you can claim on your tax return for a given tax year. Under CRA guidelines, new annual room is generated as:
+        </p>
+        <div class="formula-box" style="font-weight: 700; font-size: 1.05rem;">
+          New 2026 Room = 18% of 2025 Earned Income (up to $33,810) − Pension Adjustments + Unused Carry-Forward Room
+        </div>
+        <p>
+          Any unused contribution room from previous years carries forward indefinitely. You can find your authoritative deduction limit on your latest <strong>CRA Notice of Assessment (NOA)</strong> or by logging into <strong>CRA My Account</strong> online.
+        </p>
+      </section>
+
+      <!-- Section 13 -->
+      <section class="guide-section">
+        <h2>What Happens If You Contribute More Than Your RRSP Room?</h2>
+        <p>
+          Contributing more than your available deduction limit creates an <strong>over-contribution</strong>:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>No Immediate Tax Deduction:</strong> Contributions exceeding your limit cannot be deducted in the current tax year.</li>
+          <li><strong>$2,000 Lifetime Buffer:</strong> The CRA permits a cumulative lifetime grace buffer of $2,000 for Canadian residents aged 18 and older. While this buffer avoids immediate penalty taxes, it is not tax-deductible until new room becomes available.</li>
+          <li><strong>1% Monthly Penalty Tax:</strong> Any over-contribution exceeding the $2,000 buffer is penalized at <strong>1% per month</strong> under Part X.1 of the Income Tax Act. You must file Form T1-OVP and remit the tax within 90 days after year-end.</li>
+        </ul>
+      </section>
+
+      <!-- Section 14 -->
+      <section class="guide-section">
+        <h2>RRSP Tax Savings Examples</h2>
+        <p>
+          Here are four practical scenarios illustrating how varying incomes and provinces affect savings:
+        </p>
+        
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>Scenario A: Early-Career Professional (Ontario)</h3>
+            <p><strong>Income:</strong> $50,000 | <strong>Contribution:</strong> $5,000</p>
+            <p>Federal tax bracket: 15% | Ontario bracket: 5.05%</p>
+            <p><strong>Total Tax Savings:</strong> $1,002.50 (20.05% effective rate)</p>
+            <p><strong>After-Tax Cost:</strong> $3,997.50</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Scenario B: Mid-Career Earner (Ontario)</h3>
+            <p><strong>Income:</strong> $100,000 | <strong>Contribution:</strong> $10,000</p>
+            <p>Federal tax bracket: 20.5% | Ontario + surtax: ~10.98%</p>
+            <p><strong>Total Tax Savings:</strong> $3,148.00 (31.48% effective rate)</p>
+            <p><strong>After-Tax Cost:</strong> $6,852.00</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Scenario C: Energy Sector Professional (Alberta)</h3>
+            <p><strong>Income:</strong> $100,000 | <strong>Contribution:</strong> $10,000</p>
+            <p>Federal tax bracket: 20.5% | Alberta flat bracket: 10.0%</p>
+            <p><strong>Total Tax Savings:</strong> $3,050.00 (30.50% effective rate)</p>
+            <p><strong>After-Tax Cost:</strong> $6,950.00</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Scenario D: High-Income Earner (British Columbia)</h3>
+            <p><strong>Income:</strong> $160,000 | <strong>Contribution:</strong> $20,000</p>
+            <p>Federal brackets: 26% / 20.5% | BC brackets: 14.7% / 12.29%</p>
+            <p><strong>Total Tax Savings:</strong> $7,720.00 (~38.60% effective rate)</p>
+            <p><strong>After-Tax Cost:</strong> $12,280.00</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 15 -->
+      <section class="guide-section">
+        <h2>Common RRSP Tax Mistakes</h2>
+        <ul class="bullet-list">
+          <li><strong>Contributing Without Verifying Room:</strong> Never guess your contribution room based purely on current salary. Check your official CRA Notice of Assessment.</li>
+          <li><strong>Contributing While in the Lowest Tax Bracket:</strong> If your taxable income is below the Basic Personal Amount (~$16,129 in 2026), an RRSP contribution cannot generate tax savings because you have zero income tax liability. In that scenario, prioritizing a Tax-Free Savings Account (TFSA) is usually preferable.</li>
+          <li><strong>Forgetting the First 60 Days Deadline:</strong> Contributions made in the first 60 days of the calendar year (usually by March 1 or 2) can be claimed on your preceding year's tax return.</li>
+          <li><strong>Not Taking Advantage of Spousal Contributions:</strong> High-earning spouses can contribute to a spousal RRSP using their own contribution room to split retirement income, subject to the CRA 3-year attribution rule.</li>
+          <li><strong>Failing to Reinvest Tax Refunds:</strong> Reinvesting your RRSP tax refund back into your RRSP or TFSA accelerates compound wealth accumulation significantly.</li>
+        </ul>
+      </section>
+
+      <!-- Section 16: FAQs -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>How is RRSP tax savings calculated in Canada?</h3>
+            <p>
+              RRSP tax savings are calculated by subtracting your total income tax after the deduction from your total income tax before the contribution. Because Canada uses a progressive tax system at both federal and provincial/territorial levels, your deductible RRSP deposit reduces your income starting from your highest marginal tax bracket downward.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How much tax will I save if I put $5,000 into my RRSP?</h3>
+            <p>
+              The tax you save depends on your annual taxable income and your province of residence. For instance, if you live in Ontario and earn $50,000, your marginal tax rate is 20.05%, saving you approximately $1,002.50. If you earn $95,000 in Ontario with a ~37.9% combined marginal rate, a $5,000 contribution generates approximately $1,895.00 in tax savings.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How much tax do I save on a $10,000 RRSP contribution?</h3>
+            <p>
+              On an annual taxable income of $100,000 in 2026, a $10,000 deductible contribution yields approximately $3,148.00 in Ontario, $3,050.00 in Alberta, $2,859.20 in British Columbia, and $3,611.75 in Quebec.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Is an RRSP tax refund the same as RRSP tax savings?</h3>
+            <p>
+              No. An RRSP contribution creates an income tax deduction, which reduces your total tax liability for the year. If your employer already withheld payroll taxes based on your pre-deduction salary, this reduction creates an overpayment, resulting in a tax refund from the CRA.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Do RRSP tax savings depend on my province or territory?</h3>
+            <p>
+              Yes. While federal tax brackets are standardized across Canada, each province and territory levies its own graduated income tax schedule. For example, Alberta features a 10% bottom bracket, British Columbia starts at 5.06%, and Ontario applies progressive surtaxes.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How does an RRSP contribution reduce my taxable income?</h3>
+            <p>
+              Under the Canadian Income Tax Act, eligible RRSP contributions are deducted on Line 20800 of your T1 General Return. This directly lowers your net income and taxable income, reducing the amount subject to federal and provincial income tax.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What is the CRA RRSP deduction limit?</h3>
+            <p>
+              The CRA RRSP deduction limit represents the maximum deductible amount you can claim in a tax year. It equals 18% of your prior year's earned income up to the statutory dollar cap ($33,810 for 2026), minus any pension adjustment (PA), plus accumulated unused contribution room carried forward.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What happens if I contribute more than my available RRSP room?</h3>
+            <p>
+              Contributions exceeding your available room cannot be deducted in the current tax year. The CRA permits a cumulative lifetime over-contribution buffer of $2,000 for taxpayers aged 18 and older. Any excess beyond $2,000 is subject to a 1% per month penalty tax under Part X.1 of the Income Tax Act.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Why is my after-tax cost lower than my RRSP contribution?</h3>
+            <p>
+              Your after-tax cost is your actual out-of-pocket expenditure after accounting for the tax savings generated by your deduction. For example, if you contribute $10,000 and save $3,148 in income tax, your real cost to deposit $10,000 into your investment account is only $6,852.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How are Quebec RRSP tax savings calculated?</h3>
+            <p>
+              Quebec residents file separate provincial returns with Revenu Québec. On the federal return, Quebec filers receive a 16.5% federal abatement on basic federal tax. On the provincial return, contributions are deducted against Quebec's progressive tax brackets (14% to 25.75%).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statutory Disclaimer -->
+      <section class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Disclaimer:</strong> This calculator provides an estimate for educational purposes only. Your actual tax savings may differ based on your complete tax situation, deductions, credits, RRSP deduction limit and other factors. Check your CRA information and consider speaking with a qualified tax professional for advice specific to your situation.
+        </p>
+      </section>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  /* Crosslink Section */
+  .crosslink-section {
+    margin-bottom: var(--space-6);
+  }
+
+  .crosslink-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    gap: var(--space-4);
+  }
+
+  .crosslink-content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .crosslink-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-subtle, rgba(37, 99, 235, 0.1));
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .crosslink-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .crosslink-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .crosslink-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .crosslink-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all var(--transition-fast);
+  }
+
+  .crosslink-btn:hover {
+    background-color: var(--color-primary-subtle, rgba(37, 99, 235, 0.08));
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  /* Educational Guide Content */
+  .educational-guide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .guide-section h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0 0 var(--space-3) 0;
+    line-height: 1.3;
+  }
+
+  .guide-section h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .guide-section p {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .bullet-list {
+    margin: 0 0 var(--space-3) 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.95rem;
+  }
+
+  .key-callout-box {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin: var(--space-3) 0;
+  }
+
+  .callout-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-2);
+  }
+
+  .callout-steps {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  .example-box {
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    margin: var(--space-3) 0;
+  }
+
+  .example-header {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+    color: var(--color-text);
+  }
+
+  .example-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .example-table td {
+    padding: 6px 0;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+  }
+
+  .comparison-table th {
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .footnote-text {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+  }
+
+  .formula-box {
+    padding: var(--space-3);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    text-align: center;
+    margin: var(--space-3) 0;
+    overflow-x: auto;
+  }
+
+  .steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+  }
+
+  .guide-step {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .step-num {
+    padding: 4px 10px;
+    background-color: var(--color-primary-subtle, rgba(37, 99, 235, 0.1));
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    height: fit-content;
+    white-space: nowrap;
+  }
+
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .step-content h3 {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .step-content p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+  }
+
+  .scenario-card {
+    padding: var(--space-3);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .scenario-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .scenario-card p {
+    font-size: 0.85rem;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .disclaimer-section {
+    padding: var(--space-4);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+  }
+
+  .disclaimer-text {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .crosslink-card {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .crosslink-btn {
+      justify-content: center;
+    }
+
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

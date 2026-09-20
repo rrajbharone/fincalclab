@@ -1,0 +1,549 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CompoundPercentageDecreaseCalculator from '../../components/calculator/CompoundPercentageDecreaseCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Compound Percentage Decrease Calculator', item: '/calculator/compound-percentage-decrease-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a compound percentage decrease?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A compound percentage decrease occurs when a percentage reduction is applied repeatedly to a number, with each subsequent decrease calculated from the newly reduced value rather than the original starting amount. For instance, decreasing $1,000 by 10% three times results in $729, not $700."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate a compound percentage decrease?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To calculate compound percentage decrease, convert the percentage decrease into a decimal multiplier by subtracting (percentage ÷ 100) from 1, raise that multiplier to the power of the number of decreases (n), and multiply by the starting value. Formula: Final Value = Initial Value × (1 - r/100)ⁿ."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a 10% decrease applied three times the same as a 30% decrease?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. A flat 30% decrease on $1,000 removes $300, leaving $700. When a 10% decrease is applied three times in succession, the first cut removes $100 (leaving $900), the second removes $90 (leaving $810), and the third removes $81 (leaving $729). The overall compound decrease is 27.1%, which leaves $29 more than a simple 30% deduction."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the formula for compound percentage decrease?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The formula is: Final Value = Initial Value × (1 - r ÷ 100)ⁿ, where r is the percentage decrease per period and n is the total number of decreases. The total reduction amount is Initial Value - Final Value, and the overall percentage decrease is ((Initial Value - Final Value) ÷ Initial Value) × 100."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do successive percentage decreases work in retail shopping?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When a store offers 'take an extra 20% off already marked down 30% clearance items', the discounts compound rather than add up. On a $100 item, 30% off reduces the price to $70. The extra 20% discount is applied to the $70, saving an additional $14, resulting in a final price of $56. The total discount is 44%, not 50%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can a compound percentage decrease ever reduce a value to zero?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mathematically, as long as the percentage decrease per step is less than 100%, the value approaches zero asymptotically but never reaches absolute zero. However, in practical financial calculations, once the balance drops below $0.01, it rounds to zero. If the decrease rate is exactly 100%, the value becomes zero on the very first step."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between simple and compound percentage decrease?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Simple percentage decrease calculates all reductions against the original base value (e.g., 5% × 4 = 20% of the original $1,000 = $200 total drop). Compound percentage decrease calculates each reduction from the newly reduced balance, resulting in progressively smaller dollar cuts per step ($50, then $47.50, then $45.13, then $42.87 = $185.50 total drop)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate the overall percentage decrease after multiple cuts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The overall percentage decrease is calculated as: Overall Drop % = (1 - (1 - r/100)ⁿ) × 100. Alternatively, subtract the final value from the initial value, divide by the initial value, and multiply by 100: ((Initial Value - Final Value) ÷ Initial Value) × 100."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if the percentage decrease is greater than 100%?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A percentage decrease cannot realistically exceed 100% for physical quantities, prices, or balances, as 100% represents complete elimination (reducing the balance to zero). A decrease greater than 100% would imply a negative balance, which is only possible in abstract debt or derivative accounts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is compound percentage decrease used in the real world?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Compound percentage decreases are used extensively in accounting for reducing-balance asset depreciation, retail clearance pricing with stacked coupons, inflation purchasing power erosion, tracking portfolio drawdowns in finance, radioactive decay in science, and measuring customer churn rates in business."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Compound Percentage Decrease Calculator",
+  "url": "https://fincalclab.com/calculator/compound-percentage-decrease-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free online Compound Percentage Decrease Calculator. Calculate final value, overall percentage reduction, and total dollar loss when percentage cuts compound repeatedly over time.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Compound Percentage Decrease Calculator – Repeated Reductions"
+  description="Calculate the final value, total reduction, and overall percentage decrease when a percentage reduction is applied repeatedly. Fast, free, and accurate."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator -->
+    <CompoundPercentageDecreaseCalculator />
+
+    <!-- Educational SEO Content -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Featured Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Mathematical Finance &amp; Pricing</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Mastering Sequential Discounts and Value Reductions</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Applying repeated reductions is common in shopping markdowns, equipment depreciation, and investment drawdowns. Compare your results with our <a href="/calculator/discount-percentage-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Discount Percentage Calculator</a> for stacked retail coupons, evaluate long-term inflation erosion with the <a href="/calculator/inflation-loss-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Inflation Loss Calculator</a>, or examine pay adjustments using the <a href="/calculator/salary-percentage-increase-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Percentage Increase Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is a Compound Percentage Decrease?</h2>
+        <p>
+          A <strong>compound percentage decrease</strong> (also called a <strong>repeated percentage decrease</strong>, <strong>successive percentage reduction</strong>, or <strong>cumulative percentage decrease</strong>) occurs when a percentage reduction is applied repeatedly to a starting value, with each new reduction calculated from the already reduced amount.
+        </p>
+        <p>
+          Unlike simple percentage reductions where every cut is figured against the original baseline, compounding recalculates the dollar amount of the decrease after every step. Because the base balance shrinks with each iteration, the actual dollar amount deducted in each subsequent round becomes progressively smaller, even though the percentage rate remains exactly the same.
+        </p>
+        <p>
+          For example, imagine taking 10% off a $1,000 balance three times:
+        </p>
+        <ul>
+          <li><strong>Step 1:</strong> 10% of $1,000 = $100 drop → Remaining balance: <strong>$900</strong></li>
+          <li><strong>Step 2:</strong> 10% of $900 = $90 drop → Remaining balance: <strong>$810</strong></li>
+          <li><strong>Step 3:</strong> 10% of $810 = $81 drop → Remaining balance: <strong>$729</strong></li>
+        </ul>
+        <p>
+          The final value after three 10% decreases is <strong>$729.00</strong>, not $700.00. The total reduction is $271.00, representing an <strong>overall percentage decrease of 27.10%</strong>. This fundamental difference between linear subtraction and compounding appears across retail pricing, portfolio analysis, machinery depreciation, and macroeconomic statistics.
+        </p>
+
+        <h2>How Does Compound Percentage Decrease Work?</h2>
+        <p>
+          To understand why repeated percentage cuts behave the way they do, it helps to look at the <strong>retention factor</strong>. When you decrease any number by a percentage <em>r</em>%, you are not merely taking away a fraction; you are preserving the remaining fraction:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; text-align: center;">
+          <strong>Retention Factor = 1 − (Percentage Decrease ÷ 100)</strong>
+        </div>
+        <p>
+          If your percentage decrease is 10%, your retention factor is:
+        </p>
+        <p style="text-align: center; font-weight: 700; color: var(--color-text-base);">
+          1 − 0.10 = 0.90 (or 90%)
+        </p>
+        <p>
+          When you decrease the value once, you multiply by 0.90. When you decrease it a second time, you multiply that result by 0.90 again. Doing this three times means multiplying by 0.90 × 0.90 × 0.90 = 0.729. Thus, 72.9% of the original value remains intact, and 27.1% has been lost.
+        </p>
+        <p>
+          Because each cut is taken from a smaller base, the dollar loss diminishes each cycle:
+        </p>
+        <ul>
+          <li>Cycle 1 removes <strong>$100.00</strong></li>
+          <li>Cycle 2 removes <strong>$90.00</strong> ($10.00 less than Cycle 1)</li>
+          <li>Cycle 3 removes <strong>$81.00</strong> ($9.00 less than Cycle 2)</li>
+        </ul>
+        <p>
+          This diminishing loss protects the asset from ever hitting zero through percentage reductions alone (unless the decrease rate itself is 100%).
+        </p>
+
+        <h2>Compound Percentage Decrease Formula</h2>
+        <p>
+          Instead of performing repetitive calculations by hand for 5, 10, or 20 cycles, you can use the standard <strong>compound decrease formula</strong>:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-5); margin: var(--space-4) 0; font-family: monospace; font-size: 1.05rem; overflow-x: auto; text-align: center; line-height: 1.8;">
+          <strong>Final Value = Initial Value × (1 − r ÷ 100)ⁿ</strong>
+        </div>
+        <p>
+          Where each component represents:
+        </p>
+        <ul>
+          <li><strong>Initial Value (V₀):</strong> The starting balance, original price, quantity, or capital amount before any reductions.</li>
+          <li><strong>r:</strong> The percentage decrease applied in each individual cycle or step (expressed as a percentage, such as 10 for 10%).</li>
+          <li><strong>n:</strong> The total number of times the decrease is compounded (number of steps, years, months, or iterations).</li>
+          <li><strong>(1 − r ÷ 100):</strong> The decimal multiplier representing the proportion retained after one decrease.</li>
+          <li><strong>Final Value (Vₙ):</strong> The remaining amount after all <em>n</em> percentage decreases have been executed.</li>
+        </ul>
+
+        <h3>Calculating the Total Dollar Reduction</h3>
+        <p>
+          Once you know the final value, finding the total amount lost or saved is a simple subtraction:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; text-align: center;">
+          <strong>Total Decrease ($) = Initial Value − Final Value</strong>
+        </div>
+
+        <h3>Calculating the Overall Percentage Decrease</h3>
+        <p>
+          To find the cumulative percentage reduction relative to your starting point, divide the total reduction by the starting amount and multiply by 100:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; text-align: center;">
+          <strong>Overall Percentage Decrease (%) = ((Initial Value − Final Value) ÷ Initial Value) × 100</strong>
+        </div>
+        <p>
+          Equivalently, you can compute the overall percentage decrease directly from the rate and steps without knowing the starting value:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; text-align: center;">
+          <strong>Overall Percentage Decrease (%) = [1 − (1 − r ÷ 100)ⁿ] × 100</strong>
+        </div>
+
+        <h2>How to Calculate Compound Percentage Decrease: Step-by-Step</h2>
+        <p>
+          Follow these four simple steps whenever you need to calculate repeated percentage reductions manually:
+        </p>
+        <ol>
+          <li>
+            <strong>Convert the percentage rate into a decimal multiplier:</strong> Divide the percentage by 100 and subtract from 1. For example, a 15% decrease becomes 1 − (15 ÷ 100) = 1 − 0.15 = <strong>0.85</strong>.
+          </li>
+          <li>
+            <strong>Raise the multiplier to the power of the number of decreases:</strong> Multiply the decimal by itself <em>n</em> times. For 3 decreases at 15%: 0.85³ = 0.85 × 0.85 × 0.85 = <strong>0.614125</strong>.
+          </li>
+          <li>
+            <strong>Multiply by your starting amount:</strong> If your initial price is $500: $500 × 0.614125 = <strong>$307.06</strong>.
+          </li>
+          <li>
+            <strong>Find the overall drop:</strong> Subtract $307.06 from $500.00 to get a total reduction of <strong>$192.94</strong>. Divide $192.94 by $500.00 to get an overall decrease of <strong>38.59%</strong> (not 45%).
+          </li>
+        </ol>
+
+        <h2>Worked Examples of Compound Percentage Decreases</h2>
+        <p>
+          Examining concrete figures illustrates how compounding behaves across various percentages and step counts.
+        </p>
+
+        <h3>Example 1: 10% Decrease Applied 3 Times</h3>
+        <p>
+          Suppose an investor purchases an asset for $1,000, and it drops by 10% each month for three consecutive months:
+        </p>
+        <ul>
+          <li><strong>Month 1:</strong> $1,000 × (1 − 0.10) = $1,000 × 0.90 = <strong>$900.00</strong> (Loss: $100.00)</li>
+          <li><strong>Month 2:</strong> $900 × 0.90 = <strong>$810.00</strong> (Loss: $90.00)</li>
+          <li><strong>Month 3:</strong> $810 × 0.90 = <strong>$729.00</strong> (Loss: $81.00)</li>
+          <li><strong>Total Dollar Loss:</strong> $1,000 − $729 = <strong>$271.00</strong></li>
+          <li><strong>Overall Percentage Drop:</strong> ($271 ÷ $1,000) × 100 = <strong>27.10%</strong></li>
+        </ul>
+
+        <h3>Example 2: 20% Decrease Applied 2 Times</h3>
+        <p>
+          A retail store marks down a $1,000 designer handbag by 20%, and then issues a 20% promotional coupon code during checkout:
+        </p>
+        <ul>
+          <li><strong>After first 20% markdown:</strong> $1,000 × 0.80 = <strong>$800.00</strong> (Discount: $200.00)</li>
+          <li><strong>After second 20% coupon:</strong> $800 × 0.80 = <strong>$640.00</strong> (Discount: $160.00)</li>
+          <li><strong>Final Customer Price:</strong> <strong>$640.00</strong></li>
+          <li><strong>Total Savings:</strong> $1,000 − $640 = <strong>$360.00</strong></li>
+          <li><strong>Overall Discount Rate:</strong> ($360 ÷ $1,000) × 100 = <strong>36.00%</strong> (not 40%)</li>
+        </ul>
+
+        <h3>Example 3: 5% Decrease Applied 4 Times</h3>
+        <p>
+          A company experiences a 5% quarterly reduction in operational software costs over four quarters starting from $1,000 per month:
+        </p>
+        <ul>
+          <li><strong>Quarter 1:</strong> $1,000 × 0.95 = <strong>$950.00</strong></li>
+          <li><strong>Quarter 2:</strong> $950 × 0.95 = <strong>$902.50</strong></li>
+          <li><strong>Quarter 3:</strong> $902.50 × 0.95 = <strong>$857.38</strong></li>
+          <li><strong>Quarter 4:</strong> $857.38 × 0.95 = <strong>$814.51</strong></li>
+          <li><strong>Total Expense Saved:</strong> $1,000 − $814.51 = <strong>$185.49</strong></li>
+          <li><strong>Overall Cumulative Drop:</strong> <strong>18.55%</strong> (compared to a simple 4 × 5% = 20% deduction)</li>
+        </ul>
+
+        <h2>Compound Decrease vs. Simple Percentage Decrease</h2>
+        <p>
+          The most prevalent misunderstanding in consumer math is confusing compound decreases with linear (simple) decreases. The table below illustrates the stark divergence between simple and compound percentage drops starting from an initial value of $1,000:
+        </p>
+
+        <div style="overflow-x: auto; margin: var(--space-6) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 12px; font-weight: 700;">Scenario</th>
+                <th style="padding: 12px; font-weight: 700;">Simple (Linear) Total</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-primary);">Compound Final Value</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-warning);">True Compound % Drop</th>
+                <th style="padding: 12px; font-weight: 700;">Compounding Difference</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">10% drop × 2 times</td>
+                <td style="padding: 10px 12px;">20.00% ($800.00)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$810.00</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-warning);">19.00%</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$10.00 retained (+1.00%)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">10% drop × 3 times</td>
+                <td style="padding: 10px 12px;">30.00% ($700.00)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$729.00</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-warning);">27.10%</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$29.00 retained (+2.90%)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">20% drop × 2 times</td>
+                <td style="padding: 10px 12px;">40.00% ($600.00)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$640.00</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-warning);">36.00%</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$40.00 retained (+4.00%)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">25% drop × 3 times</td>
+                <td style="padding: 10px 12px;">75.00% ($250.00)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$421.88</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-warning);">57.81%</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$171.88 retained (+17.19%)</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">50% drop × 2 times</td>
+                <td style="padding: 10px 12px;">100.00% ($0.00)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">$250.00</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-warning);">75.00%</td>
+                <td style="padding: 10px 12px; color: var(--color-success); font-weight: 600;">+$250.00 retained (+25.00%)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Notice the striking final row: if a store advertises "50% off today, and an extra 50% off tomorrow," you do not receive the item for free ($0). You pay <strong>$250.00</strong> on a $1,000 product — saving 75% in total, not 100%. Simple addition of percentages leads to fundamentally incorrect financial expectations.
+        </p>
+
+        <h2>Successive Percentage Decreases: Varying Rates</h2>
+        <p>
+          In our calculator above, the same percentage decrease is applied repeatedly across multiple steps. However, the exact same mathematical principle applies when different percentage reductions occur sequentially. This is known as a <strong>successive percentage discount</strong>.
+        </p>
+        <p>
+          If an item undergoes a 30% discount followed by a 15% discount, you multiply the retention multipliers together:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; text-align: center;">
+          <strong>Final Retention = (1 − 0.30) × (1 − 0.15) = 0.70 × 0.85 = 0.595 (59.5% remaining)</strong>
+        </div>
+        <p>
+          Subtracting from 1 gives an overall discount of 1 − 0.595 = 0.405, or <strong>40.5% total discount</strong> (not 45%). Notice that the order in which successive percentage discounts are applied does not matter due to the commutative property of multiplication: 0.70 × 0.85 produces the exact same 0.595 as 0.85 × 0.70.
+        </p>
+
+        <h2>Real-World Practical Applications</h2>
+        <p>
+          Compound percentage reductions appear in many fields beyond high school mathematics:
+        </p>
+        <ul>
+          <li>
+            <strong>Asset &amp; Machinery Depreciation:</strong> In accounting, the reducing-balance (declining-balance) method depreciates equipment or company vehicles by a set percentage each year (e.g., 20% annual depreciation). The machine loses more book value in Year 1 than in Year 5.
+          </li>
+          <li>
+            <strong>Stacked Retail Discounts:</strong> Clearance racks often feature stacked coupons — such as an automatic 40% department discount combined with an additional 15% loyalty rewards coupon at checkout.
+          </li>
+          <li>
+            <strong>Investment Portfolio Drawdowns:</strong> If a volatile investment fund declines by 10% in three consecutive quarters, understanding compound decrease helps investors calculate the true portfolio balance and avoid overestimating their total loss.
+          </li>
+          <li>
+            <strong>Technology &amp; Electronics Depreciation:</strong> Consumer electronics like laptops and smartphones typically lose 15% to 25% of their resale value annually through compound technological obsolescence.
+          </li>
+          <li>
+            <strong>Biological and Chemical Decay:</strong> Radiation half-lives, drug clearance rates from the bloodstream, and bacterial eradication under antibiotics all follow continuous compound percentage decrease curves.
+          </li>
+          <li>
+            <strong>Customer Subscription Churn:</strong> SaaS companies tracking a 5% monthly subscriber churn rate can use this formula to project how many original subscribers remain after 12 months (0.95¹² ≈ 54.0% retained).
+          </li>
+        </ul>
+
+        <h2>Common Mistakes to Avoid</h2>
+        <ol>
+          <li>
+            <strong>Adding the percentages together:</strong> The most frequent blunder is calculating 10% × 3 as a 30% reduction. As proven above, three 10% cuts equal a 27.10% total drop.
+          </li>
+          <li>
+            <strong>Applying discounts to the initial value instead of the current value:</strong> When calculating step-by-step, always base the dollar deduction on the balance from the preceding step, not the starting figure.
+          </li>
+          <li>
+            <strong>Confusing decrease with increase recovery:</strong> If a portfolio drops by 20%, it does not take a 20% gain to break even. A $100 stock dropping 20% falls to $80. To return from $80 back to $100 requires a $20 gain on an $80 base — which is a <strong>25% increase</strong>. The greater the percentage drop, the exponentially higher the gain required to break even.
+          </li>
+          <li>
+            <strong>Assuming 100% loss is possible through repeated partial cuts:</strong> No matter how many times you subtract 10% or 50% from a positive balance, the number will never reach zero or become negative. It becomes infinitesimally small, but remains positive.
+          </li>
+        </ol>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion" style="display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4);">
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is a compound percentage decrease?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              A compound percentage decrease is a process where a percentage reduction is applied repeatedly to a quantity, with each subsequent percentage taken from the newly reduced balance rather than the starting number. For example, decreasing $1,000 by 10% three times yields $729, not $700.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do I calculate compound percentage decrease?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Subtract your percentage rate from 100, divide by 100 to get the retention factor, raise that factor to the power of the number of decreases, and multiply by your starting value: <strong>Final Value = Initial Value × (1 − r ÷ 100)ⁿ</strong>.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is the formula for compound percentage decrease?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              The exact formula is <strong>Final Value = Initial Value × (1 − Percentage ÷ 100)ⁿ</strong>, where <em>n</em> is the count of decreases. The total amount decreased is <strong>Initial Value − Final Value</strong>, and the overall drop rate is <strong>((Initial Value − Final Value) ÷ Initial Value) × 100</strong>.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Is a 10% decrease three times equal to a 30% decrease?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              No. A simple 30% decrease on $1,000 removes $300, leaving $700. When 10% is decreased three times in sequence, the first drop removes $100 (leaving $900), the second removes $90 (leaving $810), and the third removes $81 (leaving $729). The overall decrease is <strong>27.10%</strong>.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do repeated percentage decreases work?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              In each cycle, the specified percentage is calculated against the remaining balance from the prior step. Because each reduction shrinks the balance, the dollar loss per step diminishes over time, preventing the value from ever reaching zero under standard percentage rates.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is the difference between compound and simple percentage decrease?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Simple percentage decrease calculates every cut against the original starting amount (linear reduction). Compound percentage decrease calculates every cut against the shrinking balance from the prior step. Compound decreases always leave more value intact than simple decreases of the same nominal rate.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do I calculate the overall percentage decrease?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Subtract the final value from the initial value, divide by the initial value, and multiply by 100: <strong>((Initial − Final) ÷ Initial) × 100</strong>. Or use the formula: <strong>[1 − (1 − r ÷ 100)ⁿ] × 100</strong>.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What happens when a percentage decrease is applied multiple times?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              The value experiences exponential decay. While the percentage rate remains constant, the absolute dollar decrease gets smaller with every step. For example, a 50% decrease applied twice removes $500 in step 1, but only $250 in step 2, leaving $250 remaining.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do successive percentage discounts work in retail stores?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Retailers often stack discounts, such as 30% off storewide plus an extra 20% VIP coupon. The 20% coupon is applied to the discounted price, not the original sticker price. A $100 item drops to $70, then drops another 20% ($14) to $56, giving an effective 44% discount.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How is a repeated discount calculated on a clearance item?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Multiply the original price by the retention factor (100% minus discount %) for each consecutive markdown. If an item is marked down 15% each week for three weeks: Original Price × 0.85 × 0.85 × 0.85 = Final Price.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Related Tools Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-surface);">
+          <h3 style="margin: 0 0 var(--space-3) 0; font-size: 1.05rem; font-weight: 700;">Related Percentage &amp; Financial Calculators</h3>
+          <ul style="margin: 0; padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2);">
+            <li><a href="/calculator/discount-percentage-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Discount Percentage Calculator</a> — Calculate retail markdown prices, original costs, and double-coupon stacked discounts.</li>
+            <li><a href="/calculator/salary-percentage-increase-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Percentage Increase Calculator</a> — Compute your exact new pay after a percentage raise or find your promotion rate.</li>
+            <li><a href="/calculator/inflation-loss-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Inflation Loss Calculator</a> — See how compound purchasing power loss erodes your cash savings over time.</li>
+            <li><a href="/calculator/margin-vs-markup-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Margin vs Markup Calculator</a> — Compare profit margin against percentage cost markup for business pricing.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

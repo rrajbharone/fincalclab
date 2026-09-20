@@ -1,0 +1,961 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TfsaGrowthCalculator from '../../components/calculator/TfsaGrowthCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'TFSA Growth Calculator', item: '/calculator/tfsa-growth-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a TFSA growth calculator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A TFSA growth calculator is a Canadian financial planning tool that projects the future value of your Tax-Free Savings Account (TFSA) over time. It models initial deposits, regular monthly or annual contributions, expected market return rates, and compound investment growth to estimate your total tax-free wealth."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much will $10,000 grow in a TFSA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "At a 6% average annual return, a $10,000 lump sum with no further contributions will grow to approximately $17,908 in 10 years, $32,071 in 20 years, and $57,435 in 30 years. If you also contribute $500 per month, that same $10,000 portfolio will reach roughly $99,700 in 10 years, $264,122 in 20 years, and $560,000 in 30 years—all completely tax-free."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much will my TFSA grow each year?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your annual TFSA growth depends on your asset allocation, market conditions, and contribution habits. In early years, regular contributions typically represent the largest portion of annual portfolio growth. Over time, as your compounding balance expands, investment returns will begin generating more new annual wealth than your personal deposits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much can a TFSA grow in 20 years?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "With an initial deposit of $10,000 and ongoing monthly contributions of $500 at an assumed 6.0% annual return, your TFSA can grow to approximately $264,122 after 20 years. Of this total, $130,000 represents your actual deposits, and $134,122 is pure compound investment growth that you keep 100% tax-free."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is TFSA investment growth tax-free in Canada?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. All capital gains, Canadian eligible dividends, and interest income generated inside an eligible Canadian TFSA are 100% tax-free under the federal Income Tax Act. Furthermore, withdrawals from your TFSA are never subject to federal or provincial income tax."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does TFSA investment growth use up contribution room?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Investment growth earned inside your TFSA never consumes contribution room. If your investments double or triple, your contribution room is completely unaffected. Contribution limits only apply to the actual new cash or securities you deposit into the account from outside."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I contribute monthly to a TFSA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Most Canadian financial institutions allow you to set up automated recurring contributions on a weekly, biweekly, or monthly schedule. For example, contributing roughly $583.33 each month will fully maximize the $7,000 annual CRA limit for 2026."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens when I withdraw money from my TFSA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "TFSA withdrawals are completely tax-free and do not trigger any clawbacks on government benefits such as Old Age Security (OAS) or the Guaranteed Income Supplement (GIS). Additionally, the full dollar amount of your withdrawal is re-added to your available TFSA contribution room on January 1 of the following calendar year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What rate of return should I use for a TFSA growth calculation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A realistic return assumption depends on your investment holdings. Cash and GICs typically return 2% to 4%, conservative bond-balanced portfolios historically return 4% to 5.5%, globally diversified index equity portfolios (such as all-in-one asset allocation ETFs) have historically delivered 6% to 8% before inflation, and aggressive 100% equities target 7% to 9% over long horizons."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is TFSA growth guaranteed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, unless you invest exclusively in guaranteed products like GICs or insured cash accounts. When investing your TFSA in stocks, mutual funds, or ETFs, your returns will fluctuate with the financial markets, can experience interim downturns, and are not guaranteed."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "TFSA Growth Calculator Canada",
+  "url": "https://fincalclab.com/calculator/tfsa-growth-calculator",
+  "description": "Calculate projected compound growth and future value of your Canadian TFSA. Model monthly deposits, expected return rates, and year-by-year tax-free balances.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CAD"
+  }
+};
+---
+
+<Layout
+  title="TFSA Growth Calculator Canada | FinCalcLab"
+  description="Project the tax-free compound growth of your Canadian TFSA. Calculate future value with regular contributions, compare investment returns, and see year-by-year growth."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <TfsaGrowthCalculator />
+
+    <!-- Featured Cross-Link Callout Card: CRA Room Check -->
+    <section class="cra-room-callout-section" aria-labelledby="cra-room-heading">
+      <Card elevation="sm" class="cra-room-card">
+        <div class="cra-room-header">
+          <div class="cra-room-icon-badge" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="cra-room-heading-wrap">
+            <span class="cra-room-eyebrow">CRA Compliance &amp; Limits</span>
+            <h2 id="cra-room-heading" class="cra-room-title">Need to Check Your Official CRA Contribution Room?</h2>
+          </div>
+        </div>
+
+        <p class="cra-room-description">
+          Before setting up recurring TFSA contributions, check your available contribution room to avoid over-contributing. Use our <strong>TFSA Contribution Calculator</strong> to estimate your available room, including unused room carried forward and eligible previous-year withdrawals.
+        </p>
+
+        <div class="cra-room-action">
+          <a href="/calculator/tfsa-contribution-calculator" class="cra-room-cta-btn">
+            <span>Check Your TFSA Contribution Room</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Canadian Educational Guide -->
+    <article class="educational-guide">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is a TFSA Growth Calculator?</h2>
+        <p>
+          A <strong>TFSA Growth Calculator</strong> is a financial planning tool built specifically for Canadian investors. It projects how your Tax-Free Savings Account (TFSA) balance will grow over time through compound interest and disciplined recurring contributions.
+        </p>
+        <p>
+          Unlike taxable investment accounts—where capital gains, dividends, and interest are subject to annual income taxes—every dollar of profit generated within a TFSA compounds completely tax-free. Our calculator models this tax shelter by projecting the future value of your initial savings and recurring deposits across weekly, biweekly, monthly, or annual schedules.
+        </p>
+        <p>
+          Whether you are building an emergency reserve, saving for a down payment on a home, or creating a multi-decade retirement nest egg, this tool demonstrates how time in the market and compounding interest turn modest regular contributions into substantial wealth.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>How Does TFSA Investment Growth Work in Canada?</h2>
+        <p>
+          The Tax-Free Savings Account was introduced by the federal government in 2009 to encourage Canadians to save and invest throughout their lifetimes. To maximize the benefit of a TFSA, it is essential to understand its structural mechanics:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">The Fundamental Rules of Canadian TFSA Growth</div>
+          <ol class="callout-steps">
+            <li><strong>Contributions Use After-Tax Dollars:</strong> Unlike an RRSP, TFSA contributions are not tax-deductible against your employment income. You contribute with money you have already paid tax on.</li>
+            <li><strong>All Investment Growth Is Tax-Free:</strong> Any interest, dividends, or capital gains earned inside your TFSA portfolio compound with zero annual tax drag. You never report TFSA growth on your Canadian T1 Income Tax Return.</li>
+            <li><strong>Withdrawals Are 100% Tax-Free:</strong> You can withdraw funds at any time, for any purpose, without paying a single dollar in federal or provincial tax.</li>
+            <li><strong>Growth Never Uses Contribution Room:</strong> If your TFSA grows from $20,000 to $100,000 through successful investments, the $80,000 in capital gains does not count against your CRA contribution limit.</li>
+            <li><strong>Investment Losses Do Not Create Extra Room:</strong> If an investment inside your TFSA loses value, you cannot claim a capital loss for tax purposes, and the CRA does not give you replacement contribution room.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How to Calculate TFSA Growth: The Compounding Formula</h2>
+        <p>
+          Projecting the future value of a TFSA involves two primary mathematical components: the future value of your starting lump-sum balance and the future value of your recurring contribution annuity.
+        </p>
+        <p>
+          When contributions are deposited at the end of each period, the total future value is calculated using the formula:
+        </p>
+        <div class="formula-box" style="font-weight: 700; font-size: 1rem;">
+          FV = P<sub>0</sub> × (1 + i)<sup>N</sup> + PMT × [ ((1 + i)<sup>N</sup> − 1) / i ]
+        </div>
+        <p>
+          Where each variable represents:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>FV (Future Value):</strong> The total projected TFSA balance at the end of your investment horizon.</li>
+          <li><strong>P<sub>0</sub> (Starting Balance):</strong> The initial amount currently invested in your TFSA.</li>
+          <li><strong>PMT (Periodic Contribution):</strong> The regular deposit made each period (e.g., monthly or biweekly).</li>
+          <li><strong>r (Annual Return Rate):</strong> The expected annual percentage return expressed as a decimal (e.g., 6% = 0.06).</li>
+          <li><strong>m (Compounding Frequency):</strong> The number of contribution and compounding periods per year (12 for monthly, 26 for biweekly, 52 for weekly, 1 for annually).</li>
+          <li><strong>i (Periodic Interest Rate):</strong> The periodic rate, calculated as <code>r / m</code>.</li>
+          <li><strong>N (Total Periods):</strong> The total number of periods over your investment horizon, calculated as <code>Years × m</code>.</li>
+        </ul>
+        <p>
+          If your expected annual return is <strong>0%</strong>, the formula simplifies to:
+        </p>
+        <div class="formula-box" style="font-weight: 700; font-size: 0.95rem;">
+          FV = P<sub>0</sub> + (PMT × N)
+        </div>
+        <p>
+          At 0% return, your ending balance equals your initial deposit plus your cumulative out-of-pocket contributions.
+        </p>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>How Compound Growth Works in a TFSA</h2>
+        <p>
+          Compound growth occurs when the earnings generated by your investments begin generating their own earnings. In a standard non-registered account, a portion of your investment returns is shaved off every year by capital gains taxes, dividend taxes, and interest income taxes.
+        </p>
+        <p>
+          In a Canadian TFSA, that tax friction is eliminated entirely. Every dividend reinvested through a Dividend Reinvestment Plan (DRIP) and every dollar of unrealized capital gain remains fully intact, accelerating the compounding snowball.
+        </p>
+        <div class="example-highlight-card">
+          <div class="example-title">The Power of the Compounding Tipping Point</div>
+          <p>
+            Consider an investor who deposits <strong>$500 per month</strong> into a TFSA with an initial balance of <strong>$10,000</strong> at a <strong>6.0% annual return</strong>:
+          </p>
+          <ul class="bullet-list" style="margin-top: 6px;">
+            <li><strong>Year 5:</strong> Balance is <strong>$50,810</strong>. Total personal contributions are $40,000; compound growth is $10,810 (21% of total).</li>
+            <li><strong>Year 10:</strong> Balance is <strong>$105,717</strong>. Total personal contributions are $70,000; compound growth is $35,717 (34% of total).</li>
+            <li><strong>Year 20:</strong> Balance is <strong>$264,122</strong>. Total personal contributions are $130,000; compound growth is $134,122 (<strong>51% of total</strong>).</li>
+            <li><strong>Year 30:</strong> Balance is <strong>$549,493</strong>. Total personal contributions are $190,000; compound growth is $359,493 (<strong>65% of total</strong>).</li>
+          </ul>
+          <p style="margin-top: 8px; font-size: 0.85rem; color: var(--color-text-muted);">
+            By year 20, the market has generated more money than you ever deposited out-of-pocket. By year 30, compound growth accounts for nearly two-thirds of your entire portfolio value.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>TFSA Growth With Monthly Contributions</h2>
+        <p>
+          Automating monthly contributions is widely regarded by Canadian financial planners as the most effective habit for building wealth. Contributing monthly provides two major financial advantages:
+        </p>
+        <ol class="ordered-list">
+          <li>
+            <strong>Dollar-Cost Averaging (DCA):</strong>
+            By investing a set dollar amount every month, you automatically buy more shares or ETF units when market prices drop and fewer units when prices rise. This reduces the emotional stress of attempting to time market peaks and troughs.
+          </li>
+          <li>
+            <strong>Maximized Time in the Market:</strong>
+            Instead of waiting until December or the end of the year to deposit a lump sum, monthly deposits enter the market earlier, allowing your funds to start compounding immediately.
+          </li>
+        </ol>
+        <p>
+          For the <strong>2026 tax year</strong>, the official CRA TFSA limit is <strong>$7,000</strong>. Setting up an automatic transfer of <strong>$583.33 per month</strong> (or $269.23 biweekly) allows you to max out your annual contribution room smoothly across the calendar year without straining your cash flow.
+        </p>
+      </section>
+
+      <!-- Section 6: Growth Benchmark Table -->
+      <section class="guide-section">
+        <h2>How Much Can a TFSA Grow Over 10, 20, or 30 Years?</h2>
+        <p>
+          The table below illustrates projected TFSA portfolio balances assuming an initial deposit of <strong>$10,000</strong> and ongoing contributions of <strong>$500 per month</strong> across different investment horizons and average annual return rates:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Time Horizon</th>
+                <th scope="col">Total Out-of-Pocket</th>
+                <th scope="col">5.0% Annual Return</th>
+                <th scope="col">6.0% Annual Return</th>
+                <th scope="col">7.0% Annual Return</th>
+                <th scope="col">8.0% Annual Return</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>5 Years</strong></td>
+                <td>$40,000</td>
+                <td>$49,438</td>
+                <td>$50,810</td>
+                <td>$52,223</td>
+                <td>$53,678</td>
+              </tr>
+              <tr>
+                <td><strong>10 Years</strong></td>
+                <td>$70,000</td>
+                <td>$99,742</td>
+                <td>$105,717</td>
+                <td>$112,118</td>
+                <td>$118,973</td>
+              </tr>
+              <tr>
+                <td><strong>15 Years</strong></td>
+                <td>$100,000</td>
+                <td>$163,803</td>
+                <td>$179,531</td>
+                <td>$197,002</td>
+                <td>$216,400</td>
+              </tr>
+              <tr>
+                <td><strong>20 Years</strong></td>
+                <td>$130,000</td>
+                <td>$245,348</td>
+                <td>$278,614</td>
+                <td>$317,046</td>
+                <td>$361,544</td>
+              </tr>
+              <tr>
+                <td><strong>25 Years</strong></td>
+                <td>$160,000</td>
+                <td>$349,152</td>
+                <td>$411,811</td>
+                <td>$487,419</td>
+                <td>$578,720</td>
+              </tr>
+              <tr>
+                <td><strong>30 Years</strong></td>
+                <td>$190,000</td>
+                <td>$481,296</td>
+                <td>$590,929</td>
+                <td>$729,195</td>
+                <td>$903,668</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          *Figures assume monthly compounding and contributions made at the end of each month. Projections do not include the impact of personal taxes (which are $0 in a TFSA) or product management fees. Past performance does not guarantee future results.
+        </p>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="guide-section">
+        <h2>Does TFSA Investment Growth Affect Contribution Room?</h2>
+        <p>
+          One of the most frequent misconceptions among Canadian investors is that strong investment performance consumes TFSA contribution room.
+        </p>
+        <p>
+          <strong>No, TFSA investment growth does NOT use up your contribution room.</strong>
+        </p>
+        <p>
+          The Canada Revenue Agency only monitors the movement of money across the boundary of your TFSA:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Deposits (Inflows):</strong> Money transferred into your TFSA from an external bank or non-registered account consumes your available contribution room.</li>
+          <li><strong>Withdrawals (Outflows):</strong> Money transferred out of your TFSA back to your chequing or savings account creates new contribution room, which is restored on January 1 of the following calendar year.</li>
+          <li><strong>Internal Activity (Gains, Dividends, Losses):</strong> Everything that happens inside the account—whether your stock triples in price, earns dividends, or declines—is completely invisible to your contribution limit.</li>
+        </ul>
+        <div class="key-callout-box">
+          <div class="callout-title">The "TFSA Super-Sizer" Effect</div>
+          <p>
+            Because withdrawals are re-added to your room in the following calendar year, successful investment growth can permanently expand your lifetime TFSA capacity. For example, if you deposit $50,000 and it grows to $150,000, and you then withdraw the entire $150,000 to purchase a home, on January 1 of the following year you receive <strong>$150,000</strong> plus that year’s new annual limit in brand-new contribution room.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 8 -->
+      <section class="guide-section">
+        <h2>Are TFSA Investment Gains Tax-Free?</h2>
+        <p>
+          Yes. Under the Canadian <em>Income Tax Act</em>, all earnings within a TFSA qualify for tax-free compounding. Here is how specific asset classes are treated:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Capital Gains:</strong> Buying an ETF or stock at $50 and selling it at $150 inside a TFSA generates zero capital gains tax. Outside a TFSA, 50% of the gain (or more under high-income rules) would be taxable.</li>
+          <li><strong>Canadian Eligible Dividends:</strong> Dividends received from Canadian corporations (such as Canadian banks, telecommunications, and utilities) are received with zero tax. You do not claim the dividend tax credit because no tax is owed.</li>
+          <li><strong>Interest Income:</strong> Interest from bonds, guaranteed investment certificates (GICs), and high-interest savings accounts is completely tax-free. In a non-registered account, interest is taxed at your full marginal income tax rate.</li>
+          <li><strong>U.S. &amp; Foreign Dividends:</strong> Foreign dividends are subject to non-resident withholding tax (e.g., 15% U.S. withholding tax under the Canada–U.S. Tax Treaty). This tax is withheld by the IRS before reaching your account and cannot be recovered inside a TFSA. However, capital gains on U.S. stocks remain 100% tax-free in Canada.</li>
+        </ul>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="guide-section">
+        <h2>TFSA Contributions vs. Investment Growth</h2>
+        <p>
+          When you begin investing in a TFSA, your wealth accumulation is almost entirely driven by how much money you can save from your paycheque. However, over a 20- to 30-year timeframe, the mathematical dynamics undergo a dramatic inversion:
+        </p>
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>Phase 1: The Accumulation Foundation (Years 1–7)</h3>
+            <p><strong>Primary Driver: Personal Savings Rate</strong></p>
+            <p>During the first decade, your contributions make up 70% to 85% of your total balance. Market returns add modest acceleration, but consistency of deposits is the key success factor.</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Phase 2: The Balance Crossover (Years 8–18)</h3>
+            <p><strong>Primary Driver: Equal Partnership</strong></p>
+            <p>As your portfolio surpasses $100,000 to $200,000, a typical 6% to 7% annual market gain begins matching or exceeding your entire annual contribution.</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Phase 3: The Compounding Engine (Years 19+)</h3>
+            <p><strong>Primary Driver: Compound Growth</strong></p>
+            <p>In mature portfolios, investment returns do the heavy lifting. Annual market growth can exceed your contributions by 3x to 5x, generating exponential wealth.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 10: Realistic Canadian Examples -->
+      <section class="guide-section">
+        <h2>TFSA Growth Examples: Three Canadian Investor Profiles</h2>
+        
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>Profile A: Maya, Age 24 (New Graduate)</h3>
+            <p><strong>Starting Balance:</strong> $2,000</p>
+            <p><strong>Regular Contribution:</strong> $350 / month</p>
+            <p><strong>Expected Return:</strong> 7.0% (All-Equity Index ETF)</p>
+            <p><strong>Horizon:</strong> 30 years (Retirement at 54)</p>
+            <p><strong>Total Deposits:</strong> $128,000</p>
+            <p><strong>Projected Balance:</strong> <strong>$447,210</strong></p>
+            <p style="color: var(--color-success); font-weight: 600;">Compound Gain: +$319,210 (71% of total wealth)</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Profile B: Liam, Age 38 (Mid-Career Professional)</h3>
+            <p><strong>Starting Balance:</strong> $45,000</p>
+            <p><strong>Regular Contribution:</strong> $583.33 / month ($7,000/yr max)</p>
+            <p><strong>Expected Return:</strong> 6.0% (Balanced 80/20 Portfolio)</p>
+            <p><strong>Horizon:</strong> 20 years (Retirement at 58)</p>
+            <p><strong>Total Deposits:</strong> $185,000</p>
+            <p><strong>Projected Balance:</strong> <strong>$403,634</strong></p>
+            <p style="color: var(--color-success); font-weight: 600;">Compound Gain: +$218,634 (54% of total wealth)</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Profile C: Daniel, Age 52 (Lump-Sum Consolidator)</h3>
+            <p><strong>Starting Balance:</strong> $80,000</p>
+            <p><strong>Regular Contribution:</strong> $250 / month</p>
+            <p><strong>Expected Return:</strong> 5.0% (Conservative 60/40 Portfolio)</p>
+            <p><strong>Horizon:</strong> 13 years (Retirement at 65)</p>
+            <p><strong>Total Deposits:</strong> $119,000</p>
+            <p><strong>Projected Balance:</strong> <strong>$207,458</strong></p>
+            <p style="color: var(--color-success); font-weight: 600;">Compound Gain: +$88,458 (43% of total wealth)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 11 -->
+      <section class="guide-section">
+        <h2>How to Maximize Long-Term TFSA Growth</h2>
+        <p>
+          To unlock the full compounding potential of your Tax-Free Savings Account, consider adopting these proven Canadian investing principles:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Invest for Growth Rather Than Stashing Cash:</strong> Despite its name ("Savings Account"), treating a TFSA as a cash chequing account earning 1% to 2% misses the entire point of the tax shelter. Long-term money should be invested in diversified index funds or asset allocation ETFs.</li>
+          <li><strong>Keep Investment Fees (MER) Low:</strong> Traditional Canadian mutual funds often carry Management Expense Ratios (MERs) exceeding 2.0% per year. Switching to low-cost asset allocation ETFs (charging 0.20% to 0.25%) can save you tens of thousands of dollars in lost compounding over a 20-year span.</li>
+          <li><strong>Reinvest All Dividends (DRIP):</strong> Enable automated dividend reinvestment with your Canadian discount brokerage to ensure cash payouts immediately purchase additional fractional or whole units.</li>
+          <li><strong>Avoid Frequent Day Trading:</strong> The CRA prohibits carrying on an active business of trading securities inside a TFSA. Frequent day-trading, short-selling, or options trading can prompt a CRA audit, potentially stripping your account of its tax-free status.</li>
+          <li><strong>Never Over-Contribute:</strong> Keep track of your contributions across all financial institutions. Over-contributing triggers a punishing 1%-per-month CRA penalty tax.</li>
+        </ul>
+      </section>
+
+      <!-- Section 12 -->
+      <section class="guide-section">
+        <h2>TFSA Growth vs. High-Interest Savings Account (HISA) Growth</h2>
+        <p>
+          Many Canadians keep their TFSA parked entirely in a cash high-interest savings account (HISA) or GIC earning 3% to 4%. While cash is appropriate for immediate emergency funds or short-term goals (under 3 years), using a TFSA exclusively for cash over long horizons creates significant opportunity loss:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Cash HISA vs. Diversified Index Portfolio ($500/month over 25 Years)</div>
+          <ul class="bullet-list">
+            <li><strong>In a Cash HISA (3.0% Return):</strong> Total deposits of $150,000 grow to approximately <strong>$223,000</strong> (Compound gain: +$73,000). Adjusted for 2.5% inflation, the real purchasing power gain is minimal.</li>
+            <li><strong>In a Diversified Portfolio (7.0% Return):</strong> Total deposits of $150,000 grow to approximately <strong>$406,000</strong> (Compound gain: +$256,000).</li>
+            <li><strong>The Compounding Cost of Cash:</strong> The investor who remained in cash sacrificed over <strong>$183,000</strong> in tax-free wealth over a 25-year career.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 13 -->
+      <section class="guide-section">
+        <h2>TFSA Growth for Canadian Retirement Planning</h2>
+        <p>
+          While the Registered Retirement Savings Plan (RRSP) provides upfront tax deductions, the TFSA offers unique structural advantages for Canadian retirees:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Zero OAS Clawbacks:</strong> Withdrawals from an RRSP or RRIF are classified as taxable income, which can trigger the Old Age Security (OAS) pension recovery tax (clawback). In contrast, TFSA withdrawals are not taxable income and will never trigger an OAS clawback.</li>
+          <li><strong>No Impact on Guaranteed Income Supplement (GIS):</strong> Low-income seniors can withdraw from their TFSA without reducing their monthly GIS entitlement.</li>
+          <li><strong>No Mandatory Minimum Withdrawals:</strong> Unlike a RRIF, which requires you to convert at age 71 and withdraw minimum percentages annually, a TFSA has no conversion age and no mandatory withdrawal rules. It can compound untouched for your entire lifetime.</li>
+          <li><strong>Seamless Estate Planning:</strong> In all provinces except Quebec, you can designate a spouse or common-law partner as a "successor holder," allowing your entire TFSA portfolio to transfer into their TFSA tax-free without consuming their contribution room.</li>
+        </ul>
+      </section>
+
+      <!-- Section 14: FAQ -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          {faqSchema.mainEntity.map((item) => (
+            <div class="faq-item">
+              <h3>{item.name}</h3>
+              <p>{item.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Section 15: Cross-Tool Navigation -->
+      <section class="guide-section">
+        <h2>Explore More Canadian Financial Calculators</h2>
+        <p>
+          FinCalcLab provides dedicated, mobile-optimized financial calculators for Canadian taxpayers and savers:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/tfsa-contribution-calculator" class="related-tool-card">
+            <h3>TFSA Contribution Calculator</h3>
+            <p>Calculate your legal 2026 contribution limit, track carry-forwards, and prevent CRA 1%/month penalties.</p>
+          </a>
+          <a href="/calculator/rrsp-tax-savings-calculator" class="related-tool-card">
+            <h3>RRSP Tax Savings Calculator</h3>
+            <p>Estimate provincial and federal tax savings from an RRSP contribution across all 13 Canadian provinces.</p>
+          </a>
+          <a href="/calculator/rrsp-contribution-calculator" class="related-tool-card">
+            <h3>RRSP Contribution Calculator</h3>
+            <p>Determine your annual RRSP deduction limit, earned income allowances, and carryforward room.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Statutory Disclaimer -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Statutory Canadian Financial Disclaimer:</strong> The simulations and estimates provided by the TFSA Growth Calculator are for educational and financial literacy purposes only. Projections are based on mathematical formulas using fixed, steady return rates entered by the user. Actual financial market returns are volatile, fluctuate daily, and may result in partial or total loss of invested capital. This website is not affiliated with the Canada Revenue Agency (CRA) or any Canadian regulatory body. Nothing on this page constitutes legal, tax, or professional financial advice. Always consult a Certified Financial Planner (CFP) or Chartered Professional Accountant (CPA) before making investment decisions.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-8);
+  }
+
+  /* CRA Contribution Room Callout Banner */
+  .cra-room-callout-section {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .cra-room-card {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .cra-room-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .cra-room-icon-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  :global(.dark) .cra-room-icon-badge {
+    background: rgba(37, 99, 235, 0.18);
+  }
+
+  .cra-room-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .cra-room-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .cra-room-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .cra-room-description {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 860px;
+  }
+
+  .cra-room-action {
+    display: flex;
+    align-items: center;
+    padding-top: var(--space-1);
+  }
+
+  .cra-room-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 11px 22px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .cra-room-cta-btn:hover {
+    background-color: var(--color-primary-hover, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+
+  .cra-room-cta-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Educational Guide Styling */
+  .educational-guide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .guide-section h2 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .guide-section p {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+  }
+
+  .formula-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-family: monospace;
+    font-size: 0.95rem;
+    margin: var(--space-3) 0;
+    overflow-x: auto;
+  }
+
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+  }
+
+  .callout-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .callout-steps {
+    margin: 0;
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 0.92rem;
+  }
+
+  .bullet-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.92rem;
+  }
+
+  .ordered-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    font-size: 0.92rem;
+  }
+
+  .example-highlight-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-success);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+  }
+
+  .example-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-success);
+    margin-bottom: var(--space-2);
+  }
+
+  /* Table Responsive Styling */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .growth-comparison-table th {
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--color-border);
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  :global(.dark) .growth-comparison-table th {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .growth-comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .growth-comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table-caption {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Scenario Grid */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+  }
+
+  .scenario-card {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .scenario-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .scenario-card p {
+    font-size: 0.85rem;
+    margin: 0 0 6px 0;
+    line-height: 1.45;
+  }
+
+  /* FAQ List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .related-tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .related-tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .related-tool-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Disclaimer Section */
+  .disclaimer-section {
+    padding: var(--space-4);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+  }
+
+  .disclaimer-text {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .cra-room-card {
+      padding: var(--space-4);
+      gap: var(--space-3);
+    }
+
+    .cra-room-header {
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .cra-room-icon-badge {
+      width: 38px;
+      height: 38px;
+    }
+
+    .cra-room-title {
+      font-size: 1.05rem;
+    }
+
+    .cra-room-description {
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .cra-room-action {
+      width: 100%;
+      padding-top: var(--space-2);
+    }
+
+    .cra-room-cta-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+    }
+
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .cra-room-card {
+      padding: 12px;
+    }
+
+    .cra-room-title {
+      font-size: 0.98rem;
+    }
+
+    .cra-room-cta-btn {
+      font-size: 0.82rem;
+      padding: 10px 12px;
+      gap: 6px;
+    }
+  }
+</style>

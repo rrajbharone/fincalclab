@@ -1,0 +1,1080 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Compound Percentage Decrease Calculator"
+  description="Calculate the final value, total dollar loss, and cumulative percentage reduction when a percentage decrease is applied repeatedly to reduced balances."
+  category="Math & Percentages"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="cpdc-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">Decrease Parameters</h3>
+
+      <!-- Currency Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cpdc-currency">Currency Format</label>
+          <select id="cpdc-currency" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) – US Dollar</option>
+            <option value="EUR">EUR (€) – Euro</option>
+            <option value="GBP">GBP (£) – British Pound</option>
+            <option value="CAD">CAD (C$) – Canadian Dollar</option>
+            <option value="AUD">AUD (A$) – Australian Dollar</option>
+            <option value="INR">INR (₹) – Indian Rupee</option>
+            <option value="JPY">JPY (¥) – Japanese Yen</option>
+            <option value="SGD">SGD (S$) – Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) – Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Initial Value -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cpdc-initial-val">Initial Value</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="cpdc-cur-sym">$</span>
+            <input type="number" id="cpdc-initial-val" min="0" max="100000000" step="10" value="1000" aria-label="Initial Value" />
+          </div>
+        </div>
+        <input type="range" id="cpdc-initial-slider" min="10" max="50000" step="10" value="1000" class="slider-range" aria-label="Initial Value Slider" />
+        <span class="input-subtext">The starting amount, price, balance, or quantity before any reductions.</span>
+      </div>
+
+      <!-- Percentage Decrease (%) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cpdc-pct-val">Percentage Decrease per Step</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="cpdc-pct-val" min="0" max="100" step="0.5" value="10" aria-label="Percentage Decrease per Step" style="padding-right: 28px; padding-left: 10px;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="cpdc-pct-slider" min="0" max="100" step="0.5" value="10" class="slider-range" aria-label="Percentage Decrease Slider" />
+        
+        <!-- Preset Pills for % -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-pct="5">5%</button>
+          <button type="button" class="preset-pill active" data-pct="10">10%</button>
+          <button type="button" class="preset-pill" data-pct="15">15%</button>
+          <button type="button" class="preset-pill" data-pct="20">20%</button>
+          <button type="button" class="preset-pill" data-pct="25">25%</button>
+          <button type="button" class="preset-pill" data-pct="50">50%</button>
+        </div>
+        <span class="input-subtext" id="cpdc-pct-error" style="color: var(--color-error); display: none;">Percentage decrease must be between 0% and 100%.</span>
+      </div>
+
+      <!-- Number of Decreases (n) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cpdc-steps-val">Number of Decreases</label>
+          <div class="input-symbol-wrapper" style="width: 100px;">
+            <input type="number" id="cpdc-steps-val" min="0" max="100" step="1" value="3" aria-label="Number of Decreases" style="padding-right: 12px; padding-left: 12px; text-align: center;" />
+          </div>
+        </div>
+        <input type="range" id="cpdc-steps-slider" min="0" max="30" step="1" value="3" class="slider-range" aria-label="Number of Decreases Slider" />
+        
+        <!-- Preset Pills for Steps -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Steps:</span>
+          <button type="button" class="preset-pill" data-step="1">1</button>
+          <button type="button" class="preset-pill" data-step="2">2</button>
+          <button type="button" class="preset-pill active" data-step="3">3</button>
+          <button type="button" class="preset-pill" data-step="4">4</button>
+          <button type="button" class="preset-pill" data-step="5">5</button>
+          <button type="button" class="preset-pill" data-step="10">10</button>
+          <button type="button" class="preset-pill" data-step="12">12</button>
+        </div>
+        <span class="input-subtext">How many times the percentage decrease is compounded sequentially.</span>
+        <span class="input-subtext" id="cpdc-steps-error" style="color: var(--color-error); display: none;">Number of decreases must be 0 or higher.</span>
+      </div>
+
+      <!-- Reset Action -->
+      <div style="margin-top: var(--space-5);">
+        <Button variant="outline" size="sm" id="cpdc-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Inputs
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Compound Decrease Summary</h3>
+
+    <!-- Hero Metric Box -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label">Final Value</span>
+      <div class="hero-metric-value" id="cpdc-hero-value">$729.00</div>
+      <span class="hero-metric-subtext" id="cpdc-hero-sub">After 10.00% decrease applied 3 times</span>
+    </div>
+
+    <!-- Callout Banner -->
+    <div id="cpdc-callout" class="callout-banner success">
+      <div class="callout-icon" id="cpdc-callout-icon">↓</div>
+      <div class="callout-body">
+        <span class="callout-title" id="cpdc-callout-title">Compound Reduction Applied</span>
+        <span class="callout-msg" id="cpdc-callout-msg">Total decrease of $271.00 — an overall 27.10% reduction from your initial $1,000.00.</span>
+      </div>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label">Total Amount Decreased</span>
+        <div id="cpdc-box1-value" class="net-box-value" style="color: var(--color-primary);">-$271.00</div>
+        <span class="net-box-desc" id="cpdc-box1-desc">Cumulative value loss</span>
+      </div>
+      <div class="net-value-box highlight-warning">
+        <span class="net-box-label">Overall Percentage Drop</span>
+        <div id="cpdc-box2-value" class="net-box-value" style="color: var(--color-warning);">27.10%</div>
+        <span class="net-box-desc" id="cpdc-box2-desc">Effective total percentage</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 class="metrics-grid-title">Detailed Calculation Breakdown</h4>
+    <div class="results-grid cpdc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Initial Value</span>
+        <div class="tile-value" id="tile-cpdc-init" style="color: var(--color-text-muted);">$1,000.00</div>
+        <span class="tile-sub">Starting base</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Final Value</span>
+        <div class="tile-value" id="tile-cpdc-final" style="color: var(--color-primary);">$729.00</div>
+        <span class="tile-sub">Remaining balance</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Total Amount Decreased</span>
+        <div class="tile-value" id="tile-cpdc-drop-amt" style="color: var(--color-error);">-$271.00</div>
+        <span class="tile-sub">Absolute reduction</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Overall % Decrease</span>
+        <div class="tile-value" id="tile-cpdc-drop-pct" style="color: var(--color-warning);">27.10%</div>
+        <span class="tile-sub">Cumulative rate</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Decrease Per Step</span>
+        <div class="tile-value" id="tile-cpdc-step-pct" style="color: var(--color-text-base);">10.00%</div>
+        <span class="tile-sub">Applied each round</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Compounding Steps</span>
+        <div class="tile-value" id="tile-cpdc-steps-count" style="color: var(--color-text-base);">3</div>
+        <span class="tile-sub">Total iterations</span>
+      </div>
+    </div>
+
+    <!-- Compound vs Simple Contrast Tile -->
+    <div class="contrast-box" id="cpdc-contrast-box">
+      <div class="contrast-icon">⚖️</div>
+      <div class="contrast-content">
+        <span class="contrast-title">Compound vs. Simple (Linear) Decrease</span>
+        <p class="contrast-desc" id="cpdc-contrast-desc">
+          A flat, simple reduction of 3 × 10% = 30% would leave <strong>$700.00</strong>. Because each compound percentage cut is applied to an already reduced balance, you retain <strong>$29.00 more</strong> ($729.00 vs $700.00).
+        </p>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict -->
+    <div class="verdict-container">
+      <Card elevation="sm" id="cpdc-verdict-card" class="verdict-card verdict-info">
+        <span class="verdict-tag" id="cpdc-verdict-tag">Summary Explanation</span>
+        <p id="cpdc-verdict-text" class="verdict-paragraph">
+          After a <strong>10.00% decrease</strong> is applied <strong>3 times</strong> sequentially to an initial value of <strong>$1,000.00</strong>, the final value is <strong>$729.00</strong>. The total reduction is <strong>$271.00</strong>, reflecting a true compound decrease of <strong>27.10%</strong>.
+        </p>
+        <span class="verdict-disclaimer">Formula used: Final Value = Initial Value × (1 − r ÷ 100)ⁿ. Unlike simple percentages, compound decreases never exceed 100% when r ≤ 100%.</span>
+      </Card>
+    </div>
+
+    <!-- Step-by-Step Table Accordion -->
+    <div class="schedule-section">
+      <button type="button" class="schedule-toggle-btn" id="cpdc-table-toggle" aria-expanded="false" aria-controls="cpdc-table-wrapper">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          View Step-by-Step Decrease Schedule
+        </span>
+        <svg class="chevron-icon" id="cpdc-table-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div class="schedule-wrapper hidden" id="cpdc-table-wrapper">
+        <div class="schedule-table-container">
+          <table class="schedule-table" id="cpdc-breakdown-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Step</th>
+                <th>Starting Value</th>
+                <th>Decrease Amount</th>
+                <th>Remaining Value</th>
+                <th>Total Drop (%)</th>
+              </tr>
+            </thead>
+            <tbody id="cpdc-table-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+        <p class="schedule-footnote" id="cpdc-table-footnote">
+          Each step reduces the previous step's remaining value by the specified percentage.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initCPDC() {
+    const root = document.getElementById('cpdc-root');
+    if (!root) return;
+
+    // Inputs DOM
+    const currencySelect = document.getElementById('cpdc-currency') as HTMLSelectElement;
+    const curSymSpan     = document.getElementById('cpdc-cur-sym')  as HTMLElement;
+    const initValInput   = document.getElementById('cpdc-initial-val') as HTMLInputElement;
+    const initValSlider  = document.getElementById('cpdc-initial-slider') as HTMLInputElement;
+    const pctInput       = document.getElementById('cpdc-pct-val') as HTMLInputElement;
+    const pctSlider      = document.getElementById('cpdc-pct-slider') as HTMLInputElement;
+    const pctError       = document.getElementById('cpdc-pct-error') as HTMLElement;
+    const stepsInput     = document.getElementById('cpdc-steps-val') as HTMLInputElement;
+    const stepsSlider    = document.getElementById('cpdc-steps-slider') as HTMLInputElement;
+    const stepsError     = document.getElementById('cpdc-steps-error') as HTMLElement;
+    const resetBtn       = document.getElementById('cpdc-reset-btn') as HTMLButtonElement;
+
+    // Preset pills
+    const pctPills   = document.querySelectorAll<HTMLButtonElement>('.preset-pill[data-pct]');
+    const stepsPills = document.querySelectorAll<HTMLButtonElement>('.preset-pill[data-step]');
+
+    // Results DOM
+    const heroValue      = document.getElementById('cpdc-hero-value')      as HTMLElement;
+    const heroSub        = document.getElementById('cpdc-hero-sub')        as HTMLElement;
+    const callout        = document.getElementById('cpdc-callout')         as HTMLElement;
+    const calloutIcon    = document.getElementById('cpdc-callout-icon')    as HTMLElement;
+    const calloutTitle   = document.getElementById('cpdc-callout-title')   as HTMLElement;
+    const calloutMsg     = document.getElementById('cpdc-callout-msg')     as HTMLElement;
+    const box1Value      = document.getElementById('cpdc-box1-value')      as HTMLElement;
+    const box2Value      = document.getElementById('cpdc-box2-value')      as HTMLElement;
+    const tileInit       = document.getElementById('tile-cpdc-init')       as HTMLElement;
+    const tileFinal      = document.getElementById('tile-cpdc-final')      as HTMLElement;
+    const tileDropAmt    = document.getElementById('tile-cpdc-drop-amt')   as HTMLElement;
+    const tileDropPct    = document.getElementById('tile-cpdc-drop-pct')   as HTMLElement;
+    const tileStepPct    = document.getElementById('tile-cpdc-step-pct')   as HTMLElement;
+    const tileStepsCount = document.getElementById('tile-cpdc-steps-count') as HTMLElement;
+    const contrastDesc   = document.getElementById('cpdc-contrast-desc')   as HTMLElement;
+    const verdictText    = document.getElementById('cpdc-verdict-text')    as HTMLElement;
+
+    // Table accordion DOM
+    const tableToggle   = document.getElementById('cpdc-table-toggle')   as HTMLButtonElement;
+    const tableWrapper  = document.getElementById('cpdc-table-wrapper')  as HTMLElement;
+    const tableChevron  = document.getElementById('cpdc-table-chevron')  as HTMLElement;
+    const tableBody     = document.getElementById('cpdc-table-body')     as HTMLElement;
+    const tableFootnote = document.getElementById('cpdc-table-footnote') as HTMLElement;
+
+    // Currency map
+    const currencySymbols: Record<string, string> = {
+      USD: '$', EUR: '€', GBP: '£', CAD: 'C$', AUD: 'A$',
+      INR: '₹', JPY: '¥', SGD: 'S$', CHF: 'CHF '
+    };
+
+    function getCurSym(c: string): string {
+      return currencySymbols[c] || '$';
+    }
+
+    function formatNumber(val: number, currency: string): string {
+      const sym = getCurSym(currency);
+      const isJPY = currency === 'JPY';
+      const abs = Math.abs(val);
+      const fmt = abs.toLocaleString(undefined, {
+        minimumFractionDigits: isJPY ? 0 : 2,
+        maximumFractionDigits: isJPY ? 0 : 2
+      });
+      return `${val < 0 ? '-' : ''}${sym}${fmt}`;
+    }
+
+    function updateCurrencySym() {
+      const sym = getCurSym(currencySelect.value);
+      if (curSymSpan) curSymSpan.textContent = sym;
+    }
+
+    function bindSlider(inp: HTMLInputElement, sld: HTMLInputElement, cb: () => void) {
+      if (!inp || !sld) return;
+      inp.addEventListener('input', () => {
+        sld.value = inp.value;
+        cb();
+      });
+      sld.addEventListener('input', () => {
+        inp.value = sld.value;
+        cb();
+      });
+    }
+
+    function calculate() {
+      const currency = currencySelect.value;
+      let initVal = parseFloat(initValInput.value);
+      let pct = parseFloat(pctInput.value);
+      let steps = parseInt(stepsInput.value, 10);
+
+      // Robust Validation
+      if (isNaN(initVal) || initVal < 0) {
+        initVal = 0;
+      }
+
+      if (isNaN(pct) || pct < 0 || pct > 100) {
+        if (pctError) pctError.style.display = 'block';
+        if (isNaN(pct) || pct < 0) pct = 0;
+        if (pct > 100) pct = 100;
+      } else {
+        if (pctError) pctError.style.display = 'none';
+      }
+
+      if (isNaN(steps) || steps < 0) {
+        if (stepsError) stepsError.style.display = 'block';
+        steps = 0;
+      } else {
+        if (stepsError) stepsError.style.display = 'none';
+      }
+
+      // Mathematical Calculation
+      // Formula: Final Value = Initial Value * (1 - r/100)^n
+      const factorPerStep = Math.max(0, 1 - (pct / 100));
+      let finalVal: number;
+      if (pct === 100) {
+        finalVal = steps > 0 ? 0 : initVal;
+      } else if (pct === 0 || steps === 0) {
+        finalVal = initVal;
+      } else {
+        finalVal = initVal * Math.pow(factorPerStep, steps);
+      }
+
+      // Avoid floating point inaccuracies near 0
+      if (Math.abs(finalVal) < 1e-9) finalVal = 0;
+
+      const totalDecrease = initVal - finalVal;
+      const overallPctDecrease = initVal > 0 ? (totalDecrease / initVal) * 100 : 0;
+      const simpleLinearPct = pct * steps;
+      const simpleFinalVal = Math.max(0, initVal * (1 - (simpleLinearPct / 100)));
+      const retainedDifference = finalVal - simpleFinalVal;
+
+      // Update Hero
+      if (heroValue) {
+        heroValue.textContent = formatNumber(finalVal, currency);
+      }
+      if (heroSub) {
+        heroSub.textContent = `After ${pct.toFixed(2)}% decrease applied ${steps} ${steps === 1 ? 'time' : 'times'}`;
+      }
+
+      // Update Callout
+      if (callout) {
+        callout.className = pct === 0 ? 'callout-banner' : 'callout-banner success';
+      }
+      if (calloutIcon) {
+        calloutIcon.textContent = pct === 0 ? '→' : '↓';
+      }
+      if (calloutTitle) {
+        calloutTitle.textContent = pct === 0
+          ? 'No Reduction Applied (0% Decrease)'
+          : steps === 0
+            ? 'No Steps Applied'
+            : 'Compound Reduction Applied';
+      }
+      if (calloutMsg) {
+        calloutMsg.textContent = steps === 0 || pct === 0
+          ? `Value remains unchanged at ${formatNumber(initVal, currency)}.`
+          : `Total decrease of ${formatNumber(totalDecrease, currency)} — an overall ${overallPctDecrease.toFixed(2)}% reduction from your initial ${formatNumber(initVal, currency)}.`;
+      }
+
+      // Update Dual Summary Boxes
+      if (box1Value) {
+        box1Value.textContent = `-${formatNumber(totalDecrease, currency)}`;
+      }
+      if (box2Value) {
+        box2Value.textContent = `${overallPctDecrease.toFixed(2)}%`;
+      }
+
+      // Update Tiles
+      if (tileInit)       tileInit.textContent = formatNumber(initVal, currency);
+      if (tileFinal)      tileFinal.textContent = formatNumber(finalVal, currency);
+      if (tileDropAmt)    tileDropAmt.textContent = `-${formatNumber(totalDecrease, currency)}`;
+      if (tileDropPct)    tileDropPct.textContent = `${overallPctDecrease.toFixed(2)}%`;
+      if (tileStepPct)    tileStepPct.textContent = `${pct.toFixed(2)}%`;
+      if (tileStepsCount) tileStepsCount.textContent = steps.toString();
+
+      // Update Contrast Box (Compound vs Simple)
+      if (contrastDesc) {
+        if (steps <= 1 || pct === 0) {
+          contrastDesc.innerHTML = `With ${steps} step, compound decrease is identical to a simple ${pct.toFixed(1)}% reduction (${formatNumber(finalVal, currency)}). Compounding shows its distinct advantage when applied multiple times.`;
+        } else {
+          contrastDesc.innerHTML = `A flat, simple reduction of ${steps} × ${pct.toFixed(1)}% = ${simpleLinearPct.toFixed(1)}% would leave <strong>${formatNumber(simpleFinalVal, currency)}</strong>. Because each compound percentage cut is applied to an already reduced balance, you retain <strong>${formatNumber(retainedDifference, currency)} more</strong> (${formatNumber(finalVal, currency)} vs ${formatNumber(simpleFinalVal, currency)}).`;
+        }
+      }
+
+      // Update Verdict
+      if (verdictText) {
+        verdictText.innerHTML = `After a <strong>${pct.toFixed(2)}% decrease</strong> is applied <strong>${steps} ${steps === 1 ? 'time' : 'times'}</strong> sequentially to an initial value of <strong>${formatNumber(initVal, currency)}</strong>, the final value is <strong>${formatNumber(finalVal, currency)}</strong>. The total reduction is <strong>${formatNumber(totalDecrease, currency)}</strong>, reflecting a true compound decrease of <strong>${overallPctDecrease.toFixed(2)}%</strong>.`;
+      }
+
+      // Populate Step-by-Step Table
+      populateTable(initVal, pct, steps, currency);
+    }
+
+    function populateTable(initVal: number, pct: number, steps: number, currency: string) {
+      if (!tableBody) return;
+      tableBody.innerHTML = '';
+
+      if (steps === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>0</strong></td>
+          <td>${formatNumber(initVal, currency)}</td>
+          <td>${formatNumber(0, currency)} (0%)</td>
+          <td>${formatNumber(initVal, currency)}</td>
+          <td>0.00%</td>
+        `;
+        tableBody.appendChild(row);
+        if (tableFootnote) tableFootnote.textContent = 'Zero decreases were requested; value remains unchanged.';
+        return;
+      }
+
+      const maxDisplaySteps = Math.min(steps, 50);
+      let currentVal = initVal;
+
+      for (let s = 1; s <= maxDisplaySteps; s++) {
+        const startVal = currentVal;
+        const stepDrop = currentVal * (pct / 100);
+        currentVal = Math.max(0, currentVal - stepDrop);
+        const cumDropAmt = initVal - currentVal;
+        const cumDropPct = initVal > 0 ? (cumDropAmt / initVal) * 100 : 0;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><span class="step-badge">${s}</span></td>
+          <td>${formatNumber(startVal, currency)}</td>
+          <td style="color: var(--color-error); font-weight: 600;">-${formatNumber(stepDrop, currency)}</td>
+          <td style="font-weight: 700; color: var(--color-text-base);">${formatNumber(currentVal, currency)}</td>
+          <td style="color: var(--color-warning); font-weight: 600;">${cumDropPct.toFixed(2)}%</td>
+        `;
+        tableBody.appendChild(row);
+      }
+
+      if (tableFootnote) {
+        if (steps > 50) {
+          tableFootnote.textContent = `Showing first 50 of ${steps} decreases to maintain performance. Final value after all ${steps} steps is calculated above.`;
+        } else {
+          tableFootnote.textContent = `Each step applies a ${pct.toFixed(2)}% reduction to the previous step's remaining balance.`;
+        }
+      }
+    }
+
+    // Toggle Table
+    if (tableToggle && tableWrapper && tableChevron) {
+      tableToggle.addEventListener('click', () => {
+        const isHidden = tableWrapper.classList.contains('hidden');
+        if (isHidden) {
+          tableWrapper.classList.remove('hidden');
+          tableChevron.classList.add('rotate-180');
+          tableToggle.setAttribute('aria-expanded', 'true');
+        } else {
+          tableWrapper.classList.add('hidden');
+          tableChevron.classList.remove('rotate-180');
+          tableToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // Bind slider & text inputs
+    bindSlider(initValInput, initValSlider, calculate);
+    bindSlider(pctInput, pctSlider, calculate);
+    bindSlider(stepsInput, stepsSlider, calculate);
+
+    currencySelect?.addEventListener('change', () => {
+      updateCurrencySym();
+      calculate();
+    });
+
+    // Preset pills (% decrease)
+    pctPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pctPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const pVal = pill.getAttribute('data-pct');
+        if (pVal) {
+          pctInput.value = pVal;
+          pctSlider.value = pVal;
+          calculate();
+        }
+      });
+    });
+
+    pctInput?.addEventListener('input', () => {
+      const v = pctInput.value;
+      pctPills.forEach(p => {
+        p.getAttribute('data-pct') === v ? p.classList.add('active') : p.classList.remove('active');
+      });
+    });
+
+    // Preset pills (steps)
+    stepsPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        stepsPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const sVal = pill.getAttribute('data-step');
+        if (sVal) {
+          stepsInput.value = sVal;
+          stepsSlider.value = sVal;
+          calculate();
+        }
+      });
+    });
+
+    stepsInput?.addEventListener('input', () => {
+      const v = stepsInput.value;
+      stepsPills.forEach(p => {
+        p.getAttribute('data-step') === v ? p.classList.add('active') : p.classList.remove('active');
+      });
+    });
+
+    // Reset button
+    resetBtn?.addEventListener('click', () => {
+      currencySelect.value = 'USD';
+      initValInput.value   = '1000';
+      initValSlider.value  = '1000';
+      pctInput.value       = '10';
+      pctSlider.value      = '10';
+      stepsInput.value     = '3';
+      stepsSlider.value    = '3';
+
+      pctPills.forEach(p => p.getAttribute('data-pct') === '10' ? p.classList.add('active') : p.classList.remove('active'));
+      stepsPills.forEach(p => p.getAttribute('data-step') === '3' ? p.classList.add('active') : p.classList.remove('active'));
+
+      if (pctError) pctError.style.display = 'none';
+      if (stepsError) stepsError.style.display = 'none';
+
+      updateCurrencySym();
+      calculate();
+    });
+
+    // Initial calculation
+    updateCurrencySym();
+    calculate();
+  }
+
+  document.addEventListener('DOMContentLoaded', initCPDC);
+  document.addEventListener('astro:page-load', initCPDC);
+</script>
+
+<style>
+  /* ── Inputs wrapper ─────────────────────────────────────────── */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-section {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-4) 0;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Input groups ───────────────────────────────────────────── */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 140px;
+  }
+
+  .currency-symbol,
+  .percent-symbol {
+    position: absolute;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .currency-symbol { left: 10px; }
+  .percent-symbol  { right: 10px; }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: 8px 12px 8px 26px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-align: right;
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .currency-select {
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+    max-width: 220px;
+  }
+
+  html.dark .currency-select,
+  html.dark .input-symbol-wrapper input {
+    background-color: var(--color-bg-surface);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .preset-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover,
+  .preset-pill.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* ── Results section ────────────────────────────────────────── */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Hero Metric */
+  .hero-metric-box {
+    background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(37,99,235,0.03));
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .hero-metric-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
+
+  .hero-metric-value {
+    font-size: clamp(1.8rem, 5vw, 2.3rem);
+    font-weight: 900;
+    color: var(--color-primary);
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* Callout Banner */
+  .callout-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+
+  .callout-banner.success {
+    border-color: rgba(16,185,129,0.4);
+    background-color: rgba(16,185,129,0.07);
+  }
+
+  .callout-icon {
+    font-size: 1.1rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .callout-banner.success .callout-icon { color: var(--color-success); }
+  .callout-body { display: flex; flex-direction: column; gap: 2px; }
+  .callout-title { font-size: 0.9rem; font-weight: 700; color: var(--color-text-base); }
+  .callout-msg   { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.45; }
+
+  /* Dual Summary Cards (Mobile-first responsive stacking) */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 641px) {
+    .net-value-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .net-value-box {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .net-value-box.highlight-primary { border-left: 4px solid var(--color-primary); }
+  .net-value-box.highlight-warning { border-left: 4px solid var(--color-warning); }
+
+  .net-box-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .net-box-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .net-box-desc { font-size: 0.75rem; color: var(--color-text-muted); }
+
+  /* Metrics Grid (Rule 15: Responsive Results Grid) */
+  .metrics-grid-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: var(--space-2) 0 0 0;
+    color: var(--color-text-base);
+    letter-spacing: -0.01em;
+  }
+
+  .cpdc-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .tile-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .tile-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  /* Contrast Box */
+  .contrast-box {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    align-items: flex-start;
+  }
+
+  .contrast-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .contrast-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .contrast-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .contrast-desc {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* Verdict Card */
+  .verdict-container { margin-top: 0; }
+
+  .verdict-card {
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+  }
+
+  .verdict-info { border-left: 4px solid var(--color-primary); }
+
+  .verdict-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    margin-bottom: 6px;
+  }
+
+  .verdict-paragraph {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  /* Schedule / Breakdown Table */
+  .schedule-section {
+    margin-top: var(--space-2);
+  }
+
+  .schedule-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-base);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    font-family: inherit;
+  }
+
+  .schedule-toggle-btn:hover {
+    background-color: var(--color-bg-base);
+    border-color: var(--color-primary);
+  }
+
+  .chevron-icon {
+    transition: transform var(--transition-fast);
+  }
+
+  .chevron-icon.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  .schedule-wrapper {
+    margin-top: var(--space-3);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+
+  .schedule-table-container {
+    max-height: 380px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+  }
+
+  .schedule-table th {
+    padding: 8px 10px;
+    background-color: var(--color-bg-base);
+    border-bottom: 2px solid var(--color-border);
+    font-weight: 700;
+    color: var(--color-text-base);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .schedule-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .schedule-table tr:hover td {
+    background-color: rgba(37, 99, 235, 0.04);
+  }
+
+  .step-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--color-text-base);
+  }
+
+  .schedule-footnote {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-top: var(--space-2);
+    text-align: right;
+  }
+</style>

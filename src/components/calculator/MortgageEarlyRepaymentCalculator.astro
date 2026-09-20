@@ -1,0 +1,1474 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Mortgage Early Repayment Calculator UK"
+  description="Calculate how much interest you can save by overpaying or clearing your UK mortgage early, compare shortening your term vs lowering monthly payments, and calculate any Early Repayment Charge (ERC)."
+  category="Mortgages & Property"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="merc-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">Mortgage &amp; Overpayment Details</h3>
+
+      <!-- Outstanding Mortgage Balance -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="merc-balance-val">Outstanding Mortgage Balance</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="merc-balance-val" min="1000" max="10000000" step="5000" value="200000" aria-label="Outstanding Mortgage Balance" />
+          </div>
+        </div>
+        <input type="range" id="merc-balance-slider" min="10000" max="1000000" step="5000" value="200000" class="slider-range" aria-label="Mortgage Balance Slider" />
+        
+        <!-- Balance Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-balance="100000">£100k</button>
+          <button type="button" class="preset-pill" data-balance="150000">£150k</button>
+          <button type="button" class="preset-pill active" data-balance="200000">£200k</button>
+          <button type="button" class="preset-pill" data-balance="300000">£300k</button>
+          <button type="button" class="preset-pill" data-balance="450000">£450k</button>
+          <button type="button" class="preset-pill" data-balance="600000">£600k</button>
+        </div>
+        <span class="input-subtext">Current capital balance remaining on your mortgage statement.</span>
+      </div>
+
+      <!-- Current Interest Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="merc-rate-val">Current Interest Rate</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="merc-rate-val" min="0" max="25" step="0.1" value="5.0" aria-label="Interest Rate" />
+            <span class="currency-symbol" style="left: auto; right: var(--space-3);">%</span>
+          </div>
+        </div>
+        <input type="range" id="merc-rate-slider" min="0.5" max="12" step="0.1" value="5.0" class="slider-range" aria-label="Interest Rate Slider" />
+        
+        <!-- Rate Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-rate="2.5">2.5%</button>
+          <button type="button" class="preset-pill" data-rate="3.8">3.8%</button>
+          <button type="button" class="preset-pill" data-rate="4.5">4.5%</button>
+          <button type="button" class="preset-pill active" data-rate="5.0">5.0%</button>
+          <button type="button" class="preset-pill" data-rate="5.8">5.8%</button>
+          <button type="button" class="preset-pill" data-rate="6.5">6.5%</button>
+        </div>
+        <span class="input-subtext">Your current fixed, tracker, or Standard Variable Rate (SVR).</span>
+      </div>
+
+      <!-- Remaining Mortgage Term -->
+      <div class="input-group">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-1); display: block;">Remaining Mortgage Term</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+          <div>
+            <div class="input-label-row" style="font-size: 0.85rem; margin-bottom: 2px;">
+              <label for="merc-term-years">Years</label>
+            </div>
+            <div class="input-symbol-wrapper" style="width: 100%;">
+              <input type="number" id="merc-term-years" min="0" max="40" step="1" value="20" aria-label="Remaining Term Years" />
+              <span class="currency-symbol" style="left: auto; right: var(--space-3); font-size: 0.85rem;">yrs</span>
+            </div>
+          </div>
+          <div>
+            <div class="input-label-row" style="font-size: 0.85rem; margin-bottom: 2px;">
+              <label for="merc-term-months">Months</label>
+            </div>
+            <div class="input-symbol-wrapper" style="width: 100%;">
+              <input type="number" id="merc-term-months" min="0" max="11" step="1" value="0" aria-label="Remaining Term Months" />
+              <span class="currency-symbol" style="left: auto; right: var(--space-3); font-size: 0.85rem;">mos</span>
+            </div>
+          </div>
+        </div>
+        <span class="input-subtext">Time left until your mortgage reaches full maturity.</span>
+      </div>
+
+      <!-- Repayment Type Selector -->
+      <div class="input-group" style="margin-top: var(--space-2);">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">Repayment Type</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Repayment Type">
+          <button type="button" class="toggle-pill active" id="merc-type-repay-btn" aria-checked="true" role="radio">
+            Capital &amp; Repayment
+          </button>
+          <button type="button" class="toggle-pill" id="merc-type-io-btn" aria-checked="false" role="radio">
+            Interest-Only
+          </button>
+        </div>
+        <span class="input-subtext" id="merc-type-sub">Monthly payments reduce capital balance and interest over time.</span>
+      </div>
+
+      <!-- Early Repayment Amount -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="merc-repay-val">Early Repayment Amount</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="merc-repay-val" min="0" max="10000000" step="1000" value="10000" aria-label="Early Repayment Amount" />
+          </div>
+        </div>
+        <input type="range" id="merc-repay-slider" min="1000" max="100000" step="1000" value="10000" class="slider-range" aria-label="Early Repayment Amount Slider" />
+        
+        <!-- Repayment Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-repay="2500">£2.5k</button>
+          <button type="button" class="preset-pill" data-repay="5000">£5k</button>
+          <button type="button" class="preset-pill active" data-repay="10000">£10k</button>
+          <button type="button" class="preset-pill" data-repay="20000">£20k (10%)</button>
+          <button type="button" class="preset-pill" data-repay="50000">£50k</button>
+          <button type="button" class="preset-pill" data-repay="full">Full Payoff</button>
+        </div>
+        <span class="input-subtext">Lump sum to overpay today or full redemption amount.</span>
+      </div>
+
+      <!-- Optional Early Repayment Charge (ERC) & Allowance Accordion -->
+      <div class="advanced-section" style="margin-top: var(--space-4);">
+        <button type="button" class="advanced-toggle-btn" id="merc-erc-toggle" aria-expanded="false" aria-controls="merc-erc-panel">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            Early Repayment Charge (ERC) &amp; Allowance (Optional)
+          </span>
+          <svg class="chevron-icon" id="merc-erc-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+
+        <div class="advanced-panel hidden" id="merc-erc-panel">
+          <!-- Penalty-Free Allowance -->
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="merc-allowance-val">Penalty-Free Annual Allowance</label>
+              <div class="input-symbol-wrapper">
+                <input type="number" id="merc-allowance-val" min="0" max="100" step="1" value="10" aria-label="Penalty-Free Allowance Percentage" />
+                <span class="currency-symbol" style="left: auto; right: var(--space-3);">%</span>
+              </div>
+            </div>
+            <span class="input-subtext">Most UK fixed-rate mortgages permit up to 10% penalty-free overpayments per calendar or mortgage year. Enter 0% if your deal allows no fee-free repayments.</span>
+          </div>
+
+          <!-- ERC Type Selector -->
+          <div class="input-group" style="margin-top: var(--space-3);">
+            <label class="control-label" style="font-weight: 600; font-size: 0.9rem; margin-bottom: var(--space-2); display: block;">ERC Structure</label>
+            <div class="toggle-pill-group" role="radiogroup" aria-label="ERC Type" style="grid-template-columns: 1fr 1fr;">
+              <button type="button" class="toggle-pill active" id="merc-erc-type-pct-btn" aria-checked="true" role="radio">
+                Percentage of Excess
+              </button>
+              <button type="button" class="toggle-pill" id="merc-erc-type-fixed-btn" aria-checked="false" role="radio">
+                Fixed Fee Amount
+              </button>
+            </div>
+          </div>
+
+          <!-- ERC Value -->
+          <div class="input-group" style="margin-top: var(--space-3);">
+            <div class="input-label-row">
+              <label for="merc-erc-val" id="merc-erc-val-label">Early Repayment Charge (ERC)</label>
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol" id="merc-erc-symbol-left" style="display: none;">£</span>
+                <input type="number" id="merc-erc-val" min="0" max="100" step="0.5" value="2.0" aria-label="ERC Value" />
+                <span class="currency-symbol" id="merc-erc-symbol-right" style="left: auto; right: var(--space-3);">%</span>
+              </div>
+            </div>
+            <span class="input-subtext" id="merc-erc-sub">Typically tiered (e.g. 1% to 5%) depending on which year of your fixed deal you are currently in.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning Banners -->
+      <div id="merc-erc-penalty-banner" class="callout-banner warning hidden" style="margin-top: var(--space-4);">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <span class="callout-title" id="merc-erc-banner-title">Overpayment Exceeds Penalty-Free Allowance</span>
+          <span class="callout-msg" id="merc-erc-banner-msg">
+            Your overpayment exceeds the penalty-free allowance. An Early Repayment Charge (ERC) applies to the excess amount over the allowance.
+          </span>
+        </div>
+      </div>
+
+      <div id="merc-full-payoff-banner" class="callout-banner success hidden" style="margin-top: var(--space-4);">
+        <div class="callout-icon">🎉</div>
+        <div class="callout-body">
+          <span class="callout-title">Full Mortgage Redemption</span>
+          <span class="callout-msg">
+            This repayment clears your entire outstanding mortgage balance. All future interest payments are eliminated!
+          </span>
+        </div>
+      </div>
+
+      <div id="merc-io-banner" class="callout-banner warning hidden" style="margin-top: var(--space-4);">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">
+          <span class="callout-title">Interest-Only Mortgage Structure</span>
+          <span class="callout-msg">
+            Your overpayment reduces your capital balance and lowers your monthly interest bills. However, the remaining balance must still be repaid at the end of the term.
+          </span>
+        </div>
+      </div>
+
+      <!-- Reset Action -->
+      <div style="margin-top: var(--space-5);">
+        <Button variant="outline" size="sm" id="merc-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-2);">
+      <h3 class="results-heading">Early Repayment Summary</h3>
+      
+      <!-- Strategy Selector Switcher -->
+      <div class="strategy-switcher-pill-group" role="tablist" aria-label="Overpayment Strategy" id="merc-strategy-group">
+        <button type="button" class="strategy-pill active" id="merc-strat-shorten-btn" role="tab" aria-selected="true">
+          Option B: Shorten Term
+        </button>
+        <button type="button" class="strategy-pill" id="merc-strat-lower-btn" role="tab" aria-selected="false">
+          Option A: Lower Payment
+        </button>
+      </div>
+    </div>
+
+    <!-- Primary Hero Metric Card: Estimated Interest Saved -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label" id="merc-hero-label">Estimated Interest Saved</span>
+      <div class="hero-metric-value" id="merc-hero-value">£16,080.96</div>
+      <span class="hero-metric-subtext" id="merc-hero-sub">By keeping payments unchanged &amp; clearing your mortgage 1 yr 7 mos earlier</span>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-success">
+        <span class="net-box-label" id="merc-box1-label">Term Shortened</span>
+        <div id="merc-box1-value" class="net-box-value" style="color: var(--color-success);">1 yr 7 mos</div>
+        <span class="net-box-desc" id="merc-box1-desc">Payoff in 18 yrs 5 mos instead of 20 yrs</span>
+      </div>
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label" id="merc-box2-label">Net Saving After ERC</span>
+        <div id="merc-box2-value" class="net-box-value" style="color: var(--color-primary);">£16,080.96</div>
+        <span class="net-box-desc" id="merc-box2-desc">Zero penalty within 10% allowance</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid (Rule 15 Responsive Wrapping) -->
+    <h4 class="metrics-grid-title">Repayment &amp; Cash Flow Details</h4>
+    <div class="results-grid merc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Current Monthly Payment</span>
+        <div class="tile-value" id="tile-curr-payment" style="color: var(--color-text-base);">£1,319.91</div>
+        <span class="tile-sub">Before overpayment</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">New Monthly Payment (Opt A)</span>
+        <div class="tile-value" id="tile-new-payment" style="color: var(--color-primary);">£1,253.91</div>
+        <span class="tile-sub" id="tile-payment-diff">Save £66.00/month</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">New Mortgage Balance</span>
+        <div class="tile-value" id="tile-new-balance" style="color: var(--color-text-base);">£190,000.00</div>
+        <span class="tile-sub">Immediate capital reduction</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Penalty-Free Allowance</span>
+        <div class="tile-value" id="tile-allowance-amt" style="color: var(--color-text-base);">£20,000.00</div>
+        <span class="tile-sub" id="tile-allowance-sub">10% annual allowance</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Early Repayment Charge</span>
+        <div class="tile-value" id="tile-erc-fee" style="color: var(--color-warning);">£0.00</div>
+        <span class="tile-sub" id="tile-erc-sub">Within free allowance</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Total Future Interest (Opt B)</span>
+        <div class="tile-value" id="tile-future-interest" style="color: var(--color-success);">£100,697.79</div>
+        <span class="tile-sub" id="tile-interest-sub">Reduced from £116,778.75</span>
+      </div>
+    </div>
+
+    <!-- Responsive Comparison Table -->
+    <div class="schedule-section" style="margin-top: var(--space-2);">
+      <div style="padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); background-color: var(--color-bg-surface); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-base);">
+          Strategy Comparison: Without vs. With Early Repayment
+        </span>
+      </div>
+
+      <div class="schedule-table-container">
+        <table class="schedule-table" id="merc-comparison-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Without Early Repayment</th>
+              <th>Option A (Lower Payment)</th>
+              <th>Option B (Shorter Term)</th>
+            </tr>
+          </thead>
+          <tbody id="merc-comparison-tbody">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+      <p class="schedule-footnote" style="padding: var(--space-3) var(--space-4); margin: 0; background-color: var(--color-bg-base); border-top: 1px solid var(--color-border);">
+        *Option B keeps your monthly payment at the original £1,319.91 to clear your balance faster. Option A recalculates payments over the remaining 20 years.
+      </p>
+    </div>
+
+    <!-- Plain-English Verdict & Context -->
+    <div class="verdict-container" style="margin-top: var(--space-2);">
+      <Card elevation="sm" class="verdict-card verdict-info">
+        <div class="verdict-header">
+          <div class="verdict-badge">Borrower Strategy Insight</div>
+          <span class="verdict-title" id="merc-verdict-title">Option B Saves More Interest</span>
+        </div>
+        <p class="verdict-desc" id="merc-verdict-desc">
+          By continuing to pay your original monthly amount of £1,319.91, you will clear your mortgage <strong>1 year 7 months earlier</strong> and save an estimated <strong>£16,080.96 in interest</strong> compared to £5,838.94 saved if you reduce your monthly payments.
+        </p>
+        <p class="verdict-disclaimer">
+          This calculator provides an estimate for general information only. Your actual mortgage interest, repayment schedule, overpayment allowance and Early Repayment Charge depend on your mortgage agreement and lender. Check your mortgage documents or contact your lender for exact figures.
+        </p>
+      </Card>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initMortgageEarlyRepaymentCalculator() {
+    // -------------------------------------------------------------
+    // DOM ELEMENTS
+    // -------------------------------------------------------------
+    const balanceInput    = document.getElementById('merc-balance-val') as HTMLInputElement;
+    const balanceSlider   = document.getElementById('merc-balance-slider') as HTMLInputElement;
+
+    const rateInput       = document.getElementById('merc-rate-val') as HTMLInputElement;
+    const rateSlider      = document.getElementById('merc-rate-slider') as HTMLInputElement;
+
+    const termYearsInput  = document.getElementById('merc-term-years') as HTMLInputElement;
+    const termMonthsInput = document.getElementById('merc-term-months') as HTMLInputElement;
+
+    const typeRepayBtn    = document.getElementById('merc-type-repay-btn') as HTMLButtonElement;
+    const typeIoBtn       = document.getElementById('merc-type-io-btn') as HTMLButtonElement;
+    const typeSub         = document.getElementById('merc-type-sub') as HTMLElement;
+
+    const repayInput      = document.getElementById('merc-repay-val') as HTMLInputElement;
+    const repaySlider     = document.getElementById('merc-repay-slider') as HTMLInputElement;
+
+    const ercToggle       = document.getElementById('merc-erc-toggle') as HTMLButtonElement;
+    const ercPanel        = document.getElementById('merc-erc-panel') as HTMLElement;
+    const ercChevron      = document.getElementById('merc-erc-chevron') as HTMLElement;
+
+    const allowanceInput  = document.getElementById('merc-allowance-val') as HTMLInputElement;
+    const ercTypePctBtn   = document.getElementById('merc-erc-type-pct-btn') as HTMLButtonElement;
+    const ercTypeFixedBtn = document.getElementById('merc-erc-type-fixed-btn') as HTMLButtonElement;
+    const ercValInput     = document.getElementById('merc-erc-val') as HTMLInputElement;
+    const ercSymbolLeft   = document.getElementById('merc-erc-symbol-left') as HTMLElement;
+    const ercSymbolRight  = document.getElementById('merc-erc-symbol-right') as HTMLElement;
+    const ercSub          = document.getElementById('merc-erc-sub') as HTMLElement;
+
+    const resetBtn        = document.getElementById('merc-reset-btn') as HTMLButtonElement;
+
+    // Strategy Switcher Tabs
+    const stratShortenBtn = document.getElementById('merc-strat-shorten-btn') as HTMLButtonElement;
+    const stratLowerBtn   = document.getElementById('merc-strat-lower-btn') as HTMLButtonElement;
+
+    // Output Elements
+    const heroLabel       = document.getElementById('merc-hero-label') as HTMLElement;
+    const heroValue       = document.getElementById('merc-hero-value') as HTMLElement;
+    const heroSub         = document.getElementById('merc-hero-sub') as HTMLElement;
+
+    const box1Label       = document.getElementById('merc-box1-label') as HTMLElement;
+    const box1Value       = document.getElementById('merc-box1-value') as HTMLElement;
+    const box1Desc        = document.getElementById('merc-box1-desc') as HTMLElement;
+
+    const box2Label       = document.getElementById('merc-box2-label') as HTMLElement;
+    const box2Value       = document.getElementById('merc-box2-value') as HTMLElement;
+    const box2Desc        = document.getElementById('merc-box2-desc') as HTMLElement;
+
+    const tileCurrPayment = document.getElementById('tile-curr-payment') as HTMLElement;
+    const tileNewPayment  = document.getElementById('tile-new-payment') as HTMLElement;
+    const tilePaymentDiff = document.getElementById('tile-payment-diff') as HTMLElement;
+    const tileNewBalance  = document.getElementById('tile-new-balance') as HTMLElement;
+    const tileAllowanceAmt= document.getElementById('tile-allowance-amt') as HTMLElement;
+    const tileAllowanceSub= document.getElementById('tile-allowance-sub') as HTMLElement;
+    const tileErcFee      = document.getElementById('tile-erc-fee') as HTMLElement;
+    const tileErcSub      = document.getElementById('tile-erc-sub') as HTMLElement;
+    const tileFutureInt   = document.getElementById('tile-future-interest') as HTMLElement;
+    const tileInterestSub = document.getElementById('tile-interest-sub') as HTMLElement;
+
+    const compTbody       = document.getElementById('merc-comparison-tbody') as HTMLElement;
+
+    const bannerErc       = document.getElementById('merc-erc-penalty-banner') as HTMLElement;
+    const bannerFull      = document.getElementById('merc-full-payoff-banner') as HTMLElement;
+    const bannerIo        = document.getElementById('merc-io-banner') as HTMLElement;
+
+    const verdictTitle    = document.getElementById('merc-verdict-title') as HTMLElement;
+    const verdictDesc     = document.getElementById('merc-verdict-desc') as HTMLElement;
+
+    // State Variables
+    let mortgageType: 'repayment' | 'interest_only' = 'repayment';
+    let ercType: 'percentage' | 'fixed' = 'percentage';
+    let activeStrategy: 'shorten' | 'lower' = 'shorten'; // Option B vs Option A
+
+    // Formatters
+    function fmt(val: number): string {
+      const absVal = Math.abs(val);
+      const str = absVal.toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${val < 0 ? '-' : ''}£${str}`;
+    }
+
+    function formatTerm(months: number): string {
+      if (months <= 0) return '0 months';
+      const yrs = Math.floor(months / 12);
+      const mos = Math.round(months % 12);
+      if (yrs === 0) return `${mos} mo${mos === 1 ? '' : 's'}`;
+      if (mos === 0) return `${yrs} yr${yrs === 1 ? '' : 's'}`;
+      return `${yrs} yr${yrs === 1 ? '' : 's'} ${mos} mo${mos === 1 ? '' : 's'}`;
+    }
+
+    // Standard Amortization Monthly Payment Formula
+    function calcMonthlyPayment(principal: number, annualRate: number, totalMonths: number): number {
+      if (principal <= 0 || totalMonths <= 0) return 0;
+      if (annualRate <= 0) return principal / totalMonths;
+      const r = (annualRate / 100) / 12;
+      const factor = Math.pow(1 + r, totalMonths);
+      return principal * (r * factor) / (factor - 1);
+    }
+
+    // -------------------------------------------------------------
+    // CORE CALCULATION ENGINE
+    // -------------------------------------------------------------
+    function updateCalculation() {
+      const P = Math.max(0, parseFloat(balanceInput.value) || 0);
+      const annualRate = Math.max(0, parseFloat(rateInput.value) || 0);
+      const r = (annualRate / 100) / 12;
+
+      const years = Math.max(0, parseInt(termYearsInput.value) || 0);
+      const months = Math.max(0, parseInt(termMonthsInput.value) || 0);
+      const totalMonths = Math.max(1, years * 12 + months);
+
+      const requestedRepay = Math.max(0, parseFloat(repayInput.value) || 0);
+      const actualRepay = Math.min(P, requestedRepay);
+      const isFullRedemption = actualRepay >= P && P > 0;
+      const newBalance = Math.max(0, P - actualRepay);
+
+      // Overpayment Allowance & ERC Calculation
+      const allowancePct = Math.max(0, parseFloat(allowanceInput.value) || 0);
+      const penaltyFreeAllowanceAmt = P * (allowancePct / 100);
+      const excessAboveAllowance = Math.max(0, actualRepay - penaltyFreeAllowanceAmt);
+      const ercVal = Math.max(0, parseFloat(ercValInput.value) || 0);
+
+      let ercFee = 0;
+      if (excessAboveAllowance > 0) {
+        if (ercType === 'percentage') {
+          ercFee = excessAboveAllowance * (ercVal / 100);
+        } else {
+          ercFee = ercVal;
+        }
+      }
+
+      // Calculations depend on Repayment vs Interest-Only
+      let currentMonthlyPayment = 0;
+      let totalInterestWithout = 0;
+
+      // Option A: Lower Monthly Payment (Keep Term)
+      let newPaymentOptA = 0;
+      let totalInterestOptA = 0;
+      let interestSavedOptA = 0;
+
+      // Option B: Keep Monthly Payment (Shorten Term)
+      let newPaymentOptB = 0;
+      let remainingMonthsOptB = 0;
+      let monthsSavedOptB = 0;
+      let totalInterestOptB = 0;
+      let interestSavedOptB = 0;
+
+      if (mortgageType === 'repayment') {
+        currentMonthlyPayment = calcMonthlyPayment(P, annualRate, totalMonths);
+        totalInterestWithout = Math.max(0, (currentMonthlyPayment * totalMonths) - P);
+
+        if (isFullRedemption) {
+          newPaymentOptA = 0;
+          totalInterestOptA = 0;
+          interestSavedOptA = totalInterestWithout;
+
+          newPaymentOptB = 0;
+          remainingMonthsOptB = 0;
+          monthsSavedOptB = totalMonths;
+          totalInterestOptB = 0;
+          interestSavedOptB = totalInterestWithout;
+        } else if (newBalance > 0) {
+          // Option A: Reduce payment over same totalMonths
+          newPaymentOptA = calcMonthlyPayment(newBalance, annualRate, totalMonths);
+          totalInterestOptA = Math.max(0, (newPaymentOptA * totalMonths) - newBalance);
+          interestSavedOptA = Math.max(0, totalInterestWithout - totalInterestOptA);
+
+          // Option B: Keep current payment, simulate shortened schedule
+          newPaymentOptB = currentMonthlyPayment;
+          let bal = newBalance;
+          let simMonths = 0;
+          let simInterest = 0;
+
+          while (bal > 0.01 && simMonths < totalMonths * 2) {
+            const interestM = bal * r;
+            const principalM = Math.min(bal, currentMonthlyPayment - interestM);
+            simInterest += interestM;
+            bal -= principalM;
+            simMonths++;
+            if (bal <= 0) break;
+          }
+
+          remainingMonthsOptB = simMonths;
+          monthsSavedOptB = Math.max(0, totalMonths - simMonths);
+          totalInterestOptB = simInterest;
+          interestSavedOptB = Math.max(0, totalInterestWithout - totalInterestOptB);
+        }
+      } else {
+        // Interest-Only Mortgage
+        currentMonthlyPayment = P * r;
+        totalInterestWithout = currentMonthlyPayment * totalMonths;
+
+        if (isFullRedemption) {
+          newPaymentOptA = 0;
+          totalInterestOptA = 0;
+          interestSavedOptA = totalInterestWithout;
+
+          newPaymentOptB = 0;
+          remainingMonthsOptB = 0;
+          monthsSavedOptB = totalMonths;
+          totalInterestOptB = 0;
+          interestSavedOptB = totalInterestWithout;
+        } else {
+          // On interest-only, paying down capital reduces monthly payments immediately
+          newPaymentOptA = newBalance * r;
+          totalInterestOptA = newPaymentOptA * totalMonths;
+          interestSavedOptA = Math.max(0, totalInterestWithout - totalInterestOptA);
+
+          // For Option B on interest-only: if user keeps paying old monthly payment, the difference pays down capital!
+          const monthlyCapitalPaydown = currentMonthlyPayment - newPaymentOptA; // equals actualRepay * r
+          // In practice on interest-only, lenders rarely auto-amortise overpayments unless converted.
+          // We model Option B as directing the interest saving into capital reduction, or simply display Option A as primary.
+          newPaymentOptB = currentMonthlyPayment;
+          let bal = newBalance;
+          let simMonths = 0;
+          let simInterest = 0;
+
+          while (bal > 0.01 && simMonths < totalMonths * 2) {
+            const interestM = bal * r;
+            const principalM = Math.min(bal, currentMonthlyPayment - interestM);
+            simInterest += interestM;
+            bal -= principalM;
+            simMonths++;
+            if (bal <= 0) break;
+          }
+
+          remainingMonthsOptB = simMonths;
+          monthsSavedOptB = Math.max(0, totalMonths - simMonths);
+          totalInterestOptB = simInterest;
+          interestSavedOptB = Math.max(0, totalInterestWithout - totalInterestOptB);
+        }
+      }
+
+      // Net Savings after ERC
+      const netSavingOptB = interestSavedOptB - ercFee;
+      const netSavingOptA = interestSavedOptA - ercFee;
+
+      // -------------------------------------------------------------
+      // UPDATE UI WITH ACTIVE STRATEGY
+      // -------------------------------------------------------------
+      const isShortenStrategy = activeStrategy === 'shorten';
+      const activeInterestSaved = isShortenStrategy ? interestSavedOptB : interestSavedOptA;
+      const activeNetSaving = isShortenStrategy ? netSavingOptB : netSavingOptA;
+
+      heroValue.textContent = fmt(activeInterestSaved);
+
+      if (isFullRedemption) {
+        heroLabel.textContent = 'Mortgage Completely Paid Off';
+        heroSub.textContent = `All future interest of ${fmt(totalInterestWithout)} eliminated!`;
+        box1Label.textContent = 'Term Eliminated';
+        box1Value.textContent = formatTerm(totalMonths);
+        box1Desc.textContent = 'Mortgage-free immediately';
+      } else if (isShortenStrategy) {
+        heroLabel.textContent = 'Estimated Interest Saved (Option B)';
+        heroSub.textContent = `By keeping payments at ${fmt(currentMonthlyPayment)}/mo & clearing mortgage ${formatTerm(monthsSavedOptB)} earlier`;
+        box1Label.textContent = 'Term Shortened';
+        box1Value.textContent = formatTerm(monthsSavedOptB);
+        box1Desc.textContent = `Payoff in ${formatTerm(remainingMonthsOptB)} instead of ${formatTerm(totalMonths)}`;
+      } else {
+        heroLabel.textContent = 'Estimated Interest Saved (Option A)';
+        const paymentReduction = Math.max(0, currentMonthlyPayment - newPaymentOptA);
+        heroSub.textContent = `By lowering your monthly payment by ${fmt(paymentReduction)}/month across the remaining term`;
+        box1Label.textContent = 'Monthly Reduction';
+        box1Value.textContent = `-${fmt(paymentReduction)}`;
+        box1Desc.textContent = `New payment ${fmt(newPaymentOptA)}/mo`;
+      }
+
+      box2Label.textContent = ercFee > 0 ? 'Net Saving After ERC' : 'Net Benefit';
+      box2Value.textContent = fmt(activeNetSaving);
+      box2Desc.textContent = ercFee > 0 ? `After deducting ${fmt(ercFee)} ERC charge` : 'Zero penalty within allowance';
+
+      // Update Key Metrics Tiles
+      tileCurrPayment.textContent = fmt(currentMonthlyPayment);
+      tileNewPayment.textContent = fmt(newPaymentOptA);
+      const monthlySaved = Math.max(0, currentMonthlyPayment - newPaymentOptA);
+      tilePaymentDiff.textContent = monthlySaved > 0 ? `Save ${fmt(monthlySaved)}/mo` : 'No change';
+
+      tileNewBalance.textContent = fmt(newBalance);
+      tileAllowanceAmt.textContent = fmt(penaltyFreeAllowanceAmt);
+      tileAllowanceSub.textContent = `${allowancePct}% annual allowance`;
+
+      tileErcFee.textContent = fmt(ercFee);
+      tileErcSub.textContent = ercFee > 0 ? `Charged on ${fmt(excessAboveAllowance)} excess` : 'Within free allowance';
+
+      tileFutureInt.textContent = fmt(isShortenStrategy ? totalInterestOptB : totalInterestOptA);
+      tileInterestSub.textContent = `Reduced from ${fmt(totalInterestWithout)}`;
+
+      // Banners
+      if (isFullRedemption) {
+        bannerFull.classList.remove('hidden');
+      } else {
+        bannerFull.classList.add('hidden');
+      }
+
+      if (excessAboveAllowance > 0 && ercFee > 0) {
+        bannerErc.classList.remove('hidden');
+        const ercBannerMsg = document.getElementById('merc-erc-banner-msg') as HTMLElement;
+        ercBannerMsg.innerHTML = `Your overpayment of <strong>${fmt(actualRepay)}</strong> exceeds the penalty-free allowance of <strong>${fmt(penaltyFreeAllowanceAmt)}</strong> by <strong>${fmt(excessAboveAllowance)}</strong>, incurring an estimated Early Repayment Charge of <strong>${fmt(ercFee)}</strong>.`;
+      } else {
+        bannerErc.classList.add('hidden');
+      }
+
+      if (mortgageType === 'interest_only') {
+        bannerIo.classList.remove('hidden');
+      } else {
+        bannerIo.classList.add('hidden');
+      }
+
+      // Verdict Content
+      if (isFullRedemption) {
+        verdictTitle.textContent = 'Congratulations on Full Redemption!';
+        verdictDesc.innerHTML = `Repaying your entire <strong>${fmt(P)}</strong> balance eliminates all remaining <strong>${formatTerm(totalMonths)}</strong> of payments and avoids <strong>${fmt(totalInterestWithout)}</strong> in total future interest charges. Your net saving after any ERC is <strong>${fmt(activeNetSaving)}</strong>.`;
+      } else if (interestSavedOptB > interestSavedOptA) {
+        verdictTitle.textContent = 'Option B Shortens Your Term & Saves More';
+        verdictDesc.innerHTML = `By maintaining your original monthly payment of <strong>${fmt(currentMonthlyPayment)}</strong> after overpaying <strong>${fmt(actualRepay)}</strong>, you will clear your mortgage <strong>${formatTerm(monthsSavedOptB)} earlier</strong> and save <strong>${fmt(interestSavedOptB)}</strong> in interest (${fmt(interestSavedOptB - interestSavedOptA)} more than Option A).`;
+      } else {
+        verdictTitle.textContent = 'Early Repayment Lowers Your Monthly Outgoings';
+        verdictDesc.innerHTML = `Overpaying <strong>${fmt(actualRepay)}</strong> lowers your monthly commitment from <strong>${fmt(currentMonthlyPayment)}</strong> to <strong>${fmt(newPaymentOptA)}</strong> (saving <strong>${fmt(monthlySaved)}</strong> every month) while saving <strong>${fmt(interestSavedOptA)}</strong> in total interest.`;
+      }
+
+      // Populate Comparison Table
+      populateComparisonTable({
+        balanceBefore: P,
+        balanceAfter: newBalance,
+        paymentBefore: currentMonthlyPayment,
+        paymentOptA: newPaymentOptA,
+        paymentOptB: currentMonthlyPayment,
+        interestBefore: totalInterestWithout,
+        interestOptA: totalInterestOptA,
+        interestOptB: totalInterestOptB,
+        durationBefore: formatTerm(totalMonths),
+        durationOptA: formatTerm(totalMonths),
+        durationOptB: formatTerm(remainingMonthsOptB),
+        interestSavedOptA,
+        interestSavedOptB,
+        ercFee,
+        netOptA: netSavingOptA,
+        netOptB: netSavingOptB
+      });
+    }
+
+    // Populate Comparison Table
+    function populateComparisonTable(d: {
+      balanceBefore: number;
+      balanceAfter: number;
+      paymentBefore: number;
+      paymentOptA: number;
+      paymentOptB: number;
+      interestBefore: number;
+      interestOptA: number;
+      interestOptB: number;
+      durationBefore: string;
+      durationOptA: string;
+      durationOptB: string;
+      interestSavedOptA: number;
+      interestSavedOptB: number;
+      ercFee: number;
+      netOptA: number;
+      netOptB: number;
+    }) {
+      const rows = [
+        {
+          label: 'Outstanding Balance',
+          before: fmt(d.balanceBefore),
+          optA: fmt(d.balanceAfter),
+          optB: fmt(d.balanceAfter)
+        },
+        {
+          label: 'Monthly Payment',
+          before: fmt(d.paymentBefore),
+          optA: fmt(d.paymentOptA),
+          optB: fmt(d.paymentOptB)
+        },
+        {
+          label: 'Remaining Duration',
+          before: d.durationBefore,
+          optA: d.durationOptA,
+          optB: d.durationOptB
+        },
+        {
+          label: 'Total Future Interest',
+          before: fmt(d.interestBefore),
+          optA: fmt(d.interestOptA),
+          optB: fmt(d.interestOptB)
+        },
+        {
+          label: 'Total Interest Saved',
+          before: '—',
+          optA: fmt(d.interestSavedOptA),
+          optB: fmt(d.interestSavedOptB)
+        },
+        {
+          label: 'Early Repayment Charge (ERC)',
+          before: '—',
+          optA: d.ercFee > 0 ? `-${fmt(d.ercFee)}` : '£0.00',
+          optB: d.ercFee > 0 ? `-${fmt(d.ercFee)}` : '£0.00'
+        },
+        {
+          label: 'Net Financial Benefit',
+          before: '—',
+          optA: fmt(d.netOptA),
+          optB: fmt(d.netOptB)
+        }
+      ];
+
+      compTbody.innerHTML = rows.map((r, idx) => {
+        const isHighlight = idx === 4 || idx === 6;
+        const fontStyle = isHighlight ? 'font-weight: 700; color: var(--color-primary);' : '';
+        return `
+          <tr>
+            <td style="font-weight: 600; color: var(--color-text-base);">${r.label}</td>
+            <td style="font-family: var(--font-mono, monospace); color: var(--color-text-muted); text-align: right;">${r.before}</td>
+            <td style="font-family: var(--font-mono, monospace); ${fontStyle} text-align: right;">${r.optA}</td>
+            <td style="font-family: var(--font-mono, monospace); ${fontStyle} text-align: right; color: var(--color-success);">${r.optB}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // -------------------------------------------------------------
+    // INPUT SYNCHRONIZATION & EVENT HANDLERS
+    // -------------------------------------------------------------
+    function sync(inp: HTMLInputElement, sld: HTMLInputElement) {
+      inp.addEventListener('input', () => {
+        let val = parseFloat(inp.value);
+        if (isNaN(val) || val < 0) val = 0;
+        sld.value = String(Math.min(parseFloat(sld.max), val));
+        updateCalculation();
+      });
+
+      sld.addEventListener('input', () => {
+        inp.value = sld.value;
+        updateCalculation();
+      });
+    }
+
+    sync(balanceInput, balanceSlider);
+    sync(rateInput, rateSlider);
+    sync(repayInput, repaySlider);
+
+    termYearsInput.addEventListener('input', updateCalculation);
+    termMonthsInput.addEventListener('input', updateCalculation);
+    allowanceInput.addEventListener('input', updateCalculation);
+    ercValInput.addEventListener('input', updateCalculation);
+
+    // Strategy Switcher Tabs
+    stratShortenBtn.addEventListener('click', () => {
+      activeStrategy = 'shorten';
+      stratShortenBtn.classList.add('active');
+      stratShortenBtn.setAttribute('aria-selected', 'true');
+      stratLowerBtn.classList.remove('active');
+      stratLowerBtn.setAttribute('aria-selected', 'false');
+      updateCalculation();
+    });
+
+    stratLowerBtn.addEventListener('click', () => {
+      activeStrategy = 'lower';
+      stratLowerBtn.classList.add('active');
+      stratLowerBtn.setAttribute('aria-selected', 'true');
+      stratShortenBtn.classList.remove('active');
+      stratShortenBtn.setAttribute('aria-selected', 'false');
+      updateCalculation();
+    });
+
+    // Repayment Type Toggle
+    typeRepayBtn.addEventListener('click', () => {
+      mortgageType = 'repayment';
+      typeRepayBtn.classList.add('active');
+      typeRepayBtn.setAttribute('aria-checked', 'true');
+      typeIoBtn.classList.remove('active');
+      typeIoBtn.setAttribute('aria-checked', 'false');
+      typeSub.textContent = 'Monthly payments reduce capital balance and interest over time.';
+      updateCalculation();
+    });
+
+    typeIoBtn.addEventListener('click', () => {
+      mortgageType = 'interest_only';
+      typeIoBtn.classList.add('active');
+      typeIoBtn.setAttribute('aria-checked', 'true');
+      typeRepayBtn.classList.remove('active');
+      typeRepayBtn.setAttribute('aria-checked', 'false');
+      typeSub.textContent = 'Monthly payments cover interest only; capital is paid at the end of the term.';
+      updateCalculation();
+    });
+
+    // ERC Type Toggle
+    ercTypePctBtn.addEventListener('click', () => {
+      ercType = 'percentage';
+      ercTypePctBtn.classList.add('active');
+      ercTypePctBtn.setAttribute('aria-checked', 'true');
+      ercTypeFixedBtn.classList.remove('active');
+      ercTypeFixedBtn.setAttribute('aria-checked', 'false');
+      ercSymbolLeft.style.display = 'none';
+      ercSymbolRight.style.display = 'block';
+      ercValInput.max = '100';
+      ercValInput.step = '0.5';
+      ercValInput.value = '2.0';
+      ercSub.textContent = 'Typically tiered (e.g. 1% to 5%) depending on which year of your fixed deal you are currently in.';
+      updateCalculation();
+    });
+
+    ercTypeFixedBtn.addEventListener('click', () => {
+      ercType = 'fixed';
+      ercTypeFixedBtn.classList.add('active');
+      ercTypeFixedBtn.setAttribute('aria-checked', 'true');
+      ercTypePctBtn.classList.remove('active');
+      ercTypePctBtn.setAttribute('aria-checked', 'false');
+      ercSymbolLeft.style.display = 'block';
+      ercSymbolRight.style.display = 'none';
+      ercValInput.max = '50000';
+      ercValInput.step = '100';
+      ercValInput.value = '500';
+      ercSub.textContent = 'A fixed redemption or administration penalty fee set by your lender.';
+      updateCalculation();
+    });
+
+    // Preset Pills Handlers
+    function setupPresets(selector: string, targetInput: HTMLInputElement, targetSlider?: HTMLInputElement) {
+      const pills = document.querySelectorAll(selector);
+      pills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          const btn = e.currentTarget as HTMLButtonElement;
+          pills.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+
+          const dataVal = btn.dataset.balance || btn.dataset.rate || btn.dataset.repay;
+          if (dataVal !== undefined) {
+            if (dataVal === 'full') {
+              const curBal = parseFloat(balanceInput.value) || 0;
+              targetInput.value = String(curBal);
+              if (targetSlider) targetSlider.value = String(Math.min(parseFloat(targetSlider.max), curBal));
+            } else {
+              targetInput.value = dataVal;
+              if (targetSlider) targetSlider.value = String(Math.min(parseFloat(targetSlider.max), parseFloat(dataVal)));
+            }
+            updateCalculation();
+          }
+        });
+      });
+    }
+
+    setupPresets('[data-balance]', balanceInput, balanceSlider);
+    setupPresets('[data-rate]', rateInput, rateSlider);
+    setupPresets('[data-repay]', repayInput, repaySlider);
+
+    // ERC Accordion Toggle
+    ercToggle.addEventListener('click', () => {
+      const isExpanded = ercToggle.getAttribute('aria-expanded') === 'true';
+      ercToggle.setAttribute('aria-expanded', String(!isExpanded));
+      ercPanel.classList.toggle('hidden');
+      ercChevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    // Reset Button
+    resetBtn.addEventListener('click', () => {
+      balanceInput.value = '200000';
+      balanceSlider.value = '200000';
+
+      rateInput.value = '5.0';
+      rateSlider.value = '5.0';
+
+      termYearsInput.value = '20';
+      termMonthsInput.value = '0';
+
+      repayInput.value = '10000';
+      repaySlider.value = '10000';
+
+      mortgageType = 'repayment';
+      typeRepayBtn.classList.add('active');
+      typeRepayBtn.setAttribute('aria-checked', 'true');
+      typeIoBtn.classList.remove('active');
+      typeIoBtn.setAttribute('aria-checked', 'false');
+
+      allowanceInput.value = '10';
+
+      ercType = 'percentage';
+      ercTypePctBtn.classList.add('active');
+      ercTypePctBtn.setAttribute('aria-checked', 'true');
+      ercTypeFixedBtn.classList.remove('active');
+      ercTypeFixedBtn.setAttribute('aria-checked', 'false');
+      ercSymbolLeft.style.display = 'none';
+      ercSymbolRight.style.display = 'block';
+      ercValInput.value = '2.0';
+
+      activeStrategy = 'shorten';
+      stratShortenBtn.classList.add('active');
+      stratShortenBtn.setAttribute('aria-selected', 'true');
+      stratLowerBtn.classList.remove('active');
+      stratLowerBtn.setAttribute('aria-selected', 'false');
+
+      // Reset preset active styles
+      document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+      document.querySelector('[data-balance="200000"]')?.classList.add('active');
+      document.querySelector('[data-rate="5.0"]')?.classList.add('active');
+      document.querySelector('[data-repay="10000"]')?.classList.add('active');
+
+      updateCalculation();
+    });
+
+    // Initial Calculation
+    updateCalculation();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMortgageEarlyRepaymentCalculator);
+  } else {
+    initMortgageEarlyRepaymentCalculator();
+  }
+</script>
+
+<style>
+  /* Base Container */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-base);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-text-base);
+    gap: var(--space-2);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 170px;
+    flex-shrink: 0;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-7);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-subtle);
+  }
+
+  .slider-range {
+    width: 100%;
+    margin-top: var(--space-2);
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .preset-pills-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+  }
+
+  .preset-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 4px;
+  }
+
+  .preset-pill {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-border-hover, var(--color-border));
+  }
+
+  .preset-pill.active {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    margin-top: var(--space-1);
+  }
+
+  /* Toggle Pills Group */
+  .toggle-pill-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+
+  .toggle-pill {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    text-align: center;
+    transition: all var(--transition-fast);
+  }
+
+  .toggle-pill:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-primary-subtle);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  /* Strategy Switcher Tabs */
+  .strategy-switcher-pill-group {
+    display: flex;
+    gap: 4px;
+    background-color: var(--color-bg-surface);
+    padding: 3px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .strategy-pill {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .strategy-pill:hover {
+    color: var(--color-text-base);
+  }
+
+  .strategy-pill.active {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Advanced Options Accordion */
+  .advanced-section {
+    border-top: 1px dashed var(--color-border);
+    padding-top: var(--space-3);
+  }
+
+  .advanced-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: var(--space-2) 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .advanced-toggle-btn:hover {
+    color: var(--color-primary);
+  }
+
+  .advanced-panel {
+    padding: var(--space-3);
+    background-color: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    margin-top: var(--space-2);
+  }
+
+  /* Warning / Info Callout Banner */
+  .callout-banner {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .callout-banner.warning {
+    background-color: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    color: var(--color-text-base);
+  }
+
+  .callout-banner.success {
+    background-color: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: var(--color-text-base);
+  }
+
+  .callout-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .callout-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .callout-msg {
+    color: var(--color-text-muted);
+  }
+
+  /* Results Section Styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: 0;
+  }
+
+  /* Hero Metric Box */
+  .hero-metric-box {
+    background: linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-base) 100%);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-metric-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+
+  .hero-metric-value {
+    font-size: 2.3rem;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--color-success);
+    font-family: var(--font-mono, monospace);
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    display: block;
+    margin-top: var(--space-2);
+  }
+
+  /* Dual Summary Value Cards (Responsive Stacking) */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .net-value-box {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .net-value-box.highlight-primary {
+    border-color: var(--color-primary-subtle);
+    background: linear-gradient(180deg, var(--color-primary-subtle) 0%, transparent 100%);
+  }
+
+  .net-value-box.highlight-success {
+    border-color: rgba(34, 197, 94, 0.25);
+    background: linear-gradient(180deg, rgba(34, 197, 94, 0.08) 0%, transparent 100%);
+  }
+
+  .net-box-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .net-box-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Key Metrics Grid (Rule 15 Responsive Wrapping) */
+  .metrics-grid-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+  }
+
+  .merc-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .tile-sub {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Comparison Table Section */
+  .schedule-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-surface);
+    overflow: hidden;
+  }
+
+  .schedule-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .schedule-table th {
+    padding: var(--space-2) var(--space-3);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    border-bottom: 1.5px solid var(--color-border);
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .schedule-table th:first-child {
+    text-align: left;
+  }
+
+  .schedule-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .schedule-footnote {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  /* Verdict Card */
+  .verdict-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .verdict-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .verdict-badge {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+  }
+
+  .verdict-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .verdict-desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+    font-style: italic;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 640px) {
+    .net-value-container {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-metric-value {
+      font-size: 1.85rem;
+    }
+
+    .input-label-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .input-symbol-wrapper {
+      width: 100%;
+    }
+
+    .merc-metrics-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .merc-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

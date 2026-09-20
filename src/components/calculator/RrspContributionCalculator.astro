@@ -1,0 +1,1580 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="RRSP Contribution Calculator (Canada)"
+  description="Calculate your Canadian RRSP tax deduction, federal and provincial tax savings, remaining contribution room, and after-tax cost for 2026 across all provinces."
+  category="Taxes & Retirement"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="rrsp-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">Income &amp; Contribution Details</h3>
+
+      <!-- Tax Year Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="rrsp-tax-year">Tax Year</label>
+          <select id="rrsp-tax-year" class="currency-select" aria-label="Select Tax Year">
+            <option value="2026" selected>2026 (CRA Dollar Limit: $33,810)</option>
+            <option value="2025">2025 (CRA Dollar Limit: $32,490)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Province / Territory Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="rrsp-province-select">Province or Territory</label>
+          <select id="rrsp-province-select" class="currency-select" aria-label="Select Province or Territory">
+            <option value="ON" selected>Ontario (ON)</option>
+            <option value="BC">British Columbia (BC)</option>
+            <option value="AB">Alberta (AB)</option>
+            <option value="QC">Quebec (QC)</option>
+            <option value="MB">Manitoba (MB)</option>
+            <option value="SK">Saskatchewan (SK)</option>
+            <option value="NS">Nova Scotia (NS)</option>
+            <option value="NB">New Brunswick (NB)</option>
+            <option value="NL">Newfoundland and Labrador (NL)</option>
+            <option value="PE">Prince Edward Island (PE)</option>
+            <option value="YT">Yukon (YT)</option>
+            <option value="NT">Northwest Territories (NT)</option>
+            <option value="NU">Nunavut (NU)</option>
+          </select>
+        </div>
+        <span class="input-subtext">Tax brackets and tax savings vary significantly depending on your province of residence on December 31.</span>
+      </div>
+
+      <!-- Annual Income -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="rrsp-income-val">Annual Taxable Income</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="rrsp-income-val" min="0" max="10000000" step="2500" value="95000" aria-label="Annual Taxable Income in Canadian Dollars" />
+          </div>
+        </div>
+        <input type="range" id="rrsp-income-slider" min="15000" max="250000" step="2500" value="95000" class="slider-range" aria-label="Annual Income Slider" />
+        
+        <!-- Income Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-income="55000">$55k</button>
+          <button type="button" class="preset-pill" data-income="75000">$75k</button>
+          <button type="button" class="preset-pill active" data-income="95000">$95k</button>
+          <button type="button" class="preset-pill" data-income="120000">$120k</button>
+          <button type="button" class="preset-pill" data-income="160000">$160k</button>
+          <button type="button" class="preset-pill" data-income="220000">$220k</button>
+        </div>
+        <span class="input-subtext">Your total gross annual employment salary, self-employment profits, and other taxable income before deductions.</span>
+      </div>
+
+      <!-- Available RRSP Contribution Room -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="rrsp-room-val">Available RRSP Contribution Room</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="rrsp-room-val" min="0" max="1000000" step="1000" value="25000" aria-label="Available RRSP Contribution Room" />
+          </div>
+        </div>
+        <input type="range" id="rrsp-room-slider" min="0" max="100000" step="1000" value="25000" class="slider-range" aria-label="Available Room Slider" />
+        
+        <!-- Room Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-room="10000">$10k</button>
+          <button type="button" class="preset-pill" data-room="17100">$17.1k (18% of $95k)</button>
+          <button type="button" class="preset-pill active" data-room="25000">$25k</button>
+          <button type="button" class="preset-pill" data-room="33810">$33.8k (2026 Max)</button>
+          <button type="button" class="preset-pill" data-room="50000">$50k</button>
+        </div>
+        <span class="input-subtext">
+          Your RRSP contribution room is shown on your latest CRA Notice of Assessment. Enter that amount for the most accurate result.
+        </span>
+      </div>
+
+      <!-- Optional "Estimate My RRSP Room" Accordion -->
+      <div class="advanced-section" style="margin-top: var(--space-2); margin-bottom: var(--space-2);">
+        <button type="button" class="advanced-toggle-btn" id="rrsp-estimator-toggle" aria-expanded="false" aria-controls="rrsp-estimator-panel">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Estimate My RRSP Room (Optional Helper)
+          </span>
+          <svg class="chevron-icon" id="rrsp-estimator-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+
+        <div class="advanced-panel hidden" id="rrsp-estimator-panel">
+          <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0 0 var(--space-3) 0; line-height: 1.45;">
+            CRA calculates new annual room as 18% of earned income up to the annual dollar limit ($33,810 for 2026), minus pension adjustments (PA), plus unused room carried forward.
+          </p>
+          <div class="input-group">
+            <div class="input-label-row" style="font-size: 0.85rem;">
+              <label for="rrsp-prior-income">Prior Year Earned Income</label>
+              <div class="input-symbol-wrapper" style="width: 140px;">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="rrsp-prior-income" min="0" max="1000000" step="5000" value="95000" aria-label="Prior Year Earned Income" />
+              </div>
+            </div>
+          </div>
+          <div class="input-group" style="margin-top: var(--space-2);">
+            <div class="input-label-row" style="font-size: 0.85rem;">
+              <label for="rrsp-unused-room">Unused Room Carried Forward</label>
+              <div class="input-symbol-wrapper" style="width: 140px;">
+                <span class="currency-symbol">$</span>
+                <input type="number" id="rrsp-unused-room" min="0" max="1000000" step="1000" value="7900" aria-label="Unused Room Carried Forward" />
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: var(--space-3);">
+            <Button variant="secondary" size="sm" id="rrsp-apply-estimate-btn" class="w-full">
+              Apply Estimated Room ($25,000)
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Planned RRSP Contribution -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="rrsp-contrib-val">Planned RRSP Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="rrsp-contrib-val" min="0" max="1000000" step="500" value="10000" aria-label="Planned RRSP Contribution" />
+          </div>
+        </div>
+        <input type="range" id="rrsp-contrib-slider" min="0" max="50000" step="500" value="10000" class="slider-range" aria-label="Planned Contribution Slider" />
+        
+        <!-- Contribution Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-contrib="2500">$2.5k</button>
+          <button type="button" class="preset-pill" data-contrib="5000">$5k</button>
+          <button type="button" class="preset-pill active" data-contrib="10000">$10k</button>
+          <button type="button" class="preset-pill" data-contrib="15000">$15k</button>
+          <button type="button" class="preset-pill" data-contrib="max">Match Room</button>
+        </div>
+        <span class="input-subtext">The amount you intend to deposit into your individual or spousal RRSP before the contribution deadline.</span>
+      </div>
+
+      <!-- Warning & Intelligence Banners -->
+      <div id="rrsp-excess-banner" class="callout-banner warning hidden" style="margin-top: var(--space-4);">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <span class="callout-title" id="rrsp-excess-title">Potential Excess Contribution</span>
+          <span class="callout-msg" id="rrsp-excess-msg">
+            Your planned contribution exceeds your available contribution room. Only contributions within your CRA limit are tax deductible. The CRA permits a lifetime $2,000 cumulative overcontribution cushion; excess amounts beyond that cushion face a 1% per month penalty tax under Part X.1.
+          </span>
+        </div>
+      </div>
+
+      <div id="rrsp-qc-banner" class="callout-banner warning hidden" style="margin-top: var(--space-4);">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">
+          <span class="callout-title">Quebec Provincial Tax Filing</span>
+          <span class="callout-msg">
+            Quebec calculates provincial income tax separately through Revenu Québec and benefits from a 16.5% federal tax abatement. Both federal and provincial tax deductions are computed progressively.
+          </span>
+        </div>
+      </div>
+
+      <!-- Reset Action -->
+      <div style="margin-top: var(--space-5);">
+        <Button variant="outline" size="sm" id="rrsp-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">RRSP Tax Savings Summary</h3>
+
+    <!-- Primary Hero Box: Estimated Tax Savings -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label">Estimated RRSP Tax Savings</span>
+      <div class="hero-metric-value" id="rrsp-hero-savings">$3,148.00</div>
+      <span class="hero-metric-subtext" id="rrsp-hero-sub">Combined Federal &amp; Ontario tax reduction (31.48% effective rate)</span>
+    </div>
+
+    <!-- Visual Step Flow Diagram -->
+    <div class="step-flow-card">
+      <div class="step-flow-col">
+        <span class="step-flow-badge">1. Deposit</span>
+        <span class="step-flow-val" id="step-flow-contrib">$10,000</span>
+        <span class="step-flow-desc">You contribute</span>
+      </div>
+      <div class="step-flow-arrow">→</div>
+      <div class="step-flow-col">
+        <span class="step-flow-badge">2. Deduction</span>
+        <span class="step-flow-val" id="step-flow-deduct">$10,000</span>
+        <span class="step-flow-desc">Taxable income cut</span>
+      </div>
+      <div class="step-flow-arrow">→</div>
+      <div class="step-flow-col">
+        <span class="step-flow-badge">3. Tax Saved</span>
+        <span class="step-flow-val" id="step-flow-savings" style="color: var(--color-success);">$3,148</span>
+        <span class="step-flow-desc">Gov refund/credit</span>
+      </div>
+      <div class="step-flow-arrow">→</div>
+      <div class="step-flow-col">
+        <span class="step-flow-badge">4. Net Cost</span>
+        <span class="step-flow-val" id="step-flow-cost" style="color: var(--color-primary);">$6,852</span>
+        <span class="step-flow-desc">True out-of-pocket</span>
+      </div>
+    </div>
+
+    <!-- Dual Summary Value Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label">Deductible Contribution</span>
+        <div id="rrsp-box-deductible" class="net-box-value" style="color: var(--color-primary);">$10,000.00</div>
+        <span class="net-box-desc" id="rrsp-box-deductible-desc">100% within available room</span>
+      </div>
+      <div class="net-value-box highlight-success">
+        <span class="net-box-label">After-Tax Cost of Contribution</span>
+        <div id="rrsp-box-cost" class="net-box-value" style="color: var(--color-success);">$6,852.00</div>
+        <span class="net-box-desc" id="rrsp-box-cost-desc">Actual net cost to invest $10,000</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid (Rule 15 Responsive Wrapping) -->
+    <h4 class="metrics-grid-title">Contribution &amp; Room Details</h4>
+    <div class="results-grid rrsp-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Planned Contribution</span>
+        <div class="tile-value" id="tile-planned-contrib" style="color: var(--color-text-base);">$10,000.00</div>
+        <span class="tile-sub">Total cash deposited</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Remaining RRSP Room</span>
+        <div class="tile-value" id="tile-remaining-room" style="color: var(--color-primary);">$15,000.00</div>
+        <span class="tile-sub" id="tile-remaining-sub">Carried forward to future</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Potential Excess</span>
+        <div class="tile-value" id="tile-excess-room" style="color: var(--color-success);">$0.00</div>
+        <span class="tile-sub" id="tile-excess-sub">Within CRA room</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Federal Tax Saved</span>
+        <div class="tile-value" id="tile-fed-saved" style="color: var(--color-success);">$2,050.00</div>
+        <span class="tile-sub">CRA federal deduction</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Provincial Tax Saved</span>
+        <div class="tile-value" id="tile-prov-saved" style="color: var(--color-success);">$1,098.00</div>
+        <span class="tile-sub" id="tile-prov-sub">Ontario tax savings</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Effective Savings Rate</span>
+        <div class="tile-value" id="tile-effective-rate" style="color: var(--color-primary);">31.48%</div>
+        <span class="tile-sub">On deductible contribution</span>
+      </div>
+    </div>
+
+    <!-- Detailed Tax Breakdown Table Accordion -->
+    <div class="schedule-section" style="margin-top: var(--space-2);">
+      <button type="button" class="schedule-toggle-btn" id="rrsp-breakdown-toggle" aria-expanded="false" aria-controls="rrsp-breakdown-wrapper">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Progressive Tax Reduction Breakdown
+        </span>
+        <svg class="chevron-icon" id="rrsp-breakdown-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div class="schedule-wrapper hidden" id="rrsp-breakdown-wrapper">
+        <div class="schedule-table-container">
+          <table class="schedule-table" id="rrsp-breakdown-table">
+            <thead>
+              <tr>
+                <th>Tax Category</th>
+                <th>Without RRSP</th>
+                <th>With RRSP</th>
+                <th>Estimated Savings</th>
+              </tr>
+            </thead>
+            <tbody id="rrsp-breakdown-tbody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+        <p class="schedule-footnote">
+          *Estimates reflect 2026 progressive federal and provincial/territorial tax brackets. Actual tax returns account for the Basic Personal Amount, provincial surtaxes/credits, and individual deductions.
+        </p>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict & Context -->
+    <div class="verdict-container" style="margin-top: var(--space-2);">
+      <Card elevation="sm" class="verdict-card verdict-info">
+        <div class="verdict-header">
+          <div class="verdict-badge">Canadian Tax Insight</div>
+          <span class="verdict-title" id="rrsp-verdict-title">Smart RRSP Deduction</span>
+        </div>
+        <p class="verdict-desc" id="rrsp-verdict-desc">
+          By contributing <strong>$10,000.00</strong> to your RRSP, your taxable income is reduced to <strong>$85,000.00</strong>, generating an estimated tax savings of <strong>$3,148.00</strong>. Your effective net cost to invest $10,000 is only <strong>$6,852.00</strong>.
+        </p>
+        <p class="verdict-disclaimer">
+          This calculator provides an estimate for educational purposes only. Your actual RRSP deduction limit, tax savings and tax payable depend on your personal tax situation and information available to the Canada Revenue Agency. Check your latest CRA Notice of Assessment or CRA account before making a contribution. This calculator is not tax or financial advice.
+        </p>
+      </Card>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initRrspContributionCalculator() {
+    // -------------------------------------------------------------
+    // CANADIAN TAX CONFIGURATION (2026 & 2025 Maintainable Engine)
+    // -------------------------------------------------------------
+    interface TaxBracket {
+      rate: number;
+      from: number;
+      to: number;
+    }
+
+    interface JurisdictionTaxData {
+      rrspLimit: number;
+      federalBrackets: TaxBracket[];
+      provinces: Record<string, { name: string; brackets: TaxBracket[]; surtax?: boolean; abatement?: boolean }>;
+    }
+
+    const TAX_CONFIG: Record<string, JurisdictionTaxData> = {
+      '2026': {
+        rrspLimit: 33810,
+        federalBrackets: [
+          { from: 0, to: 58500, rate: 0.15 },
+          { from: 58500, to: 117000, rate: 0.205 },
+          { from: 117000, to: 181400, rate: 0.26 },
+          { from: 181400, to: 258400, rate: 0.29 },
+          { from: 258400, to: Infinity, rate: 0.33 }
+        ],
+        provinces: {
+          'ON': {
+            name: 'Ontario',
+            brackets: [
+              { from: 0, to: 52800, rate: 0.0505 },
+              { from: 52800, to: 105600, rate: 0.0915 },
+              { from: 105600, to: 150000, rate: 0.1116 },
+              { from: 150000, to: 220000, rate: 0.1216 },
+              { from: 220000, to: Infinity, rate: 0.1316 }
+            ],
+            surtax: true
+          },
+          'BC': {
+            name: 'British Columbia',
+            brackets: [
+              { from: 0, to: 49300, rate: 0.0506 },
+              { from: 49300, to: 98600, rate: 0.0770 },
+              { from: 98600, to: 113200, rate: 0.1050 },
+              { from: 113200, to: 137500, rate: 0.1229 },
+              { from: 137500, to: 186400, rate: 0.1470 },
+              { from: 186400, to: 259800, rate: 0.1680 },
+              { from: 259800, to: Infinity, rate: 0.2050 }
+            ]
+          },
+          'AB': {
+            name: 'Alberta',
+            brackets: [
+              { from: 0, to: 151900, rate: 0.10 },
+              { from: 151900, to: 182300, rate: 0.12 },
+              { from: 182300, to: 243100, rate: 0.13 },
+              { from: 243100, to: 364600, rate: 0.14 },
+              { from: 364600, to: Infinity, rate: 0.15 }
+            ]
+          },
+          'QC': {
+            name: 'Quebec',
+            brackets: [
+              { from: 0, to: 53200, rate: 0.14 },
+              { from: 53200, to: 106500, rate: 0.19 },
+              { from: 106500, to: 129600, rate: 0.24 },
+              { from: 129600, to: Infinity, rate: 0.2575 }
+            ],
+            abatement: true
+          },
+          'MB': {
+            name: 'Manitoba',
+            brackets: [
+              { from: 0, to: 47000, rate: 0.108 },
+              { from: 47000, to: 100000, rate: 0.1275 },
+              { from: 100000, to: Infinity, rate: 0.174 }
+            ]
+          },
+          'SK': {
+            name: 'Saskatchewan',
+            brackets: [
+              { from: 0, to: 53800, rate: 0.105 },
+              { from: 53800, to: 153800, rate: 0.125 },
+              { from: 153800, to: Infinity, rate: 0.145 }
+            ]
+          },
+          'NS': {
+            name: 'Nova Scotia',
+            brackets: [
+              { from: 0, to: 30500, rate: 0.0879 },
+              { from: 30500, to: 61100, rate: 0.1495 },
+              { from: 61100, to: 95700, rate: 0.1667 },
+              { from: 95700, to: 154800, rate: 0.1750 },
+              { from: 154800, to: Infinity, rate: 0.2100 }
+            ]
+          },
+          'NB': {
+            name: 'New Brunswick',
+            brackets: [
+              { from: 0, to: 51700, rate: 0.0940 },
+              { from: 51700, to: 103400, rate: 0.1400 },
+              { from: 103400, to: 190400, rate: 0.1600 },
+              { from: 190400, to: Infinity, rate: 0.1950 }
+            ]
+          },
+          'NL': {
+            name: 'Newfoundland and Labrador',
+            brackets: [
+              { from: 0, to: 44400, rate: 0.087 },
+              { from: 44400, to: 88800, rate: 0.145 },
+              { from: 88800, to: 158500, rate: 0.158 },
+              { from: 158500, to: 221900, rate: 0.178 },
+              { from: 221900, to: 282200, rate: 0.198 },
+              { from: 282200, to: 564300, rate: 0.208 },
+              { from: 564300, to: Infinity, rate: 0.218 }
+            ]
+          },
+          'PE': {
+            name: 'Prince Edward Island',
+            brackets: [
+              { from: 0, to: 33700, rate: 0.0965 },
+              { from: 33700, to: 67400, rate: 0.1363 },
+              { from: 67400, to: 105000, rate: 0.1665 },
+              { from: 105000, to: 140000, rate: 0.1800 },
+              { from: 140000, to: Infinity, rate: 0.1875 }
+            ]
+          },
+          'YT': {
+            name: 'Yukon',
+            brackets: [
+              { from: 0, to: 58500, rate: 0.064 },
+              { from: 58500, to: 117000, rate: 0.090 },
+              { from: 117000, to: 181400, rate: 0.109 },
+              { from: 181400, to: 500000, rate: 0.128 },
+              { from: 500000, to: Infinity, rate: 0.150 }
+            ]
+          },
+          'NT': {
+            name: 'Northwest Territories',
+            brackets: [
+              { from: 0, to: 51900, rate: 0.0590 },
+              { from: 51900, to: 103900, rate: 0.0860 },
+              { from: 103900, to: 168900, rate: 0.1220 },
+              { from: 168900, to: Infinity, rate: 0.1405 }
+            ]
+          },
+          'NU': {
+            name: 'Nunavut',
+            brackets: [
+              { from: 0, to: 54900, rate: 0.040 },
+              { from: 54900, to: 109800, rate: 0.070 },
+              { from: 109800, to: 178500, rate: 0.090 },
+              { from: 178500, to: Infinity, rate: 0.115 }
+            ]
+          }
+        }
+      },
+      '2025': {
+        rrspLimit: 32490,
+        federalBrackets: [
+          { from: 0, to: 57375, rate: 0.15 },
+          { from: 57375, to: 114750, rate: 0.205 },
+          { from: 114750, to: 177882, rate: 0.26 },
+          { from: 177882, to: 253414, rate: 0.29 },
+          { from: 253414, to: Infinity, rate: 0.33 }
+        ],
+        provinces: {
+          'ON': {
+            name: 'Ontario',
+            brackets: [
+              { from: 0, to: 51446, rate: 0.0505 },
+              { from: 51446, to: 102894, rate: 0.0915 },
+              { from: 102894, to: 150000, rate: 0.1116 },
+              { from: 150000, to: 220000, rate: 0.1216 },
+              { from: 220000, to: Infinity, rate: 0.1316 }
+            ],
+            surtax: true
+          },
+          'BC': {
+            name: 'British Columbia',
+            brackets: [
+              { from: 0, to: 47937, rate: 0.0506 },
+              { from: 47937, to: 95875, rate: 0.0770 },
+              { from: 95875, to: 110076, rate: 0.1050 },
+              { from: 110076, to: 133664, rate: 0.1229 },
+              { from: 133664, to: 181232, rate: 0.1470 },
+              { from: 181232, to: 252752, rate: 0.1680 },
+              { from: 252752, to: Infinity, rate: 0.2050 }
+            ]
+          },
+          'AB': {
+            name: 'Alberta',
+            brackets: [
+              { from: 0, to: 148269, rate: 0.10 },
+              { from: 148269, to: 177922, rate: 0.12 },
+              { from: 177922, to: 237230, rate: 0.13 },
+              { from: 237230, to: 355845, rate: 0.14 },
+              { from: 355845, to: Infinity, rate: 0.15 }
+            ]
+          },
+          'QC': {
+            name: 'Quebec',
+            brackets: [
+              { from: 0, to: 51780, rate: 0.14 },
+              { from: 51780, to: 103545, rate: 0.19 },
+              { from: 103545, to: 126000, rate: 0.24 },
+              { from: 126000, to: Infinity, rate: 0.2575 }
+            ],
+            abatement: true
+          },
+          'MB': {
+            name: 'Manitoba',
+            brackets: [
+              { from: 0, to: 47000, rate: 0.108 },
+              { from: 47000, to: 100000, rate: 0.1275 },
+              { from: 100000, to: Infinity, rate: 0.174 }
+            ]
+          },
+          'SK': {
+            name: 'Saskatchewan',
+            brackets: [
+              { from: 0, to: 52057, rate: 0.105 },
+              { from: 52057, to: 148734, rate: 0.125 },
+              { from: 148734, to: Infinity, rate: 0.145 }
+            ]
+          },
+          'NS': {
+            name: 'Nova Scotia',
+            brackets: [
+              { from: 0, to: 29590, rate: 0.0879 },
+              { from: 29590, to: 59180, rate: 0.1495 },
+              { from: 59180, to: 93000, rate: 0.1667 },
+              { from: 93000, to: 150000, rate: 0.1750 },
+              { from: 150000, to: Infinity, rate: 0.2100 }
+            ]
+          },
+          'NB': {
+            name: 'New Brunswick',
+            brackets: [
+              { from: 0, to: 49958, rate: 0.0940 },
+              { from: 49958, to: 99916, rate: 0.1400 },
+              { from: 99916, to: 185064, rate: 0.1600 },
+              { from: 185064, to: Infinity, rate: 0.1950 }
+            ]
+          },
+          'NL': {
+            name: 'Newfoundland and Labrador',
+            brackets: [
+              { from: 0, to: 43198, rate: 0.087 },
+              { from: 43198, to: 86395, rate: 0.145 },
+              { from: 86395, to: 154244, rate: 0.158 },
+              { from: 154244, to: 215943, rate: 0.178 },
+              { from: 215943, to: 274640, rate: 0.198 },
+              { from: 274640, to: 549280, rate: 0.208 },
+              { from: 549280, to: Infinity, rate: 0.218 }
+            ]
+          },
+          'PE': {
+            name: 'Prince Edward Island',
+            brackets: [
+              { from: 0, to: 32656, rate: 0.0965 },
+              { from: 32656, to: 64313, rate: 0.1363 },
+              { from: 64313, to: 105000, rate: 0.1665 },
+              { from: 105000, to: 140000, rate: 0.1800 },
+              { from: 140000, to: Infinity, rate: 0.1875 }
+            ]
+          },
+          'YT': {
+            name: 'Yukon',
+            brackets: [
+              { from: 0, to: 57375, rate: 0.064 },
+              { from: 57375, to: 114750, rate: 0.090 },
+              { from: 114750, to: 177882, rate: 0.109 },
+              { from: 177882, to: 500000, rate: 0.128 },
+              { from: 500000, to: Infinity, rate: 0.150 }
+            ]
+          },
+          'NT': {
+            name: 'Northwest Territories',
+            brackets: [
+              { from: 0, to: 50597, rate: 0.0590 },
+              { from: 50597, to: 101198, rate: 0.0860 },
+              { from: 101198, to: 164525, rate: 0.1220 },
+              { from: 164525, to: Infinity, rate: 0.1405 }
+            ]
+          },
+          'NU': {
+            name: 'Nunavut',
+            brackets: [
+              { from: 0, to: 53268, rate: 0.040 },
+              { from: 53268, to: 106537, rate: 0.070 },
+              { from: 106537, to: 173205, rate: 0.090 },
+              { from: 173205, to: Infinity, rate: 0.115 }
+            ]
+          }
+        }
+      }
+    };
+
+    // -------------------------------------------------------------
+    // DOM ELEMENTS
+    // -------------------------------------------------------------
+    const taxYearSelect   = document.getElementById('rrsp-tax-year') as HTMLSelectElement;
+    const provinceSelect  = document.getElementById('rrsp-province-select') as HTMLSelectElement;
+
+    const incomeInput     = document.getElementById('rrsp-income-val') as HTMLInputElement;
+    const incomeSlider    = document.getElementById('rrsp-income-slider') as HTMLInputElement;
+
+    const roomInput       = document.getElementById('rrsp-room-val') as HTMLInputElement;
+    const roomSlider      = document.getElementById('rrsp-room-slider') as HTMLInputElement;
+
+    const contribInput    = document.getElementById('rrsp-contrib-val') as HTMLInputElement;
+    const contribSlider   = document.getElementById('rrsp-contrib-slider') as HTMLInputElement;
+
+    // Estimator Accordion
+    const estimatorToggle = document.getElementById('rrsp-estimator-toggle') as HTMLButtonElement;
+    const estimatorPanel  = document.getElementById('rrsp-estimator-panel') as HTMLElement;
+    const estimatorChevron= document.getElementById('rrsp-estimator-chevron') as HTMLElement;
+    const priorIncomeInput= document.getElementById('rrsp-prior-income') as HTMLInputElement;
+    const unusedRoomInput = document.getElementById('rrsp-unused-room') as HTMLInputElement;
+    const applyEstimateBtn= document.getElementById('rrsp-apply-estimate-btn') as HTMLButtonElement;
+
+    const resetBtn        = document.getElementById('rrsp-reset-btn') as HTMLButtonElement;
+
+    // Output Elements
+    const heroSavings     = document.getElementById('rrsp-hero-savings') as HTMLElement;
+    const heroSub         = document.getElementById('rrsp-hero-sub') as HTMLElement;
+
+    const flowContrib     = document.getElementById('step-flow-contrib') as HTMLElement;
+    const flowDeduct      = document.getElementById('step-flow-deduct') as HTMLElement;
+    const flowSavings     = document.getElementById('step-flow-savings') as HTMLElement;
+    const flowCost        = document.getElementById('step-flow-cost') as HTMLElement;
+
+    const boxDeductible   = document.getElementById('rrsp-box-deductible') as HTMLElement;
+    const boxDeductDesc   = document.getElementById('rrsp-box-deductible-desc') as HTMLElement;
+    const boxCost         = document.getElementById('rrsp-box-cost') as HTMLElement;
+    const boxCostDesc     = document.getElementById('rrsp-box-cost-desc') as HTMLElement;
+
+    const tilePlanned     = document.getElementById('tile-planned-contrib') as HTMLElement;
+    const tileRemaining   = document.getElementById('tile-remaining-room') as HTMLElement;
+    const tileRemainingSub= document.getElementById('tile-remaining-sub') as HTMLElement;
+    const tileExcess      = document.getElementById('tile-excess-room') as HTMLElement;
+    const tileExcessSub   = document.getElementById('tile-excess-sub') as HTMLElement;
+    const tileFedSaved    = document.getElementById('tile-fed-saved') as HTMLElement;
+    const tileProvSaved   = document.getElementById('tile-prov-saved') as HTMLElement;
+    const tileProvSub     = document.getElementById('tile-prov-sub') as HTMLElement;
+    const tileEffective   = document.getElementById('tile-effective-rate') as HTMLElement;
+
+    const breakdownToggle = document.getElementById('rrsp-breakdown-toggle') as HTMLButtonElement;
+    const breakdownWrapper= document.getElementById('rrsp-breakdown-wrapper') as HTMLElement;
+    const breakdownChevron= document.getElementById('rrsp-breakdown-chevron') as HTMLElement;
+    const breakdownTbody  = document.getElementById('rrsp-breakdown-tbody') as HTMLElement;
+
+    const bannerExcess    = document.getElementById('rrsp-excess-banner') as HTMLElement;
+    const excessMsg       = document.getElementById('rrsp-excess-msg') as HTMLElement;
+    const bannerQc        = document.getElementById('rrsp-qc-banner') as HTMLElement;
+
+    const verdictTitle    = document.getElementById('rrsp-verdict-title') as HTMLElement;
+    const verdictDesc     = document.getElementById('rrsp-verdict-desc') as HTMLElement;
+
+    // Currency Formatter
+    function fmt(val: number): string {
+      const absVal = Math.abs(val);
+      const str = absVal.toLocaleString('en-CA', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${val < 0 ? '-' : ''}$${str}`;
+    }
+
+    // Progressive Bracket Tax Calculator
+    function calculateBracketTax(taxableIncome: number, brackets: TaxBracket[]): number {
+      if (taxableIncome <= 0) return 0;
+      let totalTax = 0;
+      for (const b of brackets) {
+        if (taxableIncome <= b.from) continue;
+        const taxableSlice = Math.min(taxableIncome - b.from, b.to - b.from);
+        if (taxableSlice > 0) {
+          totalTax += taxableSlice * b.rate;
+        }
+      }
+      return totalTax;
+    }
+
+    // -------------------------------------------------------------
+    // CALCULATION LOGIC
+    // -------------------------------------------------------------
+    function updateCalculation() {
+      const yearKey = taxYearSelect.value || '2026';
+      const provKey = provinceSelect.value || 'ON';
+      const yearConfig = TAX_CONFIG[yearKey] || TAX_CONFIG['2026'];
+      const provData = yearConfig.provinces[provKey] || yearConfig.provinces['ON'];
+
+      const income = Math.max(0, parseFloat(incomeInput.value) || 0);
+      const availableRoom = Math.max(0, parseFloat(roomInput.value) || 0);
+      const plannedContrib = Math.max(0, parseFloat(contribInput.value) || 0);
+
+      // Deductibility & Excess
+      const deductibleContrib = Math.min(plannedContrib, availableRoom);
+      const excessContrib = Math.max(0, plannedContrib - availableRoom);
+      const remainingRoom = Math.max(0, availableRoom - plannedContrib);
+
+      // Taxable Income Comparison
+      const incomeBefore = income;
+      const incomeAfter = Math.max(0, income - deductibleContrib);
+
+      // Federal Tax Calculations
+      let fedTaxBefore = calculateBracketTax(incomeBefore, yearConfig.federalBrackets);
+      let fedTaxAfter = calculateBracketTax(incomeAfter, yearConfig.federalBrackets);
+
+      // Quebec Federal Abatement (16.5% reduction on basic federal tax)
+      if (provData.abatement) {
+        fedTaxBefore *= 0.835;
+        fedTaxAfter *= 0.835;
+      }
+      const fedTaxSaved = Math.max(0, fedTaxBefore - fedTaxAfter);
+
+      // Provincial Tax Calculations
+      let provTaxBefore = calculateBracketTax(incomeBefore, provData.brackets);
+      let provTaxAfter = calculateBracketTax(incomeAfter, provData.brackets);
+
+      // Ontario Surtax Handling (20% surtax on tax > $5,500 + 36% on tax > $7,000)
+      if (provData.surtax) {
+        const calcOnSurtax = (baseTax: number) => {
+          let s = 0;
+          if (baseTax > 5500) s += (baseTax - 5500) * 0.20;
+          if (baseTax > 7000) s += (baseTax - 7000) * 0.36;
+          return s;
+        };
+        provTaxBefore += calcOnSurtax(provTaxBefore);
+        provTaxAfter += calcOnSurtax(provTaxAfter);
+      }
+
+      const provTaxSaved = Math.max(0, provTaxBefore - provTaxAfter);
+      const totalTaxBefore = fedTaxBefore + provTaxBefore;
+      const totalTaxAfter = fedTaxAfter + provTaxAfter;
+      const totalTaxSaved = Math.max(0, totalTaxBefore - totalTaxAfter);
+
+      // True Economic Cost & Effective Rate
+      const afterTaxCost = Math.max(0, plannedContrib - totalTaxSaved);
+      const effectiveRate = deductibleContrib > 0 ? (totalTaxSaved / deductibleContrib) * 100 : 0;
+
+      // -------------------------------------------------------------
+      // UPDATE UI
+      // -------------------------------------------------------------
+      heroSavings.textContent = fmt(totalTaxSaved);
+      heroSub.textContent = `Combined Federal & ${provData.name} tax reduction (${effectiveRate.toFixed(2)}% effective rate)`;
+
+      flowContrib.textContent = `$${Math.round(plannedContrib).toLocaleString('en-CA')}`;
+      flowDeduct.textContent = `$${Math.round(deductibleContrib).toLocaleString('en-CA')}`;
+      flowSavings.textContent = fmt(totalTaxSaved);
+      flowCost.textContent = fmt(afterTaxCost);
+
+      boxDeductible.textContent = fmt(deductibleContrib);
+      boxDeductDesc.textContent = excessContrib > 0 
+        ? `Capped at $${Math.round(availableRoom).toLocaleString('en-CA')} available room` 
+        : '100% within available room';
+
+      boxCost.textContent = fmt(afterTaxCost);
+      boxCostDesc.textContent = `Actual net cost to invest ${fmt(plannedContrib)}`;
+
+      tilePlanned.textContent = fmt(plannedContrib);
+      tileRemaining.textContent = fmt(remainingRoom);
+      tileRemainingSub.textContent = remainingRoom > 0 ? 'Available for future deductions' : 'Contribution room fully used';
+
+      tileExcess.textContent = fmt(excessContrib);
+      tileExcess.style.color = excessContrib > 0 ? 'var(--color-danger, #ef4444)' : 'var(--color-success)';
+      tileExcessSub.textContent = excessContrib > 0 ? 'Exceeds CRA room limit' : 'Within CRA room';
+
+      tileFedSaved.textContent = fmt(fedTaxSaved);
+      tileProvSaved.textContent = fmt(provTaxSaved);
+      tileProvSub.textContent = `${provData.name} tax savings`;
+
+      tileEffective.textContent = `${effectiveRate.toFixed(2)}%`;
+
+      // Warning Banners
+      if (excessContrib > 0) {
+        bannerExcess.classList.remove('hidden');
+        excessMsg.innerHTML = `Your planned contribution of <strong>${fmt(plannedContrib)}</strong> exceeds your available room of <strong>${fmt(availableRoom)}</strong> by <strong>${fmt(excessContrib)}</strong>. The CRA allows a lifetime cumulative overcontribution buffer of $2,000 before applying a 1% per month penalty tax under Part X.1. Verify your CRA deduction limit.`;
+      } else {
+        bannerExcess.classList.add('hidden');
+      }
+
+      if (provKey === 'QC') {
+        bannerQc.classList.remove('hidden');
+      } else {
+        bannerQc.classList.add('hidden');
+      }
+
+      // Verdict Content
+      if (plannedContrib === 0) {
+        verdictTitle.textContent = 'Enter a Planned Contribution';
+        verdictDesc.innerHTML = `You currently have <strong>${fmt(availableRoom)}</strong> in available RRSP contribution room. Contributing to your RRSP will immediately lower your taxable income of <strong>${fmt(income)}</strong>.`;
+      } else if (excessContrib > 0) {
+        verdictTitle.textContent = 'Excess Contribution Alert';
+        verdictDesc.innerHTML = `You can deduct up to <strong>${fmt(deductibleContrib)}</strong> of your contribution this tax year, producing an estimated tax savings of <strong>${fmt(totalTaxSaved)}</strong>. However, the remaining <strong>${fmt(excessContrib)}</strong> cannot be deducted now and may trigger CRA overcontribution penalties if exceeding the $2,000 cushion.`;
+      } else {
+        verdictTitle.textContent = 'High-Value RRSP Tax Shelter';
+        verdictDesc.innerHTML = `By contributing <strong>${fmt(plannedContrib)}</strong> to your RRSP, your taxable income drops to <strong>${fmt(incomeAfter)}</strong>, delivering an estimated tax refund/savings of <strong>${fmt(totalTaxSaved)}</strong> (${effectiveRate.toFixed(1)}% savings rate). Your net after-tax outlay is only <strong>${fmt(afterTaxCost)}</strong>.`;
+      }
+
+      // Populate Progressive Table
+      populateBreakdownTable({
+        fedBefore: fedTaxBefore,
+        fedAfter: fedTaxAfter,
+        fedSaved: fedTaxSaved,
+        provName: provData.name,
+        provBefore: provTaxBefore,
+        provAfter: provTaxAfter,
+        provSaved: provTaxSaved,
+        totalBefore: totalTaxBefore,
+        totalAfter: totalTaxAfter,
+        totalSaved: totalTaxSaved
+      });
+    }
+
+    // Populate Dynamic Tax Table
+    function populateBreakdownTable(d: {
+      fedBefore: number;
+      fedAfter: number;
+      fedSaved: number;
+      provName: string;
+      provBefore: number;
+      provAfter: number;
+      provSaved: number;
+      totalBefore: number;
+      totalAfter: number;
+      totalSaved: number;
+    }) {
+      const rows = [
+        {
+          category: 'Federal Income Tax',
+          before: fmt(d.fedBefore),
+          after: fmt(d.fedAfter),
+          savings: fmt(d.fedSaved),
+          highlight: false
+        },
+        {
+          category: `${d.provName} Provincial Tax`,
+          before: fmt(d.provBefore),
+          after: fmt(d.provAfter),
+          savings: fmt(d.provSaved),
+          highlight: false
+        },
+        {
+          category: 'Total Estimated Income Tax',
+          before: fmt(d.totalBefore),
+          after: fmt(d.totalAfter),
+          savings: fmt(d.totalSaved),
+          highlight: true
+        }
+      ];
+
+      breakdownTbody.innerHTML = rows.map(r => `
+        <tr ${r.highlight ? 'style="font-weight: 700; background-color: var(--color-bg-surface);"' : ''}>
+          <td style="color: var(--color-text-base);">${r.category}</td>
+          <td style="font-family: var(--font-mono, monospace); text-align: right; color: var(--color-text-muted);">${r.before}</td>
+          <td style="font-family: var(--font-mono, monospace); text-align: right; color: var(--color-text-base);">${r.after}</td>
+          <td style="font-family: var(--font-mono, monospace); text-align: right; color: var(--color-success); font-weight: 700;">${r.savings}</td>
+        </tr>
+      `).join('');
+    }
+
+    // -------------------------------------------------------------
+    // INPUT SYNCHRONIZATION & EVENT LISTENERS
+    // -------------------------------------------------------------
+    function sync(inp: HTMLInputElement, sld: HTMLInputElement) {
+      inp.addEventListener('input', () => {
+        let val = parseFloat(inp.value);
+        if (isNaN(val) || val < 0) val = 0;
+        sld.value = String(Math.min(parseFloat(sld.max), val));
+        updateCalculation();
+      });
+
+      sld.addEventListener('input', () => {
+        inp.value = sld.value;
+        updateCalculation();
+      });
+    }
+
+    sync(incomeInput, incomeSlider);
+    sync(roomInput, roomSlider);
+    sync(contribInput, contribSlider);
+
+    taxYearSelect.addEventListener('change', updateCalculation);
+    provinceSelect.addEventListener('change', updateCalculation);
+
+    // Preset Pills Handlers
+    function setupPresets(selector: string, targetInput: HTMLInputElement, targetSlider?: HTMLInputElement) {
+      const pills = document.querySelectorAll(selector);
+      pills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          const btn = e.currentTarget as HTMLButtonElement;
+          pills.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+
+          const dataVal = btn.dataset.income || btn.dataset.room || btn.dataset.contrib;
+          if (dataVal !== undefined) {
+            if (dataVal === 'max') {
+              const curRoom = parseFloat(roomInput.value) || 0;
+              targetInput.value = String(curRoom);
+              if (targetSlider) targetSlider.value = String(Math.min(parseFloat(targetSlider.max), curRoom));
+            } else {
+              targetInput.value = dataVal;
+              if (targetSlider) targetSlider.value = String(Math.min(parseFloat(targetSlider.max), parseFloat(dataVal)));
+            }
+            updateCalculation();
+          }
+        });
+      });
+    }
+
+    setupPresets('[data-income]', incomeInput, incomeSlider);
+    setupPresets('[data-room]', roomInput, roomSlider);
+    setupPresets('[data-contrib]', contribInput, contribSlider);
+
+    // Estimator Accordion
+    estimatorToggle.addEventListener('click', () => {
+      const isExpanded = estimatorToggle.getAttribute('aria-expanded') === 'true';
+      estimatorToggle.setAttribute('aria-expanded', String(!isExpanded));
+      estimatorPanel.classList.toggle('hidden');
+      estimatorChevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    // Helper: recalculate estimate button label
+    function updateEstimateBtnLabel() {
+      const priorInc = Math.max(0, parseFloat(priorIncomeInput.value) || 0);
+      const unused = Math.max(0, parseFloat(unusedRoomInput.value) || 0);
+      const yearKey = taxYearSelect.value || '2026';
+      const cap = TAX_CONFIG[yearKey]?.rrspLimit || 33810;
+      const newRoom = Math.min(cap, priorInc * 0.18);
+      const totalEstimated = Math.round(newRoom + unused);
+      applyEstimateBtn.textContent = `Apply Estimated Room ($${totalEstimated.toLocaleString('en-CA')})`;
+    }
+
+    priorIncomeInput.addEventListener('input', updateEstimateBtnLabel);
+    unusedRoomInput.addEventListener('input', updateEstimateBtnLabel);
+
+    applyEstimateBtn.addEventListener('click', () => {
+      const priorInc = Math.max(0, parseFloat(priorIncomeInput.value) || 0);
+      const unused = Math.max(0, parseFloat(unusedRoomInput.value) || 0);
+      const yearKey = taxYearSelect.value || '2026';
+      const cap = TAX_CONFIG[yearKey]?.rrspLimit || 33810;
+      const newRoom = Math.min(cap, priorInc * 0.18);
+      const totalEstimated = Math.round(newRoom + unused);
+
+      roomInput.value = String(totalEstimated);
+      roomSlider.value = String(Math.min(parseFloat(roomSlider.max), totalEstimated));
+      updateCalculation();
+    });
+
+    // Breakdown Accordion Toggle
+    breakdownToggle.addEventListener('click', () => {
+      const isExpanded = breakdownToggle.getAttribute('aria-expanded') === 'true';
+      breakdownToggle.setAttribute('aria-expanded', String(!isExpanded));
+      breakdownWrapper.classList.toggle('hidden');
+      breakdownChevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    // Reset Button
+    resetBtn.addEventListener('click', () => {
+      taxYearSelect.value = '2026';
+      provinceSelect.value = 'ON';
+
+      incomeInput.value = '95000';
+      incomeSlider.value = '95000';
+
+      roomInput.value = '25000';
+      roomSlider.value = '25000';
+
+      contribInput.value = '10000';
+      contribSlider.value = '10000';
+
+      priorIncomeInput.value = '95000';
+      unusedRoomInput.value = '7900';
+      updateEstimateBtnLabel();
+
+      // Reset preset active states
+      document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+      document.querySelector('[data-income="95000"]')?.classList.add('active');
+      document.querySelector('[data-room="25000"]')?.classList.add('active');
+      document.querySelector('[data-contrib="10000"]')?.classList.add('active');
+
+      updateCalculation();
+    });
+
+    // Initial Calculation Run
+    updateEstimateBtnLabel();
+    updateCalculation();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRrspContributionCalculator);
+  } else {
+    initRrspContributionCalculator();
+  }
+</script>
+
+<style>
+  /* Base Container */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-base);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-text-base);
+    gap: var(--space-2);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 170px;
+    flex-shrink: 0;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-7);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-subtle);
+  }
+
+  .currency-select {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    margin-top: var(--space-2);
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .preset-pills-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+  }
+
+  .preset-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 4px;
+  }
+
+  .preset-pill {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-border-hover, var(--color-border));
+  }
+
+  .preset-pill.active {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    margin-top: var(--space-1);
+  }
+
+  /* Advanced / Estimator Section Accordion */
+  .advanced-section {
+    border-top: 1px dashed var(--color-border);
+    border-bottom: 1px dashed var(--color-border);
+    padding: var(--space-2) 0;
+  }
+
+  .advanced-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: var(--space-2) 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .advanced-toggle-btn:hover {
+    color: var(--color-primary);
+  }
+
+  .advanced-panel {
+    padding: var(--space-3);
+    background-color: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    margin-top: var(--space-2);
+  }
+
+  /* Warning / Info Callout Banner */
+  .callout-banner {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .callout-banner.warning {
+    background-color: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    color: var(--color-text-base);
+  }
+
+  .callout-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .callout-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .callout-msg {
+    color: var(--color-text-muted);
+  }
+
+  /* Results Section Styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-1);
+  }
+
+  /* Hero Metric Box */
+  .hero-metric-box {
+    background: linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-base) 100%);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-metric-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+
+  .hero-metric-value {
+    font-size: 2.3rem;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--color-success);
+    font-family: var(--font-mono, monospace);
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    display: block;
+    margin-top: var(--space-2);
+  }
+
+  /* Step Flow Diagram Card */
+  .step-flow-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-2);
+  }
+
+  .step-flow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+  }
+
+  .step-flow-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .step-flow-val {
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+    color: var(--color-text-base);
+  }
+
+  .step-flow-desc {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  .step-flow-arrow {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  /* Dual Summary Value Cards */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .net-value-box {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .net-value-box.highlight-primary {
+    border-color: var(--color-primary-subtle);
+    background: linear-gradient(180deg, var(--color-primary-subtle) 0%, transparent 100%);
+  }
+
+  .net-value-box.highlight-success {
+    border-color: rgba(34, 197, 94, 0.25);
+    background: linear-gradient(180deg, rgba(34, 197, 94, 0.08) 0%, transparent 100%);
+  }
+
+  .net-box-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .net-box-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Key Metrics Grid (Rule 15 Responsive Wrapping) */
+  .metrics-grid-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+  }
+
+  .rrsp-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .tile-sub {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Breakdown Table & Accordion */
+  .schedule-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-surface);
+    overflow: hidden;
+  }
+
+  .schedule-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+
+  .schedule-toggle-btn:hover {
+    background-color: var(--color-bg-base);
+  }
+
+  .chevron-icon {
+    transition: transform var(--transition-fast);
+  }
+
+  .schedule-wrapper {
+    padding: var(--space-3) var(--space-4) var(--space-4) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg-base);
+  }
+
+  .schedule-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .schedule-table th {
+    padding: var(--space-2) var(--space-3);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    border-bottom: 1.5px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .schedule-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .schedule-footnote {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin: var(--space-3) 0 0 0;
+    line-height: 1.4;
+  }
+
+  /* Verdict Card */
+  .verdict-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .verdict-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .verdict-badge {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+  }
+
+  .verdict-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .verdict-desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+    font-style: italic;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 640px) {
+    .net-value-container {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-metric-value {
+      font-size: 1.85rem;
+    }
+
+    .input-label-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .input-symbol-wrapper {
+      width: 100%;
+    }
+
+    .step-flow-card {
+      flex-direction: column;
+      gap: var(--space-2);
+      text-align: center;
+    }
+
+    .step-flow-arrow {
+      transform: rotate(90deg);
+      margin: -4px 0;
+    }
+
+    .rrsp-metrics-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .rrsp-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

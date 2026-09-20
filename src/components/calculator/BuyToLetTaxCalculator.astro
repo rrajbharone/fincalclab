@@ -1,0 +1,1441 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="UK Buy to Let Tax Calculator"
+  description="Estimate how much Income Tax an individual residential landlord pays on rental profit under Section 24 rules, including mortgage interest relief and after-tax cash flow."
+  category="Taxes & Real Estate"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="btlt-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">Property &amp; Income Details</h3>
+
+      <!-- Tax Year Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="btlt-tax-year">UK Tax Year</label>
+          <select id="btlt-tax-year" class="currency-select" aria-label="Select UK Tax Year">
+            <option value="2026_27" selected>2026/27 (Current: 6 Apr 2026 – 5 Apr 2027)</option>
+            <option value="2025_26">2025/26 (6 Apr 2025 – 5 Apr 2026)</option>
+            <option value="2024_25">2024/25 (6 Apr 2024 – 5 Apr 2025)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tax Region Selector -->
+      <div class="input-group">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">UK Tax Region</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Tax Region">
+          <button type="button" class="toggle-pill active" id="btlt-region-ewni-btn" aria-checked="true" role="radio">
+            England, Wales &amp; NI
+          </button>
+          <button type="button" class="toggle-pill" id="btlt-region-scot-btn" aria-checked="false" role="radio">
+            Scotland
+          </button>
+        </div>
+        <span class="input-subtext">Scotland applies devolved income tax rates (19%, 20%, 21%, 42%, 45%, 48%). Section 24 finance relief remains 20% across all UK regions.</span>
+      </div>
+
+      <!-- Annual Rental Income -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="btlt-rent-val">Annual Gross Rental Income</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="btlt-rent-val" min="0" max="10000000" step="500" value="18000" aria-label="Annual Gross Rental Income" />
+          </div>
+        </div>
+        <input type="range" id="btlt-rent-slider" min="0" max="100000" step="500" value="18000" class="slider-range" aria-label="Annual Rental Income Slider" />
+        
+        <!-- Rent Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-rent="10000">£10k</button>
+          <button type="button" class="preset-pill" data-rent="14000">£14k</button>
+          <button type="button" class="preset-pill active" data-rent="18000">£18k</button>
+          <button type="button" class="preset-pill" data-rent="24000">£24k</button>
+          <button type="button" class="preset-pill" data-rent="36000">£36k</button>
+          <button type="button" class="preset-pill" data-rent="50000">£50k</button>
+        </div>
+        <span class="input-subtext">Total rent received from tenants before any deductions or management fees.</span>
+      </div>
+
+      <!-- Annual Allowable Expenses -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="btlt-expenses-val">Annual Allowable Expenses</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="btlt-expenses-val" min="0" max="5000000" step="250" value="2500" aria-label="Annual Allowable Expenses" />
+          </div>
+        </div>
+        <input type="range" id="btlt-expenses-slider" min="0" max="30000" step="250" value="2500" class="slider-range" aria-label="Annual Expenses Slider" />
+        
+        <!-- Expenses Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-expenses="1000">£1k</button>
+          <button type="button" class="preset-pill active" data-expenses="2500">£2.5k</button>
+          <button type="button" class="preset-pill" data-expenses="4000">£4k</button>
+          <button type="button" class="preset-pill" data-expenses="6000">£6k</button>
+          <button type="button" class="preset-pill" data-expenses="10000">£10k</button>
+        </div>
+        <span class="input-subtext">Includes repairs, landlord insurance, letting agent fees, service charges, safety certificates. Excludes mortgage interest and capital improvements.</span>
+      </div>
+
+      <!-- Annual Mortgage Interest / Residential Finance Costs -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="btlt-finance-val">Annual Mortgage Interest / Finance Costs</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="btlt-finance-val" min="0" max="5000000" step="250" value="6000" aria-label="Annual Mortgage Interest" />
+          </div>
+        </div>
+        <input type="range" id="btlt-finance-slider" min="0" max="50000" step="250" value="6000" class="slider-range" aria-label="Mortgage Interest Slider" />
+        
+        <!-- Finance Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-finance="0">£0 (No Mortgage)</button>
+          <button type="button" class="preset-pill" data-finance="3000">£3k</button>
+          <button type="button" class="preset-pill active" data-finance="6000">£6k</button>
+          <button type="button" class="preset-pill" data-finance="9000">£9k</button>
+          <button type="button" class="preset-pill" data-finance="14000">£14k</button>
+        </div>
+        <span class="input-subtext">Pure interest charges and arrangement fees. Not deducted from rental profit; qualifies for a 20% basic rate tax reduction.</span>
+      </div>
+
+      <!-- Other Annual Income -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="btlt-other-income-val">Other Annual Taxable Income</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="btlt-other-income-val" min="0" max="10000000" step="1000" value="45000" aria-label="Other Annual Taxable Income" />
+          </div>
+        </div>
+        <input type="range" id="btlt-other-income-slider" min="0" max="150000" step="1000" value="45000" class="slider-range" aria-label="Other Income Slider" />
+        
+        <!-- Other Income Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-other="0">£0</button>
+          <button type="button" class="preset-pill" data-other="30000">£30k</button>
+          <button type="button" class="preset-pill active" data-other="45000">£45k</button>
+          <button type="button" class="preset-pill" data-other="60000">£60k</button>
+          <button type="button" class="preset-pill" data-other="90000">£90k</button>
+          <button type="button" class="preset-pill" data-other="120000">£120k</button>
+        </div>
+        <span class="input-subtext">Combined gross employment salary, pensions, self-employment, and other non-property income before tax.</span>
+      </div>
+
+      <!-- Unobtrusive Advanced Options Accordion -->
+      <div class="advanced-section" style="margin-top: var(--space-4);">
+        <button type="button" class="advanced-toggle-btn" id="btlt-advanced-toggle" aria-expanded="false" aria-controls="btlt-advanced-panel">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Advanced Options (Ownership Share)
+          </span>
+          <svg class="chevron-icon" id="btlt-advanced-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+
+        <div class="advanced-panel hidden" id="btlt-advanced-panel">
+          <div class="input-group" style="margin-top: var(--space-3);">
+            <div class="input-label-row">
+              <label for="btlt-ownership-val">Your Property Ownership Share</label>
+              <div class="input-symbol-wrapper">
+                <input type="number" id="btlt-ownership-val" min="1" max="100" step="1" value="100" aria-label="Ownership Percentage" />
+                <span class="currency-symbol" style="left: auto; right: var(--space-3);">%</span>
+              </div>
+            </div>
+            <div class="preset-pills-row" style="margin-top: var(--space-2);">
+              <span class="preset-label">Share:</span>
+              <button type="button" class="preset-pill active" data-ownership="100">100% (Sole)</button>
+              <button type="button" class="preset-pill" data-ownership="50">50% (Spouse/Joint)</button>
+              <button type="button" class="preset-pill" data-ownership="33">33.3%</button>
+              <button type="button" class="preset-pill" data-ownership="25">25%</button>
+            </div>
+            <span class="input-subtext">If jointly owned, your portion of rent, expenses, and mortgage interest is calculated proportionally.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning Banners -->
+      <div id="btlt-section24-trap-banner" class="callout-banner warning hidden" style="margin-top: var(--space-4);">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <span class="callout-title" id="btlt-trap-title">Section 24 Higher-Rate Push Detected</span>
+          <span class="callout-msg" id="btlt-trap-msg">
+            Because mortgage interest is no longer deducted from gross rental income, your taxable income is calculated at a higher bracket, restricting your finance relief to only 20%.
+          </span>
+        </div>
+      </div>
+
+      <div id="btlt-loss-banner" class="callout-banner warning hidden" style="margin-top: var(--space-4);">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">
+          <span class="callout-title">Rental Loss Incurred</span>
+          <span class="callout-msg">
+            Your allowable expenses exceed your rental income. In the UK, property losses cannot normally offset employment salary; they must be carried forward to offset future rental profits.
+          </span>
+        </div>
+      </div>
+
+      <!-- Reset Action -->
+      <div style="margin-top: var(--space-5);">
+        <Button variant="outline" size="sm" id="btlt-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Buy to Let Tax Summary</h3>
+
+    <!-- Prominent Result Hero Box: After-Tax Rental Profit -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label" id="btlt-hero-label">Estimated Rental Profit After Tax</span>
+      <div class="hero-metric-value" id="btlt-hero-annual">£3,300.00</div>
+      <span class="hero-metric-subtext" id="btlt-hero-monthly">Equivalent to £275.00 per month net cash profit</span>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label">Estimated Rental Tax</span>
+        <div id="btlt-box-tax" class="net-box-value" style="color: var(--color-primary);">£6,200.00</div>
+        <span class="net-box-desc" id="btlt-box-tax-sub">After 20% finance-cost credit</span>
+      </div>
+      <div class="net-value-box highlight-success">
+        <span class="net-box-label">Finance Cost Tax Reduction</span>
+        <div id="btlt-box-credit" class="net-box-value" style="color: var(--color-success);">£1,200.00</div>
+        <span class="net-box-desc">20% Section 24 mortgage relief</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid (Responsive Wrap) -->
+    <h4 class="metrics-grid-title">Rental Cash Flow &amp; Tax Breakdown</h4>
+    <div class="results-grid btlt-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Gross Rental Income</span>
+        <div class="tile-value" id="tile-rental-income" style="color: var(--color-primary);">£18,000.00</div>
+        <span class="tile-sub" id="tile-rental-income-sub">Annual gross rent</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Allowable Expenses</span>
+        <div class="tile-value" id="tile-expenses" style="color: var(--color-text-base);">-£2,500.00</div>
+        <span class="tile-sub">Repairs, fees &amp; costs</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Rental Profit (Pre-Finance)</span>
+        <div class="tile-value" id="tile-net-profit" style="color: var(--color-text-base);">£15,500.00</div>
+        <span class="tile-sub">Taxable property profit</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Mortgage Interest Paid</span>
+        <div class="tile-value" id="tile-mortgage-interest" style="color: var(--color-warning);">-£6,000.00</div>
+        <span class="tile-sub">Pure residential interest</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Effective Tax Rate</span>
+        <div class="tile-value" id="tile-effective-tax-rate" style="color: var(--color-primary);">40.00%</div>
+        <span class="tile-sub" id="tile-effective-sub">On rental profit</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Net After-Tax Monthly</span>
+        <div class="tile-value" id="tile-monthly-after-tax" style="color: var(--color-success);">£275.00</div>
+        <span class="tile-sub">In your pocket each month</span>
+      </div>
+    </div>
+
+    <!-- Expandable Calculation Breakdown -->
+    <div class="schedule-section">
+      <button type="button" class="schedule-toggle-btn" id="btlt-breakdown-toggle" aria-expanded="false" aria-controls="btlt-breakdown-wrapper">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          How This Calculation Works (Step-by-Step Breakdown)
+        </span>
+        <svg class="chevron-icon" id="btlt-breakdown-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div class="schedule-wrapper hidden" id="btlt-breakdown-wrapper">
+        <div class="schedule-table-container">
+          <table class="schedule-table" id="btlt-breakdown-table">
+            <thead>
+              <tr>
+                <th>Step / Item</th>
+                <th>Annual Amount</th>
+                <th>Notes / Statutory Basis</th>
+              </tr>
+            </thead>
+            <tbody id="btlt-breakdown-tbody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+        <p class="schedule-footnote">
+          Section 24 of the Finance (No. 2) Act 2015 restricts residential finance costs from being deducted as a property business expense. Landlords instead receive a basic rate (20%) tax reduction on the qualifying amount.
+        </p>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict & Context -->
+    <div class="verdict-container" style="margin-top: var(--space-2);">
+      <Card elevation="sm" class="verdict-card verdict-info">
+        <div class="verdict-header">
+          <div class="verdict-badge">Landlord Tax Analysis</div>
+          <span class="verdict-title" id="btlt-verdict-title">Healthy Rental Return</span>
+        </div>
+        <p class="verdict-desc" id="btlt-verdict-desc">
+          Based on your inputs, your property produces an estimated after-tax annual profit of £3,300.00 (£275.00/month). Your mortgage interest generates £1,200.00 in Section 24 basic rate tax reduction.
+        </p>
+        <p class="verdict-disclaimer" id="btlt-disclaimer">
+          Your actual tax liability can differ because your tax position depends on your complete income, allowances, reliefs and personal circumstances.
+        </p>
+      </Card>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initBuyToLetTaxCalculator() {
+    // -------------------------------------------------------------
+    // UK TAX CONFIGURATIONS (Maintainable & Expandable)
+    // -------------------------------------------------------------
+    interface TaxBand {
+      name: string;
+      rate: number;
+      from: number;
+      to: number;
+    }
+
+    interface RegionTaxConfig {
+      pa: number;
+      taperStart: number;
+      taperEnd: number;
+      bands: TaxBand[];
+    }
+
+    interface TaxYearConfig {
+      label: string;
+      ewni: RegionTaxConfig;
+      scotland: RegionTaxConfig;
+    }
+
+    const TAX_DATA: Record<string, TaxYearConfig> = {
+      '2026_27': {
+        label: '2026/27 (6 Apr 2026 – 5 Apr 2027)',
+        ewni: {
+          pa: 12570,
+          taperStart: 100000,
+          taperEnd: 125140,
+          bands: [
+            { name: 'Personal Allowance (0%)', rate: 0.00, from: 0, to: 12570 },
+            { name: 'Basic Rate (20%)', rate: 0.20, from: 12570, to: 50270 },
+            { name: 'Higher Rate (40%)', rate: 0.40, from: 50270, to: 125140 },
+            { name: 'Additional Rate (45%)', rate: 0.45, from: 125140, to: Infinity }
+          ]
+        },
+        scotland: {
+          pa: 12570,
+          taperStart: 100000,
+          taperEnd: 125140,
+          bands: [
+            { name: 'Personal Allowance (0%)', rate: 0.00, from: 0, to: 12570 },
+            { name: 'Starter Rate (19%)', rate: 0.19, from: 12570, to: 15397 },
+            { name: 'Basic Rate (20%)', rate: 0.20, from: 15397, to: 27490 },
+            { name: 'Intermediate Rate (21%)', rate: 0.21, from: 27490, to: 43662 },
+            { name: 'Higher Rate (42%)', rate: 0.42, from: 43662, to: 75000 },
+            { name: 'Advanced Rate (45%)', rate: 0.45, from: 75000, to: 125140 },
+            { name: 'Top Rate (48%)', rate: 0.48, from: 125140, to: Infinity }
+          ]
+        }
+      },
+      '2025_26': {
+        label: '2025/26 (6 Apr 2025 – 5 Apr 2026)',
+        ewni: {
+          pa: 12570,
+          taperStart: 100000,
+          taperEnd: 125140,
+          bands: [
+            { name: 'Personal Allowance (0%)', rate: 0.00, from: 0, to: 12570 },
+            { name: 'Basic Rate (20%)', rate: 0.20, from: 12570, to: 50270 },
+            { name: 'Higher Rate (40%)', rate: 0.40, from: 50270, to: 125140 },
+            { name: 'Additional Rate (45%)', rate: 0.45, from: 125140, to: Infinity }
+          ]
+        },
+        scotland: {
+          pa: 12570,
+          taperStart: 100000,
+          taperEnd: 125140,
+          bands: [
+            { name: 'Personal Allowance (0%)', rate: 0.00, from: 0, to: 12570 },
+            { name: 'Starter Rate (19%)', rate: 0.19, from: 12570, to: 15397 },
+            { name: 'Basic Rate (20%)', rate: 0.20, from: 15397, to: 27490 },
+            { name: 'Intermediate Rate (21%)', rate: 0.21, from: 27490, to: 43662 },
+            { name: 'Higher Rate (42%)', rate: 0.42, from: 43662, to: 75000 },
+            { name: 'Advanced Rate (45%)', rate: 0.45, from: 75000, to: 125140 },
+            { name: 'Top Rate (48%)', rate: 0.48, from: 125140, to: Infinity }
+          ]
+        }
+      },
+      '2024_25': {
+        label: '2024/25 (6 Apr 2024 – 5 Apr 2025)',
+        ewni: {
+          pa: 12570,
+          taperStart: 100000,
+          taperEnd: 125140,
+          bands: [
+            { name: 'Personal Allowance (0%)', rate: 0.00, from: 0, to: 12570 },
+            { name: 'Basic Rate (20%)', rate: 0.20, from: 12570, to: 50270 },
+            { name: 'Higher Rate (40%)', rate: 0.40, from: 50270, to: 125140 },
+            { name: 'Additional Rate (45%)', rate: 0.45, from: 125140, to: Infinity }
+          ]
+        },
+        scotland: {
+          pa: 12570,
+          taperStart: 100000,
+          taperEnd: 125140,
+          bands: [
+            { name: 'Personal Allowance (0%)', rate: 0.00, from: 0, to: 12570 },
+            { name: 'Starter Rate (19%)', rate: 0.19, from: 12570, to: 14876 },
+            { name: 'Basic Rate (20%)', rate: 0.20, from: 14876, to: 26561 },
+            { name: 'Intermediate Rate (21%)', rate: 0.21, from: 26561, to: 43662 },
+            { name: 'Higher Rate (42%)', rate: 0.42, from: 43662, to: 75000 },
+            { name: 'Advanced Rate (45%)', rate: 0.45, from: 75000, to: 125140 },
+            { name: 'Top Rate (48%)', rate: 0.48, from: 125140, to: Infinity }
+          ]
+        }
+      }
+    };
+
+    // -------------------------------------------------------------
+    // DOM ELEMENTS
+    // -------------------------------------------------------------
+    const taxYearSelect   = document.getElementById('btlt-tax-year') as HTMLSelectElement;
+    const regionEwniBtn   = document.getElementById('btlt-region-ewni-btn') as HTMLButtonElement;
+    const regionScotBtn   = document.getElementById('btlt-region-scot-btn') as HTMLButtonElement;
+
+    const rentInput       = document.getElementById('btlt-rent-val') as HTMLInputElement;
+    const rentSlider      = document.getElementById('btlt-rent-slider') as HTMLInputElement;
+
+    const expensesInput   = document.getElementById('btlt-expenses-val') as HTMLInputElement;
+    const expensesSlider  = document.getElementById('btlt-expenses-slider') as HTMLInputElement;
+
+    const financeInput    = document.getElementById('btlt-finance-val') as HTMLInputElement;
+    const financeSlider   = document.getElementById('btlt-finance-slider') as HTMLInputElement;
+
+    const otherInput      = document.getElementById('btlt-other-income-val') as HTMLInputElement;
+    const otherSlider     = document.getElementById('btlt-other-income-slider') as HTMLInputElement;
+
+    const advancedToggle  = document.getElementById('btlt-advanced-toggle') as HTMLButtonElement;
+    const advancedPanel   = document.getElementById('btlt-advanced-panel') as HTMLElement;
+    const advancedChevron = document.getElementById('btlt-advanced-chevron') as HTMLElement;
+    const ownershipInput  = document.getElementById('btlt-ownership-val') as HTMLInputElement;
+
+    const resetBtn        = document.getElementById('btlt-reset-btn') as HTMLButtonElement;
+
+    // Output Elements
+    const heroAnnual      = document.getElementById('btlt-hero-annual') as HTMLElement;
+    const heroMonthly     = document.getElementById('btlt-hero-monthly') as HTMLElement;
+    const boxTax          = document.getElementById('btlt-box-tax') as HTMLElement;
+    const boxCredit       = document.getElementById('btlt-box-credit') as HTMLElement;
+
+    const tileRentalIncome    = document.getElementById('tile-rental-income') as HTMLElement;
+    const tileRentalIncomeSub = document.getElementById('tile-rental-income-sub') as HTMLElement;
+    const tileExpenses        = document.getElementById('tile-expenses') as HTMLElement;
+    const tileNetProfit       = document.getElementById('tile-net-profit') as HTMLElement;
+    const tileMortgageInterest= document.getElementById('tile-mortgage-interest') as HTMLElement;
+    const tileEffectiveTaxRate= document.getElementById('tile-effective-tax-rate') as HTMLElement;
+    const tileEffectiveSub    = document.getElementById('tile-effective-sub') as HTMLElement;
+    const tileMonthlyAfterTax = document.getElementById('tile-monthly-after-tax') as HTMLElement;
+
+    // Callout Banners
+    const trapBanner      = document.getElementById('btlt-section24-trap-banner') as HTMLElement;
+    const trapTitle       = document.getElementById('btlt-trap-title') as HTMLElement;
+    const trapMsg         = document.getElementById('btlt-trap-msg') as HTMLElement;
+    const lossBanner      = document.getElementById('btlt-loss-banner') as HTMLElement;
+
+    // Breakdown Table Accordion
+    const breakdownToggle = document.getElementById('btlt-breakdown-toggle') as HTMLButtonElement;
+    const breakdownWrapper= document.getElementById('btlt-breakdown-wrapper') as HTMLElement;
+    const breakdownChevron= document.getElementById('btlt-breakdown-chevron') as HTMLElement;
+    const breakdownTbody  = document.getElementById('btlt-breakdown-tbody') as HTMLElement;
+
+    // Verdict Elements
+    const verdictTitle    = document.getElementById('btlt-verdict-title') as HTMLElement;
+    const verdictDesc     = document.getElementById('btlt-verdict-desc') as HTMLElement;
+
+    // State Variables
+    let currentRegion: 'ewni' | 'scotland' = 'ewni';
+    let ownershipPercent = 100;
+
+    // Currency Formatter
+    function fmt(val: number): string {
+      const absVal = Math.abs(val);
+      const str = absVal.toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${val < 0 ? '-' : ''}£${str}`;
+    }
+
+    // Helper: Compute Income Tax for a given total gross income under a specific region config
+    function computeIncomeTax(totalIncome: number, cfg: RegionTaxConfig): { tax: number; pa: number; bandsTaxed: { name: string; amount: number; rate: number; tax: number }[] } {
+      if (totalIncome <= 0) {
+        return { tax: 0, pa: cfg.pa, bandsTaxed: [] };
+      }
+
+      // 1. Calculate tapered personal allowance
+      let personalAllowance = cfg.pa;
+      if (totalIncome > cfg.taperStart) {
+        const excess = totalIncome - cfg.taperStart;
+        const reduction = excess / 2;
+        personalAllowance = Math.max(0, cfg.pa - reduction);
+      }
+
+      // 2. Taxable non-savings income above personal allowance
+      let taxableIncome = Math.max(0, totalIncome - personalAllowance);
+
+      // In the UK system:
+      // Personal allowance sits at the bottom (0% tax).
+      // Higher bands are offset by the standard personal allowance threshold (£12,570).
+      // When personal allowance tapers, the basic band effectively expands downwards.
+      let totalTax = 0;
+      const bandsTaxed: { name: string; amount: number; rate: number; tax: number }[] = [];
+
+      // Loop through bands starting above PA
+      for (let i = 1; i < cfg.bands.length; i++) {
+        const band = cfg.bands[i];
+        const bandWidth = band.to === Infinity ? Infinity : (band.to - band.from);
+
+        if (taxableIncome <= 0) break;
+
+        const amountInBand = Math.min(taxableIncome, bandWidth);
+        const taxInBand = amountInBand * band.rate;
+
+        totalTax += taxInBand;
+        bandsTaxed.push({
+          name: band.name,
+          amount: amountInBand,
+          rate: band.rate,
+          tax: taxInBand
+        });
+
+        taxableIncome -= amountInBand;
+      }
+
+      return { tax: totalTax, pa: personalAllowance, bandsTaxed };
+    }
+
+    // -------------------------------------------------------------
+    // CALCULATION LOGIC
+    // -------------------------------------------------------------
+    function updateCalculation() {
+      const yearKey = taxYearSelect.value || '2026_27';
+      const yearConfig = TAX_DATA[yearKey] || TAX_DATA['2026_27'];
+      const regionConfig = yearConfig[currentRegion];
+
+      const rawRent = Math.max(0, parseFloat(rentInput.value) || 0);
+      const rawExpenses = Math.max(0, parseFloat(expensesInput.value) || 0);
+      const rawFinance = Math.max(0, parseFloat(financeInput.value) || 0);
+      const rawOther = Math.max(0, parseFloat(otherInput.value) || 0);
+      const share = Math.min(100, Math.max(1, parseFloat(ownershipInput.value) || 100)) / 100;
+
+      // Apportion according to ownership percentage
+      const rent = rawRent * share;
+      const expenses = rawExpenses * share;
+      const mortgageInterest = rawFinance * share;
+      const otherIncome = rawOther; // other income is personal to the individual
+
+      // 1. Rental Profit (before finance costs)
+      const rentalProfit = rent - expenses;
+      const isLoss = rentalProfit < 0;
+
+      // Taxable property business profit added to general income:
+      // Losses cannot offset general salary in UK; carried forward against future rental profits.
+      const taxablePropertyProfit = Math.max(0, rentalProfit);
+
+      // 2. Tax without property
+      const taxWithoutProperty = computeIncomeTax(otherIncome, regionConfig);
+
+      // 3. Tax with property (before Section 24 credit)
+      const totalIncomeWithProperty = otherIncome + taxablePropertyProfit;
+      const taxWithProperty = computeIncomeTax(totalIncomeWithProperty, regionConfig);
+
+      // 4. Section 24 Mortgage Relief (Residential Finance Cost Tax Reduction)
+      // Relief is given as a basic rate (20%) reduction on the lowest of:
+      // A) Finance costs incurred in the year
+      // B) Property business profits (after losses brought forward, or 0)
+      // C) Adjusted total income exceeding the Personal Allowance (before relief)
+      let financeCostRelief = 0;
+      let lowestLimitingFactor = 'Mortgage Interest';
+
+      if (mortgageInterest > 0 && taxablePropertyProfit > 0) {
+        const taxableIncomeAbovePA = Math.max(0, totalIncomeWithProperty - taxWithProperty.pa);
+        const limitingAmount = Math.min(mortgageInterest, taxablePropertyProfit, taxableIncomeAbovePA);
+
+        if (limitingAmount === taxablePropertyProfit && limitingAmount < mortgageInterest) {
+          lowestLimitingFactor = 'Rental Profit';
+        } else if (limitingAmount === taxableIncomeAbovePA && limitingAmount < mortgageInterest) {
+          lowestLimitingFactor = 'Taxable Income over Personal Allowance';
+        }
+
+        // Always 20% basic rate reduction across all UK regions (even in Scotland)
+        financeCostRelief = limitingAmount * 0.20;
+      }
+
+      // Total tax with property after Section 24 tax credit
+      const finalTotalTaxWithProperty = Math.max(0, taxWithProperty.tax - financeCostRelief);
+
+      // 5. Estimated Income Tax specifically attributable to the rental profit
+      let rentalTax = Math.max(0, finalTotalTaxWithProperty - taxWithoutProperty.tax);
+      if (isLoss) {
+        rentalTax = 0;
+      }
+
+      // 6. After-Tax Rental Profit (Cash in pocket)
+      // Real economic profit = Rent - Allowable Expenses - Mortgage Interest - Tax on Rent
+      const afterTaxAnnual = rentalProfit - mortgageInterest - rentalTax;
+      const afterTaxMonthly = afterTaxAnnual / 12;
+
+      // 7. Effective Tax Rate on Rental Profit
+      const effectiveTaxRate = taxablePropertyProfit > 0 ? (rentalTax / taxablePropertyProfit) * 100 : 0;
+
+      // -------------------------------------------------------------
+      // UPDATE UI ELEMENTS
+      // -------------------------------------------------------------
+      heroAnnual.textContent = fmt(afterTaxAnnual);
+      heroMonthly.textContent = `Equivalent to ${fmt(afterTaxMonthly)} per month net cash profit`;
+
+      boxTax.textContent = fmt(rentalTax);
+      boxCredit.textContent = fmt(financeCostRelief);
+
+      tileRentalIncome.textContent = fmt(rent);
+      tileRentalIncomeSub.textContent = share < 1 ? `Your ${Math.round(share * 100)}% share (Gross £${Math.round(rawRent).toLocaleString('en-GB')})` : 'Annual gross rent';
+
+      tileExpenses.textContent = expenses > 0 ? `-${fmt(expenses)}` : '£0.00';
+      tileNetProfit.textContent = fmt(rentalProfit);
+      tileMortgageInterest.textContent = mortgageInterest > 0 ? `-${fmt(mortgageInterest)}` : '£0.00';
+      tileEffectiveTaxRate.textContent = `${Math.min(100, Math.max(0, effectiveTaxRate)).toFixed(2)}%`;
+      tileEffectiveSub.textContent = taxablePropertyProfit > 0 ? `On £${Math.round(taxablePropertyProfit).toLocaleString('en-GB')} profit` : 'No taxable profit';
+
+      tileMonthlyAfterTax.textContent = fmt(afterTaxMonthly);
+      if (afterTaxAnnual < 0) {
+        heroAnnual.style.color = 'var(--color-danger, #ef4444)';
+        tileMonthlyAfterTax.style.color = 'var(--color-danger, #ef4444)';
+      } else {
+        heroAnnual.style.color = '';
+        tileMonthlyAfterTax.style.color = 'var(--color-success)';
+      }
+
+      // Warning Banners
+      if (isLoss) {
+        lossBanner.classList.remove('hidden');
+      } else {
+        lossBanner.classList.add('hidden');
+      }
+
+      // Section 24 Trap / High Earner Detection
+      const thresholdHigherRate = 50270;
+      const pushedIntoHigherRate = otherIncome <= thresholdHigherRate && totalIncomeWithProperty > thresholdHigherRate && mortgageInterest > 0;
+      const pushedIntoTaper = otherIncome < 100000 && totalIncomeWithProperty > 100000;
+
+      if (pushedIntoTaper) {
+        trapBanner.classList.remove('hidden');
+        trapTitle.textContent = 'Personal Allowance Taper Warning (£100k–£125k)';
+        trapMsg.innerHTML = `Your combined taxable income (£${Math.round(totalIncomeWithProperty).toLocaleString('en-GB')}) crosses £100,000. Under Section 24, mortgage interest cannot be deducted to keep your income below £100,000, causing a reduction in your £12,570 tax-free Personal Allowance (effective 60% marginal tax rate).`;
+      } else if (pushedIntoHigherRate) {
+        trapBanner.classList.remove('hidden');
+        trapTitle.textContent = 'Section 24 Higher-Rate Push Detected';
+        trapMsg.innerHTML = `Your rental income pushes your taxable income from £${Math.round(otherIncome).toLocaleString('en-GB')} to £${Math.round(totalIncomeWithProperty).toLocaleString('en-GB')} (above the £50,270 higher-rate threshold). You are taxed at 40% (or Scottish equivalent) on rental profits, but your mortgage relief is strictly capped at a 20% basic-rate credit.`;
+      } else {
+        trapBanner.classList.add('hidden');
+      }
+
+      // Verdict Content
+      if (afterTaxAnnual < 0) {
+        verdictTitle.textContent = 'Negative Cash Flow (Cash Drag)';
+        verdictDesc.innerHTML = `Your property is currently running a net cash loss of <strong>${fmt(Math.abs(afterTaxAnnual))} per year</strong> (${fmt(Math.abs(afterTaxMonthly))}/month) after paying mortgage interest, running costs, and HMRC tax. Review refinancing options, rental rates, or allowable expenses.`;
+      } else if (afterTaxAnnual > 0 && effectiveTaxRate > 35) {
+        verdictTitle.textContent = 'Higher-Rate Landlord Position';
+        verdictDesc.innerHTML = `Your rental profit generates an estimated <strong>${fmt(afterTaxAnnual)} net annual profit</strong> (${fmt(afterTaxMonthly)}/month). Due to Section 24 restrictions on your mortgage interest, your effective tax rate on property profit is <strong>${effectiveTaxRate.toFixed(1)}%</strong>. You receive <strong>${fmt(financeCostRelief)}</strong> as a 20% tax reduction.`;
+      } else {
+        verdictTitle.textContent = 'Profitable Buy to Let Return';
+        verdictDesc.innerHTML = `Your buy-to-let property generates <strong>${fmt(afterTaxAnnual)} net annual profit</strong> (${fmt(afterTaxMonthly)}/month) after tax and finance charges. Your 20% Section 24 mortgage relief saves you <strong>${fmt(financeCostRelief)}</strong> in Income Tax.`;
+      }
+
+      // Populate Step-by-Step Breakdown Table
+      populateBreakdownTable({
+        rent,
+        expenses,
+        rentalProfit,
+        mortgageInterest,
+        otherIncome,
+        totalIncomeWithProperty,
+        paWithoutProperty: taxWithoutProperty.pa,
+        paWithProperty: taxWithProperty.pa,
+        taxWithoutProperty: taxWithoutProperty.tax,
+        taxWithPropertyPreCredit: taxWithProperty.tax,
+        financeCostRelief,
+        rentalTax,
+        afterTaxAnnual
+      });
+    }
+
+    // Populate Dynamic Breakdown Table
+    function populateBreakdownTable(d: {
+      rent: number;
+      expenses: number;
+      rentalProfit: number;
+      mortgageInterest: number;
+      otherIncome: number;
+      totalIncomeWithProperty: number;
+      paWithoutProperty: number;
+      paWithProperty: number;
+      taxWithoutProperty: number;
+      taxWithPropertyPreCredit: number;
+      financeCostRelief: number;
+      rentalTax: number;
+      afterTaxAnnual: number;
+    }) {
+      const rows = [
+        {
+          step: '1. Gross Rental Income',
+          amount: fmt(d.rent),
+          notes: 'Total rent received from tenants for the tax year.'
+        },
+        {
+          step: '2. Allowable Expenses',
+          amount: expensesInput.value === '0' ? '£0.00' : `-${fmt(d.expenses)}`,
+          notes: 'Maintenance, letting fees, insurance, council tax (excludes mortgage).'
+        },
+        {
+          step: '3. Net Rental Profit',
+          amount: fmt(d.rentalProfit),
+          notes: 'Taxable property profit added to your HMRC taxable income.'
+        },
+        {
+          step: '4. Non-Property Income',
+          amount: fmt(d.otherIncome),
+          notes: 'Employment salary, pension, or other taxable income.'
+        },
+        {
+          step: '5. Total Taxable Income',
+          amount: fmt(d.totalIncomeWithProperty),
+          notes: 'Combined income used to determine tax bands and Personal Allowance.'
+        },
+        {
+          step: '6. Personal Allowance',
+          amount: fmt(d.paWithProperty),
+          notes: d.totalIncomeWithProperty > 100000 ? 'Tapered by £1 for every £2 of income above £100,000.' : 'Standard UK tax-free Personal Allowance (£12,570).'
+        },
+        {
+          step: '7. Gross Tax on Rental Profit',
+          amount: fmt(Math.max(0, d.taxWithPropertyPreCredit - d.taxWithoutProperty)),
+          notes: 'Marginal tax applied to rental profit before Section 24 credit.'
+        },
+        {
+          step: '8. Section 24 Tax Reduction',
+          amount: d.financeCostRelief > 0 ? `-${fmt(d.financeCostRelief)}` : '£0.00',
+          notes: '20% basic rate tax credit on mortgage interest / finance costs.'
+        },
+        {
+          step: '9. Net Income Tax on Rental',
+          amount: fmt(d.rentalTax),
+          notes: 'Final Income Tax owed to HMRC specifically on rental income.'
+        },
+        {
+          step: '10. Mortgage Interest Paid',
+          amount: d.mortgageInterest > 0 ? `-${fmt(d.mortgageInterest)}` : '£0.00',
+          notes: 'Actual cash interest paid to lender throughout the year.'
+        },
+        {
+          step: '11. After-Tax Rental Cash Profit',
+          amount: fmt(d.afterTaxAnnual),
+          notes: 'Net cash in pocket = Rental Income − Expenses − Mortgage Interest − Tax.'
+        }
+      ];
+
+      breakdownTbody.innerHTML = rows.map(r => `
+        <tr>
+          <td style="font-weight: 600; color: var(--color-text-base);">${r.step}</td>
+          <td style="font-family: var(--font-mono, monospace); font-weight: 700; color: var(--color-primary);">${r.amount}</td>
+          <td style="font-size: 0.85rem; color: var(--color-text-muted);">${r.notes}</td>
+        </tr>
+      `).join('');
+    }
+
+    // -------------------------------------------------------------
+    // EVENT LISTENERS & SYNCHRONIZATION
+    // -------------------------------------------------------------
+    function syncInput(inp: HTMLInputElement, sld: HTMLInputElement, defaultVal: number) {
+      inp.addEventListener('input', () => {
+        let val = parseFloat(inp.value);
+        if (isNaN(val) || val < 0) val = 0;
+        sld.value = String(Math.min(parseFloat(sld.max), val));
+        updateCalculation();
+      });
+
+      sld.addEventListener('input', () => {
+        inp.value = sld.value;
+        updateCalculation();
+      });
+    }
+
+    syncInput(rentInput, rentSlider, 18000);
+    syncInput(expensesInput, expensesSlider, 2500);
+    syncInput(financeInput, financeSlider, 6000);
+    syncInput(otherInput, otherSlider, 45000);
+
+    // Ownership input
+    ownershipInput.addEventListener('input', () => {
+      let val = parseFloat(ownershipInput.value);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > 100) val = 100;
+      ownershipPercent = val;
+      updateCalculation();
+    });
+
+    // Tax Year Dropdown
+    taxYearSelect.addEventListener('change', updateCalculation);
+
+    // Tax Region Toggle Pills
+    regionEwniBtn.addEventListener('click', () => {
+      currentRegion = 'ewni';
+      regionEwniBtn.classList.add('active');
+      regionEwniBtn.setAttribute('aria-checked', 'true');
+      regionScotBtn.classList.remove('active');
+      regionScotBtn.setAttribute('aria-checked', 'false');
+      updateCalculation();
+    });
+
+    regionScotBtn.addEventListener('click', () => {
+      currentRegion = 'scotland';
+      regionScotBtn.classList.add('active');
+      regionScotBtn.setAttribute('aria-checked', 'true');
+      regionEwniBtn.classList.remove('active');
+      regionEwniBtn.setAttribute('aria-checked', 'false');
+      updateCalculation();
+    });
+
+    // Preset Pills Handlers
+    function setupPresets(selector: string, targetInput: HTMLInputElement, targetSlider?: HTMLInputElement) {
+      const pills = document.querySelectorAll(selector);
+      pills.forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          const btn = e.currentTarget as HTMLButtonElement;
+          pills.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+
+          const dataVal = btn.dataset.rent || btn.dataset.expenses || btn.dataset.finance || btn.dataset.other || btn.dataset.ownership;
+          if (dataVal !== undefined) {
+            targetInput.value = dataVal;
+            if (targetSlider) targetSlider.value = String(Math.min(parseFloat(targetSlider.max), parseFloat(dataVal)));
+            updateCalculation();
+          }
+        });
+      });
+    }
+
+    setupPresets('[data-rent]', rentInput, rentSlider);
+    setupPresets('[data-expenses]', expensesInput, expensesSlider);
+    setupPresets('[data-finance]', financeInput, financeSlider);
+    setupPresets('[data-other]', otherInput, otherSlider);
+    setupPresets('[data-ownership]', ownershipInput);
+
+    // Advanced Options Toggle
+    advancedToggle.addEventListener('click', () => {
+      const isExpanded = advancedToggle.getAttribute('aria-expanded') === 'true';
+      advancedToggle.setAttribute('aria-expanded', String(!isExpanded));
+      advancedPanel.classList.toggle('hidden');
+      advancedChevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    // Breakdown Accordion Toggle
+    breakdownToggle.addEventListener('click', () => {
+      const isExpanded = breakdownToggle.getAttribute('aria-expanded') === 'true';
+      breakdownToggle.setAttribute('aria-expanded', String(!isExpanded));
+      breakdownWrapper.classList.toggle('hidden');
+      breakdownChevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    // Reset Button
+    resetBtn.addEventListener('click', () => {
+      taxYearSelect.value = '2026_27';
+
+      currentRegion = 'ewni';
+      regionEwniBtn.classList.add('active');
+      regionEwniBtn.setAttribute('aria-checked', 'true');
+      regionScotBtn.classList.remove('active');
+      regionScotBtn.setAttribute('aria-checked', 'false');
+
+      rentInput.value = '18000';
+      rentSlider.value = '18000';
+
+      expensesInput.value = '2500';
+      expensesSlider.value = '2500';
+
+      financeInput.value = '6000';
+      financeSlider.value = '6000';
+
+      otherInput.value = '45000';
+      otherSlider.value = '45000';
+
+      ownershipInput.value = '100';
+
+      // Reset preset active classes
+      document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+      document.querySelector('[data-rent="18000"]')?.classList.add('active');
+      document.querySelector('[data-expenses="2500"]')?.classList.add('active');
+      document.querySelector('[data-finance="6000"]')?.classList.add('active');
+      document.querySelector('[data-other="45000"]')?.classList.add('active');
+      document.querySelector('[data-ownership="100"]')?.classList.add('active');
+
+      updateCalculation();
+    });
+
+    // Initial Calculation Run
+    updateCalculation();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBuyToLetTaxCalculator);
+  } else {
+    initBuyToLetTaxCalculator();
+  }
+</script>
+
+<style>
+  /* Base Container */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-base);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-text-base);
+    gap: var(--space-2);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 170px;
+    flex-shrink: 0;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-7);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-subtle);
+  }
+
+  .currency-select {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    margin-top: var(--space-2);
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .preset-pills-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+  }
+
+  .preset-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 4px;
+  }
+
+  .preset-pill {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-border-hover, var(--color-border));
+  }
+
+  .preset-pill.active {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    margin-top: var(--space-1);
+  }
+
+  /* Toggle Pills Group */
+  .toggle-pill-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+
+  .toggle-pill {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    text-align: center;
+    transition: all var(--transition-fast);
+  }
+
+  .toggle-pill:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-primary-subtle);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  /* Advanced Options Accordion */
+  .advanced-section {
+    border-top: 1px dashed var(--color-border);
+    padding-top: var(--space-3);
+  }
+
+  .advanced-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: var(--space-2) 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .advanced-toggle-btn:hover {
+    color: var(--color-primary);
+  }
+
+  .advanced-panel {
+    padding: var(--space-3);
+    background-color: var(--color-bg-surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    margin-top: var(--space-2);
+  }
+
+  /* Warning / Info Callout Banner */
+  .callout-banner {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .callout-banner.warning {
+    background-color: rgba(234, 179, 8, 0.12);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    color: var(--color-text-base);
+  }
+
+  .callout-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .callout-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .callout-msg {
+    color: var(--color-text-muted);
+  }
+
+  /* Results Section Styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-1);
+  }
+
+  /* Hero Metric Box */
+  .hero-metric-box {
+    background: linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-base) 100%);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-metric-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: var(--space-2);
+  }
+
+  .hero-metric-value {
+    font-size: 2.3rem;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--color-primary);
+    font-family: var(--font-mono, monospace);
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    display: block;
+    margin-top: var(--space-2);
+  }
+
+  /* Dual Summary Value Cards (Responsive Stacking) */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .net-value-box {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .net-value-box.highlight-primary {
+    border-color: var(--color-primary-subtle);
+    background: linear-gradient(180deg, var(--color-primary-subtle) 0%, transparent 100%);
+  }
+
+  .net-value-box.highlight-success {
+    border-color: rgba(34, 197, 94, 0.25);
+    background: linear-gradient(180deg, rgba(34, 197, 94, 0.08) 0%, transparent 100%);
+  }
+
+  .net-box-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .net-box-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Key Metrics Grid (Rule 15 Responsive Wrapping) */
+  .metrics-grid-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+  }
+
+  .btlt-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .tile-sub {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Breakdown Table & Accordion */
+  .schedule-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-surface);
+    overflow: hidden;
+  }
+
+  .schedule-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+
+  .schedule-toggle-btn:hover {
+    background-color: var(--color-bg-base);
+  }
+
+  .chevron-icon {
+    transition: transform var(--transition-fast);
+  }
+
+  .schedule-wrapper {
+    padding: var(--space-3) var(--space-4) var(--space-4) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg-base);
+  }
+
+  .schedule-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .schedule-table th {
+    padding: var(--space-2) var(--space-3);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    border-bottom: 1.5px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .schedule-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .schedule-footnote {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin: var(--space-3) 0 0 0;
+    line-height: 1.4;
+  }
+
+  /* Verdict Card */
+  .verdict-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .verdict-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .verdict-badge {
+    background-color: var(--color-primary-subtle);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+  }
+
+  .verdict-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .verdict-desc {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+    font-style: italic;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 640px) {
+    .net-value-container {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-metric-value {
+      font-size: 1.85rem;
+    }
+
+    .input-label-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .input-symbol-wrapper {
+      width: 100%;
+    }
+
+    .btlt-metrics-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .btlt-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

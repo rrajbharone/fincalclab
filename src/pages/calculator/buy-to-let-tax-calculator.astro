@@ -1,0 +1,419 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BuyToLetTaxCalculator from '../../components/calculator/BuyToLetTaxCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Buy to Let Tax Calculator', item: '/calculator/buy-to-let-tax-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How is buy to let rental income taxed in the UK?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In the UK, individual residential landlords are taxed on their net rental profit (gross rental income minus allowable expenses). This rental profit is added to your other taxable income (such as salary or pensions) to determine your Income Tax band (20%, 40%, or 45% in England, Wales, and Northern Ireland; 19% to 48% in Scotland). Mortgage interest is not deducted from rental profit; instead, landlords receive a 20% basic rate tax reduction on their finance costs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Section 24 and how does mortgage interest tax relief work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Section 24 of the Finance (No. 2) Act 2015 phased out the ability for individual residential landlords to deduct mortgage interest as an allowable business expense. Instead, landlords receive a 20% basic-rate tax credit on the lowest of: (1) finance costs incurred in the year, (2) property business profits, or (3) adjusted total income exceeding the Personal Allowance. Higher-rate and additional-rate taxpayers still only receive relief at the 20% basic rate."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What expenses are allowable for a buy to let property?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Allowable expenses are revenue costs incurred wholly and exclusively for renting out the property. These include letting agent and property management fees, landlord insurance, routine repairs and maintenance (e.g., boiler servicing, repainting), safety gas and electrical certificates, ground rent, service charges, council tax or utility bills paid by the landlord, and legal or accounting fees for renewals and tax returns. Capital improvements that add value or extend the property are not deductible from rental income."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can mortgage capital repayments be deducted from rental income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Capital repayments on a repayment mortgage cannot be deducted as an expense or used for the 20% finance-cost tax credit. Only the pure interest portion of your monthly mortgage payment and associated arrangement or valuation fees qualify for Section 24 relief."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do buy to let landlords pay National Insurance on rental income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. In the UK, individual landlords holding residential buy-to-let properties do not pay National Insurance on rental profits. National Insurance only applies if your property letting is classified as a trade (such as a hotel, bed & breakfast, or commercial property development business)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does rental income affect the £100,000 Personal Allowance trap?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because Section 24 prevents deducting mortgage interest from gross rental profit, your total taxable income is higher. If your combined salary and net property profit exceeds £100,000, your tax-free Personal Allowance (£12,570) is reduced by £1 for every £2 of income over £100,000, creating an effective marginal tax rate of 60% (or 63% in Scotland) between £100,000 and £125,140."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is buy to let tax calculated in Scotland?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Scottish taxpayers pay Income Tax across six devolved tax bands: Starter (19%), Basic (20%), Intermediate (21%), Higher (42%), Advanced (45%), and Top (48%). However, the UK Section 24 finance-cost tax reduction is set at the UK basic rate of 20% for all UK regions, meaning Scottish landlords in the 42%, 45%, or 48% brackets face significant tax exposure on mortgaged buy to lets."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if my buy to let property makes a rental loss?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If your allowable property expenses exceed your gross rental income, you make a rental loss. Under UK tax law, property losses cannot normally be offset against your employment salary or other non-property income. Instead, the loss must be carried forward to offset against rental profits in future tax years."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is rental income taxed on a jointly owned buy to let property?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For properties owned jointly (e.g., between spouses or civil partners), HMRC defaults to treating the rental income and allowable expenses as split equally (50/50). If the actual beneficial ownership is unequal (e.g., 70/30) and you hold the property as tenants in common, you can submit HMRC Form 17 along with a declaration of trust to be taxed according to your actual ownership shares."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I set up a limited company for my buy to let property?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Holding buy to let properties in a Special Purpose Vehicle (SPV) limited company allows you to deduct 100% of mortgage interest as an allowable business expense against Corporation Tax (19% to 25%). However, moving existing properties into a company triggers Stamp Duty Land Tax (SDLT) and Capital Gains Tax (CGT), and mortgage interest rates for limited companies are often higher than individual mortgages. Consulting an independent tax advisor is essential."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "UK Buy to Let Tax Calculator",
+  "url": "https://fincalclab.com/calculator/buy-to-let-tax-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free UK Buy to Let Tax Calculator for 2026/27. Calculate landlord Income Tax, Section 24 mortgage interest relief, after-tax rental cash flow, and monthly profit.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "GBP"
+  }
+};
+---
+
+<Layout
+  title="UK Buy to Let Tax Calculator (2026/27) – Landlord Tax & Profit"
+  description="Calculate your UK Buy to Let Income Tax under Section 24 rules. See mortgage interest tax relief, after-tax rental profit, and monthly cash flow for 2026/27."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <BuyToLetTaxCalculator />
+
+    <!-- Educational SEO Guide Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Featured Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">UK Property &amp; Income Tax Planning</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Maximise Your Tax Efficiency Across Property &amp; Earnings</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Landlords with higher-rate taxable incomes can lower their overall tax burden and recover tapered Personal Allowances through pension contributions. Calculate how much tax relief you can reclaim on personal contributions using our <a href="/calculator/pension-tax-relief-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Pension Tax Relief Calculator</a>, explore workplace pre-tax benefits with the <a href="/calculator/salary-sacrifice-pension-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Sacrifice Pension Calculator</a>, or verify gross-to-net income conversions with the <a href="/calculator/reverse-tax-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Reverse Tax Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is a Buy to Let Tax Calculator?</h2>
+        <p>
+          A <strong>Buy to Let Tax Calculator</strong> is an essential financial tool designed for UK individual landlords. It calculates the exact Income Tax liability arising from residential rental property profits and determines your true <strong>after-tax rental cash flow</strong> on both an annual and monthly basis.
+        </p>
+        <p>
+          Unlike a simple rental yield calculator that only compares rent against purchase price, a dedicated landlord tax calculator accounts for the full intricacies of UK tax legislation. This includes the rules introduced under <strong>Section 24 of the Finance (No. 2) Act 2015</strong>, which radically changed how mortgage interest is treated for private individual landlords.
+        </p>
+
+        <h2>How Is Rental Income Taxed in the UK? (2026/27 Rules)</h2>
+        <p>
+          If you own residential property in your personal name in England, Wales, Northern Ireland, or Scotland, HMRC taxes your property income as part of your overall personal taxable earnings. The basic rules for the 2026/27 tax year (6 April 2026 to 5 April 2027) operate as follows:
+        </p>
+        <ol>
+          <li>
+            <strong>Calculate Gross Rental Income:</strong> The total rent received from your tenants during the 12-month tax year.
+          </li>
+          <li>
+            <strong>Deduct Allowable Expenses:</strong> Subtract your day-to-day revenue running costs (repairs, agent fees, insurance, safety certificates) to determine your <strong>Net Rental Profit</strong>.
+          </li>
+          <li>
+            <strong>Add to Other Taxable Income:</strong> Your net rental profit is added on top of your employment salary, self-employment profits, pensions, and savings income to determine your total taxable income.
+          </li>
+          <li>
+            <strong>Determine Tax Bands:</strong> Income Tax is calculated across the relevant bands for your region (Basic 20%, Higher 40%, Additional 45% in England/Wales/NI; 19% to 48% in Scotland).
+          </li>
+          <li>
+            <strong>Apply Section 24 Mortgage Relief:</strong> A 20% basic rate tax credit is applied against your total tax bill for qualifying residential finance costs, reducing your final payment to HMRC.
+          </li>
+        </ol>
+
+        <h2>How Mortgage Interest Affects Buy to Let Tax (Section 24 Explained)</h2>
+        <p>
+          Prior to April 2017, UK landlords could deduct 100% of their mortgage interest as a standard business expense before calculating taxable profit. Under that old system, if you collected £18,000 in rent, had £2,000 in repairs, and paid £6,000 in mortgage interest, your taxable profit was simply <strong>£10,000</strong>.
+        </p>
+        <p>
+          Under <strong>Section 24</strong>, mortgage interest and finance costs are <strong>strictly not deductible</strong> as an expense. Instead:
+        </p>
+        <ul>
+          <li>Your taxable rental profit in the example above is <strong>£16,000</strong> (£18,000 rent − £2,000 expenses).</li>
+          <li>This entire £16,000 is added to your other income and taxed at your marginal tax rate (e.g., 40% if you are a higher-rate taxpayer, generating £6,400 of gross tax).</li>
+          <li>HMRC then grants you a <strong>20% basic rate tax reduction</strong> on your finance costs: £6,000 × 20% = <strong>£1,200</strong> tax credit.</li>
+          <li>Your final tax on the rental income is £6,400 − £1,200 = <strong>£5,200</strong>.</li>
+        </ul>
+        <p>
+          Notice the dramatic impact: your real cash profit was £10,000 (£18,000 rent − £2,000 expenses − £6,000 mortgage), but your tax is £5,200, resulting in an effective tax rate of <strong>52% on your real cash profit</strong>! For higher-rate landlords with high loan-to-value mortgages, Section 24 can cause properties to make a pre-tax profit but an after-tax loss.
+        </p>
+
+        <h2>Allowable Rental Property Expenses</h2>
+        <p>
+          To ensure you do not overpay tax, it is vital to record every allowable expense. Under HMRC guidelines, an expense is allowable if it is incurred <em>"wholly and exclusively"</em> for the purposes of renting out the property.
+        </p>
+        <h3>What You Can Deduct:</h3>
+        <ul>
+          <li><strong>Letting Agent &amp; Management Fees:</strong> Tenant-find fees, full management commissions, inventory check-in/check-out fees.</li>
+          <li><strong>Landlord Insurance:</strong> Buildings insurance, contents insurance, rent guarantee policies, public liability cover.</li>
+          <li><strong>Repairs &amp; Maintenance:</strong> Fixing broken boilers, repairing roof leaks, repainting walls, mending windows, pest control, and gardening.</li>
+          <li><strong>Safety &amp; Compliance Checks:</strong> Annual Gas Safety certificates (CP12), Electrical Installation Condition Reports (EICR), EPC energy assessments, smoke and CO alarm testing.</li>
+          <li><strong>Ground Rent &amp; Service Charges:</strong> Ongoing leasehold charges payable to freeholders or building factors.</li>
+          <li><strong>Council Tax &amp; Utilities:</strong> Any rates paid by the landlord during void periods between tenancies.</li>
+          <li><strong>Professional Fees:</strong> Accountancy fees for preparing your landlord tax return, legal fees for lease renewals or tenancy disputes.</li>
+        </ul>
+        <h3>What You Cannot Deduct as a Revenue Expense:</h3>
+        <ul>
+          <li><strong>Mortgage Capital Repayments:</strong> The capital portion of a repayment mortgage is an asset acquisition, not an expense.</li>
+          <li><strong>Capital Improvements:</strong> Adding an extension, converting a loft, or substantially upgrading a bathroom beyond like-for-like replacement cannot be deducted from rental income. These costs are preserved and deducted from <strong>Capital Gains Tax (CGT)</strong> when the property is sold.</li>
+          <li><strong>Personal Expenses:</strong> Travel costs that include personal leisure, clothing, or general home broadband.</li>
+        </ul>
+
+        <h2>Rental Profit vs. Taxable Rental Income</h2>
+        <p>
+          One of the most confusing aspects for new landlords is distinguishing between <strong>Cash Profit</strong>, <strong>Taxable Property Profit</strong>, and <strong>Tax Attributable to Rent</strong>:
+        </p>
+        <div style="overflow-x: auto; margin: var(--space-4) 0;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-border); text-align: left;">
+                <th style="padding: 10px;">Metric</th>
+                <th style="padding: 10px;">Calculation Formula</th>
+                <th style="padding: 10px;">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Gross Rental Income</td>
+                <td style="padding: 10px;">Total tenant payments received</td>
+                <td style="padding: 10px; color: var(--color-text-muted);">Top-line turnover</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Taxable Rental Profit</td>
+                <td style="padding: 10px;">Gross Rent − Allowable Expenses</td>
+                <td style="padding: 10px; color: var(--color-text-muted);">Added to HMRC taxable income</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Section 24 Tax Credit</td>
+                <td style="padding: 10px;">20% × Qualifying Finance Costs</td>
+                <td style="padding: 10px; color: var(--color-text-muted);">Direct reduction of income tax liability</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Net After-Tax Profit</td>
+                <td style="padding: 10px;">Rent − Expenses − Mortgage Interest − Tax</td>
+                <td style="padding: 10px; color: var(--color-text-muted);">Real cash remaining in your bank account</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Buy to Let Tax for Higher-Rate Taxpayers &amp; The £100k Taper Trap</h2>
+        <p>
+          Section 24 has a severe compounding effect on landlords whose total income approaches or exceeds key UK tax thresholds:
+        </p>
+        <h3>1. The Higher-Rate Threshold (£50,270)</h3>
+        <p>
+          Even if your salary is £40,000 (well within the basic rate), a net rental profit of £15,000 pushes your total taxable income to <strong>£55,000</strong>. This forces £4,730 of your rental profit into the 40% higher-rate tax bracket. Because you only receive a 20% credit on mortgage interest, you pay 40% tax on the top slice of rental income while only getting 20% relief on the financing cost.
+        </p>
+        <h3>2. The £100,000 to £125,140 Personal Allowance Trap</h3>
+        <p>
+          In the UK, once your adjusted net income exceeds £100,000, you lose £1 of your £12,570 tax-free Personal Allowance for every £2 of income above £100,000. Under Section 24, because mortgage interest is no longer deducted from gross rental income, landlords frequently find themselves artificially pushed into the £100k–£125k bracket. In this zone, the effective marginal rate reaches an extraordinary <strong>60%</strong> (40% Income Tax + 20% loss of allowance).
+        </p>
+
+        <h2>Scottish Buy to Let Tax Rules</h2>
+        <p>
+          Scotland has six devolved income tax bands for non-savings, non-dividend income in 2026/27:
+        </p>
+        <ul>
+          <li><strong>Starter Rate (19%):</strong> £12,571 to £15,397</li>
+          <li><strong>Basic Rate (20%):</strong> £15,398 to £27,490</li>
+          <li><strong>Intermediate Rate (21%):</strong> £27,491 to £43,662</li>
+          <li><strong>Higher Rate (42%):</strong> £43,663 to £75,000</li>
+          <li><strong>Advanced Rate (45%):</strong> £75,001 to £125,140</li>
+          <li><strong>Top Rate (48%):</strong> Over £125,140</li>
+        </ul>
+        <p>
+          <strong>Crucial Scottish Rule:</strong> While Scottish tax rates reach 42%, 45%, and 48%, the Section 24 mortgage interest relief remains fixed at the <strong>UK basic rate of 20%</strong>. This creates an even steeper tax burden for Scottish residential landlords than landlords in England and Wales.
+        </p>
+
+        <h2>Realistic Buy to Let Tax Examples</h2>
+
+        <h3>Example 1: Basic-Rate Landlord (England)</h3>
+        <ul>
+          <li><strong>Annual Salary:</strong> £30,000</li>
+          <li><strong>Rental Income:</strong> £18,000</li>
+          <li><strong>Allowable Expenses:</strong> £2,000</li>
+          <li><strong>Mortgage Interest:</strong> £5,000</li>
+        </ul>
+        <p>
+          <strong>Calculation:</strong> Net rental profit is £16,000 (£18k − £2k). Total taxable income is £46,000 (£30k + £16k). Since £46,000 is within the £50,270 basic-rate threshold, rental profit is taxed at 20%: £16,000 × 20% = £3,200 gross tax. The Section 24 mortgage relief is £5,000 × 20% = £1,000. Net tax on rent is £3,200 − £1,000 = <strong>£2,200</strong>. Net after-tax cash profit = £18,000 − £2,000 − £5,000 − £2,200 = <strong>£8,800 per year</strong> (£733.33/month).
+        </p>
+
+        <h3>Example 2: Higher-Rate Landlord (England)</h3>
+        <ul>
+          <li><strong>Annual Salary:</strong> £65,000 (already in the 40% bracket)</li>
+          <li><strong>Rental Income:</strong> £24,000</li>
+          <li><strong>Allowable Expenses:</strong> £3,000</li>
+          <li><strong>Mortgage Interest:</strong> £8,000</li>
+        </ul>
+        <p>
+          <strong>Calculation:</strong> Net rental profit is £21,000 (£24k − £3k). Because salary is already £65,000, the entire £21,000 is taxed at 40%: £21,000 × 40% = £8,400 gross tax. The Section 24 tax reduction is £8,000 × 20% = £1,600. Net tax on rent is £8,400 − £1,600 = <strong>£6,800</strong>. Net after-tax cash profit = £24,000 − £3,000 − £8,000 − £6,800 = <strong>£6,200 per year</strong> (£516.67/month).
+        </p>
+
+        <h3>Example 3: Landlord Without Mortgage (Unencumbered)</h3>
+        <ul>
+          <li><strong>Annual Salary:</strong> £40,000</li>
+          <li><strong>Rental Income:</strong> £15,000</li>
+          <li><strong>Allowable Expenses:</strong> £2,000</li>
+          <li><strong>Mortgage Interest:</strong> £0</li>
+        </ul>
+        <p>
+          <strong>Calculation:</strong> Net rental profit is £13,000. Total income is £53,000. The basic-rate portion (£50,270 − £40,000 = £10,270) is taxed at 20% (£2,054). The remaining £2,730 crosses into higher rate and is taxed at 40% (£1,092). Total tax on rental income is <strong>£3,146</strong>. Net after-tax profit is £15,000 − £2,000 − £3,146 = <strong>£9,854 per year</strong> (£821.17/month).
+        </p>
+
+        <h2>Common Landlord Tax Mistakes to Avoid</h2>
+        <ol>
+          <li>
+            <strong>Deducting Full Mortgage Payments:</strong> Deducting capital mortgage repayments is strictly prohibited. Only pure interest qualifies for the 20% tax reduction.
+          </li>
+          <li>
+            <strong>Claiming Capital Improvements as Repairs:</strong> Replacing a kitchen with standard like-for-like units is a repair (allowable against income tax); knocking down walls, building extensions, or installing high-end luxury upgrades is capital expenditure (only deductible from Capital Gains Tax on sale).
+          </li>
+          <li>
+            <strong>Failing to Declare Rental Losses:</strong> If your expenses exceed rent, you must still file a Self Assessment return to register the loss. Unregistered losses cannot be carried forward to offset future profits.
+          </li>
+          <li>
+            <strong>Ignoring Joint Ownership Optimization:</strong> If a property is owned jointly between a higher-rate spouse and a basic-rate or non-earning spouse, submitting HMRC Form 17 (along with a declaration of trust) can shift beneficial income to the lower earner, potentially saving thousands in Income Tax.
+          </li>
+          <li>
+            <strong>Overlooking the £1,000 Property Income Allowance:</strong> If your gross property income is under £1,000 per tax year, it is completely tax-free and does not need to be reported to HMRC.
+          </li>
+        </ol>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion-group">
+          {faqSchema.mainEntity.map((faq) => (
+            <div class="faq-item" style="margin-bottom: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-surface);">
+              <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700; color: var(--color-text-base);">{faq.name}</h3>
+              <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">{faq.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Financial Disclaimer Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-base);">
+          <h4 style="margin: 0 0 var(--space-2) 0; font-size: 0.95rem; font-weight: 700; color: var(--color-text-base);">Important Financial &amp; Tax Disclaimer</h4>
+          <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
+            This calculator provides educational estimates based on UK tax rates and Section 24 residential finance relief rules for the selected tax years (2026/27, 2025/26, and 2024/25). Actual tax liabilities depend on your complete income, allowances, property ownership structures, allowable expense substantiation, student loan repayments, and individual tax circumstances. This tool does not constitute official accounting, tax, or legal advice. UK property owners should consult a qualified chartered accountant (ICAEW/ACCA) or tax advisor before making financial decisions.
+          </p>
+        </div>
+
+        <!-- Related Tools Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-surface);">
+          <h3 style="margin: 0 0 var(--space-3) 0; font-size: 1.05rem; font-weight: 700;">Related Tax &amp; Income Calculators</h3>
+          <ul style="margin: 0; padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2);">
+            <li><a href="/calculator/pension-tax-relief-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Pension Tax Relief Calculator</a> — Calculate basic and higher rate tax relief on personal SIPP contributions to reduce overall tax exposure.</li>
+            <li><a href="/calculator/salary-sacrifice-pension-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Sacrifice Pension Calculator</a> — Model workplace pension salary sacrifice to lower taxable earnings and employee National Insurance.</li>
+            <li><a href="/calculator/reverse-tax-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Reverse Tax Calculator</a> — Determine gross salary required from a targeted net take-home pay figure.</li>
+            <li><a href="/calculator/cap-rate-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Cap Rate Calculator</a> — Evaluate property capitalization rates, net operating income, and commercial real estate returns.</li>
+            <li><a href="/calculator/salary-percentage-increase-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Percentage Increase Calculator</a> — Calculate how pay raises and bonuses affect your overall income bracket.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

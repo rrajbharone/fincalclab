@@ -1,0 +1,1608 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Super Salary Sacrifice Calculator (Australia)"
+  description="Calculate how salary sacrificing into superannuation reduces your Australian income tax and Medicare levy, affects take-home pay, and boosts your retirement balance."
+  category="Superannuation & Tax"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="super-sacrifice-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">1. Salary &amp; Tax Year</h3>
+
+      <!-- Gross Annual Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="au-salary-input">Gross Annual Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="au-salary-input" min="0" max="2000000" step="1000" value="100000" aria-label="Gross Annual Salary" />
+          </div>
+        </div>
+        <input type="range" id="au-salary-slider" min="0" max="300000" step="1000" value="100000" class="slider-range" aria-label="Salary Slider" />
+        
+        <!-- Salary Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-salary="60000">$60k</button>
+          <button type="button" class="preset-pill" data-salary="85000">$85k</button>
+          <button type="button" class="preset-pill active" data-salary="100000">$100k</button>
+          <button type="button" class="preset-pill" data-salary="130000">$130k</button>
+          <button type="button" class="preset-pill" data-salary="160000">$160k</button>
+          <button type="button" class="preset-pill" data-salary="200000">$200k</button>
+        </div>
+        <span class="input-subtext">Your base annual salary before income tax and before salary sacrifice.</span>
+      </div>
+
+      <!-- Tax Year Selector -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="au-tax-year-select">Tax Year</label>
+          <select id="au-tax-year-select" class="currency-select" aria-label="Select Australian Tax Year">
+            <option value="2025_26" selected>2025–26 (Current: Revised Stage 3 &amp; 12% SG)</option>
+            <option value="2024_25">2024–25 (Revised Stage 3 &amp; 11.5% SG)</option>
+            <option value="2023_24">2023–24 (Historical: Pre-Stage 3 &amp; 11% SG)</option>
+          </select>
+        </div>
+        <span class="input-subtext" id="au-tax-year-subtext">ATO individual resident tax brackets with 12.0% Super Guarantee and $30,000 concessional cap.</span>
+      </div>
+
+      <!-- Pay Frequency Selector -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <div class="input-label-row">
+          <label for="au-pay-freq-select">Pay Frequency (for Take-Home Pay)</label>
+          <select id="au-pay-freq-select" class="currency-select" aria-label="Select Pay Frequency">
+            <option value="annual" selected>Annual (per year)</option>
+            <option value="monthly">Monthly (12 pays/year)</option>
+            <option value="fortnightly">Fortnightly (26 pays/year)</option>
+            <option value="weekly">Weekly (52 pays/year)</option>
+          </select>
+        </div>
+        <span class="input-subtext">Used to display before-and-after take-home pay for each pay packet.</span>
+      </div>
+    </div>
+
+    <!-- Step 2: Salary Sacrifice Amount -->
+    <div class="input-section" style="margin-top: var(--space-4);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-border);">
+        <h3 class="section-title" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">2. Salary Sacrifice to Super</h3>
+        
+        <!-- Toggle Dollar vs Percent -->
+        <div class="sacrifice-toggle-group" role="radiogroup" aria-label="Salary sacrifice input mode">
+          <button type="button" class="toggle-mode-btn active" id="btn-mode-dollar" data-mode="dollar" aria-checked="true">Dollar ($)</button>
+          <button type="button" class="toggle-mode-btn" id="btn-mode-percent" data-mode="percent" aria-checked="false">Percent (%)</button>
+        </div>
+      </div>
+
+      <!-- Dollar Input Group -->
+      <div id="group-sacrifice-dollar" class="input-group">
+        <div class="input-label-row">
+          <label for="au-sacrifice-val">Annual Amount Sacrificed</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" id="au-sacrifice-val" min="0" max="100000" step="500" value="10000" aria-label="Annual Salary Sacrifice in Dollars" />
+          </div>
+        </div>
+        <input type="range" id="au-sacrifice-slider" min="0" max="35000" step="500" value="10000" class="slider-range" aria-label="Sacrifice Dollar Slider" />
+        
+        <!-- Dollar Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-sac-dollar="0">$0</button>
+          <button type="button" class="preset-pill" data-sac-dollar="2500">$2.5k</button>
+          <button type="button" class="preset-pill" data-sac-dollar="5000">$5k</button>
+          <button type="button" class="preset-pill active" data-sac-dollar="10000">$10k</button>
+          <button type="button" class="preset-pill" data-sac-dollar="15000">$15k</button>
+          <button type="button" class="preset-pill" data-sac-dollar="20000">$20k</button>
+        </div>
+        <span class="input-subtext">Pre-tax gross salary diverted directly into your super fund each year.</span>
+      </div>
+
+      <!-- Percent Input Group (Hidden by default) -->
+      <div id="group-sacrifice-percent" class="input-group hidden">
+        <div class="input-label-row">
+          <label for="au-sacrifice-pct-val">Percentage of Salary Sacrificed</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="au-sacrifice-pct-val" min="0" max="100" step="0.5" value="10.0" aria-label="Salary Sacrifice Percentage" style="text-align: left;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="au-sacrifice-pct-slider" min="0" max="40" step="0.5" value="10.0" class="slider-range" aria-label="Sacrifice Percentage Slider" />
+
+        <!-- Percent Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-sac-pct="0">0%</button>
+          <button type="button" class="preset-pill" data-sac-pct="3">3%</button>
+          <button type="button" class="preset-pill" data-sac-pct="5">5%</button>
+          <button type="button" class="preset-pill active" data-sac-pct="10">10%</button>
+          <button type="button" class="preset-pill" data-sac-pct="15">15%</button>
+        </div>
+        <span class="input-subtext">Equivalent to <strong id="lbl-pct-equiv">$10,000.00 / year</strong> based on current gross salary.</span>
+      </div>
+    </div>
+
+    <!-- Step 3: Optional Advanced / Employer Super Cap Accordion -->
+    <div class="advanced-section" style="margin-top: var(--space-4);">
+      <button type="button" class="advanced-toggle-btn" id="au-advanced-toggle" aria-expanded="false" aria-controls="au-advanced-panel">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"/></svg>
+          Concessional Cap &amp; Employer Super (Optional)
+        </span>
+        <svg class="chevron-icon" id="au-advanced-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div class="advanced-panel hidden" id="au-advanced-panel">
+        <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0 0 var(--space-3) 0; line-height: 1.45;">
+          Employer Super Guarantee (SG) counts toward your annual concessional contributions cap ($30,000 for 2025–26). By default, this calculator automatically estimates employer SG (12.0% of salary). You can enter a custom amount if your employer contributes a different figure.
+        </p>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="au-employer-super-input">Employer Super Guarantee ($ / year)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="au-employer-super-input" min="0" max="100000" step="500" placeholder="Auto: 12% ($12,000)" aria-label="Employer Super Contribution" />
+            </div>
+          </div>
+          <span class="input-subtext">Leave blank to use official SG rate (12.0% for 2025–26 = <strong id="lbl-auto-sg">$12,000.00</strong>).</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Button -->
+    <div style="margin-top: var(--space-4);">
+      <Button variant="secondary" size="sm" id="au-sacrifice-reset" class="w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset Calculator
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+
+    <!-- Primary Hero Card: Estimated Tax Saving -->
+    <Card elevation="md" class="primary-hero-card">
+      <div class="hero-top-row">
+        <span class="hero-label">Estimated Tax Saving</span>
+        <span class="hero-badge" id="au-tax-rate-badge">32.0% Marginal Rate</span>
+      </div>
+      <div class="hero-main-metric" id="res-tax-saving">$3,200.00</div>
+      <p class="hero-subtext" id="res-hero-subtext">
+        Combined income tax and Medicare levy saved annually
+      </p>
+
+      <!-- Sub-Hero Highlights -->
+      <div class="sub-hero-container">
+        <div class="sub-hero-grid">
+          <div class="sub-hero-item">
+            <span class="sub-hero-label">Take-Home Pay Reduction</span>
+            <span class="sub-hero-val text-danger" id="res-takehome-drop">−$6,800.00</span>
+            <span class="sub-hero-desc" id="res-takehome-drop-sub">Effective out-of-pocket cost</span>
+          </div>
+          <div class="sub-hero-item">
+            <span class="sub-hero-label">Added to Super (Net)</span>
+            <span class="sub-hero-val text-success" id="res-super-net">+$8,500.00</span>
+            <span class="sub-hero-desc">After 15% super fund tax</span>
+          </div>
+        </div>
+      </div>
+    </Card>
+
+    <!-- Super Salary Sacrifice Balance Bar -->
+    <div class="tradeoff-card">
+      <div class="tradeoff-header">
+        <span class="tradeoff-title">The Salary Sacrifice Trade-off</span>
+      </div>
+      <div class="tradeoff-grid">
+        <div class="tradeoff-item">
+          <span class="tradeoff-lbl">Gross Sacrificed:</span>
+          <strong class="tradeoff-val text-primary" id="tradeoff-gross">$10,000.00</strong>
+        </div>
+        <div class="tradeoff-item">
+          <span class="tradeoff-lbl">Tax Saved:</span>
+          <strong class="tradeoff-val text-success" id="tradeoff-tax-saved">+$3,200.00</strong>
+        </div>
+        <div class="tradeoff-item">
+          <span class="tradeoff-lbl">Take-Home Drop:</span>
+          <strong class="tradeoff-val text-danger" id="tradeoff-takehome-drop">−$6,800.00</strong>
+        </div>
+        <div class="tradeoff-item highlight-tradeoff">
+          <span class="tradeoff-lbl">Net Wealth Boost:</span>
+          <strong class="tradeoff-val text-success" id="tradeoff-net-boost">+$1,700.00</strong>
+        </div>
+      </div>
+      <div class="tradeoff-note">
+        You give up <strong>$6,800.00</strong> in take-home pay to deposit <strong>$8,500.00</strong> net into your superannuation—creating a <strong>$1,700.00</strong> immediate tax benefit!
+      </div>
+    </div>
+
+    <!-- Concessional Cap Alert Banner (Conditional) -->
+    <div id="au-cap-warning" class="status-banner warning-banner hidden">
+      <div class="status-banner-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </div>
+      <div class="status-banner-content" id="au-cap-warning-msg">
+        <!-- Dynamically injected cap warning -->
+      </div>
+    </div>
+
+    <!-- Division 293 Warning Banner (Conditional) -->
+    <div id="au-div293-warning" class="status-banner info-banner hidden">
+      <div class="status-banner-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      </div>
+      <div class="status-banner-content" id="au-div293-msg">
+        <strong>Division 293 Advisory:</strong> Your combined taxable income and concessional contributions exceed $250,000. You may be subject to Division 293 tax (an additional 15% tax on excess concessional contributions above $250,000). Even with Division 293, salary sacrifice generally delivers a 17% tax benefit compared to the top 47% marginal rate.
+      </div>
+    </div>
+
+    <!-- Comparison Table: Without vs. With Salary Sacrifice -->
+    <div class="table-card">
+      <div class="table-header-row">
+        <div>
+          <h4 class="table-title">Before vs. After Salary Sacrifice Comparison</h4>
+          <span class="table-sub">Detailed breakdown of income tax, Medicare levy, take-home pay, and super.</span>
+        </div>
+      </div>
+
+      <div class="table-responsive-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: left;">Component</th>
+              <th scope="col" style="text-align: right;">Without Sacrifice</th>
+              <th scope="col" style="text-align: right;">With Sacrifice</th>
+              <th scope="col" style="text-align: right;">Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 600;">Gross Annual Salary</td>
+              <td style="text-align: right;" id="tbl-gross-without">$100,000.00</td>
+              <td style="text-align: right;" id="tbl-gross-with">$100,000.00</td>
+              <td style="text-align: right; color: var(--color-text-muted);">$0.00</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 600;">Salary Sacrificed to Super</td>
+              <td style="text-align: right;">$0.00</td>
+              <td style="text-align: right; color: var(--color-primary); font-weight: 600;" id="tbl-sacrificed">$10,000.00</td>
+              <td style="text-align: right; color: var(--color-primary); font-weight: 600;" id="tbl-sac-diff">+$10,000.00</td>
+            </tr>
+            <tr style="background: rgba(0, 0, 0, 0.015);">
+              <td style="font-weight: 600;">Taxable Salary (ATO)</td>
+              <td style="text-align: right;" id="tbl-taxable-without">$100,000.00</td>
+              <td style="text-align: right; font-weight: 600;" id="tbl-taxable-with">$90,000.00</td>
+              <td style="text-align: right; color: var(--color-success); font-weight: 600;" id="tbl-taxable-diff">−$10,000.00</td>
+            </tr>
+            <tr>
+              <td>Estimated Income Tax</td>
+              <td style="text-align: right;" id="tbl-tax-without">$20,788.00</td>
+              <td style="text-align: right;" id="tbl-tax-with">$17,788.00</td>
+              <td style="text-align: right; color: var(--color-success); font-weight: 600;" id="tbl-tax-diff">−$3,000.00</td>
+            </tr>
+            <tr>
+              <td>Medicare Levy (2%)</td>
+              <td style="text-align: right;" id="tbl-medicare-without">$2,000.00</td>
+              <td style="text-align: right;" id="tbl-medicare-with">$1,800.00</td>
+              <td style="text-align: right; color: var(--color-success); font-weight: 600;" id="tbl-medicare-diff">−$200.00</td>
+            </tr>
+            <tr style="font-weight: 600; border-top: 2px solid var(--color-border);">
+              <td>Total Tax &amp; Medicare Paid</td>
+              <td style="text-align: right;" id="tbl-total-tax-without">$22,788.00</td>
+              <td style="text-align: right;" id="tbl-total-tax-with">$19,588.00</td>
+              <td style="text-align: right; color: var(--color-success); font-weight: 700;" id="tbl-total-tax-diff">−$3,200.00</td>
+            </tr>
+            <tr style="background: rgba(16, 185, 129, 0.04); font-weight: 700;">
+              <td>Estimated Take-Home Pay</td>
+              <td style="text-align: right;" id="tbl-takehome-without">$77,212.00</td>
+              <td style="text-align: right;" id="tbl-takehome-with">$70,412.00</td>
+              <td style="text-align: right; color: var(--color-danger);" id="tbl-takehome-diff">−$6,800.00</td>
+            </tr>
+            <tr id="row-takehome-periodic" style="font-size: 0.78rem; color: var(--color-text-muted);">
+              <td>Take-Home per Pay (<span id="lbl-tbl-freq">Annual</span>)</td>
+              <td style="text-align: right;" id="tbl-freq-without">$77,212.00</td>
+              <td style="text-align: right;" id="tbl-freq-with">$70,412.00</td>
+              <td style="text-align: right; color: var(--color-danger);" id="tbl-freq-diff">−$6,800.00</td>
+            </tr>
+            <tr style="border-top: 2px solid var(--color-border);">
+              <td style="font-weight: 600;">Super from Salary Sacrifice (Gross)</td>
+              <td style="text-align: right;">$0.00</td>
+              <td style="text-align: right; color: var(--color-primary); font-weight: 600;" id="tbl-super-gross">$10,000.00</td>
+              <td style="text-align: right; color: var(--color-primary); font-weight: 600;" id="tbl-super-gross-diff">+$10,000.00</td>
+            </tr>
+            <tr>
+              <td>Super Fund Contributions Tax (15%)</td>
+              <td style="text-align: right;">$0.00</td>
+              <td style="text-align: right; color: var(--color-danger);" id="tbl-super-tax">−$1,500.00</td>
+              <td style="text-align: right; color: var(--color-danger);" id="tbl-super-tax-diff">−$1,500.00</td>
+            </tr>
+            <tr style="background: rgba(37, 99, 235, 0.04); font-weight: 700;">
+              <td>Net Added to Superannuation</td>
+              <td style="text-align: right;">$0.00</td>
+              <td style="text-align: right; color: var(--color-success);" id="tbl-super-net">+$8,500.00</td>
+              <td style="text-align: right; color: var(--color-success);" id="tbl-super-net-diff">+$8,500.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Responsive 8-Tile Metrics Grid (Rule 15 Responsive) -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <span class="metric-label">Gross Salary</span>
+        <span class="metric-val" id="tile-gross-salary">$100,000</span>
+        <span class="metric-sub">Before salary sacrifice</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Salary Sacrificed</span>
+        <span class="metric-val text-primary" id="tile-sacrificed">$10,000</span>
+        <span class="metric-sub" id="tile-sacrificed-sub">Pre-tax into super</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">New Taxable Salary</span>
+        <span class="metric-val" id="tile-taxable-salary">$90,000</span>
+        <span class="metric-sub">Taxed by ATO</span>
+      </div>
+
+      <div class="metric-tile highlight-tile">
+        <span class="metric-label">Estimated Tax Saved</span>
+        <span class="metric-val text-success" id="tile-tax-saved">$3,200</span>
+        <span class="metric-sub" id="tile-tax-saved-sub">Income tax &amp; Medicare</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Take-Home Reduction</span>
+        <span class="metric-val text-danger" id="tile-takehome-drop">−$6,800</span>
+        <span class="metric-sub" id="tile-takehome-drop-sub">Effective annual cost</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Net Super Credited</span>
+        <span class="metric-val text-success" id="tile-net-super">+$8,500</span>
+        <span class="metric-sub">After 15% fund tax</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Total Concessional Super</span>
+        <span class="metric-val" id="tile-total-concessional">$22,000</span>
+        <span class="metric-sub" id="tile-concessional-sub">Cap: $30,000 / yr</span>
+      </div>
+
+      <div class="metric-tile highlight-tile">
+        <span class="metric-label">Net Annual Wealth Boost</span>
+        <span class="metric-val text-success" id="tile-net-boost">+$1,700</span>
+        <span class="metric-sub">Net super − take-home cost</span>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict Summary -->
+    <div class="verdict-container">
+      <Card elevation="sm" class="verdict-card verdict-info">
+        <div class="verdict-header">
+          <div class="verdict-badge">ATO Tax Summary</div>
+          <span class="verdict-title">How Salary Sacrifice Works For You</span>
+        </div>
+        <p class="verdict-desc" id="res-verdict-text">
+          Salary sacrificing <strong>$10,000.00</strong> of your <strong>$100,000.00</strong> salary reduces your taxable income to <strong>$90,000.00</strong>, saving you <strong>$3,200.00</strong> in income tax and Medicare levy. Your take-home pay decreases by <strong>$6,800.00</strong> per year, while your super balance increases by <strong>$8,500.00</strong> (after the 15% super fund tax), resulting in a net wealth advantage of <strong>$1,700.00</strong>.
+        </p>
+      </Card>
+    </div>
+
+    <!-- Australia Statutory Disclaimer -->
+    <div class="disclaimer-text">
+      <strong>Australian Tax &amp; Superannuation Disclaimer:</strong> This calculator provides an estimate based on the information entered and current Australian Taxation Office (ATO) and superannuation rules for the selected tax year. Actual tax, Medicare levy, super contributions, and Division 293 outcomes may vary depending on your personal circumstances, tax offsets (such as LITO), private health insurance status, and HECS/HELP repayments. This calculator does not provide financial or taxation advice. Check the latest ATO guidance or speak with a licensed Australian financial planner or registered tax agent for advice tailored to your personal situation.
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Centralized Australian Tax Configuration
+  interface TaxBracket {
+    min: number;
+    max: number | null;
+    rate: number;
+    baseTax: number;
+  }
+
+  interface TaxYearConfig {
+    label: string;
+    year: string;
+    sgRate: number;
+    concessionalCap: number;
+    div293Threshold: number;
+    div293Rate: number;
+    medicareRate: number;
+    medicareLowIncomeThreshold: number;
+    medicarePhaseInThreshold: number;
+    superTaxRate: number;
+    brackets: TaxBracket[];
+  }
+
+  const AU_TAX_CONFIGS: Record<string, TaxYearConfig> = {
+    '2025_26': {
+      label: '2025–26 (Current: Revised Stage 3 & 12% SG)',
+      year: '2025_26',
+      sgRate: 0.12,
+      concessionalCap: 30000,
+      div293Threshold: 250000,
+      div293Rate: 0.15,
+      medicareRate: 0.02,
+      medicareLowIncomeThreshold: 26000,
+      medicarePhaseInThreshold: 32500,
+      superTaxRate: 0.15,
+      brackets: [
+        { min: 0, max: 18200, rate: 0.0, baseTax: 0 },
+        { min: 18200, max: 45000, rate: 0.16, baseTax: 0 },
+        { min: 45000, max: 135000, rate: 0.30, baseTax: 4288 },
+        { min: 135000, max: 190000, rate: 0.37, baseTax: 31288 },
+        { min: 190000, max: null, rate: 0.45, baseTax: 51638 }
+      ]
+    },
+    '2024_25': {
+      label: '2024–25 (Revised Stage 3 & 11.5% SG)',
+      year: '2024_25',
+      sgRate: 0.115,
+      concessionalCap: 30000,
+      div293Threshold: 250000,
+      div293Rate: 0.15,
+      medicareRate: 0.02,
+      medicareLowIncomeThreshold: 26000,
+      medicarePhaseInThreshold: 32500,
+      superTaxRate: 0.15,
+      brackets: [
+        { min: 0, max: 18200, rate: 0.0, baseTax: 0 },
+        { min: 18200, max: 45000, rate: 0.16, baseTax: 0 },
+        { min: 45000, max: 135000, rate: 0.30, baseTax: 4288 },
+        { min: 135000, max: 190000, rate: 0.37, baseTax: 31288 },
+        { min: 190000, max: null, rate: 0.45, baseTax: 51638 }
+      ]
+    },
+    '2023_24': {
+      label: '2023–24 (Historical: Pre-Stage 3 & 11% SG)',
+      year: '2023_24',
+      sgRate: 0.11,
+      concessionalCap: 27500,
+      div293Threshold: 250000,
+      div293Rate: 0.15,
+      medicareRate: 0.02,
+      medicareLowIncomeThreshold: 24276,
+      medicarePhaseInThreshold: 30345,
+      superTaxRate: 0.15,
+      brackets: [
+        { min: 0, max: 18200, rate: 0.0, baseTax: 0 },
+        { min: 18200, max: 45000, rate: 0.19, baseTax: 0 },
+        { min: 45000, max: 120000, rate: 0.325, baseTax: 5092 },
+        { min: 120000, max: 180000, rate: 0.37, baseTax: 29467 },
+        { min: 180000, max: null, rate: 0.45, baseTax: 51667 }
+      ]
+    }
+  };
+
+  function calculateIncomeTax(taxableIncome: number, brackets: TaxBracket[]): number {
+    if (taxableIncome <= 18200) return 0;
+    for (let i = brackets.length - 1; i >= 0; i--) {
+      const b = brackets[i];
+      if (taxableIncome > b.min) {
+        return b.baseTax + (taxableIncome - b.min) * b.rate;
+      }
+    }
+    return 0;
+  }
+
+  function calculateMedicareLevy(taxableIncome: number, config: TaxYearConfig): number {
+    if (taxableIncome <= config.medicareLowIncomeThreshold) {
+      return 0;
+    }
+    if (taxableIncome <= config.medicarePhaseInThreshold) {
+      return (taxableIncome - config.medicareLowIncomeThreshold) * 0.10;
+    }
+    return taxableIncome * config.medicareRate;
+  }
+
+  function initAuSalarySacrificeCalculator() {
+    const salaryInput = document.getElementById('au-salary-input') as HTMLInputElement;
+    const salarySlider = document.getElementById('au-salary-slider') as HTMLInputElement;
+
+    const taxYearSelect = document.getElementById('au-tax-year-select') as HTMLSelectElement;
+    const taxYearSubtext = document.getElementById('au-tax-year-subtext');
+    const payFreqSelect = document.getElementById('au-pay-freq-select') as HTMLSelectElement;
+
+    const btnModeDollar = document.getElementById('btn-mode-dollar');
+    const btnModePercent = document.getElementById('btn-mode-percent');
+    const groupDollar = document.getElementById('group-sacrifice-dollar');
+    const groupPercent = document.getElementById('group-sacrifice-percent');
+
+    const sacrificeVal = document.getElementById('au-sacrifice-val') as HTMLInputElement;
+    const sacrificeSlider = document.getElementById('au-sacrifice-slider') as HTMLInputElement;
+
+    const sacrificePctVal = document.getElementById('au-sacrifice-pct-val') as HTMLInputElement;
+    const sacrificePctSlider = document.getElementById('au-sacrifice-pct-slider') as HTMLInputElement;
+    const lblPctEquiv = document.getElementById('lbl-pct-equiv');
+
+    const advancedToggle = document.getElementById('au-advanced-toggle');
+    const advancedPanel = document.getElementById('au-advanced-panel');
+    const advancedChevron = document.getElementById('au-advanced-chevron');
+
+    const employerSuperInput = document.getElementById('au-employer-super-input') as HTMLInputElement;
+    const lblAutoSg = document.getElementById('lbl-auto-sg');
+
+    const resetBtn = document.getElementById('au-sacrifice-reset');
+
+    let currentMode = 'dollar'; // 'dollar' | 'percent'
+
+    if (!salaryInput || !taxYearSelect || !sacrificeVal) return;
+
+    // Advanced Accordion Toggle
+    if (advancedToggle && advancedPanel && advancedChevron) {
+      advancedToggle.addEventListener('click', () => {
+        const isExpanded = advancedToggle.getAttribute('aria-expanded') === 'true';
+        advancedToggle.setAttribute('aria-expanded', String(!isExpanded));
+        advancedPanel.classList.toggle('hidden', isExpanded);
+        advancedChevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+      });
+    }
+
+    // Bidirectional Slider Binding
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement, maxSync = false) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        const val = parseFloat(input.value) || 0;
+        if (maxSync && val > parseFloat(slider.max)) {
+          slider.max = String(Math.ceil(val * 1.5));
+        }
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(salaryInput, salarySlider, true);
+    bindSlider(sacrificeVal, sacrificeSlider, true);
+    bindSlider(sacrificePctVal, sacrificePctSlider);
+
+    if (employerSuperInput) {
+      employerSuperInput.addEventListener('input', calculateAll);
+    }
+
+    // Mode Toggle (Dollar vs Percent)
+    if (btnModeDollar && btnModePercent && groupDollar && groupPercent) {
+      btnModeDollar.addEventListener('click', () => {
+        currentMode = 'dollar';
+        btnModeDollar.classList.add('active');
+        btnModeDollar.setAttribute('aria-checked', 'true');
+        btnModePercent.classList.remove('active');
+        btnModePercent.setAttribute('aria-checked', 'false');
+        groupDollar.classList.remove('hidden');
+        groupPercent.classList.add('hidden');
+        calculateAll();
+      });
+
+      btnModePercent.addEventListener('click', () => {
+        currentMode = 'percent';
+        btnModePercent.classList.add('active');
+        btnModePercent.setAttribute('aria-checked', 'true');
+        btnModeDollar.classList.remove('active');
+        btnModeDollar.setAttribute('aria-checked', 'false');
+        groupPercent.classList.remove('hidden');
+        groupDollar.classList.add('hidden');
+        calculateAll();
+      });
+    }
+
+    taxYearSelect.addEventListener('change', () => {
+      const cfg = AU_TAX_CONFIGS[taxYearSelect.value] || AU_TAX_CONFIGS['2025_26'];
+      if (taxYearSubtext) {
+        taxYearSubtext.textContent = `ATO tax brackets with ${(cfg.sgRate * 100).toFixed(1)}% Super Guarantee and $${cfg.concessionalCap.toLocaleString('en-AU')} concessional cap.`;
+      }
+      calculateAll();
+    });
+
+    payFreqSelect.addEventListener('change', calculateAll);
+
+    // Salary Presets
+    document.querySelectorAll('[data-salary]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.salary;
+        if (val !== undefined) {
+          salaryInput.value = val;
+          salarySlider.value = val;
+          document.querySelectorAll('[data-salary]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          calculateAll();
+        }
+      });
+    });
+
+    // Dollar Presets
+    document.querySelectorAll('[data-sac-dollar]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.sacDollar;
+        if (val !== undefined) {
+          sacrificeVal.value = val;
+          sacrificeSlider.value = val;
+          document.querySelectorAll('[data-sac-dollar]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          calculateAll();
+        }
+      });
+    });
+
+    // Percent Presets
+    document.querySelectorAll('[data-sac-pct]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const val = target.dataset.sacPct;
+        if (val !== undefined) {
+          sacrificePctVal.value = val;
+          sacrificePctSlider.value = val;
+          document.querySelectorAll('[data-sac-pct]').forEach(b => b.classList.remove('active'));
+          target.classList.add('active');
+          calculateAll();
+        }
+      });
+    });
+
+    // Reset Handler
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        salaryInput.value = '100000';
+        salarySlider.value = '100000';
+
+        taxYearSelect.value = '2025_26';
+        payFreqSelect.value = 'annual';
+
+        currentMode = 'dollar';
+        btnModeDollar?.classList.add('active');
+        btnModePercent?.classList.remove('active');
+        groupDollar?.classList.remove('hidden');
+        groupPercent?.classList.add('hidden');
+
+        sacrificeVal.value = '10000';
+        sacrificeSlider.value = '10000';
+
+        sacrificePctVal.value = '10.0';
+        sacrificePctSlider.value = '10.0';
+
+        if (employerSuperInput) employerSuperInput.value = '';
+
+        document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-salary="100000"]')?.classList.add('active');
+        document.querySelector('[data-sac-dollar="10000"]')?.classList.add('active');
+        document.querySelector('[data-sac-pct="10"]')?.classList.add('active');
+
+        calculateAll();
+      });
+    }
+
+    function formatAUD(val: number): string {
+      return '$' + Math.max(0, val).toLocaleString('en-AU', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatShortAUD(val: number): string {
+      return '$' + Math.max(0, Math.round(val)).toLocaleString('en-AU');
+    }
+
+    function calculateAll() {
+      const salary = Math.max(0, parseFloat(salaryInput.value) || 0);
+      const taxYear = taxYearSelect.value;
+      const config = AU_TAX_CONFIGS[taxYear] || AU_TAX_CONFIGS['2025_26'];
+      const payFreq = payFreqSelect.value;
+
+      // Determine sacrificed amount
+      let sacrificedAmount = 0;
+      if (currentMode === 'percent') {
+        const pct = Math.max(0, Math.min(100, parseFloat(sacrificePctVal.value) || 0));
+        sacrificedAmount = (salary * pct) / 100;
+        if (lblPctEquiv) {
+          lblPctEquiv.textContent = `${formatAUD(sacrificedAmount)} / year`;
+        }
+      } else {
+        sacrificedAmount = Math.max(0, parseFloat(sacrificeVal.value) || 0);
+      }
+      sacrificedAmount = Math.min(salary, sacrificedAmount);
+
+      // Auto employer SG
+      const autoSgVal = salary * config.sgRate;
+      if (lblAutoSg) {
+        lblAutoSg.textContent = formatAUD(autoSgVal);
+      }
+      const customSgText = employerSuperInput?.value.trim();
+      const employerSuper = customSgText && customSgText !== ''
+        ? Math.max(0, parseFloat(customSgText) || 0)
+        : autoSgVal;
+
+      // Scenario 1: Without Sacrifice
+      const taxableWithout = salary;
+      const incomeTaxWithout = calculateIncomeTax(taxableWithout, config.brackets);
+      const medicareWithout = calculateMedicareLevy(taxableWithout, config);
+      const totalTaxWithout = incomeTaxWithout + medicareWithout;
+      const takeHomeWithout = Math.max(0, taxableWithout - totalTaxWithout);
+
+      // Scenario 2: With Sacrifice
+      const taxableWith = Math.max(0, salary - sacrificedAmount);
+      const incomeTaxWith = calculateIncomeTax(taxableWith, config.brackets);
+      const medicareWith = calculateMedicareLevy(taxableWith, config);
+      const totalTaxWith = incomeTaxWith + medicareWith;
+      const takeHomeWith = Math.max(0, taxableWith - totalTaxWith);
+
+      // Reductions & Savings
+      const incomeTaxSaved = incomeTaxWithout - incomeTaxWith;
+      const medicareSaved = medicareWithout - medicareWith;
+      const totalTaxSaved = totalTaxWithout - totalTaxWith;
+
+      const takeHomeDrop = takeHomeWithout - takeHomeWith;
+
+      // Super Tax inside fund (15%)
+      const superFundTax = sacrificedAmount * config.superTaxRate;
+      const netSuperAdded = Math.max(0, sacrificedAmount - superFundTax);
+      const netWealthBoost = netSuperAdded - takeHomeDrop;
+
+      // Marginal tax rate estimate
+      const marginalRatePct = sacrificedAmount > 0 ? (totalTaxSaved / sacrificedAmount) * 100 : 32.0;
+
+      // Pay frequency factor
+      const freqMap: Record<string, { factor: number; label: string }> = {
+        annual: { factor: 1, label: 'Year' },
+        monthly: { factor: 12, label: 'Month' },
+        fortnightly: { factor: 26, label: 'Fortnight' },
+        weekly: { factor: 52, label: 'Week' }
+      };
+      const freqInfo = freqMap[payFreq] || freqMap.annual;
+      const takeHomeWithoutPer = takeHomeWithout / freqInfo.factor;
+      const takeHomeWithPer = takeHomeWith / freqInfo.factor;
+      const takeHomeDropPer = takeHomeDrop / freqInfo.factor;
+
+      // Total Concessional Contributions
+      const totalConcessional = employerSuper + sacrificedAmount;
+      const isCapExceeded = totalConcessional > config.concessionalCap;
+      const excessAmount = Math.max(0, totalConcessional - config.concessionalCap);
+
+      // Division 293 condition
+      const div293Applies = (taxableWith + totalConcessional) > config.div293Threshold;
+
+      // --- DOM UPDATES ---
+
+      // Hero Elements
+      const resTaxSaving = document.getElementById('res-tax-saving');
+      const resHeroSub = document.getElementById('res-hero-subtext');
+      const auTaxRateBadge = document.getElementById('au-tax-rate-badge');
+      const resTakehomeDrop = document.getElementById('res-takehome-drop');
+      const resTakehomeDropSub = document.getElementById('res-takehome-drop-sub');
+      const resSuperNet = document.getElementById('res-super-net');
+
+      if (resTaxSaving) resTaxSaving.textContent = formatAUD(totalTaxSaved);
+      if (resHeroSub) {
+        resHeroSub.textContent = `Saves ${formatAUD(incomeTaxSaved)} income tax + ${formatAUD(medicareSaved)} Medicare levy`;
+      }
+      if (auTaxRateBadge) {
+        auTaxRateBadge.textContent = `${marginalRatePct.toFixed(1)}% Marginal Benefit`;
+      }
+      if (resTakehomeDrop) {
+        resTakehomeDrop.textContent = `−${formatAUD(takeHomeDrop)}`;
+      }
+      if (resTakehomeDropSub) {
+        resTakehomeDropSub.textContent = payFreq !== 'annual'
+          ? `−${formatAUD(takeHomeDropPer)} per ${freqInfo.label.toLowerCase()}`
+          : 'Effective out-of-pocket cost';
+      }
+      if (resSuperNet) {
+        resSuperNet.textContent = `+${formatAUD(netSuperAdded)}`;
+      }
+
+      // Trade-off Summary Card
+      const tradeoffGross = document.getElementById('tradeoff-gross');
+      const tradeoffTaxSaved = document.getElementById('tradeoff-tax-saved');
+      const tradeoffTakehomeDrop = document.getElementById('tradeoff-takehome-drop');
+      const tradeoffNetBoost = document.getElementById('tradeoff-net-boost');
+
+      if (tradeoffGross) tradeoffGross.textContent = formatAUD(sacrificedAmount);
+      if (tradeoffTaxSaved) tradeoffTaxSaved.textContent = `+${formatAUD(totalTaxSaved)}`;
+      if (tradeoffTakehomeDrop) tradeoffTakehomeDrop.textContent = `−${formatAUD(takeHomeDrop)}`;
+      if (tradeoffNetBoost) tradeoffNetBoost.textContent = `+${formatAUD(netWealthBoost)}`;
+
+      // Warnings
+      const capWarning = document.getElementById('au-cap-warning');
+      const capWarningMsg = document.getElementById('au-cap-warning-msg');
+      if (capWarning && capWarningMsg) {
+        if (isCapExceeded) {
+          capWarning.classList.remove('hidden');
+          capWarningMsg.innerHTML = `<strong>Concessional Contributions Cap Alert:</strong> Your combined employer super (${formatAUD(employerSuper)}) and salary sacrifice (${formatAUD(sacrificedAmount)}) total <strong>${formatAUD(totalConcessional)}</strong>, exceeding the <strong>$${config.concessionalCap.toLocaleString('en-AU')} annual cap</strong> by <strong>${formatAUD(excessAmount)}</strong>. Excess concessional contributions are taxed at your marginal rate (less a 15% offset) plus an interest charge, unless withdrawn or carried forward under unused cap provisions.`;
+        } else {
+          capWarning.classList.add('hidden');
+        }
+      }
+
+      const div293Warning = document.getElementById('au-div293-warning');
+      if (div293Warning) {
+        div293Warning.classList.toggle('hidden', !div293Applies);
+      }
+
+      // Comparison Table
+      const tblGrossWithout = document.getElementById('tbl-gross-without');
+      const tblGrossWith = document.getElementById('tbl-gross-with');
+      const tblSacrificed = document.getElementById('tbl-sacrificed');
+      const tblSacDiff = document.getElementById('tbl-sac-diff');
+      const tblTaxableWithout = document.getElementById('tbl-taxable-without');
+      const tblTaxableWith = document.getElementById('tbl-taxable-with');
+      const tblTaxableDiff = document.getElementById('tbl-taxable-diff');
+      const tblTaxWithout = document.getElementById('tbl-tax-without');
+      const tblTaxWith = document.getElementById('tbl-tax-with');
+      const tblTaxDiff = document.getElementById('tbl-tax-diff');
+      const tblMedicareWithout = document.getElementById('tbl-medicare-without');
+      const tblMedicareWith = document.getElementById('tbl-medicare-with');
+      const tblMedicareDiff = document.getElementById('tbl-medicare-diff');
+      const tblTotalTaxWithout = document.getElementById('tbl-total-tax-without');
+      const tblTotalTaxWith = document.getElementById('tbl-total-tax-with');
+      const tblTotalTaxDiff = document.getElementById('tbl-total-tax-diff');
+      const tblTakehomeWithout = document.getElementById('tbl-takehome-without');
+      const tblTakehomeWith = document.getElementById('tbl-takehome-with');
+      const tblTakehomeDiff = document.getElementById('tbl-takehome-diff');
+
+      const rowPeriodic = document.getElementById('row-takehome-periodic');
+      const lblTblFreq = document.getElementById('lbl-tbl-freq');
+      const tblFreqWithout = document.getElementById('tbl-freq-without');
+      const tblFreqWith = document.getElementById('tbl-freq-with');
+      const tblFreqDiff = document.getElementById('tbl-freq-diff');
+
+      const tblSuperGross = document.getElementById('tbl-super-gross');
+      const tblSuperGrossDiff = document.getElementById('tbl-super-gross-diff');
+      const tblSuperTax = document.getElementById('tbl-super-tax');
+      const tblSuperTaxDiff = document.getElementById('tbl-super-tax-diff');
+      const tblSuperNet = document.getElementById('tbl-super-net');
+      const tblSuperNetDiff = document.getElementById('tbl-super-net-diff');
+
+      if (tblGrossWithout) tblGrossWithout.textContent = formatAUD(salary);
+      if (tblGrossWith) tblGrossWith.textContent = formatAUD(salary);
+      if (tblSacrificed) tblSacrificed.textContent = formatAUD(sacrificedAmount);
+      if (tblSacDiff) tblSacDiff.textContent = `+${formatAUD(sacrificedAmount)}`;
+
+      if (tblTaxableWithout) tblTaxableWithout.textContent = formatAUD(taxableWithout);
+      if (tblTaxableWith) tblTaxableWith.textContent = formatAUD(taxableWith);
+      if (tblTaxableDiff) tblTaxableDiff.textContent = `−${formatAUD(sacrificedAmount)}`;
+
+      if (tblTaxWithout) tblTaxWithout.textContent = formatAUD(incomeTaxWithout);
+      if (tblTaxWith) tblTaxWith.textContent = formatAUD(incomeTaxWith);
+      if (tblTaxDiff) tblTaxDiff.textContent = `−${formatAUD(incomeTaxSaved)}`;
+
+      if (tblMedicareWithout) tblMedicareWithout.textContent = formatAUD(medicareWithout);
+      if (tblMedicareWith) tblMedicareWith.textContent = formatAUD(medicareWith);
+      if (tblMedicareDiff) tblMedicareDiff.textContent = `−${formatAUD(medicareSaved)}`;
+
+      if (tblTotalTaxWithout) tblTotalTaxWithout.textContent = formatAUD(totalTaxWithout);
+      if (tblTotalTaxWith) tblTotalTaxWith.textContent = formatAUD(totalTaxWith);
+      if (tblTotalTaxDiff) tblTotalTaxDiff.textContent = `−${formatAUD(totalTaxSaved)}`;
+
+      if (tblTakehomeWithout) tblTakehomeWithout.textContent = formatAUD(takeHomeWithout);
+      if (tblTakehomeWith) tblTakehomeWith.textContent = formatAUD(takeHomeWith);
+      if (tblTakehomeDiff) tblTakehomeDiff.textContent = `−${formatAUD(takeHomeDrop)}`;
+
+      if (rowPeriodic && lblTblFreq && tblFreqWithout && tblFreqWith && tblFreqDiff) {
+        if (payFreq !== 'annual') {
+          rowPeriodic.style.display = 'table-row';
+          lblTblFreq.textContent = freqInfo.label;
+          tblFreqWithout.textContent = formatAUD(takeHomeWithoutPer);
+          tblFreqWith.textContent = formatAUD(takeHomeWithPer);
+          tblFreqDiff.textContent = `−${formatAUD(takeHomeDropPer)}`;
+        } else {
+          rowPeriodic.style.display = 'none';
+        }
+      }
+
+      if (tblSuperGross) tblSuperGross.textContent = formatAUD(sacrificedAmount);
+      if (tblSuperGrossDiff) tblSuperGrossDiff.textContent = `+${formatAUD(sacrificedAmount)}`;
+      if (tblSuperTax) tblSuperTax.textContent = `−${formatAUD(superFundTax)}`;
+      if (tblSuperTaxDiff) tblSuperTaxDiff.textContent = `−${formatAUD(superFundTax)}`;
+      if (tblSuperNet) tblSuperNet.textContent = `+${formatAUD(netSuperAdded)}`;
+      if (tblSuperNetDiff) tblSuperNetDiff.textContent = `+${formatAUD(netSuperAdded)}`;
+
+      // 8-Tile Metrics Grid
+      const tileGross = document.getElementById('tile-gross-salary');
+      const tileSac = document.getElementById('tile-sacrificed');
+      const tileTaxable = document.getElementById('tile-taxable-salary');
+      const tileSaved = document.getElementById('tile-tax-saved');
+      const tileSavedSub = document.getElementById('tile-tax-saved-sub');
+      const tileDrop = document.getElementById('tile-takehome-drop');
+      const tileDropSub = document.getElementById('tile-takehome-drop-sub');
+      const tileNetSuper = document.getElementById('tile-net-super');
+      const tileConcessional = document.getElementById('tile-total-concessional');
+      const tileConcessionalSub = document.getElementById('tile-concessional-sub');
+      const tileBoost = document.getElementById('tile-net-boost');
+
+      if (tileGross) tileGross.textContent = formatShortAUD(salary);
+      if (tileSac) tileSac.textContent = formatShortAUD(sacrificedAmount);
+      if (tileTaxable) tileTaxable.textContent = formatShortAUD(taxableWith);
+      if (tileSaved) tileSaved.textContent = formatShortAUD(totalTaxSaved);
+      if (tileSavedSub) tileSavedSub.textContent = `${marginalRatePct.toFixed(1)}% marginal savings`;
+      if (tileDrop) tileDrop.textContent = `−${formatShortAUD(takeHomeDrop)}`;
+      if (tileDropSub) {
+        tileDropSub.textContent = payFreq !== 'annual' ? `−${formatAUD(takeHomeDropPer)}/${freqInfo.label.toLowerCase()}` : 'Effective annual cost';
+      }
+      if (tileNetSuper) tileNetSuper.textContent = `+${formatShortAUD(netSuperAdded)}`;
+      if (tileConcessional) tileConcessional.textContent = formatShortAUD(totalConcessional);
+      if (tileConcessionalSub) {
+        const remainingCap = Math.max(0, config.concessionalCap - totalConcessional);
+        tileConcessionalSub.textContent = isCapExceeded
+          ? `Exceeds cap by ${formatShortAUD(excessAmount)}`
+          : `$${remainingCap.toLocaleString('en-AU')} room left`;
+      }
+      if (tileBoost) tileBoost.textContent = `+${formatShortAUD(netWealthBoost)}`;
+
+      // Verdict Description
+      const verdictText = document.getElementById('res-verdict-text');
+      if (verdictText) {
+        const freqPhrase = payFreq !== 'annual'
+          ? ` (or <strong>−${formatAUD(takeHomeDropPer)}</strong> each ${freqInfo.label.toLowerCase()})`
+          : '';
+        verdictText.innerHTML = `Salary sacrificing <strong>${formatAUD(sacrificedAmount)}</strong> of your <strong>${formatAUD(salary)}</strong> salary reduces your taxable income to <strong>${formatAUD(taxableWith)}</strong>, saving you <strong>${formatAUD(totalTaxSaved)}</strong> in income tax and Medicare levy. Your take-home pay decreases by <strong>${formatAUD(takeHomeDrop)}</strong> per year${freqPhrase}, while your super balance increases by <strong>${formatAUD(netSuperAdded)}</strong> (after the 15% super fund tax), resulting in an immediate net wealth advantage of <strong>${formatAUD(netWealthBoost)}</strong>.`;
+      }
+    }
+
+    // Clipboard copy results handler
+    window.addEventListener('copy-calculator-results', () => {
+      const salary = parseFloat(salaryInput.value) || 0;
+      const sacrificed = document.getElementById('tile-sacrificed')?.textContent || '$0';
+      const taxSaved = document.getElementById('res-tax-saving')?.textContent || '$0';
+      const takehomeDrop = document.getElementById('res-takehome-drop')?.textContent || '$0';
+      const netSuper = document.getElementById('res-super-net')?.textContent || '$0';
+      const netBoost = document.getElementById('tile-net-boost')?.textContent || '$0';
+      const taxYear = taxYearSelect.options[taxYearSelect.selectedIndex]?.text || '';
+
+      const text = `Australian Super Salary Sacrifice Analysis (${taxYear}):\n` +
+                   `Gross Salary: $${salary.toLocaleString('en-AU')} | Sacrificed to Super: ${sacrificed}\n` +
+                   `Estimated Tax Saved (Income Tax + Medicare): ${taxSaved}\n` +
+                   `Take-Home Pay Reduction: ${takehomeDrop}\n` +
+                   `Net Credited to Super (after 15% fund tax): ${netSuper}\n` +
+                   `Net Wealth Boost: ${netBoost}\n` +
+                   `Summary: Giving up ${takehomeDrop} in take-home pay deposits ${netSuper} net into superannuation, creating a ${netBoost} tax advantage.`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+
+    // Initial calculation run
+    calculateAll();
+  }
+
+  // Ensure DOM is ready across Astro page transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAuSalarySacrificeCalculator);
+  } else {
+    initAuSalarySacrificeCalculator();
+  }
+  document.addEventListener('astro:page-load', initAuSalarySacrificeCalculator);
+</script>
+
+<style>
+  /* Base Container & Grouping */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .input-label-row label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .percent-symbol {
+    position: absolute;
+    right: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .input-symbol-wrapper input {
+    padding-left: 24px;
+    padding-right: 10px;
+    height: 38px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-align: right;
+    width: 140px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  .currency-select {
+    height: 38px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .currency-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  .slider-range {
+    width: 100%;
+    margin-top: 4px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .preset-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .preset-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.05);
+  }
+
+  .preset-pill.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .input-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* Mode Toggle Group */
+  .sacrifice-toggle-group {
+    display: inline-flex;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  :global(.dark) .sacrifice-toggle-group {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .toggle-mode-btn {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .toggle-mode-btn.active {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Advanced Accordion Panel */
+  .advanced-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+
+  .advanced-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .advanced-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  :global(.dark) .advanced-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .chevron-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .advanced-panel {
+    padding: 12px 14px 16px 14px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Primary Hero Card */
+  .primary-hero-card {
+    padding: var(--space-4);
+    border-left: 4px solid var(--color-success);
+    background: var(--color-surface);
+  }
+
+  .hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .hero-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .hero-badge {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--color-success);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+  }
+
+  .hero-main-metric {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--color-success);
+    margin: var(--space-2) 0 4px 0;
+    line-height: 1.15;
+    word-break: break-word;
+  }
+
+  .hero-subtext {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Sub-Hero Highlights */
+  .sub-hero-container {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--color-border);
+  }
+
+  .sub-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .sub-hero-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sub-hero-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .sub-hero-val {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .sub-hero-desc {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Trade-off Balance Card */
+  .tradeoff-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tradeoff-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tradeoff-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tradeoff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  :global(.dark) .tradeoff-grid {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .tradeoff-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tradeoff-item.highlight-tradeoff {
+    border-left: 2px solid var(--color-success);
+    padding-left: 8px;
+  }
+
+  .tradeoff-lbl {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .tradeoff-val {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .tradeoff-note {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    margin-top: 2px;
+  }
+
+  /* Rule 15 Compliant Responsive Results Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .metric-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .metric-tile.highlight-tile {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.03);
+  }
+
+  :global(.dark) .metric-tile.highlight-tile {
+    background: rgba(16, 185, 129, 0.06);
+  }
+
+  .metric-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .metric-val {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    word-break: break-word;
+  }
+
+  .metric-sub {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Colors */
+  .text-primary {
+    color: var(--color-primary);
+  }
+
+  .text-success {
+    color: var(--color-success);
+  }
+
+  .text-danger {
+    color: #ef4444;
+  }
+
+  /* Table Card */
+  .table-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .table-header-row {
+    margin-bottom: var(--space-3);
+  }
+
+  .table-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 2px 0;
+  }
+
+  .table-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .comparison-table th {
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .comparison-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Verdict Summary Card */
+  .verdict-card {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .verdict-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: 6px;
+  }
+
+  .verdict-badge {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .verdict-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .verdict-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Status Banners */
+  .status-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .warning-banner {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--color-text);
+  }
+
+  .warning-banner .status-banner-icon {
+    color: #d97706;
+  }
+
+  .info-banner {
+    background: rgba(37, 99, 235, 0.06);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    color: var(--color-text);
+  }
+
+  .info-banner .status-banner-icon {
+    color: var(--color-primary);
+  }
+
+  .status-banner-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .disclaimer-text {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Mobile Media Queries (Rule 15 Compliance) */
+  @media (max-width: 640px) {
+    .hero-main-metric {
+      font-size: 1.75rem;
+    }
+
+    .sub-hero-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .tradeoff-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .metrics-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .metric-tile {
+      padding: 10px 8px;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+    }
+
+    .comparison-table th, .comparison-table td {
+      padding: 6px 8px;
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tradeoff-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

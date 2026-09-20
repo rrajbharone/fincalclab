@@ -1,0 +1,421 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MortgageEarlyRepaymentCalculator from '../../components/calculator/MortgageEarlyRepaymentCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Mortgage Early Repayment Calculator UK', item: '/calculator/mortgage-early-repayment-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does early mortgage repayment save money in the UK?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When you make an early mortgage repayment or overpayment, 100% of the money directly reduces your outstanding capital balance. Because UK mortgage interest is calculated daily on the remaining balance, reducing the principal immediately lowers the daily interest charged, producing a compounding saving over the entire remaining term."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is an Early Repayment Charge (ERC)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An Early Repayment Charge (ERC) is a financial penalty charged by a mortgage lender if you overpay more than your agreed allowance or redeem (pay off) your mortgage in full during an initial deal period (such as a 2-year, 3-year, or 5-year fixed rate). ERCs compensate the lender for lost interest and typically range between 1% and 5% of the excess overpayment amount."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the 10% mortgage overpayment rule in the UK?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Many UK fixed-rate and tracker mortgages allow borrowers to overpay up to 10% of their outstanding mortgage balance per year without triggering an Early Repayment Charge. However, this is not a universal statutory rule; individual lenders define whether the 10% is calculated on the balance on 1 January, 1 April, or the anniversary of the mortgage advance. You must check your specific mortgage offer terms."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it better to shorten the mortgage term or reduce monthly payments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keeping your monthly payments unchanged to shorten the term (Option B) delivers vastly superior interest savings and clears your mortgage years ahead of schedule. Reducing your monthly payment (Option A) provides lower ongoing living costs and immediate budget flexibility, but saves less total interest over the remaining life of the mortgage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I repay an interest-only mortgage early?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On an interest-only mortgage, an early repayment reduces the capital balance upon which your monthly interest bill is calculated, directly reducing your future monthly payments. Unlike repayment mortgages, interest-only payments do not automatically shorten the term unless you explicitly agree with the lender to redeem the mortgage early or direct the monthly interest savings into further capital reductions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is an Early Repayment Charge calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most lenders calculate percentage-based ERCs on the amount of repayment that exceeds your annual fee-free allowance. For example, if your balance is £200,000 with a 10% allowance (£20,000) and a 2% ERC, an overpayment of £30,000 incurs an ERC of 2% on the £10,000 excess, resulting in a £200 charge."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I pay off my mortgage completely early?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can redeem your UK mortgage in full at any time by requesting a formal redemption statement from your lender. If you are still within a fixed-rate or promotional incentive period, you will usually need to pay the applicable ERC on the balance along with a modest mortgage discharge or deeds administration fee (typically £50 to £300)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have to pay an ERC if I am on the lender's Standard Variable Rate (SVR)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Generally no. Once your initial fixed or discounted promotional rate expires and your mortgage reverts to the lender's Standard Variable Rate (SVR), or a lifetime tracker without tie-ins, early repayment charges are usually zero, allowing unlimited penalty-free repayments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I overpay my mortgage or save/invest into a pension or ISA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This depends on comparing your mortgage interest rate against the expected after-tax return on savings or investments. Overpaying a mortgage gives a guaranteed, tax-free return equal to your mortgage interest rate. Conversely, higher-rate taxpayers can receive 40% tax relief on pension contributions, and Stocks & Shares ISAs historically offer long-term compounding potential, though investment returns carry market risk."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I tell my lender how to apply my early repayment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When making an overpayment via bank transfer or direct debit, you should contact your lender or specify via online banking whether you want the payment to shorten your mortgage term (capital reduction while keeping payments unchanged) or reduce your future monthly payment. Many lenders default to reducing monthly payments unless instructed otherwise."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Mortgage Early Repayment Calculator UK",
+  "url": "https://fincalclab.com/calculator/mortgage-early-repayment-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free UK Mortgage Early Repayment Calculator. Calculate interest saved, earlier payoff date, new monthly payments, and Early Repayment Charges (ERC).",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "GBP"
+  }
+};
+---
+
+<Layout
+  title="Mortgage Early Repayment Calculator UK – Overpayment & ERC Savings"
+  description="Calculate how much interest you can save by overpaying or clearing your UK mortgage early. Compare shortening your term vs reducing monthly payments with ERC analysis."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <MortgageEarlyRepaymentCalculator />
+
+    <!-- Educational SEO Guide Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Featured Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">UK Property &amp; Personal Finance Suite</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Model Property Taxes, Sinking Funds &amp; Long-Term Compounding</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              Managing mortgage debt is one side of wealth building. If you are an individual landlord, calculate Section 24 mortgage relief and net cash flow with our <a href="/calculator/buy-to-let-tax-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Buy to Let Tax Calculator</a>. If you are comparing mortgage overpayment against pension tax benefits, use the <a href="/calculator/pension-tax-relief-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Pension Tax Relief Calculator</a>, or plan planned maintenance reserves using the <a href="/calculator/sinking-fund-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Sinking Fund Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is a Mortgage Early Repayment Calculator?</h2>
+        <p>
+          A <strong>Mortgage Early Repayment Calculator</strong> is a specialised financial planning tool built to help UK home owners and property investors understand the exact mathematical impact of paying off a mortgage early. Whether you have received an inheritance, bonus, work severance, or built up savings in a cash ISA, this calculator shows:
+        </p>
+        <ul>
+          <li><strong>Total Interest Saved:</strong> How much cash interest you avoid paying to your bank over the remaining life of the mortgage.</li>
+          <li><strong>Mortgage Term Reduction (Option B):</strong> Exactly how many years and months earlier you can become completely mortgage-free by keeping your monthly repayments unchanged.</li>
+          <li><strong>Monthly Payment Reduction (Option A):</strong> How much your required monthly payment falls if you keep your original mortgage term.</li>
+          <li><strong>Early Repayment Charge (ERC) Impact:</strong> The penalty charge incurred if your overpayment exceeds your mortgage deal's penalty-free allowance, showing your <strong>Net Financial Benefit</strong>.</li>
+        </ul>
+
+        <h2>What Happens When You Repay a Mortgage Early?</h2>
+        <p>
+          Under standard UK banking guidelines, residential mortgage interest is calculated on a <strong>daily compounding balance</strong>. 
+        </p>
+        <p>
+          In a standard monthly payment, part of your money covers the interest that accrued over the previous month, and only the remainder goes toward reducing the actual capital debt. In the early years of a 25-year or 30-year term, interest represents a huge proportion of each monthly payment.
+        </p>
+        <p>
+          When you make an <strong>early lump-sum repayment</strong>:
+        </p>
+        <ol>
+          <li><strong>100% of your overpayment goes straight to capital:</strong> It does not pay advance interest; it directly reduces your principal debt immediately.</li>
+          <li><strong>Daily interest drops instantly:</strong> From the very next day, the bank calculates interest on a smaller balance.</li>
+          <li><strong>The compounding snowball turns in your favour:</strong> In subsequent months, less interest accumulates, meaning a greater share of your regular monthly payment pays off the remaining principal.</li>
+        </ol>
+
+        <h2>Option A vs. Option B: Which Strategy Should You Choose?</h2>
+        <p>
+          When you overpay your UK mortgage, lenders typically offer two distinct pathways. Understanding the difference is crucial because the financial outcomes vary substantially:
+        </p>
+
+        <h3>Option A: Lower Your Monthly Payment (Keep Term Constant)</h3>
+        <p>
+          The lender takes your early repayment, subtracts it from your outstanding balance, and recalculates your monthly payment over your <em>original remaining term</em>.
+        </p>
+        <ul>
+          <li><strong>Benefit:</strong> Immediately increases your monthly disposable cash flow, providing greater breathing room in your family budget.</li>
+          <li><strong>Drawback:</strong> Because your monthly payment drops, the mortgage takes the full remaining term to clear, meaning you save significantly less overall interest than in Option B.</li>
+        </ul>
+
+        <h3>Option B: Shorten Your Mortgage Term (Keep Payment Constant)</h3>
+        <p>
+          The lender applies your early repayment to your balance, but you continue to make the <em>exact same monthly payment</em> as before.
+        </p>
+        <ul>
+          <li><strong>Benefit:</strong> Every subsequent payment attacks the capital balance far more aggressively. You shave years off your mortgage term and achieve maximum lifetime interest savings.</li>
+          <li><strong>Drawback:</strong> Requires maintaining your current monthly payment commitment.</li>
+        </ul>
+
+        <div style="overflow-x: auto; margin: var(--space-4) 0;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-border); text-align: left;">
+                <th style="padding: 10px;">Factor</th>
+                <th style="padding: 10px;">Option A (Lower Payment)</th>
+                <th style="padding: 10px;">Option B (Shorten Term)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Monthly Outgoings</td>
+                <td style="padding: 10px; color: var(--color-success);">Reduces immediately</td>
+                <td style="padding: 10px;">Remains unchanged</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Mortgage Duration</td>
+                <td style="padding: 10px;">Unchanged (e.g. 20 years)</td>
+                <td style="padding: 10px; color: var(--color-success);">Shortened (cleared years earlier)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Interest Saved</td>
+                <td style="padding: 10px;">Moderate</td>
+                <td style="padding: 10px; font-weight: 700; color: var(--color-primary);">Maximum potential saving</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Best Suited For</td>
+                <td style="padding: 10px;">Borrowers wanting lower living expenses</td>
+                <td style="padding: 10px;">Borrowers seeking debt freedom &amp; peak savings</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>What Is an Early Repayment Charge (ERC) and How Does It Work?</h2>
+        <p>
+          An <strong>Early Repayment Charge (ERC)</strong> is a fee that mortgage lenders apply if you repay part or all of your mortgage earlier than agreed during a promotional or fixed-rate period.
+        </p>
+        <p>
+          When you take out a 2-year, 3-year, or 5-year fixed rate mortgage, the lender hedged funds on wholesale financial markets to secure that rate. If you repay the money early, the lender may incur a financial loss. The ERC protects the bank against this loss.
+        </p>
+        <h3>How Lenders Structure ERCs</h3>
+        <p>
+          ERCs are almost always tiered downwards over the lifespan of a fixed deal:
+        </p>
+        <ul>
+          <li><strong>5-Year Fixed Rate:</strong> Often 5% in Year 1, 4% in Year 2, 3% in Year 3, 2% in Year 4, and 1% in Year 5.</li>
+          <li><strong>2-Year Fixed Rate:</strong> Typically 2% in Year 1 and 1% in Year 2.</li>
+          <li><strong>Standard Variable Rate (SVR):</strong> Once your fixed deal ends, there is usually <strong>0% ERC</strong>.</li>
+        </ul>
+
+        <h2>The 10% Overpayment Allowance Explained</h2>
+        <p>
+          Most high street UK lenders (such as Nationwide, Halifax, Barclays, Santander, HSBC, and NatWest) provide an <strong>annual penalty-free overpayment allowance</strong>, typically set at <strong>10%</strong>.
+        </p>
+        <p>
+          However, you should never assume a universal rule applies without checking your mortgage contract:
+        </p>
+        <ol>
+          <li><strong>How the 10% is calculated:</strong> Some lenders calculate 10% of the balance at the start of each calendar year (1 January); others calculate 10% of the balance on the anniversary of your mortgage inception; others base it on the exact balance on the day of the payment.</li>
+          <li><strong>Timing:</strong> If you overpay 10% in December and make another 10% overpayment in January, some lenders treat both as valid because they fall into separate calendar years. Always verify your lender's policy.</li>
+          <li><strong>Excess Charging:</strong> When you exceed your allowance, the lender generally only charges the ERC on the <em>portion exceeding the allowance</em>, not the entire amount. For instance, on a £100,000 mortgage with a 10% allowance (£10,000), an overpayment of £15,000 incurs an ERC only on the £5,000 excess.</li>
+        </ol>
+
+        <h2>Overpaying vs. Paying Off Your Mortgage in Full</h2>
+        <p>
+          There is an important distinction between making an overpayment and executing a <strong>full mortgage redemption</strong>:
+        </p>
+        <ul>
+          <li><strong>Partial Overpayment:</strong> You make a lump sum contribution, your mortgage remains open, and you continue to hold an active account with your lender.</li>
+          <li><strong>Full Redemption:</strong> You pay off the entire outstanding balance to zero. The lender closes the account, removes their legal charge from the Land Registry title deeds, and issues a final closure statement. In this scenario, the entire balance is redeemed, and if you are still within an ERC window, the lender may apply the charge according to their redemption terms.</li>
+        </ul>
+
+        <h2>Interest-Only Mortgages &amp; Early Repayment</h2>
+        <p>
+          On an <strong>interest-only mortgage</strong>, your regular monthly payments cover only the interest. The capital borrowed does not reduce over time.
+        </p>
+        <p>
+          When you make an early repayment on an interest-only mortgage:
+        </p>
+        <ul>
+          <li>The capital debt immediately decreases.</li>
+          <li>Your monthly payment automatically falls, because your payment is calculated purely as:
+            <br />
+            <code>New Monthly Payment = New Balance × (Annual Rate ÷ 12)</code>
+          </li>
+          <li>However, unless you repay 100% of the loan, the mortgage term does not automatically shorten; you will still need a repayment vehicle (such as cash savings, investments, or property sale) to repay the remaining balance at the end of the term.</li>
+        </ul>
+
+        <h2>Realistic Worked Examples</h2>
+
+        <h3>Example 1: Standard £200,000 Repayment Mortgage (£10,000 Overpayment)</h3>
+        <ul>
+          <li><strong>Mortgage Balance:</strong> £200,000</li>
+          <li><strong>Interest Rate:</strong> 5.0%</li>
+          <li><strong>Remaining Term:</strong> 20 years (240 months)</li>
+          <li><strong>Current Monthly Payment:</strong> £1,319.91</li>
+          <li><strong>Early Repayment:</strong> £10,000 (Within 10% allowance $\rightarrow$ £0 ERC)</li>
+        </ul>
+        <p>
+          <strong>Outcome:</strong>
+        </p>
+        <ul>
+          <li><strong>Option B (Keep Payment at £1,319.91):</strong> Clears the mortgage <strong>1 year 7 months earlier</strong> (term drops to 18 years 5 months) and saves <strong>£16,080.96</strong> in total interest.</li>
+          <li><strong>Option A (Lower Payment):</strong> Monthly payment drops to <strong>£1,253.91</strong> (saving £66.00/month), saving <strong>£5,838.94</strong> in total interest over 20 years.</li>
+        </ul>
+
+        <h3>Example 2: Overpayment Exceeding the 10% Allowance</h3>
+        <ul>
+          <li><strong>Mortgage Balance:</strong> £250,000</li>
+          <li><strong>Early Repayment:</strong> £35,000</li>
+          <li><strong>Penalty-Free Allowance:</strong> 10% (£25,000)</li>
+          <li><strong>ERC Rate:</strong> 3%</li>
+        </ul>
+        <p>
+          <strong>Outcome:</strong> The first £25,000 is fee-free. The remaining £10,000 incurs a 3% ERC:
+          <br />
+          <code>ERC = £10,000 × 3% = £300</code>
+          <br />
+          If Option B saves £28,000 in future mortgage interest, the net financial benefit is <strong>£27,700</strong> (£28,000 saved − £300 ERC). Even with the charge, making the early repayment is overwhelmingly advantageous.
+        </p>
+
+        <h2>Essential Checklist Before Overpaying Your UK Mortgage</h2>
+        <ol>
+          <li>
+            <strong>Confirm Your Allowance Terms:</strong> Check whether your 10% allowance is based on the balance on 1 January or your mortgage anniversary date.
+          </li>
+          <li>
+            <strong>Verify Your Current ERC:</strong> If you are within 1 to 2 months of your fixed rate ending, it may be wiser to wait until the promotional period lapses to avoid thousands in ERC charges.
+          </li>
+          <li>
+            <strong>Specify Option A vs. Option B in Writing:</strong> Instruct your lender whether your lump sum should reduce your term or reduce your monthly payments. Do not leave it to default.
+          </li>
+          <li>
+            <strong>Check Emergency Reserves:</strong> Money paid into a mortgage cannot easily be retrieved without remortgaging or taking a further advance. Ensure you maintain a 3 to 6 month cash emergency fund first.
+          </li>
+          <li>
+            <strong>Compare Savings Rates:</strong> If you can earn higher after-tax interest in a high-yield cash ISA than your mortgage interest rate, holding funds in savings until your fixed deal ends can sometimes produce superior returns.
+          </li>
+        </ol>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion-group">
+          {faqSchema.mainEntity.map((faq) => (
+            <div class="faq-item" style="margin-bottom: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-surface);">
+              <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700; color: var(--color-text-base);">{faq.name}</h3>
+              <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">{faq.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Financial Disclaimer Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-base);">
+          <h4 style="margin: 0 0 var(--space-2) 0; font-size: 0.95rem; font-weight: 700; color: var(--color-text-base);">Important Mortgage &amp; Financial Disclaimer</h4>
+          <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
+            This calculator provides an estimate for general financial planning and educational purposes only. Your actual mortgage interest calculation, daily rest period, overpayment allowance, and Early Repayment Charge depend strictly on your lender's formal terms, mortgage agreement, and specific product conditions. This tool does not constitute regulated financial, mortgage, or legal advice. Always obtain a formal redemption statement or overpayment quote directly from your lender before transferring large funds.
+          </p>
+        </div>
+
+        <!-- Related Tools Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-surface);">
+          <h3 style="margin: 0 0 var(--space-3) 0; font-size: 1.05rem; font-weight: 700;">Related Mortgage, Debt &amp; Wealth Calculators</h3>
+          <ul style="margin: 0; padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2);">
+            <li><a href="/calculator/buy-to-let-tax-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Buy to Let Tax Calculator</a> — Calculate UK landlord Income Tax, Section 24 mortgage relief, and after-tax cash profits.</li>
+            <li><a href="/calculator/debt-avalanche-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Debt Avalanche Calculator</a> — Eliminate multiple debts in order of interest rate to save thousands in interest.</li>
+            <li><a href="/calculator/debt-snowball-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Debt Snowball Calculator</a> — Build financial momentum by clearing debts from smallest balance to largest.</li>
+            <li><a href="/calculator/sinking-fund-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Sinking Fund Calculator</a> — Build planned cash reserves for home maintenance, boiler replacements, and annual bills.</li>
+            <li><a href="/calculator/pension-tax-relief-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Pension Tax Relief Calculator</a> — Compare the benefit of paying off your mortgage against 40% higher-rate pension tax relief.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

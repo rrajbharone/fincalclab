@@ -1,0 +1,915 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TfsaContributionCalculator from '../../components/calculator/TfsaContributionCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'TFSA Contribution Calculator', item: '/calculator/tfsa-contribution-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the TFSA contribution limit for 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The official Canada Revenue Agency (CRA) TFSA annual dollar limit for 2026 is $7,000. This is the third consecutive year at $7,000 (indexed to inflation from 2024)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the maximum cumulative TFSA contribution room in 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For a Canadian resident who has been at least 18 years old since the TFSA program began in 2009 and has never made a contribution, the total cumulative lifetime contribution limit in 2026 is $109,000 ($102,000 accumulated through 2025 plus $7,000 for 2026)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is my available TFSA contribution room calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your available TFSA contribution room for the current calendar year equals: (1) the current-year TFSA dollar limit ($7,000 for 2026), PLUS (2) your unused contribution room carried forward from previous years, PLUS (3) total withdrawals made from your TFSA in the previous calendar year (2025), MINUS (4) any contributions you have already made during the current year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do TFSA withdrawals create contribution room immediately?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Under CRA rules, a TFSA withdrawal does not immediately replenish your contribution room in the same calendar year. Withdrawn amounts are added back to your available contribution room on January 1 of the following calendar year. Re-contributing withdrawn funds in the same year without sufficient available room results in an over-contribution penalty."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I contribute more than the annual $7,000 limit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, provided you have unused contribution room carried forward from previous years or withdrawals made in the prior calendar year. Your total allowable contribution is your total available room, which can be far higher than the single-year limit of $7,000."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the penalty for over-contributing to a TFSA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you exceed your available TFSA contribution room, the CRA imposes a penalty tax of 1% per month on the highest excess contribution amount for each month that the excess remains in your account. You must file Form RC243 (TFSA Return) and remit the tax by June 30 of the following year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is TFSA contribution room based on my income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Unlike an RRSP, TFSA contribution room is completely independent of earned income. Every Canadian resident aged 18 or older accumulates the exact same annual dollar limit regardless of whether they earn $0 or $200,000."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does TFSA room accumulate for newcomers to Canada?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "New Canadian residents only accumulate TFSA contribution room for the years during which they were Canadian residents for tax purposes and aged 18 or older. Non-residents do not accumulate room for years prior to establishing Canadian residency."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I have multiple TFSA accounts at different banks?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, you can hold multiple TFSA accounts across various banks, credit unions, and robo-advisors. However, your total contribution room is a combined personal limit shared across all accounts. The CRA tracks your aggregate deposits across all institutions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I check my official TFSA contribution room with the CRA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can verify your official TFSA contribution room by logging into CRA My Account online, checking the MyCRA mobile app, reviewing your latest Notice of Assessment, or contacting the CRA Tax Information Phone Service (TIPS) at 1-800-267-6999."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "TFSA Contribution Calculator Canada",
+  "url": "https://fincalclab.com/tfsa-contribution-calculator",
+  "description": "Calculate your official Canadian TFSA contribution room, track unused carry-forward amounts, model previous-year withdrawals, and prevent over-contributions for 2026.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CAD"
+  }
+};
+---
+
+<Layout
+  title="TFSA Contribution Calculator Canada (2026) | FinCalcLab"
+  description="Calculate your official 2026 Canadian TFSA contribution room, track unused carryforward limits, account for previous-year withdrawals, and prevent over-contributions."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <TfsaContributionCalculator />
+
+    <!-- Featured Cross-Link Callout Card -->
+    <section class="crosslink-section">
+      <Card elevation="sm" class="crosslink-card">
+        <div class="crosslink-content">
+          <div class="crosslink-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          </div>
+          <div class="crosslink-text">
+            <h2 class="crosslink-heading">Optimizing Your Retirement Strategy?</h2>
+            <p class="crosslink-desc">
+              Deciding between a TFSA and an RRSP? Use our companion <strong>RRSP Contribution Calculator</strong> and <strong>RRSP Tax Savings Calculator</strong> to model progressive tax reductions and calculate your net refund.
+            </p>
+          </div>
+        </div>
+        <div class="crosslink-btn-col">
+          <a href="/calculator/rrsp-tax-savings-calculator" class="crosslink-btn">
+            Open RRSP Tax Savings Calculator
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Canadian Educational Guide -->
+    <article class="educational-guide">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is a TFSA Contribution Calculator?</h2>
+        <p>
+          A <strong>TFSA Contribution Calculator</strong> is a specialized financial planning tool designed for Canadian taxpayers. It calculates your exact allowable Tax-Free Savings Account (TFSA) contribution room for the current tax year, factoring in official annual limits, unused carryforward room from previous years, and withdrawals made in the prior calendar year.
+        </p>
+        <p>
+          Unlike registered pension accounts or Registered Retirement Savings Plans (RRSPs), TFSA contribution room is not calculated as a percentage of your employment earnings. Instead, it is an annual statutory entitlement granted by the federal government to every eligible Canadian resident aged 18 and older. Our calculator helps you avoid costly over-contributions, plan regular monthly contributions, and maximize tax-free compound investment growth.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>What Is TFSA Contribution Room?</h2>
+        <p>
+          Your <strong>TFSA contribution room</strong> is the maximum total dollar amount you can deposit into all your TFSA accounts combined without incurring financial penalties from the Canada Revenue Agency (CRA).
+        </p>
+        <p>
+          The Canadian government established the Tax-Free Savings Account in 2009 under the federal <em>Income Tax Act</em>. Any investment gains earned inside a TFSA—including capital gains, Canadian eligible dividends, international dividends, and interest—are completely exempt from federal and provincial income taxes, both while accumulating inside the plan and upon withdrawal.
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Three Cardinal Rules of TFSA Contribution Room</div>
+          <ol class="callout-steps">
+            <li><strong>Room Accumulates Automatically:</strong> Starting the year you turn 18 and establish Canadian tax residency, you generate new annual contribution room every January 1.</li>
+            <li><strong>Unused Room Never Expires:</strong> Any contribution room you do not use carries forward indefinitely into future calendar years.</li>
+            <li><strong>Withdrawals Are Re-Added Next Year:</strong> Any amount withdrawn from your TFSA is re-credited to your available room on January 1 of the following calendar year.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How TFSA Contribution Room Is Calculated</h2>
+        <p>
+          The CRA calculates your available contribution room for any given calendar year using an official four-component formula:
+        </p>
+        <div class="formula-box" style="font-weight: 700; font-size: 1rem;">
+          Available Room = Current-Year Annual Limit + Unused Room Carried Forward + Prior-Year Withdrawals − Current-Year Deposits
+        </div>
+        <p>
+          Here is how each component works in practice:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Current-Year Annual Limit:</strong> The statutory dollar amount indexed to inflation and legislated by the federal government ($7,000 for 2026).</li>
+          <li><strong>Unused Room Carried Forward:</strong> The cumulative total of all annual limits from prior eligible years since 2009 that you have not yet utilized.</li>
+          <li><strong>Previous-Year Withdrawals:</strong> Any funds you withdrew from any TFSA during the previous calendar year (2025), which are restored on January 1, 2026.</li>
+          <li><strong>Contributions Already Made:</strong> Any deposits you have already made into any TFSA account between January 1 and December 31 of the current year.</li>
+        </ul>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>TFSA Contribution Limit for 2026</h2>
+        <p>
+          For the <strong>2026 tax year</strong>, the official CRA annual TFSA dollar limit is <strong>$7,000</strong>.
+        </p>
+        <p>
+          The annual TFSA limit is indexed to the Canadian Consumer Price Index (CPI) inflation rate and rounded to the nearest $500 increment under subsection 207.01(1) of the <em>Income Tax Act</em>. After holding steady at $6,000 from 2019 to 2022, high inflation triggered an increase to $6,500 in 2023 and $7,000 in 2024, where it remains for 2025 and 2026.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>Cumulative Historical TFSA Limits (2009–2026)</h2>
+        <p>
+          If you were at least 18 years old and a resident of Canada in 2009 when the TFSA program began, and have never contributed to a TFSA, your total cumulative contribution limit in 2026 is <strong>$109,000</strong>.
+        </p>
+        <div class="table-responsive">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Calendar Year</th>
+                <th>Annual Dollar Limit</th>
+                <th>Cumulative Total Eligible</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2009</td>
+                <td>$5,000</td>
+                <td>$5,000</td>
+              </tr>
+              <tr>
+                <td>2010</td>
+                <td>$5,000</td>
+                <td>$10,000</td>
+              </tr>
+              <tr>
+                <td>2011</td>
+                <td>$5,000</td>
+                <td>$15,000</td>
+              </tr>
+              <tr>
+                <td>2012</td>
+                <td>$5,000</td>
+                <td>$20,000</td>
+              </tr>
+              <tr>
+                <td>2013</td>
+                <td>$5,500</td>
+                <td>$25,500</td>
+              </tr>
+              <tr>
+                <td>2014</td>
+                <td>$5,500</td>
+                <td>$31,000</td>
+              </tr>
+              <tr>
+                <td>2015</td>
+                <td>$10,000</td>
+                <td>$41,000</td>
+              </tr>
+              <tr>
+                <td>2016</td>
+                <td>$5,500</td>
+                <td>$46,500</td>
+              </tr>
+              <tr>
+                <td>2017</td>
+                <td>$5,500</td>
+                <td>$52,000</td>
+              </tr>
+              <tr>
+                <td>2018</td>
+                <td>$5,500</td>
+                <td>$57,500</td>
+              </tr>
+              <tr>
+                <td>2019</td>
+                <td>$6,000</td>
+                <td>$63,500</td>
+              </tr>
+              <tr>
+                <td>2020</td>
+                <td>$6,000</td>
+                <td>$69,500</td>
+              </tr>
+              <tr>
+                <td>2021</td>
+                <td>$6,000</td>
+                <td>$75,500</td>
+              </tr>
+              <tr>
+                <td>2022</td>
+                <td>$6,000</td>
+                <td>$81,500</td>
+              </tr>
+              <tr>
+                <td>2023</td>
+                <td>$6,500</td>
+                <td>$88,000</td>
+              </tr>
+              <tr>
+                <td>2024</td>
+                <td>$7,000</td>
+                <td>$95,000</td>
+              </tr>
+              <tr>
+                <td>2025</td>
+                <td>$7,000</td>
+                <td>$102,000</td>
+              </tr>
+              <tr style="font-weight: 700; background-color: var(--color-surface-hover);">
+                <td>2026 (Current)</td>
+                <td>$7,000</td>
+                <td>$109,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>How Unused TFSA Room Carries Forward</h2>
+        <p>
+          One of the greatest features of the TFSA is that <strong>unused contribution room never expires</strong>. You do not lose contribution room simply because you were unable to invest in a specific calendar year.
+        </p>
+        <p>
+          For example, if you turned 18 in 2021 and could not afford to save money while attending university, you accumulated $6,000 in 2021, $6,000 in 2022, $6,500 in 2023, $7,000 in 2024, $7,000 in 2025, and $7,000 in 2026. In 2026, upon starting your first professional job, you have an accumulated available contribution room of <strong>$39,500</strong> that you can deposit immediately or over multiple years.
+        </p>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="guide-section">
+        <h2>How TFSA Withdrawals Affect Contribution Room</h2>
+        <p>
+          A frequent trap for Canadian investors is misunderstanding how withdrawals interact with contribution room. Under CRA regulations:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">The January 1 Re-Addition Rule</div>
+          <p style="margin: 0; font-size: 0.9rem; line-height: 1.5;">
+            When you withdraw money from a TFSA, that withdrawal does <strong>not</strong> create new room immediately. The withdrawn amount is only added back to your contribution room on <strong>January 1 of the following calendar year</strong>.
+          </p>
+        </div>
+        <p>
+          Consider this practical scenario:
+        </p>
+        <ul class="bullet-list">
+          <li>On January 1, 2026, your available room is $7,000.</li>
+          <li>On February 1, you deposit $7,000 (remaining room = $0).</li>
+          <li>On June 1, you withdraw $5,000 to cover an emergency expense.</li>
+          <li><strong>Can you redeposit the $5,000 in September 2026?</strong> <strong>No!</strong> Your remaining room for 2026 is still $0. If you redeposit that $5,000 in 2026, you will be penalized for a $5,000 over-contribution.</li>
+          <li>On <strong>January 1, 2027</strong>, your $5,000 withdrawal will be added back, in addition to the new 2027 annual limit.</li>
+        </ul>
+      </section>
+
+      <!-- Section 8 -->
+      <section class="guide-section">
+        <h2>Can I Contribute More Than the Annual TFSA Limit?</h2>
+        <p>
+          Yes, absolutely! The annual limit ($7,000 in 2026) is simply the <em>new</em> room granted in that tax year. If you have accumulated unused room from prior years or previous-year withdrawals, you can contribute the full available amount in a single lump sum.
+        </p>
+        <p>
+          For example, if your CRA Notice of Assessment shows $45,000 in unused contribution room carried forward into 2026, you can legally deposit <strong>$52,000</strong> ($45,000 unused + $7,000 2026 limit) without incurring any penalties.
+        </p>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="guide-section">
+        <h2>TFSA Over-Contribution: 1% Monthly Penalty Tax</h2>
+        <p>
+          If you contribute more than your available room, the CRA treats the excess as an <strong>over-contribution</strong> under Part XI.01 of the Canadian <em>Income Tax Act</em>.
+        </p>
+        <div class="key-callout-box" style="border-left-color: var(--color-danger, #ef4444);">
+          <div class="callout-title" style="color: var(--color-danger, #ef4444);">CRA Over-Contribution Penalty</div>
+          <p style="margin: 0; font-size: 0.9rem; line-height: 1.5;">
+            The CRA charges a penalty tax of <strong>1% per month</strong> on the highest excess TFSA amount in your account for each month (or partial month) that the excess remains.
+          </p>
+        </div>
+        <p>
+          For example, if you over-contribute by $4,000 and leave the excess in your account for 5 months before withdrawing it, your penalty tax is:
+        </p>
+        <p style="text-align: center; font-weight: 700; padding: var(--space-3); background-color: var(--color-surface-hover); border-radius: var(--radius-md);">
+          $4,000 × 1% × 5 months = $200.00
+        </p>
+        <p>
+          Taxpayers with an excess TFSA amount must complete and submit <strong>Form RC243 (TFSA Return)</strong> and pay the tax by June 30 of the calendar year following the year of the over-contribution.
+        </p>
+      </section>
+
+      <!-- Section 10 -->
+      <section class="guide-section">
+        <h2>How to Check Your Official TFSA Contribution Room</h2>
+        <p>
+          To ensure you never face an over-contribution penalty, always verify your official room with the CRA through one of these authoritative channels:
+        </p>
+        <div class="steps-container">
+          <div class="guide-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h3>CRA My Account Online</h3>
+              <p>Log in to your CRA My Account portal. Under the "RRSP and TFSA" section, check your official available room. Note that financial institutions report transactions annually, so contributions made earlier this year may not be reflected until spring.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h3>Form T1028</h3>
+              <p>Review Form T1028 (Your RRSP/PRPP Information and TFSA Room), which the CRA sends to individuals who have experienced specific transaction updates or request it directly.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h3>CRA Tax Information Phone Service (TIPS)</h3>
+              <p>Call the automated TIPS line toll-free at 1-800-267-6999. Have your Social Insurance Number (SIN), date of birth, and prior year's tax return ready for identity verification.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 11 -->
+      <section class="guide-section">
+        <h2>TFSA vs. RRSP: Strategic Comparison</h2>
+        <p>
+          While both accounts provide tax advantages, their mechanics differ substantially:
+        </p>
+        <div class="table-responsive">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Tax-Free Savings Account (TFSA)</th>
+                <th>Registered Retirement Savings Plan (RRSP)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Contribution Deductibility</strong></td>
+                <td>Not deductible; funded with after-tax dollars</td>
+                <td>Tax-deductible; directly reduces taxable income</td>
+              </tr>
+              <tr>
+                <td><strong>Investment Growth</strong></td>
+                <td>100% tax-free growth</td>
+                <td>Tax-deferred compounding until withdrawal</td>
+              </tr>
+              <tr>
+                <td><strong>Withdrawal Taxation</strong></td>
+                <td>100% tax-free withdrawals anytime</td>
+                <td>Taxed as ordinary income at your marginal rate</td>
+              </tr>
+              <tr>
+                <td><strong>Withdrawal Room Restoration</strong></td>
+                <td>Re-added to room on next January 1</td>
+                <td>Room is lost permanently upon withdrawal*</td>
+              </tr>
+              <tr>
+                <td><strong>Income Eligibility</strong></td>
+                <td>No earned income required; flat annual limit</td>
+                <td>Based on 18% of prior year earned income</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="footnote-text">
+          *Except under specific programs like the Home Buyers' Plan (HBP) or Lifelong Learning Plan (LLP).
+        </p>
+      </section>
+
+      <!-- Section 12 -->
+      <section class="guide-section">
+        <h2>TFSA Contribution Examples</h2>
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>Example 1: Young Adult Turning 18 in 2026</h3>
+            <p><strong>Status:</strong> Turned 18 in 2026, Canadian resident.</p>
+            <p><strong>Unused Prior Room:</strong> $0</p>
+            <p><strong>2026 Limit:</strong> $7,000</p>
+            <p><strong>Total Available Room:</strong> $7,000</p>
+            <p>Eligible for the full 2026 limit regardless of whether their birthday is in January or December.</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Example 2: Newcomer to Canada (Arrived 2023)</h3>
+            <p><strong>Status:</strong> Became tax resident in 2023 at age 28.</p>
+            <p><strong>Eligible Years:</strong> 2023 ($6,500), 2024 ($7,000), 2025 ($7,000), 2026 ($7,000)</p>
+            <p><strong>Total Cumulative Room:</strong> $27,500</p>
+            <p>No contribution room is granted for years prior to establishing Canadian tax residency.</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Example 3: Experienced Saver with 2025 Withdrawal</h3>
+            <p><strong>Unused Carryforward into 2026:</strong> $15,000</p>
+            <p><strong>2025 Withdrawal Re-Added:</strong> $6,000</p>
+            <p><strong>2026 New Annual Limit:</strong> $7,000</p>
+            <p><strong>Total Available Room:</strong> $28,000</p>
+            <p>Can contribute up to $28,000 in 2026 tax-free.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 13: FAQs -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>What is the TFSA contribution limit for 2026?</h3>
+            <p>
+              The official Canada Revenue Agency (CRA) TFSA annual dollar limit for 2026 is $7,000.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What is the maximum cumulative TFSA contribution room in 2026?</h3>
+            <p>
+              For an individual who was at least 18 years old in 2009 and has been a Canadian resident continuously without making any contributions, the cumulative maximum room in 2026 is $109,000 ($102,000 carryforward through 2025 plus $7,000 for 2026).
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How is my available TFSA contribution room calculated?</h3>
+            <p>
+              Your available room equals: (Current-year limit $7,000) + (Unused room carried forward) + (Withdrawals made in the prior calendar year) − (Contributions already made during the current year).
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Do TFSA withdrawals create contribution room immediately?</h3>
+            <p>
+              No. Withdrawals are not added back to your room immediately. The withdrawn amount is restored on January 1 of the following calendar year.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Can I contribute more than the annual $7,000 limit?</h3>
+            <p>
+              Yes. If you have unused room carried forward from previous years or prior-year withdrawals, you can contribute your full available room, even if it significantly exceeds $7,000.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What is the penalty for over-contributing to a TFSA?</h3>
+            <p>
+              The CRA assesses a 1% per month penalty tax on the highest excess contribution amount for each month the excess remains in your account.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Is TFSA contribution room based on my income?</h3>
+            <p>
+              No. TFSA contribution room is a universal annual entitlement and is completely independent of your employment or self-employment earnings.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How does TFSA room accumulate for newcomers to Canada?</h3>
+            <p>
+              Newcomers only accumulate room for the calendar years in which they were Canadian residents for tax purposes and at least 18 years old.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Can I have multiple TFSA accounts at different banks?</h3>
+            <p>
+              Yes. You can hold accounts across multiple financial institutions, but your contribution room is a shared personal limit across all accounts.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How do I check my official TFSA contribution room with the CRA?</h3>
+            <p>
+              Log into CRA My Account online, check the MyCRA mobile app, review your latest CRA Notice of Assessment, or call TIPS at 1-800-267-6999.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statutory CRA Disclaimer -->
+      <section class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Disclaimer:</strong> This calculator provides an estimate based on the information entered. Your official TFSA contribution room can be affected by your complete TFSA transaction history and CRA records. Users should verify their available room using their own financial records and their CRA account before contributing.
+        </p>
+      </section>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  /* Crosslink Section */
+  .crosslink-section {
+    margin-top: var(--space-10);
+    margin-bottom: var(--space-8);
+  }
+
+  .crosslink-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    gap: var(--space-4);
+  }
+
+  .crosslink-content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .crosslink-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-subtle, rgba(37, 99, 235, 0.1));
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .crosslink-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .crosslink-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .crosslink-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .crosslink-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all var(--transition-fast);
+  }
+
+  .crosslink-btn:hover {
+    background-color: var(--color-primary-subtle, rgba(37, 99, 235, 0.08));
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  /* Educational Guide Content */
+  .educational-guide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .guide-section h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0 0 var(--space-3) 0;
+    line-height: 1.3;
+  }
+
+  .guide-section h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .guide-section p {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .bullet-list {
+    margin: 0 0 var(--space-3) 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.95rem;
+  }
+
+  .key-callout-box {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin: var(--space-3) 0;
+  }
+
+  .callout-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-2);
+  }
+
+  .callout-steps {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+  }
+
+  .comparison-table th {
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .footnote-text {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+  }
+
+  .formula-box {
+    padding: var(--space-3);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    text-align: center;
+    margin: var(--space-3) 0;
+    overflow-x: auto;
+  }
+
+  .steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+  }
+
+  .guide-step {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: var(--color-primary-subtle, rgba(37, 99, 235, 0.1));
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+  }
+
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .step-content h3 {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .step-content p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+  }
+
+  .scenario-card {
+    padding: var(--space-3);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .scenario-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .scenario-card p {
+    font-size: 0.85rem;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .disclaimer-section {
+    padding: var(--space-4);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+  }
+
+  .disclaimer-text {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .crosslink-card {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .crosslink-btn {
+      justify-content: center;
+    }
+
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

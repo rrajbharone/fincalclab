@@ -1,0 +1,1350 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Pension Tax Relief Calculator"
+  description="Calculate your basic-rate tax relief, additional higher-rate relief to reclaim through Self Assessment, and the true net cost of your UK pension contribution."
+  category="Retirement & Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="ptrc-root">
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <h3 class="section-title">Pension &amp; Tax Details</h3>
+
+      <!-- Tax Year Selector -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ptrc-tax-year">UK Tax Year</label>
+          <select id="ptrc-tax-year" class="currency-select" aria-label="Select UK Tax Year">
+            <option value="2026_27" selected>2026/27 (Current: £60k Allowance)</option>
+            <option value="2025_26">2025/26 (£60k Allowance)</option>
+            <option value="2024_25">2024/25 (£60k Allowance)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tax Region Selector -->
+      <div class="input-group">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">UK Tax Region</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Tax Region">
+          <button type="button" class="toggle-pill active" id="ptrc-region-ewni-btn" aria-checked="true" role="radio">
+            England, Wales &amp; NI
+          </button>
+          <button type="button" class="toggle-pill" id="ptrc-region-scot-btn" aria-checked="false" role="radio">
+            Scotland
+          </button>
+        </div>
+        <span class="input-subtext">Scotland has separate income tax rates (19%, 20%, 21%, 42%, 45%, 48%).</span>
+      </div>
+
+      <!-- Annual Taxable Income -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ptrc-income-val">Annual Taxable Income</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="ptrc-income-val" min="0" max="10000000" step="1000" value="60000" aria-label="Annual Taxable Income" />
+          </div>
+        </div>
+        <input type="range" id="ptrc-income-slider" min="0" max="150000" step="1000" value="60000" class="slider-range" aria-label="Annual Taxable Income Slider" />
+        
+        <!-- Income Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-income="30000">£30k</button>
+          <button type="button" class="preset-pill" data-income="50000">£50k</button>
+          <button type="button" class="preset-pill active" data-income="60000">£60k</button>
+          <button type="button" class="preset-pill" data-income="80000">£80k</button>
+          <button type="button" class="preset-pill" data-income="100000">£100k</button>
+          <button type="button" class="preset-pill" data-income="125000">£125k</button>
+        </div>
+        <span class="input-subtext">Your total taxable earnings before any pension deductions.</span>
+      </div>
+
+      <!-- Contribution Input Mode Switcher -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">Contribution Entry Mode</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Contribution Mode">
+          <button type="button" class="toggle-pill active" id="ptrc-mode-gross-btn" aria-checked="true" role="radio">
+            Gross Contribution (Pot Total)
+          </button>
+          <button type="button" class="toggle-pill" id="ptrc-mode-net-btn" aria-checked="false" role="radio">
+            Net Payment (You Pay In)
+          </button>
+        </div>
+      </div>
+
+      <!-- Contribution Amount -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ptrc-contrib-val" id="ptrc-contrib-label">Gross Pension Contribution</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol">£</span>
+            <input type="number" id="ptrc-contrib-val" min="0" max="1000000" step="250" value="5000" aria-label="Pension Contribution Amount" />
+          </div>
+        </div>
+        <input type="range" id="ptrc-contrib-slider" min="100" max="60000" step="250" value="5000" class="slider-range" aria-label="Pension Contribution Slider" />
+        
+        <!-- Contribution Quick Presets -->
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-contrib="1000">£1k</button>
+          <button type="button" class="preset-pill" data-contrib="2500">£2.5k</button>
+          <button type="button" class="preset-pill active" data-contrib="5000">£5k</button>
+          <button type="button" class="preset-pill" data-contrib="10000">£10k</button>
+          <button type="button" class="preset-pill" data-contrib="20000">£20k</button>
+          <button type="button" class="preset-pill" data-contrib="60000">£60k</button>
+        </div>
+        <span class="input-subtext" id="ptrc-contrib-sub">Total amount entering your pension pot (your cash payment + 20% basic relief).</span>
+      </div>
+
+      <!-- Frequency Display Toggle -->
+      <div class="input-group" style="margin-top: var(--space-4);">
+        <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">Contribution Frequency</label>
+        <div class="toggle-pill-group" role="radiogroup" aria-label="Frequency" style="grid-template-columns: 1fr 1fr;">
+          <button type="button" class="toggle-pill active" id="ptrc-freq-annual-btn" aria-checked="true" role="radio">
+            Annual Figures
+          </button>
+          <button type="button" class="toggle-pill" id="ptrc-freq-monthly-btn" aria-checked="false" role="radio">
+            Monthly Equivalent
+          </button>
+        </div>
+      </div>
+
+      <!-- Warning Banners -->
+      <div id="ptrc-allowance-warn" class="callout-banner warning hidden" style="margin-top: var(--space-3);">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <span class="callout-title">Annual Allowance Exceeded</span>
+          <span class="callout-msg">The standard UK annual pension allowance is £60,000 for 2026/27. Contributions above £60,000 may incur an annual allowance tax charge unless you have unused carry-forward allowance from previous years.</span>
+        </div>
+      </div>
+
+      <div id="ptrc-earnings-warn" class="callout-banner warning hidden" style="margin-top: var(--space-3);">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">
+          <span class="callout-title">Relevant UK Earnings Limit</span>
+          <span class="callout-msg" id="ptrc-earnings-warn-text">Tax relief is generally capped at 100% of your relevant UK earnings (or £3,600 gross if you earn less than £3,600).</span>
+        </div>
+      </div>
+
+      <!-- Reset Action -->
+      <div style="margin-top: var(--space-5);">
+        <Button variant="outline" size="sm" id="ptrc-reset-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Calculator Inputs
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Pension Tax Relief Summary</h3>
+
+    <!-- Hero Metric Box: Effective Cost to You -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label" id="ptrc-hero-label">Effective Net Cost to You</span>
+      <div class="hero-metric-value" id="ptrc-hero-value">£3,000.00</div>
+      <span class="hero-metric-subtext" id="ptrc-hero-sub">To get £5,000.00 into your pension pot (40.00% total relief)</span>
+    </div>
+
+    <!-- Callout Banner: Total Tax Relief -->
+    <div id="ptrc-callout" class="callout-banner success">
+      <div class="callout-icon">🎉</div>
+      <div class="callout-body">
+        <span class="callout-title" id="ptrc-callout-title">£2,000.00 Total Tax Relief (40.00%)</span>
+        <span class="callout-msg" id="ptrc-callout-msg">
+          £1,000.00 basic-rate relief is added automatically to your pot by the pension provider. You can claim an extra £1,000.00 back from HMRC via Self Assessment or a tax code adjustment.
+        </span>
+      </div>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label" id="ptrc-box1-label">You Pay to Provider (Net 80%)</span>
+        <div id="ptrc-box1-value" class="net-box-value" style="color: var(--color-primary);">£4,000.00</div>
+        <span class="net-box-desc" id="ptrc-box1-desc">Paid directly into pension</span>
+      </div>
+      <div class="net-value-box highlight-warning">
+        <span class="net-box-label" id="ptrc-box2-label">Additional Relief to Reclaim</span>
+        <div id="ptrc-box2-value" class="net-box-value" style="color: var(--color-warning);">£1,000.00</div>
+        <span class="net-box-desc" id="ptrc-box2-desc">Claim via Self Assessment / PAYE</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 class="metrics-grid-title">Detailed Tax Relief Breakdown</h4>
+    <div class="results-grid ptrc-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label">Gross in Pension Pot</span>
+        <div class="tile-value" id="tile-gross-pot" style="color: var(--color-primary);">£5,000.00</div>
+        <span class="tile-sub">Full invested value</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">You Pay (Net)</span>
+        <div class="tile-value" id="tile-net-paid" style="color: var(--color-text-base);">£4,000.00</div>
+        <span class="tile-sub">80% personal contribution</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Basic Rate Relief (20%)</span>
+        <div class="tile-value" id="tile-basic-relief" style="color: var(--color-success);">+£1,000.00</div>
+        <span class="tile-sub">Added by provider</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Additional Relief</span>
+        <div class="tile-value" id="tile-extra-relief" style="color: var(--color-warning);">£1,000.00</div>
+        <span class="tile-sub" id="tile-extra-sub">Higher rate (20% extra)</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Total Tax Relief</span>
+        <div class="tile-value" id="tile-total-relief" style="color: var(--color-success);">£2,000.00</div>
+        <span class="tile-sub" id="tile-effective-pct">40.00% overall relief</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Effective Net Cost</span>
+        <div class="tile-value" id="tile-effective-cost" style="color: var(--color-primary);">£3,000.00</div>
+        <span class="tile-sub">Actual out-of-pocket</span>
+      </div>
+    </div>
+
+    <!-- Expandable Breakdown: How This Calculation Works -->
+    <div class="schedule-section">
+      <button type="button" class="schedule-toggle-btn" id="ptrc-breakdown-toggle" aria-expanded="false" aria-controls="ptrc-breakdown-wrapper">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          How This Calculation Works (Tax Band Allocation)
+        </span>
+        <svg class="chevron-icon" id="ptrc-breakdown-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div class="schedule-wrapper hidden" id="ptrc-breakdown-wrapper">
+        <div class="schedule-table-container">
+          <table class="schedule-table" id="ptrc-band-table">
+            <thead>
+              <tr>
+                <th>Tax Band / Rate</th>
+                <th>Contribution in Band</th>
+                <th>Basic Relief (20%)</th>
+                <th>Additional Relief</th>
+                <th>Total Relief</th>
+              </tr>
+            </thead>
+            <tbody id="ptrc-band-tbody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+        <p class="schedule-footnote" id="ptrc-band-footnote">
+          Relief at source automatically adds 20% basic relief into your pension. Any tax relief exceeding 20% must be reclaimed directly through HMRC.
+        </p>
+      </div>
+    </div>
+
+    <!-- Plain-English Verdict -->
+    <div class="verdict-container" style="margin-top: var(--space-2);">
+      <Card elevation="sm" id="ptrc-verdict-card" class="verdict-card verdict-info">
+        <span class="verdict-tag">Summary Explanation</span>
+        <p id="ptrc-verdict-text" class="verdict-paragraph">
+          To invest <strong>£5,000.00</strong> into your pension, you personally pay <strong>£4,000.00</strong>. Your pension provider claims <strong>£1,000.00 (20%)</strong> basic-rate tax relief from HMRC, bringing your total pot to £5,000.00. Because you are a higher-rate taxpayer, you can reclaim an additional <strong>£1,000.00 (20%)</strong> through Self Assessment, bringing your true effective net cost down to <strong>£3,000.00</strong>.
+        </p>
+        <span class="verdict-disclaimer">
+          Calculated for the <span id="ptrc-disclaimer-year">2026/27</span> UK tax year under the Relief at Source system (used by personal pensions and SIPPs). Actual relief depends on personal tax codes, other allowances, and non-pension income.
+        </span>
+      </Card>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Robust UK Tax Year Configuration
+  interface BandConfig {
+    name: string;
+    rate: number;
+    threshold: number; // Upper limit of this band
+  }
+
+  interface RegionTaxConfig {
+    name: string;
+    personalAllowance: number;
+    paTaperThreshold: number; // £100,000
+    bands: BandConfig[];
+  }
+
+  const UK_TAX_SYSTEM: Record<string, Record<string, RegionTaxConfig>> = {
+    '2026_27': {
+      'ewni': {
+        name: 'England, Wales & NI',
+        personalAllowance: 12570,
+        paTaperThreshold: 100000,
+        bands: [
+          { name: 'Personal Allowance (0%)', rate: 0.00, threshold: 12570 },
+          { name: 'Basic Rate (20%)',        rate: 0.20, threshold: 50270 },
+          { name: 'Higher Rate (40%)',       rate: 0.40, threshold: 125140 },
+          { name: 'Additional Rate (45%)',   rate: 0.45, threshold: Infinity }
+        ]
+      },
+      'scotland': {
+        name: 'Scotland',
+        personalAllowance: 12570,
+        paTaperThreshold: 100000,
+        bands: [
+          { name: 'Personal Allowance (0%)', rate: 0.00, threshold: 12570 },
+          { name: 'Starter Rate (19%)',      rate: 0.19, threshold: 14876 },
+          { name: 'Basic Rate (20%)',        rate: 0.20, threshold: 26561 },
+          { name: 'Intermediate Rate (21%)', rate: 0.21, threshold: 43662 },
+          { name: 'Higher Rate (42%)',       rate: 0.42, threshold: 75000 },
+          { name: 'Advanced Rate (45%)',     rate: 0.45, threshold: 125140 },
+          { name: 'Top Rate (48%)',          rate: 0.48, threshold: Infinity }
+        ]
+      }
+    },
+    '2025_26': {
+      'ewni': {
+        name: 'England, Wales & NI',
+        personalAllowance: 12570,
+        paTaperThreshold: 100000,
+        bands: [
+          { name: 'Personal Allowance (0%)', rate: 0.00, threshold: 12570 },
+          { name: 'Basic Rate (20%)',        rate: 0.20, threshold: 50270 },
+          { name: 'Higher Rate (40%)',       rate: 0.40, threshold: 125140 },
+          { name: 'Additional Rate (45%)',   rate: 0.45, threshold: Infinity }
+        ]
+      },
+      'scotland': {
+        name: 'Scotland',
+        personalAllowance: 12570,
+        paTaperThreshold: 100000,
+        bands: [
+          { name: 'Personal Allowance (0%)', rate: 0.00, threshold: 12570 },
+          { name: 'Starter Rate (19%)',      rate: 0.19, threshold: 14876 },
+          { name: 'Basic Rate (20%)',        rate: 0.20, threshold: 26561 },
+          { name: 'Intermediate Rate (21%)', rate: 0.21, threshold: 43662 },
+          { name: 'Higher Rate (42%)',       rate: 0.42, threshold: 75000 },
+          { name: 'Advanced Rate (45%)',     rate: 0.45, threshold: 125140 },
+          { name: 'Top Rate (48%)',          rate: 0.48, threshold: Infinity }
+        ]
+      }
+    },
+    '2024_25': {
+      'ewni': {
+        name: 'England, Wales & NI',
+        personalAllowance: 12570,
+        paTaperThreshold: 100000,
+        bands: [
+          { name: 'Personal Allowance (0%)', rate: 0.00, threshold: 12570 },
+          { name: 'Basic Rate (20%)',        rate: 0.20, threshold: 50270 },
+          { name: 'Higher Rate (40%)',       rate: 0.40, threshold: 125140 },
+          { name: 'Additional Rate (45%)',   rate: 0.45, threshold: Infinity }
+        ]
+      },
+      'scotland': {
+        name: 'Scotland',
+        personalAllowance: 12570,
+        paTaperThreshold: 100000,
+        bands: [
+          { name: 'Personal Allowance (0%)', rate: 0.00, threshold: 12570 },
+          { name: 'Starter Rate (19%)',      rate: 0.19, threshold: 14876 },
+          { name: 'Basic Rate (20%)',        rate: 0.20, threshold: 26561 },
+          { name: 'Intermediate Rate (21%)', rate: 0.21, threshold: 43662 },
+          { name: 'Higher Rate (42%)',       rate: 0.42, threshold: 75000 },
+          { name: 'Advanced Rate (45%)',     rate: 0.45, threshold: 125140 },
+          { name: 'Top Rate (48%)',          rate: 0.48, threshold: Infinity }
+        ]
+      }
+    }
+  };
+
+  function initPTRC() {
+    const root = document.getElementById('ptrc-root');
+    if (!root) return;
+
+    // Inputs DOM
+    const taxYearSelect   = document.getElementById('ptrc-tax-year') as HTMLSelectElement;
+    const regionEwniBtn   = document.getElementById('ptrc-region-ewni-btn') as HTMLButtonElement;
+    const regionScotBtn   = document.getElementById('ptrc-region-scot-btn') as HTMLButtonElement;
+    const incomeInput     = document.getElementById('ptrc-income-val') as HTMLInputElement;
+    const incomeSlider    = document.getElementById('ptrc-income-slider') as HTMLInputElement;
+    const modeGrossBtn    = document.getElementById('ptrc-mode-gross-btn') as HTMLButtonElement;
+    const modeNetBtn      = document.getElementById('ptrc-mode-net-btn') as HTMLButtonElement;
+    const contribInput    = document.getElementById('ptrc-contrib-val') as HTMLInputElement;
+    const contribSlider   = document.getElementById('ptrc-contrib-slider') as HTMLInputElement;
+    const contribLabel    = document.getElementById('ptrc-contrib-label') as HTMLElement;
+    const contribSub      = document.getElementById('ptrc-contrib-sub') as HTMLElement;
+    const freqAnnualBtn   = document.getElementById('ptrc-freq-annual-btn') as HTMLButtonElement;
+    const freqMonthlyBtn  = document.getElementById('ptrc-freq-monthly-btn') as HTMLButtonElement;
+    const resetBtn        = document.getElementById('ptrc-reset-btn') as HTMLButtonElement;
+
+    // Presets
+    const incomePills     = document.querySelectorAll<HTMLButtonElement>('.preset-pill[data-income]');
+    const contribPills    = document.querySelectorAll<HTMLButtonElement>('.preset-pill[data-contrib]');
+
+    // Warnings
+    const allowanceWarn   = document.getElementById('ptrc-allowance-warn') as HTMLElement;
+    const earningsWarn    = document.getElementById('ptrc-earnings-warn') as HTMLElement;
+    const earningsWarnText= document.getElementById('ptrc-earnings-warn-text') as HTMLElement;
+
+    // Results DOM
+    const heroLabel       = document.getElementById('ptrc-hero-label') as HTMLElement;
+    const heroValue       = document.getElementById('ptrc-hero-value') as HTMLElement;
+    const heroSub         = document.getElementById('ptrc-hero-sub') as HTMLElement;
+    const calloutTitle    = document.getElementById('ptrc-callout-title') as HTMLElement;
+    const calloutMsg      = document.getElementById('ptrc-callout-msg') as HTMLElement;
+    const box1Label       = document.getElementById('ptrc-box1-label') as HTMLElement;
+    const box1Value       = document.getElementById('ptrc-box1-value') as HTMLElement;
+    const box2Label       = document.getElementById('ptrc-box2-label') as HTMLElement;
+    const box2Value       = document.getElementById('ptrc-box2-value') as HTMLElement;
+
+    // Tiles
+    const tileGrossPot    = document.getElementById('tile-gross-pot') as HTMLElement;
+    const tileNetPaid     = document.getElementById('tile-net-paid') as HTMLElement;
+    const tileBasicRelief = document.getElementById('tile-basic-relief') as HTMLElement;
+    const tileExtraRelief = document.getElementById('tile-extra-relief') as HTMLElement;
+    const tileExtraSub    = document.getElementById('tile-extra-sub') as HTMLElement;
+    const tileTotalRelief = document.getElementById('tile-total-relief') as HTMLElement;
+    const tileEffectivePct= document.getElementById('tile-effective-pct') as HTMLElement;
+    const tileEffectiveCost= document.getElementById('tile-effective-cost') as HTMLElement;
+
+    // Table Accordion
+    const tableToggle     = document.getElementById('ptrc-breakdown-toggle') as HTMLButtonElement;
+    const tableWrapper    = document.getElementById('ptrc-breakdown-wrapper') as HTMLElement;
+    const tableChevron    = document.getElementById('ptrc-breakdown-chevron') as HTMLElement;
+    const bandTbody       = document.getElementById('ptrc-band-tbody') as HTMLElement;
+
+    // Verdict
+    const verdictText     = document.getElementById('ptrc-verdict-text') as HTMLElement;
+    const disclaimerYear  = document.getElementById('ptrc-disclaimer-year') as HTMLElement;
+
+    // State
+    let currentRegion: 'ewni' | 'scotland' = 'ewni';
+    let contributionMode: 'gross' | 'net' = 'gross';
+    let displayFreq: 'annual' | 'monthly' = 'annual';
+
+    function fmt(val: number): string {
+      const divisor = displayFreq === 'monthly' ? 12 : 1;
+      const displayVal = val / divisor;
+      const absVal = Math.abs(displayVal);
+      const formatted = absVal.toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${displayVal < 0 ? '-' : ''}£${formatted}`;
+    }
+
+    function fmtAnnual(val: number): string {
+      const absVal = Math.abs(val);
+      const formatted = absVal.toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${val < 0 ? '-' : ''}£${formatted}`;
+    }
+
+    function bindSlider(inp: HTMLInputElement, sld: HTMLInputElement, cb: () => void) {
+      if (!inp || !sld) return;
+      inp.addEventListener('input', () => { sld.value = inp.value; cb(); });
+      sld.addEventListener('input', () => { inp.value = sld.value; cb(); });
+    }
+
+    // Precise Income Tax calculation returning tax and band breakdown
+    function calcTaxDetails(taxableIncome: number, cfg: RegionTaxConfig) {
+      if (taxableIncome <= 0) return { totalTax: 0, pa: cfg.personalAllowance };
+
+      // Calculate tapered Personal Allowance
+      let pa = cfg.personalAllowance;
+      if (taxableIncome > cfg.paTaperThreshold) {
+        const excess = taxableIncome - cfg.paTaperThreshold;
+        pa = Math.max(0, cfg.personalAllowance - Math.floor(excess / 2));
+      }
+
+      let remainingIncome = taxableIncome;
+      let totalTax = 0;
+      let prevThreshold = 0;
+
+      for (let i = 0; i < cfg.bands.length; i++) {
+        const band = cfg.bands[i];
+        let lower = prevThreshold;
+        let upper = band.threshold;
+
+        // Account for custom Personal Allowance
+        if (i === 0) {
+          upper = pa;
+        } else if (i === 1) {
+          lower = pa;
+        }
+
+        if (taxableIncome > lower) {
+          const sliceInBand = Math.min(taxableIncome, upper) - lower;
+          if (sliceInBand > 0) {
+            totalTax += sliceInBand * band.rate;
+          }
+        }
+        prevThreshold = upper;
+      }
+
+      return { totalTax, pa };
+    }
+
+    function calculate() {
+      const yearKey = taxYearSelect.value || '2026_27';
+      const yearMap = UK_TAX_SYSTEM[yearKey] || UK_TAX_SYSTEM['2026_27'];
+      const cfg = yearMap[currentRegion] || yearMap['ewni'];
+      if (disclaimerYear) disclaimerYear.textContent = yearKey.replace('_', '/');
+
+      const annualIncome = Math.max(0, parseFloat(incomeInput.value) || 0);
+      const rawContrib = Math.max(0, parseFloat(contribInput.value) || 0);
+
+      // Determine Gross and Net contributions
+      let grossContrib = 0;
+      let netPaid = 0;
+
+      if (contributionMode === 'gross') {
+        grossContrib = rawContrib;
+        netPaid = grossContrib * 0.80; // 80% paid by user in relief-at-source
+      } else {
+        netPaid = rawContrib;
+        grossContrib = netPaid / 0.80; // Grossed up by 20% basic relief
+      }
+
+      // 20% basic rate relief added by provider
+      const basicReliefAdded = grossContrib * 0.20;
+
+      // Warnings
+      const ANNUAL_ALLOWANCE = 60000;
+      if (grossContrib > ANNUAL_ALLOWANCE) {
+        allowanceWarn?.classList.remove('hidden');
+      } else {
+        allowanceWarn?.classList.add('hidden');
+      }
+
+      const relevantEarningsLimit = Math.max(3600, annualIncome);
+      if (grossContrib > relevantEarningsLimit) {
+        earningsWarn?.classList.remove('hidden');
+        if (earningsWarnText) {
+          earningsWarnText.textContent = `Your £${grossContrib.toLocaleString('en-GB', {maximumFractionDigits: 0})} contribution exceeds your relevant earnings limit (£${relevantEarningsLimit.toLocaleString('en-GB')}). UK tax relief cannot be claimed on contributions above £${relevantEarningsLimit.toLocaleString('en-GB')}.`;
+        }
+      } else {
+        earningsWarn?.classList.add('hidden');
+      }
+
+      // Validated contribution eligible for relief
+      const eligibleGrossContrib = Math.min(grossContrib, relevantEarningsLimit);
+
+      // Marginal tax relief calculation:
+      // Tax without contribution vs Tax with adjusted net income
+      const taxBefore = calcTaxDetails(annualIncome, cfg).totalTax;
+      const adjustedIncome = Math.max(0, annualIncome - eligibleGrossContrib);
+      const taxAfter = calcTaxDetails(adjustedIncome, cfg).totalTax;
+
+      // Total tax saved via relief
+      let totalTaxSaved = Math.max(0, taxBefore - taxAfter);
+
+      // Special rule: Relief-at-source ALWAYS gives basic relief (20%) even to low/non-earners up to £3,600!
+      if (totalTaxSaved < basicReliefAdded && eligibleGrossContrib > 0) {
+        totalTaxSaved = basicReliefAdded;
+      }
+
+      // Additional relief to reclaim via Self Assessment or tax code
+      const additionalReliefToReclaim = Math.max(0, totalTaxSaved - basicReliefAdded);
+
+      // Effective Net Cost to the user
+      const effectiveNetCost = Math.max(0, netPaid - additionalReliefToReclaim);
+      const effectiveReliefPct = grossContrib > 0 ? (totalTaxSaved / grossContrib) * 100 : 0;
+
+      const freqSuffix = displayFreq === 'monthly' ? '/mo' : '/yr';
+
+      // Update Hero Metric
+      if (heroLabel) {
+        heroLabel.textContent = `Effective Net Cost to You (${displayFreq.charAt(0).toUpperCase() + displayFreq.slice(1)})`;
+      }
+      if (heroValue) {
+        heroValue.textContent = fmt(effectiveNetCost);
+      }
+      if (heroSub) {
+        heroSub.textContent = grossContrib > 0
+          ? `To get ${fmt(grossContrib)} into your pension pot (${effectiveReliefPct.toFixed(1)}% total relief)`
+          : `Enter a pension contribution above`;
+      }
+
+      // Update Callout Banner
+      if (calloutTitle) {
+        calloutTitle.textContent = grossContrib > 0
+          ? `${fmt(totalTaxSaved)} Total Tax Relief (${effectiveReliefPct.toFixed(1)}%)`
+          : `Zero Contribution Entered`;
+      }
+      if (calloutMsg) {
+        if (additionalReliefToReclaim > 0) {
+          calloutMsg.textContent = `${fmt(basicReliefAdded)} basic-rate relief is added automatically to your pot by the provider. You can reclaim an extra ${fmt(additionalReliefToReclaim)} through HMRC Self Assessment or tax code adjustment.`;
+        } else {
+          calloutMsg.textContent = `${fmt(basicReliefAdded)} basic-rate relief (20%) is added automatically into your pension pot by your provider. No additional higher-rate relief is reclaimable.`;
+        }
+      }
+
+      // Update Summary Cards
+      if (box1Label) box1Label.textContent = `You Pay to Provider (Net 80%) ${freqSuffix}`;
+      if (box1Value) box1Value.textContent = fmt(netPaid);
+
+      if (box2Label) box2Label.textContent = `Additional Relief to Reclaim ${freqSuffix}`;
+      if (box2Value) box2Value.textContent = fmt(additionalReliefToReclaim);
+      if (box2Desc) {
+        box2Desc.textContent = additionalReliefToReclaim > 0
+          ? 'Reclaim via Self Assessment / PAYE'
+          : 'Already fully credited by provider';
+      }
+
+      // Update Tiles
+      if (tileGrossPot)     tileGrossPot.textContent = fmt(grossContrib);
+      if (tileNetPaid)      tileNetPaid.textContent = fmt(netPaid);
+      if (tileBasicRelief)  tileBasicRelief.textContent = `+${fmt(basicReliefAdded)}`;
+      if (tileExtraRelief)  tileExtraRelief.textContent = fmt(additionalReliefToReclaim);
+      if (tileTotalRelief)  tileTotalRelief.textContent = fmt(totalTaxSaved);
+      if (tileEffectivePct) tileEffectivePct.textContent = `${effectiveReliefPct.toFixed(1)}% overall relief`;
+      if (tileEffectiveCost)tileEffectiveCost.textContent = fmt(effectiveNetCost);
+
+      if (tileExtraSub) {
+        if (additionalReliefToReclaim > 0) {
+          const diffPct = effectiveReliefPct - 20;
+          tileExtraSub.textContent = `${diffPct.toFixed(1)}% extra relief`;
+        } else {
+          tileExtraSub.textContent = 'Basic rate only';
+        }
+      }
+
+      // Populate Band Allocation Table
+      populateBandTable(annualIncome, eligibleGrossContrib, cfg, basicReliefAdded, additionalReliefToReclaim, totalTaxSaved);
+
+      // Update Verdict Text
+      if (verdictText) {
+        if (grossContrib > 0) {
+          verdictText.innerHTML = `To invest <strong>${fmtAnnual(grossContrib)}</strong> into your pension, you personally pay <strong>${fmtAnnual(netPaid)}</strong>. Your pension provider claims <strong>${fmtAnnual(basicReliefAdded)} (20%)</strong> basic-rate tax relief from HMRC, bringing your total pot to ${fmtAnnual(grossContrib)}. ${additionalReliefToReclaim > 0 ? `Because your income falls into higher tax brackets, you can reclaim an additional <strong>${fmtAnnual(additionalReliefToReclaim)}</strong> through HMRC Self Assessment or by adjusting your PAYE tax code, bringing your true effective net cost down to <strong>${fmtAnnual(effectiveNetCost)}</strong> (${fmt(effectiveNetCost)}/month).` : `As a basic-rate or low earner, all available relief (20%) is already claimed directly into your pot, leaving your net cost at ${fmtAnnual(netPaid)}.`}`;
+        } else {
+          verdictText.innerHTML = `Enter an annual income and pension contribution above to see your exact tax relief entitlement.`;
+        }
+      }
+    }
+
+    function populateBandTable(income: number, grossContrib: number, cfg: RegionTaxConfig, basicRelief: number, extraRelief: number, totalRelief: number) {
+      if (!bandTbody) return;
+      bandTbody.innerHTML = '';
+
+      if (grossContrib <= 0) {
+        bandTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 12px; color: var(--color-text-muted);">Enter a pension contribution to view band breakdown.</td></tr>`;
+        return;
+      }
+
+      // Determine how the contribution is distributed across bands
+      // In relief-at-source, contribution slices top-down from income
+      let remainingContrib = grossContrib;
+      let currentIncomeLevel = income;
+
+      // Iterate top-down through bands
+      for (let i = cfg.bands.length - 1; i >= 0; i--) {
+        if (remainingContrib <= 0) break;
+        const band = cfg.bands[i];
+        const lowerBound = i === 0 ? 0 : cfg.bands[i - 1].threshold;
+
+        if (currentIncomeLevel > lowerBound) {
+          const taxableInBand = currentIncomeLevel - lowerBound;
+          const contribInBand = Math.min(remainingContrib, taxableInBand);
+
+          if (contribInBand > 0) {
+            const basicInBand = contribInBand * 0.20;
+            const extraRate = Math.max(0, band.rate - 0.20);
+            const extraInBand = contribInBand * extraRate;
+            const totalInBand = basicInBand + extraInBand;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><strong>${band.name}</strong></td>
+              <td>${fmt(contribInBand)}</td>
+              <td style="color: var(--color-success);">${fmt(basicInBand)}</td>
+              <td style="color: var(--color-warning); font-weight: 600;">${extraInBand > 0 ? fmt(extraInBand) : '£0.00'}</td>
+              <td style="font-weight: 700; color: var(--color-primary);">${fmt(totalInBand)} (${(band.rate * 100).toFixed(0)}%)</td>
+            `;
+            bandTbody.appendChild(row);
+
+            remainingContrib -= contribInBand;
+            currentIncomeLevel -= contribInBand;
+          }
+        }
+      }
+
+      // If contribution exceeded income but was eligible under £3,600 rule
+      if (remainingContrib > 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>Low / Non-Earner Allowance (£3,600 rule)</strong></td>
+          <td>${fmt(remainingContrib)}</td>
+          <td style="color: var(--color-success);">${fmt(remainingContrib * 0.20)}</td>
+          <td style="color: var(--color-text-muted);">£0.00</td>
+          <td style="font-weight: 700; color: var(--color-primary);">${fmt(remainingContrib * 0.20)} (20%)</td>
+        `;
+        bandTbody.appendChild(row);
+      }
+    }
+
+    // Toggle Table Accordion
+    if (tableToggle && tableWrapper && tableChevron) {
+      tableToggle.addEventListener('click', () => {
+        const isHidden = tableWrapper.classList.contains('hidden');
+        if (isHidden) {
+          tableWrapper.classList.remove('hidden');
+          tableChevron.classList.add('rotate-180');
+          tableToggle.setAttribute('aria-expanded', 'true');
+        } else {
+          tableWrapper.classList.add('hidden');
+          tableChevron.classList.remove('rotate-180');
+          tableToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // Bind sliders & inputs
+    bindSlider(incomeInput, incomeSlider, calculate);
+    bindSlider(contribInput, contribSlider, calculate);
+
+    taxYearSelect?.addEventListener('change', calculate);
+
+    // Region Toggles
+    regionEwniBtn?.addEventListener('click', () => {
+      currentRegion = 'ewni';
+      regionEwniBtn.classList.add('active');
+      regionEwniBtn.setAttribute('aria-checked', 'true');
+      regionScotBtn.classList.remove('active');
+      regionScotBtn.setAttribute('aria-checked', 'false');
+      calculate();
+    });
+
+    regionScotBtn?.addEventListener('click', () => {
+      currentRegion = 'scotland';
+      regionScotBtn.classList.add('active');
+      regionScotBtn.setAttribute('aria-checked', 'true');
+      regionEwniBtn.classList.remove('active');
+      regionEwniBtn.setAttribute('aria-checked', 'false');
+      calculate();
+    });
+
+    // Contribution Mode Toggles
+    modeGrossBtn?.addEventListener('click', () => {
+      contributionMode = 'gross';
+      modeGrossBtn.classList.add('active');
+      modeGrossBtn.setAttribute('aria-checked', 'true');
+      modeNetBtn.classList.remove('active');
+      modeNetBtn.setAttribute('aria-checked', 'false');
+      if (contribLabel) contribLabel.textContent = 'Gross Pension Contribution';
+      if (contribSub) contribSub.textContent = 'Total amount entering your pension pot (your cash payment + 20% basic relief).';
+      calculate();
+    });
+
+    modeNetBtn?.addEventListener('click', () => {
+      contributionMode = 'net';
+      modeNetBtn.classList.add('active');
+      modeNetBtn.setAttribute('aria-checked', 'true');
+      modeGrossBtn.classList.remove('active');
+      modeGrossBtn.setAttribute('aria-checked', 'false');
+      if (contribLabel) contribLabel.textContent = 'Net Payment (You Pay In)';
+      if (contribSub) contribSub.textContent = 'The personal cash amount you pay into your pension scheme.';
+      calculate();
+    });
+
+    // Frequency Toggles
+    freqAnnualBtn?.addEventListener('click', () => {
+      displayFreq = 'annual';
+      freqAnnualBtn.classList.add('active');
+      freqMonthlyBtn.classList.remove('active');
+      calculate();
+    });
+
+    freqMonthlyBtn?.addEventListener('click', () => {
+      displayFreq = 'monthly';
+      freqMonthlyBtn.classList.add('active');
+      freqAnnualBtn.classList.remove('active');
+      calculate();
+    });
+
+    // Income Presets
+    incomePills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        incomePills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const v = pill.getAttribute('data-income');
+        if (v) {
+          incomeInput.value = v;
+          incomeSlider.value = v;
+          calculate();
+        }
+      });
+    });
+
+    // Contrib Presets
+    contribPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        contribPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const v = pill.getAttribute('data-contrib');
+        if (v) {
+          contribInput.value = v;
+          contribSlider.value = v;
+          calculate();
+        }
+      });
+    });
+
+    // Reset
+    resetBtn?.addEventListener('click', () => {
+      taxYearSelect.value = '2026_27';
+      currentRegion = 'ewni';
+      contributionMode = 'gross';
+      displayFreq = 'annual';
+
+      regionEwniBtn?.classList.add('active');
+      regionScotBtn?.classList.remove('active');
+      modeGrossBtn?.classList.add('active');
+      modeNetBtn?.classList.remove('active');
+      freqAnnualBtn?.classList.add('active');
+      freqMonthlyBtn?.classList.remove('active');
+
+      if (contribLabel) contribLabel.textContent = 'Gross Pension Contribution';
+      if (contribSub) contribSub.textContent = 'Total amount entering your pension pot (your cash payment + 20% basic relief).';
+
+      incomeInput.value = '60000';
+      incomeSlider.value = '60000';
+      contribInput.value = '5000';
+      contribSlider.value = '5000';
+
+      incomePills.forEach(p => p.getAttribute('data-income') === '60000' ? p.classList.add('active') : p.classList.remove('active'));
+      contribPills.forEach(p => p.getAttribute('data-contrib') === '5000' ? p.classList.add('active') : p.classList.remove('active'));
+
+      calculate();
+    });
+
+    // Initial calculation
+    calculate();
+  }
+
+  document.addEventListener('DOMContentLoaded', initPTRC);
+  document.addEventListener('astro:page-load', initPTRC);
+</script>
+
+<style>
+  /* ── Inputs wrapper ─────────────────────────────────────────── */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-section {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-4) 0;
+    letter-spacing: -0.01em;
+  }
+
+  .control-label {
+    font-size: 0.9rem;
+    color: var(--color-text-base);
+  }
+
+  /* ── Mode toggle pills ──────────────────────────────────────── */
+  .toggle-pill-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 480px) {
+    .toggle-pill-group {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+    font-family: inherit;
+  }
+
+  .toggle-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text-base);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  /* ── Input groups ───────────────────────────────────────────── */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 140px;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: 10px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: 8px 12px 8px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-align: right;
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .currency-select {
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.88rem;
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+    max-width: 260px;
+  }
+
+  html.dark .currency-select,
+  html.dark .input-symbol-wrapper input {
+    background-color: var(--color-bg-surface);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .preset-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover,
+  .preset-pill.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* ── Results section ────────────────────────────────────────── */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Hero Metric */
+  .hero-metric-box {
+    background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(37,99,235,0.03));
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .hero-metric-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
+
+  .hero-metric-value {
+    font-size: clamp(1.8rem, 5vw, 2.3rem);
+    font-weight: 900;
+    color: var(--color-primary);
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* Callout Banner */
+  .callout-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+
+  .callout-banner.success {
+    border-color: rgba(16,185,129,0.4);
+    background-color: rgba(16,185,129,0.07);
+  }
+
+  .callout-banner.warning {
+    border-color: rgba(245,158,11,0.4);
+    background-color: rgba(245,158,11,0.07);
+  }
+
+  .callout-icon {
+    font-size: 1.1rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .callout-banner.success .callout-icon { color: var(--color-success); }
+  .callout-banner.warning .callout-icon { color: var(--color-warning); }
+
+  .callout-body { display: flex; flex-direction: column; gap: 2px; }
+  .callout-title { font-size: 0.9rem; font-weight: 700; color: var(--color-text-base); }
+  .callout-msg   { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.45; }
+
+  /* Dual Summary Cards (Mobile-first responsive stacking) */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 641px) {
+    .net-value-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .net-value-box {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .net-value-box.highlight-primary { border-left: 4px solid var(--color-primary); }
+  .net-value-box.highlight-warning { border-left: 4px solid var(--color-warning); }
+
+  .net-box-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .net-box-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .net-box-desc { font-size: 0.75rem; color: var(--color-text-muted); }
+
+  /* Metrics Grid (Rule 15: Responsive Results Grid) */
+  .metrics-grid-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: var(--space-2) 0 0 0;
+    color: var(--color-text-base);
+    letter-spacing: -0.01em;
+  }
+
+  .ptrc-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .tile-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .tile-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  /* Schedule / Breakdown Accordion */
+  .schedule-section {
+    margin-top: var(--space-2);
+  }
+
+  .schedule-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-base);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    font-family: inherit;
+  }
+
+  .schedule-toggle-btn:hover {
+    background-color: var(--color-bg-base);
+    border-color: var(--color-primary);
+  }
+
+  .chevron-icon {
+    transition: transform var(--transition-fast);
+  }
+
+  .chevron-icon.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  .schedule-wrapper {
+    margin-top: var(--space-3);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+
+  .schedule-table-container {
+    max-height: 380px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+  }
+
+  .schedule-table th {
+    padding: 8px 10px;
+    background-color: var(--color-bg-base);
+    border-bottom: 2px solid var(--color-border);
+    font-weight: 700;
+    color: var(--color-text-base);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .schedule-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .schedule-table tr:hover td {
+    background-color: rgba(37, 99, 235, 0.04);
+  }
+
+  .schedule-footnote {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-top: var(--space-2);
+    text-align: right;
+  }
+
+  /* Verdict Card */
+  .verdict-container { margin-top: 0; }
+
+  .verdict-card {
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+  }
+
+  .verdict-info { border-left: 4px solid var(--color-primary); }
+
+  .verdict-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    margin-bottom: 6px;
+  }
+
+  .verdict-paragraph {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    line-height: 1.4;
+    display: block;
+  }
+</style>

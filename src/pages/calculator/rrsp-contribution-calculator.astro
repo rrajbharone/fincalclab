@@ -1,0 +1,419 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RrspContributionCalculator from '../../components/calculator/RrspContributionCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'RRSP Contribution Calculator', item: '/calculator/rrsp-contribution-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is an RRSP contribution?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A Registered Retirement Savings Plan (RRSP) contribution is money deposited into an individual or spousal RRSP account registered with the Canada Revenue Agency (CRA). Contributions are deductible from your taxable income, reducing your overall federal and provincial income tax liability for the tax year while allowing your investments to grow tax-deferred until retirement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much can I contribute to my RRSP in 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For the 2026 tax year, you can contribute up to 18% of your earned income from the previous tax year (2025), capped at the official CRA annual dollar limit of $33,810, plus any unused RRSP contribution room carried forward from previous years, minus any pension adjustments (PA)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is RRSP contribution room calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The CRA calculates your annual RRSP deduction limit as: (1) 18% of your previous year's earned income (up to the annual dollar limit), MINUS (2) your pension adjustment (PA) from employer-sponsored pension plans, PLUS (3) your unused RRSP contribution room carried forward from all prior years since 1991, PLUS (4) any pension adjustment reversals (PAR), MINUS past service pension adjustments (PSPA)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the official RRSP dollar limit for 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The official CRA annual RRSP dollar limit for 2026 is $33,810 (an increase from $32,490 in 2025). This limit represents the maximum amount of new RRSP room that can be generated in a single year from 2025 earned income."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much tax do I save by contributing to an RRSP?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your tax savings equal your deductible RRSP contribution multiplied by your combined marginal federal and provincial income tax rate. For example, if you reside in Ontario and earn $95,000, your combined marginal tax rate is approximately 37.9%. Contributing $10,000 produces an estimated tax savings/refund of approximately $3,790."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my entire RRSP contribution tax deductible?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only contributions that fall within your available RRSP deduction limit (as shown on your latest CRA Notice of Assessment) are tax deductible. Any contribution exceeding your available room cannot be deducted in the current tax year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I exceed my RRSP contribution room?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The CRA allows a cumulative lifetime overcontribution buffer of $2,000 for Canadian taxpayers aged 18 and older. If you exceed your available room by more than $2,000, you are subject to a 1% per month penalty tax on the excess amount under Part X.1 of the Income Tax Act until the funds are withdrawn or new room is generated."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I find my exact RRSP contribution room?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can find your official RRSP deduction limit by checking line 'RRSP deduction limit for 2026' on your latest CRA Notice of Assessment (NOA), logging into CRA My Account online, checking the MyCRA mobile application, or calling the CRA Tax Information Phone Service (TIPS) at 1-800-267-6999."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do RRSP tax savings vary by province?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. While federal tax brackets are uniform across Canada, each province and territory sets its own progressive income tax rates and brackets. Consequently, a $10,000 RRSP contribution produces different total tax savings in Ontario, Alberta, British Columbia, or Quebec based on provincial tax schedules and surtaxes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is an RRSP better than a TFSA for reducing taxable income?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, for reducing current-year taxable income, an RRSP is specifically designed for this purpose because contributions are tax-deductible. TFSA contributions are made with after-tax dollars and do not reduce taxable income, though TFSA investment earnings and future withdrawals are 100% tax-free."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RRSP Contribution Calculator Canada",
+  "url": "https://fincalclab.com/calculator/rrsp-contribution-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free Canadian RRSP Contribution Calculator for 2026. Calculate federal and provincial tax savings, deduction limits, remaining room, and after-tax cost across all provinces.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CAD"
+  }
+};
+---
+
+<Layout
+  title="RRSP Contribution Calculator (Canada 2026) – Tax Savings & Room"
+  description="Calculate your Canadian RRSP tax deduction, federal & provincial tax savings, and after-tax cost for 2026. Includes all provinces, Quebec rules, and CRA limits."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <RrspContributionCalculator />
+
+    <!-- Educational SEO Guide Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Featured Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Retirement &amp; Wealth Planning Suite</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Model Long-Term Wealth Accumulation &amp; Savings Milestones</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              To compare exact multi-bracket tax relief across Canadian provinces, explore our dedicated <a href="/calculator/rrsp-tax-savings-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">RRSP Tax Savings Calculator</a>. You can also project long-term compound growth with our <a href="/calculator/wealth-projection-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Wealth Projection Calculator</a>, or calculate required deposits with the <a href="/calculator/monthly-savings-goal-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Monthly Savings Goal Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is an RRSP Contribution Calculator?</h2>
+        <p>
+          An <strong>RRSP Contribution Calculator</strong> is an essential Canadian financial tool designed to help taxpayers calculate the exact tax deductions, federal and provincial tax refunds, and remaining contribution room resulting from a deposit into a Registered Retirement Savings Plan (RRSP).
+        </p>
+        <p>
+          Whether you are planning a lump-sum contribution before the March CRA contribution deadline or setting up monthly pre-authorized contributions, this calculator helps you:
+        </p>
+        <ul>
+          <li><strong>Quantify Tax Savings:</strong> Discover how much your taxable income will decrease and estimate your combined federal and provincial tax refund.</li>
+          <li><strong>Prevent Overcontributions:</strong> Ensure your planned contribution stays within your official CRA RRSP deduction limit, avoiding costly penalty taxes.</li>
+          <li><strong>Determine True Out-of-Pocket Cost:</strong> Calculate the real economic cost of your investment after factoring in your tax reduction.</li>
+          <li><strong>Compare Across Provinces:</strong> Accurately calculate progressive tax savings across all 13 Canadian provinces and territories, including Quebec's separate provincial system.</li>
+        </ul>
+
+        <h2>How RRSP Contributions Work in Canada</h2>
+        <p>
+          Established under the Canadian <em>Income Tax Act</em>, the <strong>Registered Retirement Savings Plan (RRSP)</strong> is a tax-advantaged account registered with the Canada Revenue Agency (CRA) designed to encourage Canadians to build retirement wealth.
+        </p>
+        <p>
+          The RRSP framework operates on two powerful principles:
+        </p>
+        <ol>
+          <li>
+            <strong>Tax-Deductible Contributions:</strong> Every dollar contributed within your deduction limit directly reduces your net taxable income on line 20800 of your T1 General tax return. If you are in a 40% combined tax bracket, a $10,000 RRSP deduction reduces your tax bill by $4,000.
+          </li>
+          <li>
+            <strong>Tax-Deferred Compounding:</strong> Investment growth inside the plan — including interest, Canadian dividends, foreign dividends, and capital gains — is completely exempt from Canadian income tax while it remains inside the RRSP. Tax is only payable when funds are withdrawn in retirement, typically at a lower marginal tax rate.
+          </li>
+        </ol>
+
+        <h2>How Much Can You Contribute to an RRSP?</h2>
+        <p>
+          Your personal maximum contribution is defined by your <strong>RRSP deduction limit</strong>, not by a universal flat amount. For the <strong>2026 tax year</strong>, new room is calculated as:
+        </p>
+        <p style="text-align: center; font-weight: 700; font-size: 1.05rem; padding: var(--space-3); background-color: var(--color-bg-surface); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+          New 2026 Room = 18% of 2025 Earned Income (up to $33,810) − Pension Adjustments + Unused Carry-Forward Room
+        </p>
+        <p>
+          If you earned $80,000 in 2025 and have no employer pension, you generate $14,400 of new RRSP room for 2026. If you also have $15,000 of unused room carried forward from previous years, your total available room for 2026 is <strong>$29,400</strong>.
+        </p>
+
+        <h2>What Is RRSP Contribution Room vs. RRSP Deduction Limit?</h2>
+        <p>
+          Canadians often hear the terms <em>contribution room</em> and <em>deduction limit</em> used interchangeably, but there is a subtle distinction under CRA tax law:
+        </p>
+        <ul>
+          <li><strong>RRSP Deduction Limit:</strong> The maximum dollar amount of RRSP contributions you can deduct from your taxable income on your tax return for the year. This is the official number printed on your CRA Notice of Assessment.</li>
+          <li><strong>Unused RRSP Contributions:</strong> Contributions you made in prior years that you reported to CRA (Schedule 7) but chose not to deduct yet.</li>
+          <li><strong>Available Contribution Room:</strong> Your deduction limit minus any previously reported but undeducted contributions. For the vast majority of Canadians who deduct contributions in the year they make them, your contribution room equals your deduction limit.</li>
+        </ul>
+
+        <h2>RRSP Contribution Limits for 2026</h2>
+        <p>
+          The CRA indexes the annual RRSP dollar limit annually to reflect average wage growth across Canada. Below is the historical progression of the statutory limits:
+        </p>
+        <div style="overflow-x: auto; margin: var(--space-4) 0;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-border); text-align: left;">
+                <th style="padding: 10px;">Tax Year</th>
+                <th style="padding: 10px;">Annual CRA Dollar Limit</th>
+                <th style="padding: 10px;">Earned Income Required for Max Limit</th>
+                <th style="padding: 10px;">Contribution Deadline</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border); background-color: var(--color-bg-surface);">
+                <td style="padding: 10px; font-weight: 700; color: var(--color-primary);">2026</td>
+                <td style="padding: 10px; font-weight: 700; color: var(--color-primary);">$33,810</td>
+                <td style="padding: 10px;">$187,833</td>
+                <td style="padding: 10px;">March 1, 2027</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 600;">2025</td>
+                <td style="padding: 10px;">$32,490</td>
+                <td style="padding: 10px;">$180,500</td>
+                <td style="padding: 10px;">March 2, 2026</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 600;">2024</td>
+                <td style="padding: 10px;">$31,560</td>
+                <td style="padding: 10px;">$175,333</td>
+                <td style="padding: 10px;">March 3, 2025</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 600;">2023</td>
+                <td style="padding: 10px;">$30,780</td>
+                <td style="padding: 10px;">$171,000</td>
+                <td style="padding: 10px;">February 29, 2024</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>How Progressive Tax Brackets Determine Your RRSP Tax Savings</h2>
+        <p>
+          Because Canada uses a <strong>progressive marginal tax system</strong>, you do not pay a single flat tax rate on your entire income. Both the federal government and your provincial government tax income in graduated tiers or brackets.
+        </p>
+        <p>
+          When you make an RRSP contribution, the deduction shaves dollars off your <strong>highest marginal tax bracket first</strong>:
+        </p>
+        <ul>
+          <li><strong>Single-Bracket Deduction:</strong> If your taxable income is $95,000 in Ontario and you contribute $5,000, the entire $5,000 sits within the 20.5% federal and 9.15% (+ surtax) provincial bracket. You save tax at that exact marginal rate (~37.9%).</li>
+          <li><strong>Multi-Bracket Crossing:</strong> If your income is $62,000 and you contribute $10,000, the first $3,500 of your deduction reduces income in the 20.5% federal bracket (down to $58,500), and the remaining $6,500 reduces income in the 15.0% bottom federal bracket. The tax savings are calculated progressively across both tiers.</li>
+        </ul>
+
+        <h2>RRSP Tax Savings by Province (2026 Comparison)</h2>
+        <p>
+          Provincial tax rates vary substantially across Canada. Here is how a <strong>$10,000 deductible RRSP contribution</strong> on an annual income of <strong>$100,000</strong> affects tax savings across key Canadian provinces:
+        </p>
+        <div style="overflow-x: auto; margin: var(--space-4) 0;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-border); text-align: left;">
+                <th style="padding: 10px;">Province</th>
+                <th style="padding: 10px;">Approx. Marginal Rate</th>
+                <th style="padding: 10px;">Estimated Tax Savings</th>
+                <th style="padding: 10px;">Net Out-of-Pocket Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Ontario (ON)</td>
+                <td style="padding: 10px;">37.9%</td>
+                <td style="padding: 10px; font-weight: 700; color: var(--color-success);">$3,790</td>
+                <td style="padding: 10px;">$6,210</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">British Columbia (BC)</td>
+                <td style="padding: 10px;">31.0%</td>
+                <td style="padding: 10px; font-weight: 700; color: var(--color-success);">$3,100</td>
+                <td style="padding: 10px;">$6,900</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Alberta (AB)</td>
+                <td style="padding: 10px;">30.5%</td>
+                <td style="padding: 10px; font-weight: 700; color: var(--color-success);">$3,050</td>
+                <td style="padding: 10px;">$6,950</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px; font-weight: 700;">Quebec (QC)</td>
+                <td style="padding: 10px;">36.1%</td>
+                <td style="padding: 10px; font-weight: 700; color: var(--color-success);">$3,610</td>
+                <td style="padding: 10px;">$6,390</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>What Happens If You Overcontribute to Your RRSP?</h2>
+        <p>
+          The Canada Revenue Agency strictly enforces contribution limits. If you contribute more than your deduction limit:
+        </p>
+        <ol>
+          <li><strong>The $2,000 Grace Cushion:</strong> Under CRA rules, individuals aged 18 or older have a lifetime cumulative overcontribution buffer of <strong>$2,000</strong>. You will not face penalties on an overcontribution up to $2,000, although you cannot deduct this excess amount from your current tax return.</li>
+          <li><strong>The 1% Per Month Penalty Tax:</strong> Any overcontribution exceeding the $2,000 cushion is subject to a <strong>1% per month penalty tax</strong> under Part X.1 of the <em>Income Tax Act</em> until the excess is withdrawn or absorbed by new room in a subsequent year.</li>
+          <li><strong>Filing Form T1-OVP:</strong> You must file CRA Form T1-OVP (Individual Tax Return for RRSP Excess Contributions) and pay the penalty tax within 90 days after the end of the tax year.</li>
+        </ol>
+
+        <h2>How to Find Your Official RRSP Contribution Room</h2>
+        <p>
+          Never guess your contribution room. The CRA tracks your cumulative deduction room automatically based on your prior tax returns. You can find your exact figure via:
+        </p>
+        <ul>
+          <li><strong>Your Latest Notice of Assessment (NOA):</strong> Check the table titled <em>"Your 2026 RRSP deduction limit statement"</em> on page 2 or 3 of the assessment sent after you filed your 2025 return.</li>
+          <li><strong>CRA My Account Online:</strong> Log in to CRA My Account at canada.ca/my-cra-account to view your live deduction limit, available room, and unused contributions.</li>
+          <li><strong>MyCRA Mobile App:</strong> Access your profile through official CRA mobile services.</li>
+          <li><strong>CRA TIPS Telephone Line:</strong> Call the automated Tax Information Phone Service at <strong>1-800-267-6999</strong> with your SIN and previous year's tax return details.</li>
+        </ul>
+
+        <h2>Common RRSP Contribution Mistakes to Avoid</h2>
+        <ol>
+          <li>
+            <strong>Confusing the Annual Dollar Limit with Personal Room:</strong> Assuming you can contribute $33,810 just because that is the 2026 statutory cap. You can only contribute up to your personal Notice of Assessment room.
+          </li>
+          <li>
+            <strong>Forgetting Employer Pension Adjustments (PA):</strong> If you belong to a defined benefit (DB) or defined contribution (DC) workplace pension, box 52 of your T4 slip records a Pension Adjustment that reduces your new RRSP room.
+          </li>
+          <li>
+            <strong>Missing the March 1st Deadline:</strong> Contributions made in the first 60 days of the calendar year can be deducted on the previous year's return. Missing this deadline delays your tax refund by an entire year.
+          </li>
+          <li>
+            <strong>Failing to Reinvest the Tax Refund:</strong> The true power of an RRSP is realized when your tax refund is reinvested into your TFSA, RRSP, or non-registered investment portfolio, creating a secondary layer of compounding growth.
+          </li>
+          <li>
+            <strong>Withdrawing Early Without Considering Withholding Tax:</strong> Withdrawing from an RRSP prior to retirement triggers immediate non-resident or resident withholding tax (10% to 30%), and the contribution room used is permanently lost.
+          </li>
+        </ol>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion-group">
+          {faqSchema.mainEntity.map((faq) => (
+            <div class="faq-item" style="margin-bottom: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-surface);">
+              <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700; color: var(--color-text-base);">{faq.name}</h3>
+              <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">{faq.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Financial Disclaimer Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-base);">
+          <h4 style="margin: 0 0 var(--space-2) 0; font-size: 0.95rem; font-weight: 700; color: var(--color-text-base);">Important Canadian Tax &amp; Financial Disclaimer</h4>
+          <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5;">
+            This calculator provides an estimate for educational purposes only. Your actual RRSP deduction limit, tax savings and tax payable depend on your personal tax situation and information available to the Canada Revenue Agency. Check your latest CRA Notice of Assessment or CRA account before making a contribution. This calculator is not tax or financial advice. Canadian taxpayers should consult a qualified Chartered Professional Accountant (CPA) or licensed financial planner for personalized advice.
+          </p>
+        </div>
+
+        <!-- Related Tools Section -->
+        <div style="margin-top: var(--space-8); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background-color: var(--color-bg-surface);">
+          <h3 style="margin: 0 0 var(--space-3) 0; font-size: 1.05rem; font-weight: 700;">Related Savings &amp; Wealth Calculators</h3>
+          <ul style="margin: 0; padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2);">
+            <li><a href="/calculator/wealth-projection-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Wealth Projection Calculator</a> — Model compound investment growth from reinvesting your annual RRSP tax refunds.</li>
+            <li><a href="/calculator/savings-target-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Savings Target Calculator</a> — Calculate how fast your retirement portfolio grows toward your ultimate nest egg target.</li>
+            <li><a href="/calculator/monthly-savings-goal-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Monthly Savings Goal Calculator</a> — Determine monthly automatic deposits required to maximize your annual RRSP room.</li>
+            <li><a href="/calculator/money-doubling-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Money Doubling Calculator</a> — Estimate how many years it takes for your RRSP assets to double using the Rule of 72.</li>
+            <li><a href="/calculator/reverse-tax-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Reverse Tax Calculator</a> — Convert after-tax take-home pay back into pre-tax gross salary.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

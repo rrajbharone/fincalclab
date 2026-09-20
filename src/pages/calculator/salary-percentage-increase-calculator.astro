@@ -1,0 +1,523 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SalaryPercentageIncreaseCalculator from '../../components/calculator/SalaryPercentageIncreaseCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Salary Percentage Increase Calculator', item: '/calculator/salary-percentage-increase-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do you calculate a salary percentage increase?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To calculate a salary percentage increase, divide the raise amount by the original salary and multiply by 100. Formula: Percentage Increase = ((New Salary - Original Salary) / Original Salary) × 100. For example, if your salary goes from $60,000 to $66,000, the increase is ($66,000 - $60,000) / $60,000 × 100 = 10%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much is a 10% salary increase on a $60,000 salary?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A 10% increase on a $60,000 annual salary equals $6,000, bringing your new salary to $66,000 per year or $5,500 per month. The formula is: Raise Amount = Original Salary × (Percentage / 100) = $60,000 × 0.10 = $6,000."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is considered a good salary percentage increase?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A cost-of-living raise typically falls between 2% and 4%, which keeps pace with inflation. A performance raise averages 4% to 8%. A promotion usually adds 10% to 20%, while switching employers can yield 15% to 30% or more. Any raise exceeding 10% is generally considered above average in most industries."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I calculate my new monthly salary after a raise?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "First calculate your new annual salary by adding the raise amount to your current annual salary. Then divide by 12 for the monthly figure. Example: $60,000 × 10% raise = $6,000 raise. New annual salary = $66,000. New monthly salary = $66,000 / 12 = $5,500."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a merit raise and a cost-of-living adjustment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A merit raise rewards individual performance and contributions. It is discretionary and typically ranges from 3% to 15%. A cost-of-living adjustment (COLA) is a flat percentage applied across all employees to offset inflation, usually tied to the Consumer Price Index (CPI). COLAs typically range from 2% to 5% per year."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you negotiate a higher salary increase percentage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To negotiate a higher raise: (1) Document your measurable achievements and the revenue or cost savings you generated; (2) Research market pay rates for your role using salary databases like Glassdoor, LinkedIn Salary, or the Bureau of Labor Statistics; (3) Request a specific percentage backed by data rather than a vague 'raise'; (4) Time your request during performance reviews or after a major win; (5) Consider the full package — bonuses, equity, and remote work flexibility also have monetary value."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a higher salary mean higher taxes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, but only the portion that moves into a higher tax bracket is taxed at the higher rate, not your entire income. The US uses a progressive marginal tax system, so each dollar is taxed at the rate for the bracket it falls in. A 10% raise rarely causes a dramatic net pay reduction — in most cases, your take-home pay increases meaningfully after taxes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I calculate my salary increase if I know only my old and new salary?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the reverse mode: Percentage Increase = ((New Salary - Old Salary) / Old Salary) × 100. For example, going from $55,000 to $63,250: ($63,250 - $55,000) / $55,000 × 100 = 15.00% increase. This formula works for both annual and monthly figures as long as both salaries use the same period."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the average annual salary increase in the United States?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "According to the Bureau of Labor Statistics and major compensation surveys, the average annual pay increase in the US typically ranges between 3% and 5% for merit raises and cost-of-living adjustments. In tight labor markets or high-demand industries like technology and healthcare, above-average increases of 6% to 10% are more common."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use this calculator for monthly salaries?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Select 'Monthly' from the Salary Period dropdown and enter your current monthly salary. The calculator will compute your new monthly salary, the monthly increase amount, and also show the annual equivalents for complete context. All formulas work identically for monthly and annual salary figures."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Salary Percentage Increase Calculator",
+  "url": "https://fincalclab.com/calculator/salary-percentage-increase-calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "description": "Free online Salary Percentage Increase Calculator. Calculate your new salary after a percentage raise, or find out what percentage your salary increased by. Instantly see annual and monthly equivalents.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Salary Percentage Increase Calculator – Calculate Your Raise"
+  description="Free Salary Percentage Increase Calculator. Find your new salary after a % raise, or calculate what percentage your pay increased. Instant results with monthly and annual breakdowns."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator -->
+    <SalaryPercentageIncreaseCalculator />
+
+    <!-- Educational SEO Content -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Featured Cross-Link Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Salary & Income Planning</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800;">Maximize Every Paycheck — Understand What Your Raise Is Really Worth</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.5;">
+              A salary raise changes your entire financial picture. Pair this tool with our <a href="/calculator/salary-hike-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Hike Calculator</a> for promotion scenarios, calculate overtime premium rates with the <a href="/calculator/overtime-rate-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Overtime Rate Calculator</a>, or find your effective daily pay with the <a href="/calculator/daily-salary-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Daily Salary Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is a Salary Percentage Increase Calculator?</h2>
+        <p>
+          A <strong>salary percentage increase calculator</strong> is a financial tool that helps you instantly determine either your new salary after a percentage raise, or the percentage increase implied by a change from one salary to another. Instead of doing mental arithmetic during a performance review or job negotiation, you simply enter your numbers and get an immediate, accurate answer — including how much more you will earn per month and per year.
+        </p>
+        <p>
+          Whether you just received a promotion, are evaluating a job offer, or want to know exactly how much a 5%, 10%, or 15% raise is worth in real dollars, this calculator gives you the complete picture. It works for both annual and monthly salaries and supports multiple currencies, making it useful regardless of where you live or work.
+        </p>
+        <p>
+          The tool operates in two modes: <strong>Mode 1</strong> calculates your new salary when you know the percentage increase, and <strong>Mode 2</strong> calculates the percentage increase when you know both the old and new salary. Together they answer every salary increase question you might have in seconds.
+        </p>
+
+        <h2>The Salary Percentage Increase Formula</h2>
+        <p>
+          Understanding the math behind a salary raise helps you verify any number your employer gives you and negotiate from a position of knowledge. There are two core formulas depending on which variable you are solving for.
+        </p>
+
+        <h3>Formula 1: Calculate New Salary After a Percentage Raise</h3>
+        <p>
+          When you know your current salary and the raise percentage, use this formula:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; overflow-x: auto; text-align: center;">
+          <strong>Raise Amount = Current Salary × (Percentage ÷ 100)</strong><br />
+          <strong>New Salary = Current Salary + Raise Amount</strong>
+        </div>
+        <p>
+          <strong>Example:</strong> Your current annual salary is $65,000. Your employer offers a 12% raise.
+        </p>
+        <ul>
+          <li>Raise Amount = $65,000 × (12 ÷ 100) = <strong>$7,800</strong></li>
+          <li>New Salary = $65,000 + $7,800 = <strong>$72,800 per year</strong></li>
+          <li>New Monthly Salary = $72,800 ÷ 12 = <strong>$6,066.67 per month</strong></li>
+        </ul>
+
+        <h3>Formula 2: Calculate the Percentage Increase Between Two Salaries</h3>
+        <p>
+          When you know both the old and new salary and want to calculate what percentage change occurred, use this reverse formula:
+        </p>
+        <div style="background-color: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-4) 0; font-family: monospace; font-size: 0.95rem; overflow-x: auto; text-align: center;">
+          <strong>Percentage Increase = ((New Salary − Original Salary) ÷ Original Salary) × 100</strong>
+        </div>
+        <p>
+          <strong>Example:</strong> You moved from a salary of $55,000 to $63,250. What percentage increase is that?
+        </p>
+        <ul>
+          <li>Difference = $63,250 − $55,000 = <strong>$8,250</strong></li>
+          <li>Percentage Increase = ($8,250 ÷ $55,000) × 100 = <strong>15.00%</strong></li>
+        </ul>
+        <p>
+          This reverse formula is especially useful when comparing job offers or benchmarking salary growth across multiple years of your career.
+        </p>
+
+        <h2>What Is Considered a Good Salary Percentage Increase?</h2>
+        <p>
+          The definition of a "good" raise depends heavily on your industry, experience level, location, and economic conditions. Here are the general benchmarks used by HR professionals and compensation analysts:
+        </p>
+
+        <div style="overflow-x: auto; margin: var(--space-6) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 12px; font-weight: 700;">Raise Type</th>
+                <th style="padding: 12px; font-weight: 700;">Typical Range</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-primary);">Occasion / Trigger</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Cost-of-Living Adjustment (COLA)</td>
+                <td style="padding: 10px 12px;">2% – 4%</td>
+                <td style="padding: 10px 12px;">Annual, inflation-tied, company-wide</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Standard Merit Raise</td>
+                <td style="padding: 10px 12px;">3% – 6%</td>
+                <td style="padding: 10px 12px;">Annual performance review</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Above-Average Merit Raise</td>
+                <td style="padding: 10px 12px;">6% – 10%</td>
+                <td style="padding: 10px 12px;">High-performer, critical skill, exceeds expectations</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Internal Promotion</td>
+                <td style="padding: 10px 12px;">10% – 20%</td>
+                <td style="padding: 10px 12px;">New title, expanded scope or team</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">Changing Employers</td>
+                <td style="padding: 10px 12px;">15% – 30%</td>
+                <td style="padding: 10px 12px;">External job offer, competitive market</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">Counter-Offer / Retention Raise</td>
+                <td style="padding: 10px 12px;">10% – 25%</td>
+                <td style="padding: 10px 12px;">Competing offer used as leverage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          According to the Society for Human Resource Management (SHRM) and Mercer's annual surveys, the average US merit raise budget has ranged from 3.5% to 5.0% over recent years. Any raise above 10% in a single year — without a promotion — is considered exceptional. If you received a 15%+ raise, you are outpacing the vast majority of workers.
+        </p>
+
+        <h2>How Much Is a 10%, 15%, or 20% Raise Worth?</h2>
+        <p>
+          The dollar value of a raise depends entirely on your current salary. The table below shows exactly what common raise percentages are worth across four typical salary levels, both annually and monthly:
+        </p>
+
+        <div style="overflow-x: auto; margin: var(--space-6) 0;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead>
+              <tr style="background-color: var(--color-bg-surface); border-bottom: 2px solid var(--color-border);">
+                <th style="padding: 12px; font-weight: 700;">Current Salary</th>
+                <th style="padding: 12px; font-weight: 700;">5% Raise</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-primary);">10% Raise</th>
+                <th style="padding: 12px; font-weight: 700; color: var(--color-success);">15% Raise</th>
+                <th style="padding: 12px; font-weight: 700;">20% Raise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">$40,000 / yr ($3,333/mo)</td>
+                <td style="padding: 10px 12px;">+$2,000/yr (+$167/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">+$4,000/yr (+$333/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-success);">+$6,000/yr (+$500/mo)</td>
+                <td style="padding: 10px 12px;">+$8,000/yr (+$667/mo)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">$60,000 / yr ($5,000/mo)</td>
+                <td style="padding: 10px 12px;">+$3,000/yr (+$250/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">+$6,000/yr (+$500/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-success);">+$9,000/yr (+$750/mo)</td>
+                <td style="padding: 10px 12px;">+$12,000/yr (+$1,000/mo)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 10px 12px; font-weight: 600;">$90,000 / yr ($7,500/mo)</td>
+                <td style="padding: 10px 12px;">+$4,500/yr (+$375/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">+$9,000/yr (+$750/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-success);">+$13,500/yr (+$1,125/mo)</td>
+                <td style="padding: 10px 12px;">+$18,000/yr (+$1,500/mo)</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 600;">$120,000 / yr ($10,000/mo)</td>
+                <td style="padding: 10px 12px;">+$6,000/yr (+$500/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-primary);">+$12,000/yr (+$1,000/mo)</td>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--color-success);">+$18,000/yr (+$1,500/mo)</td>
+                <td style="padding: 10px 12px;">+$24,000/yr (+$2,000/mo)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Keep in mind that these are pre-tax figures. A portion of your raise will be withheld for federal and state income taxes, Social Security, and Medicare. However, since the US uses a marginal tax system, only the dollars in each bracket are taxed at that bracket's rate — your entire salary does not get taxed at the higher rate.
+        </p>
+
+        <h2>The Compounding Power of a Salary Increase</h2>
+        <p>
+          One of the most underappreciated aspects of a salary raise is its long-term compounding effect. Every future raise is calculated as a percentage of your current salary. The higher your base, the bigger every subsequent raise becomes — in absolute dollar terms.
+        </p>
+        <p>
+          Consider two employees: Employee A negotiates a 15% raise in Year 1 and Employee B settles for 5%. Both receive 5% annual raises every year afterward:
+        </p>
+        <ul>
+          <li><strong>Starting salary for both:</strong> $60,000</li>
+          <li><strong>After Year 1:</strong> Employee A earns $69,000; Employee B earns $63,000 — a $6,000 gap</li>
+          <li><strong>After Year 5:</strong> Employee A earns ~$83,700; Employee B earns ~$76,600 — the gap has widened to over $7,100/year</li>
+          <li><strong>After Year 10:</strong> Employee A earns ~$106,800; Employee B earns ~$97,700 — now over $9,000 apart</li>
+        </ul>
+        <p>
+          That single early negotiation win compounded into a difference of more than $130,000 in total additional income over a decade. This is why financial advisors consistently say that negotiating your starting salary — or your first raise — is one of the highest-return financial decisions you can make. To explore how earnings translate to savings, try the <a href="/calculator/monthly-savings-goal-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Monthly Savings Goal Calculator</a>.
+        </p>
+
+        <h2>How to Calculate Your Salary Increase Percentage in Different Scenarios</h2>
+
+        <h3>Scenario 1: Annual Performance Review</h3>
+        <p>
+          You currently earn $75,000 per year. Your manager informs you that you will receive a 7.5% merit raise effective next month. What is your new salary?
+        </p>
+        <ul>
+          <li>Raise Amount = $75,000 × 0.075 = <strong>$5,625</strong></li>
+          <li>New Annual Salary = $75,000 + $5,625 = <strong>$80,625 per year</strong></li>
+          <li>New Monthly Salary = $80,625 ÷ 12 = <strong>$6,718.75 per month</strong></li>
+        </ul>
+
+        <h3>Scenario 2: New Job Offer Comparison</h3>
+        <p>
+          You earn $85,000 at your current job. A competing company offers you $97,750. What percentage increase is that?
+        </p>
+        <ul>
+          <li>Difference = $97,750 − $85,000 = <strong>$12,750</strong></li>
+          <li>Percentage Increase = ($12,750 ÷ $85,000) × 100 = <strong>15.00%</strong></li>
+        </ul>
+        <p>
+          This tells you the competing offer is worth exactly 15% more. Use this number as a data point in your counter-offer negotiation with your current employer.
+        </p>
+
+        <h3>Scenario 3: Monthly Salary Raise</h3>
+        <p>
+          You currently earn $5,200 per month. You receive a 6% raise. What is your new monthly and annual salary?
+        </p>
+        <ul>
+          <li>Monthly Raise = $5,200 × 0.06 = <strong>$312 per month</strong></li>
+          <li>New Monthly Salary = $5,200 + $312 = <strong>$5,512 per month</strong></li>
+          <li>New Annual Salary = $5,512 × 12 = <strong>$66,144 per year</strong></li>
+        </ul>
+        <p>
+          Use the "Monthly" period setting in the calculator above to work directly with monthly figures.
+        </p>
+
+        <h2>Salary Increase vs. Salary Hike vs. Pay Raise — What Is the Difference?</h2>
+        <p>
+          These terms are often used interchangeably, but there are subtle distinctions worth understanding when discussing compensation with HR departments or employment contracts:
+        </p>
+        <ul>
+          <li><strong>Salary Increase:</strong> A broad term for any upward adjustment to your base salary, whether driven by performance, inflation, promotion, or market correction.</li>
+          <li><strong>Salary Hike:</strong> Commonly used in South Asia (particularly India) to describe a raise, often in the context of annual performance cycles or CTC (Cost to Company) renegotiations. Explore the dedicated <a href="/calculator/salary-hike-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Salary Hike Calculator</a> for this use case.</li>
+          <li><strong>Pay Raise:</strong> The most common US term, often referring specifically to merit-based increases. In contrast, a promotion involves both a new title and a salary increase.</li>
+          <li><strong>Cost-of-Living Adjustment (COLA):</strong> A non-discretionary, economy-wide adjustment intended to maintain purchasing power, not reward performance.</li>
+          <li><strong>Salary Increment:</strong> Frequently used in formal employment contracts to describe scheduled, pre-agreed salary step-ups over time.</li>
+        </ul>
+        <p>
+          Regardless of the term your employer uses, the math is identical — and this calculator handles all of them.
+        </p>
+
+        <h2>Tips for Negotiating a Higher Salary Increase</h2>
+        <ol>
+          <li>
+            <strong>Prepare a Value Summary:</strong> Quantify exactly what you delivered — the revenue you drove, the costs you reduced, the projects you shipped on time. HR teams respond to numbers, not narratives. A concrete statement like "I reduced onboarding time by 40%, saving the team 80 hours per quarter" is far more compelling than "I worked very hard."
+          </li>
+          <li>
+            <strong>Research Market Compensation:</strong> Know what your role pays in your market before entering any negotiation. Use resources like LinkedIn Salary, Glassdoor, Levels.fyi, or the Bureau of Labor Statistics Occupational Employment Statistics to benchmark your current pay against peers.
+          </li>
+          <li>
+            <strong>Ask for a Specific Number:</strong> Anchoring the conversation with a specific percentage (e.g., "I am looking for a 12% increase") tends to produce better outcomes than leaving it open-ended. Anchoring is a well-documented negotiation technique.
+          </li>
+          <li>
+            <strong>Negotiate Timing Strategically:</strong> Request a raise after a major success — the conclusion of a project, a positive review cycle, or landing a significant new client. Avoid asking during budget freezes, layoffs, or organizational restructuring.
+          </li>
+          <li>
+            <strong>Broaden the Definition of Compensation:</strong> If a cash raise is not available, negotiate for additional paid time off, remote work flexibility, a one-time bonus, stock options, or accelerated review cycles. These have real monetary value. Calculate the dollar value of a pay day difference using the <a href="/calculator/double-time-pay-calculator" style="color: var(--color-primary); font-weight: 600; text-decoration: underline;">Double Time Pay Calculator</a> if overtime is part of your package.
+          </li>
+          <li>
+            <strong>Get It in Writing:</strong> Any salary increase should be confirmed in a formal offer letter or updated employment contract before you agree. Verbal commitments are difficult to enforce.
+          </li>
+        </ol>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion" style="display: flex; flex-direction: column; gap: var(--space-4); margin-top: var(--space-4);">
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do you calculate a salary percentage increase?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Divide the raise amount by the original salary and multiply by 100. Formula: <strong>Percentage Increase = ((New Salary − Original Salary) ÷ Original Salary) × 100</strong>. For example, going from $60,000 to $66,000 is a 10% increase: ($6,000 ÷ $60,000) × 100 = 10%.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How much is a 10% salary increase on a $60,000 salary?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              A 10% increase on $60,000 equals <strong>$6,000 per year</strong>, bringing your new salary to $66,000 annually or $5,500 per month. Formula: $60,000 × 0.10 = $6,000.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is considered a good salary percentage increase?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              A cost-of-living raise is typically 2%–4%. A merit raise averages 4%–8%. A promotion usually delivers 10%–20%, and switching employers can yield 15%–30% or more. Any raise exceeding 10% without a promotion is generally above average.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do I calculate my new monthly salary after a raise?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Calculate your new annual salary first, then divide by 12. Example: $60,000 + 10% raise = $66,000 annual. Monthly = $66,000 ÷ 12 = <strong>$5,500 per month</strong>. Our calculator shows both figures automatically.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is the difference between a merit raise and a cost-of-living adjustment?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              A merit raise rewards individual performance and contributions, typically ranging from 3% to 15%. A cost-of-living adjustment (COLA) is a flat percentage applied across all employees to offset inflation, typically tied to the Consumer Price Index (CPI) and ranging from 2% to 5%.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do you negotiate a higher salary increase percentage?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Document your measurable achievements, research market pay rates, request a specific percentage with data to back it up, time your request after a major win, and consider the full compensation package including bonuses, equity, and flexible work arrangements.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Does a higher salary mean higher taxes?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes, but only the income in each bracket is taxed at that bracket's rate. The US progressive marginal system means a raise rarely dramatically reduces your take-home pay — in most cases, your net income still increases meaningfully after taxes.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">How do I calculate my salary increase if I only know my old and new salary?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Use the "Calculate Increase %" mode above. The formula is: <strong>Percentage = ((New − Old) ÷ Old) × 100</strong>. Example: ($63,250 − $55,000) / $55,000 × 100 = <strong>15.00%</strong>.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">What is the average annual salary increase in the United States?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              According to compensation surveys, the average US annual raise ranges from 3% to 5% for merit increases and cost-of-living adjustments. High-demand industries like technology and healthcare often see above-average increases of 6% to 10%.
+            </p>
+          </div>
+
+          <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-bg-base);">
+            <h3 style="margin: 0 0 var(--space-2) 0; font-size: 1.05rem; font-weight: 700;">Can I use this calculator for monthly salaries?</h3>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.5;">
+              Yes. Select "Monthly" from the Salary Period dropdown and enter your current monthly salary. The calculator computes your new monthly salary, the monthly increase amount, and also shows the full annual equivalents. All formulas work identically for monthly and annual figures.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .prose h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ol,
+  .prose ul {
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .prose a {
+    transition: color var(--transition-fast);
+  }
+
+  .prose a:hover {
+    color: var(--color-primary-hover);
+  }
+</style>

@@ -9,7 +9,8 @@ export default defineConfig({
   integrations: [sitemap()],
   redirects: {
     '/monthly-savings-goal-calculator': '/calculator/monthly-savings-goal-calculator',
-    '/savings-target-calculator': '/calculator/savings-target-calculator'
+    '/savings-target-calculator': '/calculator/savings-target-calculator',
+    '/salary-percentage-increase-calculator': '/calculator/salary-percentage-increase-calculator'
   },
   vite: {
     build: {

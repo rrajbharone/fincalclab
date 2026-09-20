@@ -1,0 +1,1021 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Salary Percentage Increase Calculator"
+  description="Calculate your new salary after a percentage raise, or find out what percentage your pay increased. Instant annual and monthly breakdowns."
+  category="Income & Salary"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="spic-root">
+
+    <!-- Mode Switcher -->
+    <div class="input-section mode-switch-section">
+      <label class="control-label" style="font-weight: 700; margin-bottom: var(--space-2); display: block;">What do you want to calculate?</label>
+      <div class="toggle-pill-group" role="radiogroup" aria-label="Calculation Mode">
+        <button type="button" class="toggle-pill active" id="spic-mode-new-btn" aria-checked="true" role="radio">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;flex-shrink:0;"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          New Salary After Raise
+        </button>
+        <button type="button" class="toggle-pill" id="spic-mode-pct-btn" aria-checked="false" role="radio">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;flex-shrink:0;"><circle cx="9" cy="9" r="4"></circle><circle cx="15" cy="15" r="4"></circle><line x1="4" y1="20" x2="20" y2="4"></line></svg>
+          Calculate Increase %
+        </button>
+      </div>
+    </div>
+
+    <!-- ── MODE A: Calculate New Salary ── -->
+    <div id="spic-mode-a" class="input-section" style="margin-top: var(--space-5);">
+      <h3 class="section-title">Salary Details</h3>
+
+      <!-- Currency -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-currency">Currency</label>
+          <select id="spic-currency" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) – US Dollar</option>
+            <option value="EUR">EUR (€) – Euro</option>
+            <option value="GBP">GBP (£) – British Pound</option>
+            <option value="CAD">CAD (C$) – Canadian Dollar</option>
+            <option value="AUD">AUD (A$) – Australian Dollar</option>
+            <option value="INR">INR (₹) – Indian Rupee</option>
+            <option value="JPY">JPY (¥) – Japanese Yen</option>
+            <option value="SGD">SGD (S$) – Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) – Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Current Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-current-salary">Current Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="spic-cur-sym-1">$</span>
+            <input type="number" id="spic-current-salary" min="0" max="100000000" step="500" value="60000" aria-label="Current Salary" />
+          </div>
+        </div>
+        <input type="range" id="spic-current-slider" min="10000" max="300000" step="1000" value="60000" class="slider-range" aria-label="Current Salary Slider" />
+      </div>
+
+      <!-- Salary Period -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-period">Salary Period</label>
+          <select id="spic-period" class="currency-select" aria-label="Salary Period">
+            <option value="annual" selected>Annual (Yearly)</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+        <span class="input-subtext">Choose whether your salary is per year or per month.</span>
+      </div>
+
+      <!-- Salary Increase % -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-increase-pct">Salary Increase</label>
+          <div class="input-symbol-wrapper">
+            <input type="number" id="spic-increase-pct" min="0" max="1000" step="0.1" value="10" aria-label="Salary Increase Percentage" style="padding-right: 28px; padding-left: 10px;" />
+            <span class="percent-symbol">%</span>
+          </div>
+        </div>
+        <input type="range" id="spic-increase-slider" min="0" max="100" step="0.5" value="10" class="slider-range" aria-label="Increase Percentage Slider" />
+        <div class="preset-pills-row">
+          <span class="preset-label">Quick:</span>
+          <button type="button" class="preset-pill" data-pct="3">3%</button>
+          <button type="button" class="preset-pill" data-pct="5">5%</button>
+          <button type="button" class="preset-pill active" data-pct="10">10%</button>
+          <button type="button" class="preset-pill" data-pct="15">15%</button>
+          <button type="button" class="preset-pill" data-pct="20">20%</button>
+          <button type="button" class="preset-pill" data-pct="25">25%</button>
+        </div>
+        <span class="input-subtext" id="spic-pct-error" style="color: var(--color-error); display: none;">Please enter a valid percentage (0% or more).</span>
+      </div>
+
+      <!-- Reset -->
+      <div style="margin-top: var(--space-4);">
+        <Button variant="outline" size="sm" id="spic-reset-a-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Inputs
+        </Button>
+      </div>
+    </div>
+
+    <!-- ── MODE B: Calculate Increase % ── -->
+    <div id="spic-mode-b" class="input-section hidden" style="margin-top: var(--space-5);">
+      <h3 class="section-title">Original &amp; New Salary</h3>
+
+      <!-- Currency B -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-currency-b">Currency</label>
+          <select id="spic-currency-b" class="currency-select" aria-label="Select Currency">
+            <option value="USD" selected>USD ($) – US Dollar</option>
+            <option value="EUR">EUR (€) – Euro</option>
+            <option value="GBP">GBP (£) – British Pound</option>
+            <option value="CAD">CAD (C$) – Canadian Dollar</option>
+            <option value="AUD">AUD (A$) – Australian Dollar</option>
+            <option value="INR">INR (₹) – Indian Rupee</option>
+            <option value="JPY">JPY (¥) – Japanese Yen</option>
+            <option value="SGD">SGD (S$) – Singapore Dollar</option>
+            <option value="CHF">CHF (CHF) – Swiss Franc</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Original Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-orig-salary">Original (Old) Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="spic-cur-sym-b1">$</span>
+            <input type="number" id="spic-orig-salary" min="0" max="100000000" step="500" value="60000" aria-label="Original Salary" />
+          </div>
+        </div>
+        <input type="range" id="spic-orig-slider" min="10000" max="300000" step="1000" value="60000" class="slider-range" aria-label="Original Salary Slider" />
+        <span class="input-subtext">Your salary before the raise or job change.</span>
+      </div>
+
+      <!-- New Salary -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-new-salary">New Salary</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="spic-cur-sym-b2">$</span>
+            <input type="number" id="spic-new-salary" min="0" max="100000000" step="500" value="66000" aria-label="New Salary" />
+          </div>
+        </div>
+        <input type="range" id="spic-new-slider" min="10000" max="300000" step="1000" value="66000" class="slider-range" aria-label="New Salary Slider" />
+        <span class="input-subtext">Your salary after the raise or at the new job.</span>
+      </div>
+
+      <!-- Period B -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="spic-period-b">Salary Period</label>
+          <select id="spic-period-b" class="currency-select" aria-label="Salary Period">
+            <option value="annual" selected>Annual (Yearly)</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+      </div>
+
+      <span id="spic-b-error" class="input-subtext" style="color: var(--color-error); display: none;">Original salary must be greater than zero to calculate a percentage.</span>
+
+      <!-- Reset B -->
+      <div style="margin-top: var(--space-4);">
+        <Button variant="outline" size="sm" id="spic-reset-b-btn" class="w-full">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Reset Inputs
+        </Button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading" id="spic-results-heading">Salary Raise Results</h3>
+
+    <!-- Hero Metric -->
+    <div class="hero-metric-box">
+      <span class="hero-metric-label" id="spic-hero-label">New Annual Salary</span>
+      <div class="hero-metric-value" id="spic-hero-value">$66,000.00</div>
+      <span class="hero-metric-subtext" id="spic-hero-sub">After a 10.00% salary increase</span>
+    </div>
+
+    <!-- Callout Banner -->
+    <div id="spic-callout" class="callout-banner success">
+      <div class="callout-icon" id="spic-callout-icon">↑</div>
+      <div class="callout-body">
+        <span class="callout-title" id="spic-callout-title">Raise Applied</span>
+        <span class="callout-msg" id="spic-callout-msg">Your salary increases by $6,000.00 per year — that is $500.00 more every month.</span>
+      </div>
+    </div>
+
+    <!-- Dual Summary Cards -->
+    <div class="net-value-container">
+      <div class="net-value-box highlight-primary">
+        <span class="net-box-label" id="spic-box1-label">New Salary</span>
+        <div id="spic-box1-value" class="net-box-value" style="color: var(--color-primary);">$66,000.00</div>
+        <span class="net-box-desc" id="spic-box1-desc">After 10.00% raise</span>
+      </div>
+      <div class="net-value-box highlight-success">
+        <span class="net-box-label" id="spic-box2-label">Increase Amount</span>
+        <div id="spic-box2-value" class="net-box-value" style="color: var(--color-success);">+$6,000.00</div>
+        <span class="net-box-desc" id="spic-box2-desc">Per year</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 class="metrics-grid-title">Full Salary Breakdown</h4>
+    <div class="results-grid spic-metrics-grid">
+      <div class="result-tile">
+        <span class="tile-label" id="tile-spic-orig-label">Original Salary</span>
+        <div class="tile-value" id="tile-spic-orig" style="color: var(--color-text-muted);">$60,000.00</div>
+        <span class="tile-sub" id="tile-spic-orig-sub">Per year</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label" id="tile-spic-new-label">New Salary</span>
+        <div class="tile-value" id="tile-spic-new" style="color: var(--color-primary);">$66,000.00</div>
+        <span class="tile-sub" id="tile-spic-new-sub">Per year</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Increase Amount</span>
+        <div class="tile-value" id="tile-spic-amt" style="color: var(--color-success);">+$6,000.00</div>
+        <span class="tile-sub" id="tile-spic-amt-sub">Per year</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label">Increase %</span>
+        <div class="tile-value" id="tile-spic-pct" style="color: var(--color-primary);">10.00%</div>
+        <span class="tile-sub">Salary growth rate</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label" id="tile-spic-orig-mo-label">Original Monthly</span>
+        <div class="tile-value" id="tile-spic-orig-mo" style="color: var(--color-text-muted);">$5,000.00</div>
+        <span class="tile-sub">Per month</span>
+      </div>
+      <div class="result-tile">
+        <span class="tile-label" id="tile-spic-new-mo-label">New Monthly</span>
+        <div class="tile-value" id="tile-spic-new-mo" style="color: var(--color-primary);">$5,500.00</div>
+        <span class="tile-sub">Per month</span>
+      </div>
+    </div>
+
+    <!-- Verdict Card -->
+    <div class="verdict-container">
+      <Card elevation="sm" id="spic-verdict-card" class="verdict-card verdict-info">
+        <span class="verdict-tag" id="spic-verdict-tag">Raise Summary</span>
+        <p id="spic-verdict-text" class="verdict-paragraph">
+          Your salary increases from <strong>$60,000.00</strong> to <strong>$66,000.00</strong> per year — a <strong>10.00% raise</strong> worth <strong>$6,000.00 annually</strong> or <strong>$500.00 per month</strong>.
+        </p>
+        <span class="verdict-disclaimer">Results are pre-tax estimates. Actual take-home pay depends on your tax bracket, deductions, and benefits.</span>
+      </Card>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initSPIC() {
+    const root = document.getElementById('spic-root');
+    if (!root) return;
+
+    // Mode buttons & panels
+    const modeNewBtn = document.getElementById('spic-mode-new-btn') as HTMLButtonElement;
+    const modePctBtn = document.getElementById('spic-mode-pct-btn') as HTMLButtonElement;
+    const modeAPanel = document.getElementById('spic-mode-a') as HTMLElement;
+    const modeBPanel = document.getElementById('spic-mode-b') as HTMLElement;
+
+    // Mode A
+    const currencyA    = document.getElementById('spic-currency') as HTMLSelectElement;
+    const currentInput = document.getElementById('spic-current-salary') as HTMLInputElement;
+    const currentSlider= document.getElementById('spic-current-slider') as HTMLInputElement;
+    const periodA      = document.getElementById('spic-period') as HTMLSelectElement;
+    const pctInput     = document.getElementById('spic-increase-pct') as HTMLInputElement;
+    const pctSlider    = document.getElementById('spic-increase-slider') as HTMLInputElement;
+    const pctError     = document.getElementById('spic-pct-error') as HTMLElement;
+    const presetPills  = document.querySelectorAll<HTMLButtonElement>('.preset-pill[data-pct]');
+    const resetABtn    = document.getElementById('spic-reset-a-btn') as HTMLButtonElement;
+
+    // Mode B
+    const currencyB    = document.getElementById('spic-currency-b') as HTMLSelectElement;
+    const origInput    = document.getElementById('spic-orig-salary') as HTMLInputElement;
+    const origSlider   = document.getElementById('spic-orig-slider') as HTMLInputElement;
+    const newInput     = document.getElementById('spic-new-salary') as HTMLInputElement;
+    const newSlider    = document.getElementById('spic-new-slider') as HTMLInputElement;
+    const periodB      = document.getElementById('spic-period-b') as HTMLSelectElement;
+    const bError       = document.getElementById('spic-b-error') as HTMLElement;
+    const resetBBtn    = document.getElementById('spic-reset-b-btn') as HTMLButtonElement;
+
+    // Currency symbols
+    const curSymA1  = document.getElementById('spic-cur-sym-1')   as HTMLElement;
+    const curSymB1  = document.getElementById('spic-cur-sym-b1')  as HTMLElement;
+    const curSymB2  = document.getElementById('spic-cur-sym-b2')  as HTMLElement;
+
+    // Results DOM
+    const resultsHeading = document.getElementById('spic-results-heading') as HTMLElement;
+    const heroLabel      = document.getElementById('spic-hero-label')      as HTMLElement;
+    const heroValue      = document.getElementById('spic-hero-value')      as HTMLElement;
+    const heroSub        = document.getElementById('spic-hero-sub')        as HTMLElement;
+    const callout        = document.getElementById('spic-callout')         as HTMLElement;
+    const calloutIcon    = document.getElementById('spic-callout-icon')    as HTMLElement;
+    const calloutTitle   = document.getElementById('spic-callout-title')   as HTMLElement;
+    const calloutMsg     = document.getElementById('spic-callout-msg')     as HTMLElement;
+    const box1Label      = document.getElementById('spic-box1-label')      as HTMLElement;
+    const box1Value      = document.getElementById('spic-box1-value')      as HTMLElement;
+    const box1Desc       = document.getElementById('spic-box1-desc')       as HTMLElement;
+    const box2Label      = document.getElementById('spic-box2-label')      as HTMLElement;
+    const box2Value      = document.getElementById('spic-box2-value')      as HTMLElement;
+    const box2Desc       = document.getElementById('spic-box2-desc')       as HTMLElement;
+    const tileOrigLabel  = document.getElementById('tile-spic-orig-label') as HTMLElement;
+    const tileOrig       = document.getElementById('tile-spic-orig')       as HTMLElement;
+    const tileOrigSub    = document.getElementById('tile-spic-orig-sub')   as HTMLElement;
+    const tileNewLabel   = document.getElementById('tile-spic-new-label')  as HTMLElement;
+    const tileNew        = document.getElementById('tile-spic-new')        as HTMLElement;
+    const tileNewSub     = document.getElementById('tile-spic-new-sub')    as HTMLElement;
+    const tileAmt        = document.getElementById('tile-spic-amt')        as HTMLElement;
+    const tileAmtSub     = document.getElementById('tile-spic-amt-sub')    as HTMLElement;
+    const tilePct        = document.getElementById('tile-spic-pct')        as HTMLElement;
+    const tileOrigMo     = document.getElementById('tile-spic-orig-mo')    as HTMLElement;
+    const tileNewMo      = document.getElementById('tile-spic-new-mo')     as HTMLElement;
+    const verdictCard    = document.getElementById('spic-verdict-card')    as HTMLElement;
+    const verdictTag     = document.getElementById('spic-verdict-tag')     as HTMLElement;
+    const verdictText    = document.getElementById('spic-verdict-text')    as HTMLElement;
+
+    let currentMode: 'new' | 'pct' = 'new';
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+    const currencySymbols: Record<string, string> = {
+      USD: '$', EUR: '€', GBP: '£', CAD: 'C$', AUD: 'A$',
+      INR: '₹', JPY: '¥', SGD: 'S$', CHF: 'CHF '
+    };
+    const getCurSym = (c: string) => currencySymbols[c] || '$';
+
+    function formatCurrency(val: number, currency: string): string {
+      const sym = getCurSym(currency);
+      const isJPY = currency === 'JPY';
+      const abs = Math.abs(val);
+      const fmt = abs.toLocaleString(undefined, {
+        minimumFractionDigits: isJPY ? 0 : 2,
+        maximumFractionDigits: isJPY ? 0 : 2
+      });
+      return `${val < 0 ? '-' : ''}${sym}${fmt}`;
+    }
+
+    function updateCurSymA() {
+      const sym = getCurSym(currencyA.value);
+      if (curSymA1) curSymA1.textContent = sym;
+    }
+    function updateCurSymB() {
+      const sym = getCurSym(currencyB.value);
+      if (curSymB1) curSymB1.textContent = sym;
+      if (curSymB2) curSymB2.textContent = sym;
+    }
+
+    function bindSlider(inp: HTMLInputElement, sld: HTMLInputElement, cb: () => void) {
+      if (!inp || !sld) return;
+      inp.addEventListener('input', () => { sld.value = inp.value; cb(); });
+      sld.addEventListener('input', () => { inp.value = sld.value; cb(); });
+    }
+
+    const toAnnual  = (v: number, p: string) => p === 'monthly' ? v * 12 : v;
+    const toMonthly = (v: number) => v / 12;
+
+    // ── Mode A Calculation ────────────────────────────────────────────────
+    function calculateA() {
+      const currency  = currencyA.value;
+      const rawSalary = Math.max(0, parseFloat(currentInput.value) || 0);
+      const period    = periodA.value;
+      const pct       = parseFloat(pctInput.value);
+
+      if (isNaN(pct) || pct < 0) {
+        if (pctError) pctError.style.display = 'block';
+        return;
+      }
+      if (pctError) pctError.style.display = 'none';
+
+      const annualCurrent  = toAnnual(rawSalary, period);
+      const increaseAmt    = annualCurrent * (pct / 100);
+      const newAnnual      = annualCurrent + increaseAmt;
+      const currentMonthly = toMonthly(annualCurrent);
+      const newMonthly     = toMonthly(newAnnual);
+      const incMonthly     = toMonthly(increaseAmt);
+
+      // Hero
+      if (heroLabel) heroLabel.textContent = 'New Annual Salary';
+      if (heroValue) { heroValue.textContent = formatCurrency(newAnnual, currency); heroValue.style.color = 'var(--color-primary)'; }
+      if (heroSub)   heroSub.textContent = `After a ${pct.toFixed(2)}% salary increase`;
+
+      // Callout
+      if (callout)      callout.className = 'callout-banner success';
+      if (calloutIcon)  calloutIcon.textContent = '↑';
+      if (calloutTitle) calloutTitle.textContent = 'Raise Applied';
+      if (calloutMsg)   calloutMsg.textContent = `Your salary increases by ${formatCurrency(increaseAmt, currency)} per year — that is ${formatCurrency(incMonthly, currency)} more every month.`;
+
+      // Dual cards
+      if (box1Label) box1Label.textContent = 'New Salary';
+      if (box1Value) { box1Value.textContent = formatCurrency(newAnnual, currency); box1Value.style.color = 'var(--color-primary)'; }
+      if (box1Desc)  box1Desc.textContent = `After ${pct.toFixed(2)}% raise`;
+      if (box2Label) box2Label.textContent = 'Increase Amount';
+      if (box2Value) { box2Value.textContent = `+${formatCurrency(increaseAmt, currency)}`; box2Value.style.color = 'var(--color-success)'; }
+      if (box2Desc)  box2Desc.textContent = 'Per year';
+
+      // Tiles
+      if (tileOrigLabel) tileOrigLabel.textContent = 'Original Salary';
+      if (tileOrig)      { tileOrig.textContent = formatCurrency(annualCurrent, currency); tileOrig.style.color = 'var(--color-text-muted)'; }
+      if (tileOrigSub)   tileOrigSub.textContent = 'Per year';
+      if (tileNewLabel)  tileNewLabel.textContent = 'New Salary';
+      if (tileNew)       { tileNew.textContent = formatCurrency(newAnnual, currency); tileNew.style.color = 'var(--color-primary)'; }
+      if (tileNewSub)    tileNewSub.textContent = 'Per year';
+      if (tileAmt)       { tileAmt.textContent = `+${formatCurrency(increaseAmt, currency)}`; tileAmt.style.color = 'var(--color-success)'; }
+      if (tileAmtSub)    tileAmtSub.textContent = 'Per year';
+      if (tilePct)       { tilePct.textContent = `${pct.toFixed(2)}%`; tilePct.style.color = 'var(--color-primary)'; }
+      if (tileOrigMo)    { tileOrigMo.textContent = formatCurrency(currentMonthly, currency); tileOrigMo.style.color = 'var(--color-text-muted)'; }
+      if (tileNewMo)     { tileNewMo.textContent = formatCurrency(newMonthly, currency); tileNewMo.style.color = 'var(--color-primary)'; }
+
+      // Verdict
+      if (verdictCard) verdictCard.className = 'verdict-card verdict-info';
+      if (verdictTag)  verdictTag.textContent = 'Raise Summary';
+      if (verdictText) verdictText.innerHTML = `Your salary increases from <strong>${formatCurrency(annualCurrent, currency)}</strong> to <strong>${formatCurrency(newAnnual, currency)}</strong> per year — a <strong>${pct.toFixed(2)}% raise</strong> worth <strong>${formatCurrency(increaseAmt, currency)} annually</strong> or <strong>${formatCurrency(incMonthly, currency)} per month</strong>. Your take-home pay will grow with each paycheck.`;
+    }
+
+    // ── Mode B Calculation ────────────────────────────────────────────────
+    function calculateB() {
+      const currency = currencyB.value;
+      const period   = periodB.value;
+      const rawOrig  = Math.max(0, parseFloat(origInput.value) || 0);
+      const rawNew   = Math.max(0, parseFloat(newInput.value)  || 0);
+
+      const annualOrig = toAnnual(rawOrig, period);
+      const annualNew  = toAnnual(rawNew, period);
+
+      if (annualOrig <= 0) {
+        if (bError) bError.style.display = 'block';
+        return;
+      }
+      if (bError) bError.style.display = 'none';
+
+      const increaseAmt = annualNew - annualOrig;
+      const increasePct = (increaseAmt / annualOrig) * 100;
+      const isRaise     = increaseAmt >= 0;
+      const origMonthly = toMonthly(annualOrig);
+      const newMonthly  = toMonthly(annualNew);
+      const incMonthly  = toMonthly(increaseAmt);
+
+      // Hero
+      if (heroLabel) heroLabel.textContent = 'Salary Change Percentage';
+      if (heroValue) {
+        heroValue.textContent = `${increasePct >= 0 ? '+' : ''}${increasePct.toFixed(2)}%`;
+        heroValue.style.color = isRaise ? 'var(--color-success)' : 'var(--color-error)';
+      }
+      if (heroSub) heroSub.textContent = isRaise
+        ? `Salary increased by ${formatCurrency(increaseAmt, currency)} per year`
+        : `Salary decreased by ${formatCurrency(Math.abs(increaseAmt), currency)} per year`;
+
+      // Callout
+      if (callout)      callout.className = `callout-banner ${isRaise ? 'success' : 'warning'}`;
+      if (calloutIcon)  calloutIcon.textContent = isRaise ? '↑' : '↓';
+      if (calloutTitle) calloutTitle.textContent = isRaise ? 'Salary Increase' : 'Salary Decrease';
+      if (calloutMsg)   calloutMsg.textContent = isRaise
+        ? `Your salary grew by ${increasePct.toFixed(2)}% — an increase of ${formatCurrency(increaseAmt, currency)} per year (${formatCurrency(incMonthly, currency)}/month).`
+        : `Your salary dropped by ${Math.abs(increasePct).toFixed(2)}% — a decrease of ${formatCurrency(Math.abs(increaseAmt), currency)} per year.`;
+
+      // Dual cards
+      if (box1Label) box1Label.textContent = 'Percentage Change';
+      if (box1Value) {
+        box1Value.textContent = `${increasePct >= 0 ? '+' : ''}${increasePct.toFixed(2)}%`;
+        box1Value.style.color = isRaise ? 'var(--color-success)' : 'var(--color-error)';
+      }
+      if (box1Desc) box1Desc.textContent = isRaise ? 'Salary growth rate' : 'Salary reduction rate';
+      if (box2Label) box2Label.textContent = isRaise ? 'Increase Amount' : 'Decrease Amount';
+      if (box2Value) {
+        box2Value.textContent = `${isRaise ? '+' : '-'}${formatCurrency(Math.abs(increaseAmt), currency)}`;
+        box2Value.style.color = isRaise ? 'var(--color-success)' : 'var(--color-error)';
+      }
+      if (box2Desc) box2Desc.textContent = 'Per year difference';
+
+      // Tiles
+      if (tileOrigLabel) tileOrigLabel.textContent = 'Original Salary';
+      if (tileOrig)      { tileOrig.textContent = formatCurrency(annualOrig, currency); tileOrig.style.color = 'var(--color-text-muted)'; }
+      if (tileOrigSub)   tileOrigSub.textContent = 'Per year';
+      if (tileNewLabel)  tileNewLabel.textContent = 'New Salary';
+      if (tileNew)       { tileNew.textContent = formatCurrency(annualNew, currency); tileNew.style.color = 'var(--color-primary)'; }
+      if (tileNewSub)    tileNewSub.textContent = 'Per year';
+      if (tileAmt) {
+        tileAmt.textContent = `${isRaise ? '+' : ''}${formatCurrency(increaseAmt, currency)}`;
+        tileAmt.style.color = isRaise ? 'var(--color-success)' : 'var(--color-error)';
+      }
+      if (tileAmtSub) tileAmtSub.textContent = 'Per year';
+      if (tilePct) {
+        tilePct.textContent = `${increasePct >= 0 ? '+' : ''}${increasePct.toFixed(2)}%`;
+        tilePct.style.color = isRaise ? 'var(--color-success)' : 'var(--color-error)';
+      }
+      if (tileOrigMo) { tileOrigMo.textContent = formatCurrency(origMonthly, currency); tileOrigMo.style.color = 'var(--color-text-muted)'; }
+      if (tileNewMo)  { tileNewMo.textContent = formatCurrency(newMonthly, currency);   tileNewMo.style.color = 'var(--color-primary)'; }
+
+      // Verdict
+      if (verdictCard) verdictCard.className = `verdict-card ${isRaise ? 'verdict-info' : 'verdict-warning'}`;
+      if (verdictTag)  verdictTag.textContent = isRaise ? 'Increase Summary' : 'Decrease Summary';
+      if (verdictText) verdictText.innerHTML = isRaise
+        ? `Your salary grew from <strong>${formatCurrency(annualOrig, currency)}</strong> to <strong>${formatCurrency(annualNew, currency)}</strong> per year — a <strong>${increasePct.toFixed(2)}% increase</strong> worth <strong>${formatCurrency(increaseAmt, currency)} annually</strong> or <strong>${formatCurrency(incMonthly, currency)} per month</strong>.`
+        : `Your salary dropped from <strong>${formatCurrency(annualOrig, currency)}</strong> to <strong>${formatCurrency(annualNew, currency)}</strong> per year — a <strong>${Math.abs(increasePct).toFixed(2)}% decrease</strong> of <strong>${formatCurrency(Math.abs(increaseAmt), currency)} per year</strong>.`;
+    }
+
+    const calculate = () => currentMode === 'new' ? calculateA() : calculateB();
+
+    // ── Bind inputs ───────────────────────────────────────────────────────
+    bindSlider(currentInput, currentSlider, calculate);
+    bindSlider(pctInput,     pctSlider,     calculate);
+    bindSlider(origInput,    origSlider,    calculate);
+    bindSlider(newInput,     newSlider,     calculate);
+
+    currencyA?.addEventListener('change', () => { updateCurSymA(); calculate(); });
+    periodA?.addEventListener('change', calculate);
+    currencyB?.addEventListener('change', () => { updateCurSymB(); calculate(); });
+    periodB?.addEventListener('change', calculate);
+
+    // Preset pills
+    presetPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        presetPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const pct = pill.getAttribute('data-pct')!;
+        pctInput.value = pct;
+        pctSlider.value = pct;
+        calculate();
+      });
+    });
+    pctInput?.addEventListener('input', () => {
+      presetPills.forEach(p => {
+        p.getAttribute('data-pct') === pctInput.value
+          ? p.classList.add('active')
+          : p.classList.remove('active');
+      });
+    });
+
+    // ── Mode switching ────────────────────────────────────────────────────
+    function switchMode(mode: 'new' | 'pct') {
+      currentMode = mode;
+      if (mode === 'new') {
+        modeNewBtn.classList.add('active');    modeNewBtn.setAttribute('aria-checked', 'true');
+        modePctBtn.classList.remove('active'); modePctBtn.setAttribute('aria-checked', 'false');
+        modeAPanel.classList.remove('hidden');
+        modeBPanel.classList.add('hidden');
+        if (resultsHeading) resultsHeading.textContent = 'Salary Raise Results';
+      } else {
+        modePctBtn.classList.add('active');    modePctBtn.setAttribute('aria-checked', 'true');
+        modeNewBtn.classList.remove('active'); modeNewBtn.setAttribute('aria-checked', 'false');
+        modeBPanel.classList.remove('hidden');
+        modeAPanel.classList.add('hidden');
+        if (resultsHeading) resultsHeading.textContent = 'Salary Change Results';
+      }
+      calculate();
+    }
+
+    modeNewBtn?.addEventListener('click', () => switchMode('new'));
+    modePctBtn?.addEventListener('click', () => switchMode('pct'));
+
+    // ── Resets ────────────────────────────────────────────────────────────
+    resetABtn?.addEventListener('click', () => {
+      currencyA.value = 'USD'; currentInput.value = '60000'; currentSlider.value = '60000';
+      periodA.value = 'annual'; pctInput.value = '10'; pctSlider.value = '10';
+      presetPills.forEach(p => p.getAttribute('data-pct') === '10' ? p.classList.add('active') : p.classList.remove('active'));
+      if (pctError) pctError.style.display = 'none';
+      updateCurSymA(); calculate();
+    });
+    resetBBtn?.addEventListener('click', () => {
+      currencyB.value = 'USD'; origInput.value = '60000'; origSlider.value = '60000';
+      newInput.value = '66000'; newSlider.value = '66000'; periodB.value = 'annual';
+      if (bError) bError.style.display = 'none';
+      updateCurSymB(); calculate();
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    updateCurSymA();
+    updateCurSymB();
+    calculate();
+  }
+
+  document.addEventListener('DOMContentLoaded', initSPIC);
+  document.addEventListener('astro:page-load', initSPIC);
+</script>
+
+<style>
+  /* ── Inputs wrapper ─────────────────────────────────────────── */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-section {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .input-section.mode-switch-section {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-4) 0;
+    letter-spacing: -0.01em;
+  }
+
+  .control-label {
+    font-size: 0.9rem;
+    color: var(--color-text-base);
+  }
+
+  /* ── Mode toggle pills ──────────────────────────────────────── */
+  .toggle-pill-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  @media (max-width: 480px) {
+    .toggle-pill-group {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+    font-family: inherit;
+  }
+
+  .toggle-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text-base);
+  }
+
+  .toggle-pill.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+  }
+
+  /* ── Input groups ───────────────────────────────────────────── */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 140px;
+  }
+
+  .currency-symbol,
+  .percent-symbol {
+    position: absolute;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .currency-symbol { left: 10px; }
+  .percent-symbol  { right: 10px; }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    padding: 8px 28px 8px 26px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-align: right;
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper input:focus {
+    border-color: var(--color-primary);
+  }
+
+  .currency-select {
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+    max-width: 220px;
+  }
+
+  html.dark .currency-select,
+  html.dark .input-symbol-wrapper input {
+    background-color: var(--color-bg-surface);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .preset-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .preset-pill:hover,
+  .preset-pill.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  .input-subtext {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* ── Results section ────────────────────────────────────────── */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Hero */
+  .hero-metric-box {
+    background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(37,99,235,0.03));
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+  }
+
+  .hero-metric-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
+
+  .hero-metric-value {
+    font-size: clamp(1.8rem, 5vw, 2.3rem);
+    font-weight: 900;
+    color: var(--color-primary);
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-metric-subtext {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* Callout banner */
+  .callout-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-surface);
+  }
+
+  .callout-banner.success {
+    border-color: rgba(16,185,129,0.4);
+    background-color: rgba(16,185,129,0.07);
+  }
+
+  .callout-banner.warning {
+    border-color: rgba(245,158,11,0.4);
+    background-color: rgba(245,158,11,0.07);
+  }
+
+  .callout-icon {
+    font-size: 1.1rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .callout-banner.success .callout-icon { color: var(--color-success); }
+  .callout-banner.warning .callout-icon { color: var(--color-warning); }
+
+  .callout-body { display: flex; flex-direction: column; gap: 2px; }
+  .callout-title { font-size: 0.9rem; font-weight: 700; color: var(--color-text-base); }
+  .callout-msg   { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.45; }
+
+  /* Dual cards */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 641px) {
+    .net-value-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .net-value-box {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .net-value-box.highlight-primary { border-left: 4px solid var(--color-primary); }
+  .net-value-box.highlight-success { border-left: 4px solid var(--color-success); }
+
+  .net-box-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .net-box-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .net-box-desc { font-size: 0.75rem; color: var(--color-text-muted); }
+
+  /* Metrics grid */
+  .metrics-grid-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: var(--space-2) 0 0 0;
+    color: var(--color-text-base);
+    letter-spacing: -0.01em;
+  }
+
+  .spic-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .result-tile {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .tile-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .tile-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  /* Verdict */
+  .verdict-container { margin-top: 0; }
+
+  .verdict-card {
+    padding: var(--space-4);
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+  }
+
+  .verdict-info    { border-left: 4px solid var(--color-primary); }
+  .verdict-warning { border-left: 4px solid var(--color-warning); }
+
+  .verdict-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    margin-bottom: 6px;
+  }
+
+  .verdict-paragraph {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  .verdict-disclaimer {
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+</style>

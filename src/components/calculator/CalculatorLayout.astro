@@ -149,6 +149,8 @@ const { title, description, category } = Astro.props;
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--color-text-base);
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   /* Header */
@@ -174,6 +176,8 @@ const { title, description, category } = Astro.props;
     font-weight: 800;
     margin-bottom: var(--space-2);
     letter-spacing: -0.03em;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .calculator-desc {
@@ -190,6 +194,9 @@ const { title, description, category } = Astro.props;
     margin-bottom: var(--space-6);
     border-bottom: 1px solid var(--color-border);
     padding-bottom: var(--space-4);
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .toolbar-btn {
@@ -265,6 +272,17 @@ const { title, description, category } = Astro.props;
     }
   }
 
+  @media (max-width: 640px) {
+    .calc-toolbar {
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    .toolbar-btn {
+      padding: 0.4rem 0.65rem;
+      font-size: 0.8rem;
+    }
+  }
+
   @media (max-width: 480px) {
     .calculator-title {
       font-size: 1.75rem;
@@ -274,10 +292,12 @@ const { title, description, category } = Astro.props;
     }
     .calc-toolbar {
       flex-wrap: wrap;
+      gap: var(--space-2);
     }
     .toolbar-btn {
       flex: 1 1 auto;
       justify-content: center;
+      padding: 6px 10px;
     }
   }
 </style>

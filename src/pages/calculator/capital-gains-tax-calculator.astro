@@ -1,0 +1,1257 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CapitalGainsTaxCalculator from '../../components/calculator/CapitalGainsTaxCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Capital Gains Tax Calculator', item: '/calculator/capital-gains-tax-calculator' }
+];
+
+const faqs = [
+  {
+    question: "What is a capital gains tax calculator?",
+    answer: "A capital gains tax calculator is a financial tool that computes the estimated tax you owe when selling a capital asset—such as stocks, ETFs, mutual funds, real estate, cryptocurrency, or business property—for more than your original purchase price and allowable acquisition and selling expenses."
+  },
+  {
+    question: "How do I calculate capital gains tax?",
+    answer: "To calculate capital gains tax: (1) Subtract your adjusted cost basis (purchase price plus allowable buying and selling costs) from your gross sale proceeds to determine your gross capital gain. (2) Subtract any eligible tax exemptions, allowances, or capital losses. (3) For countries like Australia and Canada, apply the applicable statutory discount (50% in Australia) or inclusion rate (50% on first $250k and 66.67% on excess in Canada) to determine your taxable capital gain. (4) Apply the statutory tax rates or progressive income tax brackets applicable in your jurisdiction."
+  },
+  {
+    question: "Is capital gains tax the same in every country?",
+    answer: "No. Tax systems treat capital gains differently. The US taxes long-term gains at preferential federal rates (0%, 15%, 20%) plus Net Investment Income Tax and state taxes. The UK applies flat basic (18%) and higher (24%) rates above a £3,000 allowance. Australia adds 50% of the net gain to assessable ordinary income after a 12-month holding period. India imposes special rates (12.5% LTCG on equity over ₹1.25L exemption, 20% STCG) plus a 4% cess. Canada includes a percentage of the gain (50% up to $250k; 66.67% above) in your taxable income taxed at ordinary federal and provincial rates. Singapore imposes 0% capital gains tax on investments."
+  },
+  {
+    question: "What are the US capital gains tax rates for 2026?",
+    answer: "For the 2026 tax year, US federal long-term capital gains (assets held over 1 year) are taxed at 0%, 15%, or 20% depending on your taxable income and filing status. Short-term gains (held 1 year or less) are taxed as ordinary federal income at rates from 10% to 37%. High earners with modified adjusted gross income exceeding $200,000 (single) or $250,000 (married filing jointly) also face a 3.8% Net Investment Income Tax (NIIT)."
+  },
+  {
+    question: "What is the UK Capital Gains Tax allowance for 2026/27?",
+    answer: "For the 2026/27 UK tax year (6 April 2026 to 5 April 2027), the individual Annual Exempt Amount is £3,000. Capital gains above this allowance are taxed at 18% within your remaining basic rate Income Tax band and 24% for higher and additional rate taxpayers on both shares and residential property."
+  },
+  {
+    question: "How does the Australian CGT discount work?",
+    answer: "In Australia, individual resident taxpayers who hold an asset for 12 months or longer before selling qualify for a 50% Capital Gains Tax (CGT) discount. Any available capital losses must first be subtracted from the gross gain; the remaining net gain is then halved (50% discount), and only the remaining 50% is added to your assessable income and taxed at your marginal rate plus the 2% Medicare levy."
+  },
+  {
+    question: "How is capital gains tax calculated in India for FY 2026–27?",
+    answer: "Following the Union Budget reforms, listed equity shares and equity mutual funds held for more than 12 months are subject to a 12.5% Long-Term Capital Gains (LTCG) tax on gains exceeding the ₹1,25,000 annual exemption. Short-term equity gains (held 12 months or less) are taxed at 20%. Real estate held over 24 months is taxed at 12.5% without indexation. All capital gains taxes in India are subject to a mandatory 4% Health and Education cess."
+  },
+  {
+    question: "How does Canada's capital gains inclusion rate work in 2026?",
+    answer: "In Canada, capital gains are not taxed at a separate flat rate; instead, a portion of the gain is included in your taxable income. For individuals in 2026, the inclusion rate is 50% on the first $250,000 of net capital gains realized in the calendar year, and 66.67% (two-thirds) on any portion exceeding $250,000. This taxable gain is then taxed at your combined federal and provincial marginal tax rates."
+  },
+  {
+    question: "Does Singapore have capital gains tax?",
+    answer: "No. Singapore does not impose capital gains tax on the disposal of stocks, shares, funds, cryptocurrencies, or real estate for individual investors. Capital gains are 100% tax-free under Inland Revenue Authority of Singapore (IRAS) guidelines, provided the investments are capital assets rather than commercial trading schemes."
+  },
+  {
+    question: "Do I pay capital gains tax on stocks?",
+    answer: "Yes, selling shares or ETFs held in non-registered, taxable brokerage accounts triggers capital gains tax if sold at a profit. However, investments held in tax-sheltered accounts—such as a US Roth IRA/401(k), UK Stocks & Shares ISA, Canadian TFSA, or Australian superannuation fund—are completely exempt from capital gains tax upon sale."
+  },
+  {
+    question: "Do I pay capital gains tax when selling my primary home?",
+    answer: "Most countries provide generous reliefs for primary homes. In the UK, Private Residence Relief (PRR) makes your main home 100% exempt from CGT. In Canada, the Principal Residence Exemption (PRE) provides full exemption. In Australia, the Main Residence Exemption completely excludes your home. In the US, Section 121 allows individuals to exclude up to $250,000 (single) or $500,000 (married filing jointly) in profit if you lived in the home for at least 2 of the previous 5 years."
+  },
+  {
+    question: "Can capital losses reduce my capital gains tax?",
+    answer: "Yes. In all supported countries, allowable capital losses can be used to offset capital gains dollar-for-dollar. If your total losses exceed your capital gains in a given tax year, the net loss can generally be carried forward to offset future capital gains indefinitely (and in the US, up to $3,000 per year can offset ordinary income)."
+  },
+  {
+    question: "Is capital gains tax calculated on the sale price or the profit?",
+    answer: "Capital gains tax is never calculated on the full sale price. It is calculated strictly on the net profit (gain), which is your sale proceeds minus your original purchase cost and any eligible buying, selling, or capital improvement expenses."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Capital Gains Tax Calculator",
+  "url": "https://fincalclab.com/calculator/capital-gains-tax-calculator",
+  "description": "Calculate your capital gains tax across the United States, United Kingdom, Australia, India, Canada, and Singapore. Compute taxes on stocks, real estate, crypto, and business assets with verified 2026 tax rules, exemptions, and allowances.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Capital Gains Tax Calculator (US, UK, AU, IN, CA, SG) | FinCalcLab"
+  description="Calculate capital gains tax on stocks, real estate, and investments across the US, UK, Australia, India, Canada, and Singapore. Accurate 2026 tax rules, exemptions, and allowances."
+  breadcrumbs={breadcrumbs}
+  faqs={faqs}
+>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <CapitalGainsTaxCalculator />
+
+    <!-- Cross-Country Feature Highlights Callout -->
+    <section class="cgt-intro-callout" aria-labelledby="cgt-overview-heading">
+      <Card elevation="sm" class="cgt-callout-card">
+        <div class="cgt-callout-header">
+          <div class="cgt-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          </div>
+          <div class="cgt-callout-heading-wrap">
+            <span class="cgt-callout-eyebrow">6-Country 2026 Tax Engine</span>
+            <h2 id="cgt-overview-heading" class="cgt-callout-title">Verified International Tax Rules for 2026 Disposals</h2>
+          </div>
+        </div>
+
+        <p class="cgt-callout-desc">
+          Capital gains taxation varies significantly depending on where you reside and where your asset is held. Our calculator features separate, fully dedicated calculation engines for six major economies—the <strong>United States</strong>, <strong>United Kingdom</strong>, <strong>Australia</strong>, <strong>India</strong>, <strong>Canada</strong>, and <strong>Singapore</strong>. Each engine implements verified statutory rules, multi-tier tax brackets, holding-period thresholds, legal allowances, and recent legislative updates for the 2026 tax year.
+        </p>
+
+        <div class="cgt-features-grid">
+          <div class="cgt-feature-item">
+            <span class="cgt-feature-flag">🇺🇸</span>
+            <div>
+              <span class="cgt-feature-title">United States (IRS 2026)</span>
+              <p class="cgt-feature-text">0%, 15%, 20% federal LTCG brackets, ordinary STCG, 3.8% NIIT, Section 121 home sale exclusion, and state tax support.</p>
+            </div>
+          </div>
+          <div class="cgt-feature-item">
+            <span class="cgt-feature-flag">🇬🇧</span>
+            <div>
+              <span class="cgt-feature-title">United Kingdom (HMRC 2026/27)</span>
+              <p class="cgt-feature-text">Autumn Budget reformed rates: 18% basic / 24% higher for shares and property, £3,000 exemption, PRR, and BADR.</p>
+            </div>
+          </div>
+          <div class="cgt-feature-item">
+            <span class="cgt-feature-flag">🇦🇺</span>
+            <div>
+              <span class="cgt-feature-title">Australia (ATO 2026–27)</span>
+              <p class="cgt-feature-text">50% CGT discount for assets held 12+ months, Revised Stage 3 income tax brackets, and 2.0% Medicare levy.</p>
+            </div>
+          </div>
+          <div class="cgt-feature-item">
+            <span class="cgt-feature-flag">🇮🇳</span>
+            <div>
+              <span class="cgt-feature-title">India (ITD FY 2026–27)</span>
+              <p class="cgt-feature-text">12.5% equity LTCG over ₹1.25 lakh exemption, 20% equity STCG, 12.5% real estate LTCG, and 4% Health &amp; Education cess.</p>
+            </div>
+          </div>
+          <div class="cgt-feature-item">
+            <span class="cgt-feature-flag">🇨🇦</span>
+            <div>
+              <span class="cgt-feature-title">Canada (CRA 2026)</span>
+              <p class="cgt-feature-text">Two-tier inclusion rate (50% on first $250k; 66.67% on excess), PRE relief, and all 13 provincial tax brackets.</p>
+            </div>
+          </div>
+          <div class="cgt-feature-item">
+            <span class="cgt-feature-flag">🇸🇬</span>
+            <div>
+              <span class="cgt-feature-title">Singapore (IRAS Rules)</span>
+              <p class="cgt-feature-text">0% capital gains tax on investments, stocks, and property. Badges of trade test for active commercial traders.</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive In-Depth Educational Guide (2,000+ Words) -->
+    <article class="cgt-guide-article prose" aria-label="Capital Gains Tax Comprehensive Guide">
+
+      <!-- Section 1 -->
+      <section class="guide-block">
+        <h2 class="guide-title">What Is a Capital Gains Tax Calculator?</h2>
+        <p>
+          A <strong>Capital Gains Tax (CGT) Calculator</strong> is a specialized financial instrument engineered to determine the exact tax liability arising from the profitable sale or disposal of capital assets. Whether you are selling publicly listed equities, mutual fund units, an investment condominium, a parcel of land, precious collectibles, or private business equity, disposing of an asset for more than its adjusted cost base triggers capital gains taxation.
+        </p>
+        <p>
+          Calculating capital gains tax is rarely as simple as multiplying your total profit by a flat percentage. Across modern tax regimes, tax authorities apply intricate rules involving <strong>asset classifications</strong>, <strong>holding-period cutoffs</strong> (short-term versus long-term), <strong>annual statutory allowances</strong>, <strong>capital loss carryforwards</strong>, <strong>statutory inclusion rates</strong>, and <strong>progressive income tax stacking</strong>.
+        </p>
+        <p>
+          Our calculator automates these complex computations across five distinct national tax engines. By inputting your purchase price, gross sale proceeds, allowable buying and selling expenses, acquisition and sale dates, and other taxable income, you receive an instant, mathematically verified estimate of your net taxable gain, your tax liability, and your true cash retained after tax.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-block">
+        <h2 class="guide-title">How to Calculate Capital Gains Tax (Core Universal Formula)</h2>
+        <p>
+          While tax brackets and rates differ dramatically between Washington, London, Sydney, New Delhi, and Ottawa, the fundamental baseline formula for establishing whether a taxable capital gain exists is universally consistent:
+        </p>
+
+        <div class="formula-callout-box">
+          <span class="formula-label">The Universal Capital Gain Equation:</span>
+          <div class="formula-equation">
+            Gross Capital Gain = Sale Proceeds − Adjusted Cost Basis − Eligible Buying &amp; Selling Costs
+          </div>
+        </div>
+
+        <p>
+          Understanding each component of this equation is vital to ensure you do not inadvertently overpay tax:
+        </p>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Sale Proceeds:</strong> The total gross monetary consideration or fair market value received when you dispose of, exchange, or transfer the asset.
+          </li>
+          <li>
+            <strong>Adjusted Cost Basis (Acquisition Cost):</strong> The original price paid to purchase the asset. For real estate or physical assets, this also includes qualifying capital improvements (such as adding an extension or installing a new HVAC system) that permanently increase the asset's structural value. Routine maintenance and cosmetic repairs are revenue expenses and cannot be added to the cost basis.
+          </li>
+          <li>
+            <strong>Eligible Buying &amp; Selling Expenses:</strong> Incidental costs directly incurred to acquire or dispose of the asset. This includes stockbroker trading commissions, legal conveyancing fees, real estate agent commissions, stamp duty or property transfer taxes paid at purchase, title insurance, appraisal fees, and mandatory advertising costs.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-block">
+        <h2 class="guide-title">Capital Gains vs. Taxable Capital Gains: What Is the Difference?</h2>
+        <p>
+          One of the most widespread points of confusion among investors is the distinction between your <strong>Gross Capital Gain</strong> and your <strong>Taxable (or Chargeable) Capital Gain</strong>. Tax is almost never assessed directly on your gross capital gain.
+        </p>
+        <div class="table-responsive-wrapper" style="margin: var(--space-3) 0;">
+          <table class="guide-table">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left;">Term</th>
+                <th scope="col" style="text-align: left;">Definition</th>
+                <th scope="col" style="text-align: left;">Practical Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 600;">Gross Capital Gain</td>
+                <td>Total accounting profit realized from the disposal after subtracting purchase price and eligible costs.</td>
+                <td>The starting point of your tax calculation before applying reliefs, allowances, or legal discounts.</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Taxable (Chargeable) Capital Gain</td>
+                <td>The final net portion of the gain that is legally subject to taxation after applying allowances, loss offsets, and inclusion percentages.</td>
+                <td>The actual dollar amount plugged into statutory tax rate bands or added to your assessable income tax return.</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Effective Tax Rate</td>
+                <td>The total estimated tax liability divided by your total gross capital gain, expressed as a percentage.</td>
+                <td>Reveals the true tax percentage paid on your total economic gain (often much lower than your top marginal bracket).</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Net After-Tax Proceeds</td>
+                <td>The remaining cash you walk away with after paying all selling fees, debt discharges, and tax liabilities.</td>
+                <td>The actual net liquidity you can spend, reinvest, or deposit into savings.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 4: United States -->
+      <section class="guide-block">
+        <h2 class="guide-title">Capital Gains Tax in the United States (IRS 2026 Rules)</h2>
+        <p>
+          In the United States, the Internal Revenue Service (IRS) categorizes capital gains strictly by your <strong>holding period</strong>—the exact duration between the calendar day after you acquired the asset and the day you sold it.
+        </p>
+
+        <h3 class="guide-sub-title">1. Short-Term Capital Gains (STCG)</h3>
+        <p>
+          If you hold an asset for <strong>one year or less (365 days or fewer)</strong>, any profit is treated as a short-term capital gain. Short-term gains enjoy no preferential tax rates; they are taxed as ordinary income at your regular federal income tax marginal rate (10%, 12%, 22%, 24%, 32%, 35%, or 37% for 2026).
+        </p>
+
+        <h3 class="guide-sub-title">2. Long-Term Capital Gains (LTCG) Brackets for 2026</h3>
+        <p>
+          If you hold an asset for <strong>more than one year (at least 366 days)</strong>, your profit qualifies for preferential federal long-term capital gains tax rates of <strong>0%</strong>, <strong>15%</strong>, or <strong>20%</strong>. The rate bands are determined by stacking your long-term capital gains on top of your ordinary taxable income.
+        </p>
+
+        <div class="table-responsive-wrapper" style="margin: var(--space-3) 0;">
+          <table class="guide-table">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left;">2026 Filing Status</th>
+                <th scope="col" style="text-align: right;">0% LTCG Rate Band</th>
+                <th scope="col" style="text-align: right;">15% LTCG Rate Band</th>
+                <th scope="col" style="text-align: right;">20% LTCG Rate Band</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 600;">Single</td>
+                <td style="text-align: right;">Up to $49,600</td>
+                <td style="text-align: right;">$49,601 – $547,100</td>
+                <td style="text-align: right;">Over $547,100</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Married Filing Jointly (MFJ)</td>
+                <td style="text-align: right;">Up to $99,200</td>
+                <td style="text-align: right;">$99,201 – $615,500</td>
+                <td style="text-align: right;">Over $615,500</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Head of Household (HOH)</td>
+                <td style="text-align: right;">Up to $66,450</td>
+                <td style="text-align: right;">$66,451 – $581,000</td>
+                <td style="text-align: right;">Over $581,000</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Married Filing Separately (MFS)</td>
+                <td style="text-align: right;">Up to $49,600</td>
+                <td style="text-align: right;">$49,601 – $307,750</td>
+                <td style="text-align: right;">Over $307,750</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="guide-sub-title">3. Net Investment Income Tax (NIIT 3.8%)</h3>
+        <p>
+          High-earning American taxpayers are also subject to the <strong>3.8% Net Investment Income Tax (NIIT)</strong> under Section 1411 of the Internal Revenue Code. The 3.8% surtax applies to the lesser of your net investment income or the excess of your Modified Adjusted Gross Income (MAGI) over the statutory threshold:
+        </p>
+        <ul class="guide-bullet-list">
+          <li><strong>$200,000</strong> for Single and Head of Household filers</li>
+          <li><strong>$250,000</strong> for Married Filing Jointly</li>
+          <li><strong>$125,000</strong> for Married Filing Separately</li>
+        </ul>
+
+        <h3 class="guide-sub-title">4. Section 121 Primary Residence Exclusion</h3>
+        <p>
+          If you sell a residential home that served as your primary residence for at least 2 out of the 5 years preceding the sale, you can legally exclude up to <strong>$250,000</strong> of capital gains from federal taxation if single, or up to <strong>$500,000</strong> if married filing jointly.
+        </p>
+      </section>
+
+      <!-- Section 5: United Kingdom -->
+      <section class="guide-block">
+        <h2 class="guide-title">Capital Gains Tax in the United Kingdom (HMRC 2026/27 Rules)</h2>
+        <p>
+          In the United Kingdom, HM Revenue and Customs (HMRC) administers Capital Gains Tax on chargeable disposals during the UK tax year, which runs from <strong>6 April to 5 April</strong>.
+        </p>
+
+        <h3 class="guide-sub-title">1. Autumn Budget Tax Rate Harmonization</h3>
+        <p>
+          Following historic tax reforms enacted in the Autumn 2024 Budget and carried forward through the 2025/26 and 2026/27 tax years, Capital Gains Tax rates on shares, investment funds, and other chargeable assets were unified with residential property rates:
+        </p>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Basic Rate Taxpayers (18%):</strong> If your total taxable income plus your taxable capital gain falls within the basic rate band (up to £50,270 for 2026/27), your gains are taxed at <strong>18%</strong>.
+          </li>
+          <li>
+            <strong>Higher &amp; Additional Rate Taxpayers (24%):</strong> Any portion of your taxable gain that exceeds the £50,270 basic rate threshold is taxed at <strong>24%</strong>.
+          </li>
+          <li>
+            <strong>Residential Property (18% and 24%):</strong> Residential property gains (such as buy-to-let properties or holiday homes) are taxed at 18% for basic-rate and 24% for higher-rate taxpayers.
+          </li>
+          <li>
+            <strong>Business Asset Disposal Relief (BADR):</strong> For entrepreneurs disposing of qualifying business assets, the lifetime relief tax rate is <strong>18%</strong> for 2026/27 on lifetime gains up to £1,000,000.
+          </li>
+        </ul>
+
+        <h3 class="guide-sub-title">2. UK Annual Exempt Amount (£3,000)</h3>
+        <p>
+          Every individual resident in the UK receives an annual tax-free capital gains allowance called the <strong>Annual Exempt Amount (AEA)</strong>. For 2026/27, the AEA is frozen at <strong>£3,000</strong>. You only pay Capital Gains Tax on net gains that exceed this £3,000 threshold.
+        </p>
+
+        <h3 class="guide-sub-title">3. Private Residence Relief (PRR)</h3>
+        <p>
+          Selling your main home in the UK is virtually always <strong>100% tax-free</strong> under Private Residence Relief (PRR), provided you lived in the property as your primary residence throughout your period of ownership and did not let out part of it exclusively for commercial business.
+        </p>
+      </section>
+
+      <!-- Section 6: Australia -->
+      <section class="guide-block">
+        <h2 class="guide-title">Capital Gains Tax in Australia (ATO 2026–27 Rules)</h2>
+        <p>
+          Unlike the US or the UK, Australia has <strong>no separate or standalone capital gains tax rate</strong>. Under Australian tax law administered by the Australian Taxation Office (ATO), your net capital gain is integrated directly into your assessable income on your annual tax return and taxed at your marginal individual income tax rate plus the <strong>2.0% Medicare levy</strong>.
+        </p>
+
+        <h3 class="guide-sub-title">1. The 50% CGT Discount Rule</h3>
+        <p>
+          To encourage long-term productive investment, the ATO grants individual Australian tax residents a <strong>50% CGT discount</strong> on assets held for <strong>at least 12 months (365 days or more)</strong>.
+        </p>
+        <p>
+          When you sell an asset held for over a year:
+        </p>
+        <ol class="guide-ordered-list">
+          <li>You calculate your gross capital gain (Proceeds − Cost Base).</li>
+          <li>You subtract any prior-year or current-year capital losses.</li>
+          <li>You apply the <strong>50% discount</strong> to the remaining net gain.</li>
+          <li>Only the remaining <strong>50% taxable portion</strong> is added to your taxable income.</li>
+        </ol>
+
+        <h3 class="guide-sub-title">2. Australian Revised Stage 3 Tax Brackets (2026–27)</h3>
+        <p>
+          The taxable portion of your capital gain is taxed according to the revised Stage 3 resident individual tax brackets:
+        </p>
+        <ul class="guide-bullet-list">
+          <li><strong>$0 – $18,200:</strong> Nil (0%)</li>
+          <li><strong>$18,201 – $45,000:</strong> 16% + 2% Medicare levy (18% total)</li>
+          <li><strong>$45,001 – $135,000:</strong> 30% + 2% Medicare levy (32% total)</li>
+          <li><strong>$135,001 – $190,000:</strong> 37% + 2% Medicare levy (39% total)</li>
+          <li><strong>$190,001 and above:</strong> 45% + 2% Medicare levy (47% total)</li>
+        </ul>
+
+        <h3 class="guide-sub-title">3. ATO Main Residence Exemption</h3>
+        <p>
+          Your primary home in Australia is completely exempt from CGT under the ATO Main Residence Exemption, provided the dwelling is situated on land under 2 hectares and was established as your principal home from acquisition.
+        </p>
+      </section>
+
+      <!-- Section 7: India -->
+      <section class="guide-block">
+        <h2 class="guide-title">Capital Gains Tax in India (ITD FY 2026–27 / AY 2027–28)</h2>
+        <p>
+          India’s capital gains tax regime underwent a landmark transformation in Union Budget 2024, creating a streamlined, simplified classification system that applies for Financial Year 2025–26 and <strong>FY 2026–27 (Assessment Year 2027–28)</strong>.
+        </p>
+
+        <h3 class="guide-sub-title">1. Holding Period Cutoffs in India</h3>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Listed Equity Shares &amp; Equity Mutual Funds (STT Paid):</strong> 12 months. Holding for more than 12 months is Long-Term (LTCG); holding for 12 months or less is Short-Term (STCG).
+          </li>
+          <li>
+            <strong>Immovable Property (Real Estate &amp; Land) and Unlisted Shares:</strong> 24 months. Holding for more than 24 months is LTCG; 24 months or less is STCG.
+          </li>
+          <li>
+            <strong>Specified Debt Mutual Funds:</strong> Always deemed Short-Term under Section 50AA, irrespective of holding period.
+          </li>
+        </ul>
+
+        <h3 class="guide-sub-title">2. Indian Capital Gains Tax Rates (Post-Reform)</h3>
+        <div class="table-responsive-wrapper" style="margin: var(--space-3) 0;">
+          <table class="guide-table">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left;">Asset Category</th>
+                <th scope="col" style="text-align: left;">Short-Term (STCG) Rate</th>
+                <th scope="col" style="text-align: left;">Long-Term (LTCG) Rate</th>
+                <th scope="col" style="text-align: left;">Statutory Exemption / Relief</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 600;">Listed Equity Shares &amp; Equity MFs</td>
+                <td>20% (Section 111A)</td>
+                <td>12.5% (Section 112A)</td>
+                <td>First ₹1,25,000 of LTCG is 100% tax-free each FY</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Immovable Property (Real Estate)</td>
+                <td>Individual Slab Rates (up to 30%)</td>
+                <td>12.5% without indexation</td>
+                <td>Grandfathering option for pre-July 2024 buys (20% with indexation if lower)</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Unlisted Shares</td>
+                <td>Individual Slab Rates</td>
+                <td>12.5%</td>
+                <td>Taxed at flat statutory rate</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Debt Mutual Funds</td>
+                <td>Individual Slab Rates</td>
+                <td>Individual Slab Rates</td>
+                <td>Section 50AA removes LTCG indexation benefits</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>Mandatory 4% Health &amp; Education Cess:</strong> Every rupee of income tax and capital gains tax calculated in India is subject to an additional 4% Health and Education Cess. Surcharges of 10% (income above ₹50 lakh) or 15% (income above ₹1 crore) apply to high earners, with capital gains surcharge capped at 15%.
+        </p>
+      </section>
+
+      <!-- Section 8: Canada -->
+      <section class="guide-block">
+        <h2 class="guide-title">Capital Gains Tax in Canada (CRA 2026 Rules)</h2>
+        <p>
+          In Canada, capital gains are administered by the Canada Revenue Agency (CRA). Like Australia, Canada does not impose a distinct standalone capital gains rate; instead, a legally prescribed percentage called the <strong>Capital Gains Inclusion Rate</strong> is added to your taxable income and taxed at combined federal and provincial marginal rates.
+        </p>
+
+        <h3 class="guide-sub-title">1. The Two-Tier Capital Gains Inclusion Rate</h3>
+        <p>
+          Under legislation in force for 2025 and 2026, individual Canadian taxpayers face a two-tiered inclusion schedule:
+        </p>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>First $250,000 of Net Capital Gains:</strong> Taxed at the standard <strong>50% inclusion rate</strong>. Only half of your profit ($125,000 on a $250,000 gain) is included in taxable income.
+          </li>
+          <li>
+            <strong>Net Capital Gains Exceeding $250,000:</strong> Taxed at an elevated <strong>66.67% (two-thirds) inclusion rate</strong> on the portion above $250,000.
+          </li>
+        </ul>
+
+        <h3 class="guide-sub-title">2. Canadian Federal &amp; Provincial Bracket Stacking</h3>
+        <p>
+          The taxable capital gain is stacked onto your employment, rental, or pension income. For 2026, federal tax rates range from 15% (income up to $58,500) to 33% (income over $258,400). In addition, every province charges progressive provincial tax:
+        </p>
+        <ul class="guide-bullet-list">
+          <li><strong>Ontario:</strong> 5.05% to 13.16% plus Ontario Surtax (20% and 36%).</li>
+          <li><strong>British Columbia:</strong> 5.06% to 20.50% across 7 progressive brackets.</li>
+          <li><strong>Alberta:</strong> 10.00% to 15.00% across 5 brackets.</li>
+          <li><strong>Quebec:</strong> 14.00% to 25.75% with a 16.5% federal tax abatement.</li>
+        </ul>
+
+        <h3 class="guide-sub-title">3. Principal Residence Exemption (PRE)</h3>
+        <p>
+          If you sell a residential housing unit that was officially designated as your principal residence for all years of ownership, 100% of the capital gain is legally sheltered from both federal and provincial income taxes using the CRA Form T2091.
+        </p>
+      </section>
+
+      <!-- Section 9: Singapore -->
+      <section class="guide-block">
+        <h2 class="guide-title">Capital Gains Tax in Singapore (IRAS Guidelines &amp; 0% CGT)</h2>
+        <p>
+          Singapore is celebrated as one of the world's most investor-friendly nations because it <strong>does not levy any capital gains tax</strong> on individuals or corporate entities. Under the statutory guidelines established by the Inland Revenue Authority of Singapore (IRAS), profits realized from the disposal of capital investments—such as publicly traded equities, REITs, private equity, mutual funds, or real estate—are 100% exempt from income tax.
+        </p>
+
+        <h3 class="guide-sub-title">1. The Baseline 0% Rule for Capital Gains</h3>
+        <p>
+          Whether you invest in Singapore Exchange (SGX) equities, overseas stock markets, cryptocurrencies, or domestic property, net capital profits remain completely tax-free. You do not need to report non-taxable capital gains on your annual IRAS tax return, and there are no statutory holding-period surcharges or capital gains reporting forms.
+        </p>
+
+        <h3 class="guide-sub-title">2. Capital Gains vs. Commercial Trading Income (Badges of Trade)</h3>
+        <p>
+          While genuine investment gains are non-taxable, profits derived from an active trade or business of trading securities or properties are subject to standard Singapore personal income tax (ranging from 0% to 24%). IRAS applies the established <strong>Badges of Trade</strong> doctrine to distinguish capital gains from trading income:
+        </p>
+        <ul class="guide-bullet-list">
+          <li><strong>Holding Period:</strong> Disposals after extended holding periods demonstrate investment intent.</li>
+          <li><strong>Frequency of Transactions:</strong> Repeated, high-frequency day-trading or property flipping suggests a commercial operation.</li>
+          <li><strong>Investment Intent:</strong> Acquiring assets for long-term dividend yield or rental income indicates capital status.</li>
+          <li><strong>Financing Structure:</strong> Leveraging high short-term borrowing to finance rapid liquidation suggests trading.</li>
+        </ul>
+
+        <h3 class="guide-sub-title">3. Property Disposals &amp; Seller's Stamp Duty (SSD)</h3>
+        <p>
+          Although property sales do not trigger capital gains tax, residential properties sold within three years of purchase are subject to Singapore's <strong>Seller's Stamp Duty (SSD)</strong>: 12% if sold within the first year, 8% within the second year, and 4% within the third year. Beyond 3 years of holding, property sales are 100% exempt from all disposal taxes.
+        </p>
+      </section>
+
+      <!-- Section 10: Step-by-Step Examples -->
+      <section class="guide-block">
+        <h2 class="guide-title">Real-World Capital Gains Tax Examples Across 6 Countries</h2>
+
+        <div class="example-cards-grid">
+          <!-- US Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇺🇸 United States Example</span>
+            <h4 class="example-card-title">Stock Sale in Taxable Brokerage</h4>
+            <p class="example-card-p">
+              Sarah, a single filer in Texas (0% state tax), earns an $85,000 salary. In 2024, she purchased $30,000 of index shares and sold them in 2026 for $80,000, paying $1,000 in selling fees.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Gross Capital Gain:</strong> $80,000 − $30,000 − $1,000 = $49,000</li>
+              <li><strong>Holding Duration:</strong> 2.1 years (> 365 days = Long-Term)</li>
+              <li><strong>LTCG Bracket:</strong> Taxable salary of $85,000 exceeds the 0% threshold ($49,600). The full $49,000 falls in the 15% federal LTCG bracket.</li>
+              <li><strong>Federal Tax:</strong> $49,000 × 15% = <strong>$7,350</strong></li>
+              <li><strong>NIIT:</strong> MAGI = $85k + $49k = $134k (under $200k threshold = $0 NIIT)</li>
+              <li><strong>Total Tax:</strong> <strong>$7,350</strong> (Effective rate: 15.0%)</li>
+            </ul>
+          </div>
+
+          <!-- UK Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇬🇧 United Kingdom Example</span>
+            <h4 class="example-card-title">Buy-to-Let Property Disposal</h4>
+            <p class="example-card-p">
+              Oliver earns a £40,000 salary. He sells a secondary residential buy-to-let flat for £220,000 that he bought for £150,000, incurring £5,000 in estate agency and solicitor fees.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Gross Capital Gain:</strong> £220,000 − £150,000 − £5,000 = £65,000</li>
+              <li><strong>Annual Exempt Amount:</strong> Less £3,000 allowance = £62,000 chargeable gain</li>
+              <li><strong>Basic Rate Band Space:</strong> £50,270 basic limit − £40,000 salary = £10,270 remaining basic band taxed at 18% = £1,848.60</li>
+              <li><strong>Higher Rate Band:</strong> Remaining £51,730 taxed at 24% = £12,415.20</li>
+              <li><strong>Total UK Tax:</strong> £1,848.60 + £12,415.20 = <strong>£14,263.80</strong> (Effective rate: 21.9%)</li>
+            </ul>
+          </div>
+
+          <!-- AU Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇦🇺 Australia Example</span>
+            <h4 class="example-card-title">Shares Held for 3 Years</h4>
+            <p class="example-card-p">
+              Liam earns a $100,000 salary in Sydney. He sells shares with a $40,000 purchase price for $100,000, paying $1,000 in brokerage fees.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Gross Capital Gain:</strong> $100,000 − $40,000 − $1,000 = $59,000</li>
+              <li><strong>50% CGT Discount:</strong> Asset held > 12 months. Taxable portion = $59,000 × 50% = $29,500</li>
+              <li><strong>Assessable Income Impact:</strong> Taxable income rises from $100,000 to $129,500 (both within the 30% tax bracket + 2% Medicare = 32%)</li>
+              <li><strong>Total ATO Tax:</strong> $29,500 × 32% = <strong>$9,440</strong> (Effective rate: 16.0%)</li>
+            </ul>
+          </div>
+
+          <!-- IN Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇮🇳 India Example</span>
+            <h4 class="example-card-title">Listed Equity Shares LTCG</h4>
+            <p class="example-card-p">
+              Aarav sells listed shares for ₹15,00,000 that were acquired 20 months ago for ₹9,000,000, incurring ₹10,000 in brokerage expenses.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Gross Capital Gain:</strong> ₹15,00,000 − ₹9,00,000 − ₹10,000 = ₹5,90,000</li>
+              <li><strong>Section 112A Exemption:</strong> First ₹1,25,000 is 100% tax-free</li>
+              <li><strong>Taxable Gain:</strong> ₹5,90,000 − ₹1,25,000 = ₹4,65,000</li>
+              <li><strong>LTCG Tax (12.5%):</strong> ₹4,65,000 × 12.5% = ₹58,125</li>
+              <li><strong>4% Cess:</strong> ₹58,125 × 4% = ₹2,325</li>
+              <li><strong>Total Tax:</strong> ₹58,125 + ₹2,325 = <strong>₹60,450</strong> (Effective rate: 10.2%)</li>
+            </ul>
+          </div>
+
+          <!-- CA Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇨🇦 Canada Example</span>
+            <h4 class="example-card-title">Cottage Sale in Ontario</h4>
+            <p class="example-card-p">
+              Chloe earns $90,000 in Ontario. She sells a secondary recreation cottage for $450,000 purchased for $250,000, paying $15,000 in legal and realtor fees.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Gross Capital Gain:</strong> $450,000 − $250,000 − $15,000 = $185,000</li>
+              <li><strong>Inclusion Rate:</strong> Gain is under $250,000 cutoff. Taxable portion = $185,000 × 50% = $92,500</li>
+              <li><strong>Taxable Income:</strong> Increases from $90,000 to $182,500</li>
+              <li><strong>Federal &amp; Ontario Surtax:</strong> Incremental tax attributable to the $92,500 taxable gain equals <strong>$35,103</strong></li>
+              <li><strong>Effective Tax Rate:</strong> $35,103 / $185,000 = <strong>18.97%</strong></li>
+            </ul>
+          </div>
+
+          <!-- SG Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇸🇬 Singapore Example</span>
+            <h4 class="example-card-title">Stock &amp; REIT Sale by Resident Investor</h4>
+            <p class="example-card-p">
+              Wei Ming, an investor in Singapore earning an S$85,000 salary, sells S$70,000 of Singapore equities and REITs purchased for S$35,000 three years ago, paying S$200 in brokerage fees.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Gross Capital Gain:</strong> S$70,000 − S$35,000 − S$200 = S$34,800</li>
+              <li><strong>Holding Duration:</strong> 3.0 years (pure investment asset)</li>
+              <li><strong>IRAS Capital Gains Tax Rate:</strong> <strong>0.00%</strong></li>
+              <li><strong>Total Estimated Tax:</strong> <strong>S$0.00</strong></li>
+              <li><strong>Net After-Tax Proceeds:</strong> Full S$34,800 profit retained with zero tax withheld</li>
+              <li><strong>Effective Tax Rate:</strong> <strong>0.0%</strong></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 11: How Capital Losses Work -->
+      <section class="guide-block">
+        <h2 class="guide-title">How Capital Losses and Tax-Loss Harvesting Work</h2>
+        <p>
+          Capital losses are the silver lining of an unprofitable investment. When you sell a capital asset for less than its adjusted purchase price and allowable acquisition costs, you incur a <strong>capital loss</strong>.
+        </p>
+        <p>
+          Here is how capital loss relief operates across international jurisdictions (note that because Singapore imposes 0% capital gains tax, capital losses cannot be claimed as tax deductions in Singapore):
+        </p>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Dollar-for-Dollar Offset:</strong> In the US, UK, Australia, India, and Canada, realized capital losses can offset realized capital gains dollar-for-dollar in the same tax year.
+          </li>
+          <li>
+            <strong>Indefinite Carryforward:</strong> If your capital losses exceed your capital gains in a given tax year, the net unused loss can be carried forward indefinitely into future tax years to shield future investment profits.
+          </li>
+          <li>
+            <strong>US Ordinary Income Offset ($3,000 Rule):</strong> In the United States, if net capital losses exceed all capital gains, individual taxpayers can deduct up to <strong>$3,000 per year</strong> ($1,500 if married filing separately) directly against ordinary salary or business income.
+          </li>
+          <li>
+            <strong>Australia Pre-Discount Ordering:</strong> Under ATO tax law, you must deduct your accumulated capital losses from your gross capital gain <em>before</em> applying the 50% CGT discount. You cannot apply the discount first and then deduct the loss.
+          </li>
+          <li>
+            <strong>Wash Sale &amp; Bed-and-Breakfasting Rules:</strong> In the US, the <strong>30-day Wash Sale Rule</strong> prevents taxpayers from claiming a tax loss if they buy substantially identical securities within 30 days before or after the sale. In the UK, the <strong>30-day Bed &amp; Breakfasting Rule</strong> enforces a similar restriction. In Canada, the <strong>Superficial Loss Rule</strong> denies loss deductions if you repurchase the same asset within 30 calendar days.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section 11: Cross Links to FinCalcLab Financial Tools -->
+      <section class="guide-block">
+        <h2 class="guide-title">Explore Related Financial &amp; Tax Calculators</h2>
+        <p>
+          Managing investment profits and tax efficiency requires looking at your full financial picture. Explore our comprehensive suite of free, high-precision planning tools:
+        </p>
+        <div class="cgt-links-grid">
+          <a href="/calculator/buy-to-let-tax-calculator" class="cgt-tool-card">
+            <span class="tool-card-flag">🇬🇧 UK Landlord Tax</span>
+            <strong class="tool-card-name">Buy to Let Tax Calculator</strong>
+            <span class="tool-card-desc">Calculate UK Section 24 mortgage interest relief, rental income tax, and landlord cash flow for 2026/27.</span>
+          </a>
+          <a href="/calculator/super-salary-sacrifice-calculator" class="cgt-tool-card">
+            <span class="tool-card-flag">🇦🇺 Australia Super</span>
+            <strong class="tool-card-name">Super Salary Sacrifice Calculator</strong>
+            <span class="tool-card-desc">Estimate ATO tax savings, Medicare reductions, and take-home pay impacts under Revised Stage 3 rules.</span>
+          </a>
+          <a href="/calculator/rrsp-tax-savings-calculator" class="cgt-tool-card">
+            <span class="tool-card-flag">🇨🇦 Canada RRSP</span>
+            <strong class="tool-card-name">RRSP Tax Savings Calculator</strong>
+            <span class="tool-card-desc">Calculate federal and provincial income tax deductions and tax refunds from Registered Retirement Savings Plan contributions.</span>
+          </a>
+          <a href="/calculator/tfsa-growth-calculator" class="cgt-tool-card">
+            <span class="tool-card-flag">🇨🇦 Canada TFSA</span>
+            <strong class="tool-card-name">TFSA Growth Calculator</strong>
+            <span class="tool-card-desc">Project tax-free compound investment growth, periodic contributions, and retirement wealth in a Canadian TFSA.</span>
+          </a>
+          <a href="/calculator/in-hand-salary-calculator" class="cgt-tool-card">
+            <span class="tool-card-flag">💼 Global Salary</span>
+            <strong class="tool-card-name">In-Hand Salary Calculator</strong>
+            <span class="tool-card-desc">Calculate net take-home salary after payroll deductions, national insurance, provident fund, and income taxes.</span>
+          </a>
+          <a href="/calculator/monthly-savings-goal-calculator" class="cgt-tool-card">
+            <span class="tool-card-flag">🎯 Wealth Goals</span>
+            <strong class="tool-card-name">Monthly Savings Goal Calculator</strong>
+            <span class="tool-card-desc">Compute exact monthly deposits needed to reach your target investment nest egg or property down payment.</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 12: Frequently Asked Questions -->
+      <section class="guide-block" aria-labelledby="cgt-faqs-heading">
+        <h2 id="cgt-faqs-heading" class="guide-title">Frequently Asked Questions About Capital Gains Tax</h2>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3 class="faq-question">What is a capital gains tax calculator?</h3>
+            <p class="faq-answer">
+              A capital gains tax calculator is an online estimation tool that computes the tax liability owed when you sell an investment, property, or valuable personal asset for more than your purchase price and allowable acquisition and selling expenses.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">How do I calculate capital gains tax?</h3>
+            <p class="faq-answer">
+              First, subtract your cost basis (purchase price plus allowable buying and selling fees) from your sale proceeds to establish your gross gain. Next, deduct any statutory allowances, exemptions, or prior-year capital losses. For Australia and Canada, apply the legal 50% discount or statutory inclusion rate. Finally, apply the applicable statutory tax brackets for your country.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Is capital gains tax the same in every country?</h3>
+            <p class="faq-answer">
+              No. Tax structures vary dramatically: the US uses preferential long-term brackets (0%, 15%, 20%); the UK uses unified flat rates (18% and 24%) above an exemption; Australia adds 50% of discounted gains to assessable income; India applies special rates (12.5% LTCG, 20% STCG) plus 4% cess; and Canada applies a two-tier inclusion rate (50% up to $250k; 66.67% above) taxed at progressive ordinary rates.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">What are the US capital gains tax rates for 2026?</h3>
+            <p class="faq-answer">
+              Federal long-term capital gains rates for 2026 are 0%, 15%, or 20% depending on filing status and ordinary income. Short-term gains (held 1 year or less) are taxed as ordinary income from 10% to 37%. High earners are also subject to a 3.8% Net Investment Income Tax (NIIT).
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">What is the UK Capital Gains Tax allowance for 2026/27?</h3>
+            <p class="faq-answer">
+              For 2026/27, the UK individual Annual Exempt Amount is £3,000. Chargeable gains above this threshold are taxed at 18% for basic rate taxpayers and 24% for higher and additional rate taxpayers across both equities and residential property.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">How does the Australian CGT discount work?</h3>
+            <p class="faq-answer">
+              Individual Australian resident taxpayers who hold an asset for 12 months or longer receive a 50% CGT discount. After subtracting allowable capital losses from the gross gain, the remaining profit is halved, and only that remaining 50% is added to taxable income and taxed at your marginal rate plus the 2% Medicare levy.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">How is capital gains tax calculated in India for FY 2026–27?</h3>
+            <p class="faq-answer">
+              Under the simplified Budget 2024 framework, listed equity shares and equity mutual funds held over 12 months are taxed at 12.5% on profits exceeding the ₹1.25 lakh annual exemption. Short-term equity gains are taxed at 20%. Real estate held over 24 months is taxed at 12.5% without indexation. All taxes include a 4% Health and Education cess.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">How does Canada's capital gains inclusion rate work in 2026?</h3>
+            <p class="faq-answer">
+              In Canada, individuals face a 50% inclusion rate on their first $250,000 of net capital gains in a calendar year, and a 66.67% (two-thirds) inclusion rate on gains exceeding $250,000. This taxable gain is added to your income and taxed at combined federal and provincial brackets.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Do I pay capital gains tax on stocks?</h3>
+            <p class="faq-answer">
+              Yes, selling stocks, ETFs, or mutual funds held in taxable brokerage accounts triggers capital gains tax if sold for a profit. However, securities held inside qualified tax-sheltered accounts—such as a US Roth IRA/401(k), UK Stocks &amp; Shares ISA, Canadian TFSA, or Australian superannuation fund—are completely exempt from capital gains tax upon sale.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Do I pay capital gains tax when selling my primary home?</h3>
+            <p class="faq-answer">
+              Most nations offer substantial primary residence relief: UK Private Residence Relief (PRR) and Canadian Principal Residence Exemption (PRE) provide 100% tax exemption; the Australian Main Residence Exemption provides full exclusion; and US Section 121 allows individuals to exclude up to $250,000 (single) or $500,000 (married filing jointly) in profit.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Can capital losses reduce my capital gains tax?</h3>
+            <p class="faq-answer">
+              Yes. In all five supported countries, realized capital losses offset capital gains dollar-for-dollar. Unused net capital losses can generally be carried forward indefinitely to shield future capital gains from taxation.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Is capital gains tax calculated on the sale price or the profit?</h3>
+            <p class="faq-answer">
+              Capital gains tax is never calculated on the gross sale price. It is assessed solely on your net gain (profit), which is your sale proceeds minus your original purchase price and allowable acquisition, improvement, and selling expenses.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 13: Statutory Disclaimers -->
+      <section class="guide-block">
+        <div class="cgt-disclaimer-card">
+          <div class="disclaimer-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <strong>Official Statutory Tax Disclaimer</strong>
+          </div>
+          <p>
+            The calculations provided by the FinCalcLab Capital Gains Tax Calculator are estimates for educational and comparative planning purposes only. Calculations are based on user inputs, standard tax rules, and official 2026/27 legislative schedules published by the Internal Revenue Service (IRS), HM Revenue &amp; Customs (HMRC), Australian Taxation Office (ATO), Income Tax Department of India (ITD), and Canada Revenue Agency (CRA).
+          </p>
+          <p>
+            Actual tax liability may vary due to individual taxpayer circumstances, local surtaxes, alternative minimum tax (AMT), non-resident withholding regimes, partial-year residence, tax treaty relief, complex depreciation recapture (Section 1250), or changes in local tax legislation. This tool does not constitute licensed legal, accounting, or professional tax advice. Always consult a qualified CPA, Chartered Tax Adviser, or your national tax authority before filing an official tax return or executing substantial asset disposals.
+          </p>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  /* -------------------------------------------------------------
+     LANDING PAGE STYLES & TYPOGRAPHY
+     ------------------------------------------------------------- */
+  .calculator-page-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding-bottom: var(--space-8);
+  }
+
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2,
+  .guide-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .guide-sub-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .guide-block p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .guide-bullet-list, .guide-ordered-list {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .guide-bullet-list li, .guide-ordered-list li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* Match CalculatorLayout container width and horizontal gutters */
+  .cgt-intro-callout,
+  .cgt-guide-article {
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* Intro Callout Card */
+  .cgt-intro-callout {
+    margin-top: var(--space-4);
+  }
+
+  .cgt-callout-card {
+    padding: var(--space-4);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .cgt-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .cgt-callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .cgt-callout-eyebrow {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: block;
+  }
+
+  .cgt-callout-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-heading);
+    margin: 2px 0 0 0;
+  }
+
+  .cgt-callout-desc {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+  }
+
+  .cgt-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .cgt-feature-item {
+    display: flex;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+  }
+
+  .cgt-feature-flag {
+    font-size: 1.3rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .cgt-feature-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .cgt-feature-text {
+    font-size: 0.73rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  /* Educational Article */
+  .cgt-guide-article {
+    margin-top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .guide-block {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+
+
+  .formula-callout-box {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.01) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .formula-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .formula-equation {
+    font-size: clamp(0.82rem, 3.5vw, 0.95rem);
+    font-weight: 700;
+    color: var(--color-heading);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .table-responsive-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    margin: var(--space-3) 0;
+    box-sizing: border-box;
+  }
+
+  .guide-table {
+    min-width: 460px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .guide-table th,
+  .guide-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .guide-table th {
+    background: rgba(0, 0, 0, 0.03);
+    font-weight: 700;
+    color: var(--color-heading);
+  }
+
+  /* Example Cards Grid */
+  .example-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .country-example-card {
+    background: rgba(0, 0, 0, 0.015);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+  }
+
+  .example-card-flag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .example-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin: 0;
+  }
+
+  .example-card-p {
+    font-size: 0.82rem;
+    color: var(--color-text);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .example-breakdown {
+    margin: 4px 0 0 0;
+    padding-left: var(--space-3);
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-wrap: break-word;
+  }
+
+  /* Cross Links Grid */
+  .cgt-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .cgt-tool-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: all 0.2s ease;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .cgt-tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .tool-card-flag {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .tool-card-name {
+    font-size: 0.92rem;
+    color: var(--color-heading);
+  }
+
+  .tool-card-desc {
+    font-size: 0.76rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+  }
+
+  /* FAQs */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-3);
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .faq-question {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin-top: 0;
+    margin-bottom: 6px;
+    overflow-wrap: break-word;
+  }
+
+  .faq-answer {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    margin: 0;
+    overflow-wrap: break-word;
+  }
+
+  /* Disclaimer Card */
+  .cgt-disclaimer-card {
+    background: rgba(245, 158, 11, 0.04);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .disclaimer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-warning);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .cgt-disclaimer-card p {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+    overflow-wrap: break-word;
+  }
+
+  .cgt-disclaimer-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .guide-block {
+      padding: var(--space-4);
+    }
+    .guide-title {
+      font-size: 1.15rem;
+    }
+    .cgt-features-grid {
+      grid-template-columns: 1fr;
+    }
+    .example-cards-grid {
+      grid-template-columns: 1fr;
+    }
+    .cgt-links-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cgt-intro-callout,
+    .cgt-guide-article {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .guide-block {
+      padding: 14px 12px;
+      border-radius: var(--radius-md);
+    }
+    .cgt-callout-card {
+      padding: 14px 12px;
+    }
+    .formula-callout-box {
+      padding: 12px;
+    }
+    .cgt-disclaimer-card {
+      padding: 14px 12px;
+    }
+  }
+</style>

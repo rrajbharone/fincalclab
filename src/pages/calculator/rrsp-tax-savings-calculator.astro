@@ -149,7 +149,7 @@ const webAppSchema = {
     </section>
 
     <!-- Comprehensive Canadian Educational Guide -->
-    <article class="educational-guide">
+    <article class="educational-guide prose">
       
       <!-- Section 1 -->
       <section class="guide-section">
@@ -593,8 +593,48 @@ const webAppSchema = {
 
 <style>
   .calculator-page-container {
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-16);
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2,
+  .guide-section h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .guide-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .guide-section p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .guide-section ul, .guide-section ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .guide-section li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
   }
 
   /* Crosslink Section */
@@ -683,26 +723,7 @@ const webAppSchema = {
     color: var(--color-text);
   }
 
-  .guide-section h2 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--color-text);
-    margin: 0 0 var(--space-3) 0;
-    line-height: 1.3;
-  }
 
-  .guide-section h3 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--color-text);
-    margin: 0 0 var(--space-2) 0;
-  }
-
-  .guide-section p {
-    font-size: 0.95rem;
-    color: var(--color-text);
-    margin: 0 0 var(--space-3) 0;
-  }
 
   .bullet-list {
     margin: 0 0 var(--space-3) 0;

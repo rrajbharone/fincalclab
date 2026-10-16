@@ -1,0 +1,2528 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Capital Gains Tax Calculator"
+  description="Calculate your estimated capital gains tax on stocks, real estate, and investments across the United States, United Kingdom, Australia, India, and Canada."
+  category="Taxes & Investing"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="cgt-calc-root">
+    
+    <!-- Country Selector -->
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <label class="section-label" for="mobile-country-select" style="display: block; font-weight: 700; font-size: 0.95rem; margin-bottom: var(--space-2); color: var(--color-heading);">
+        Select Country
+      </label>
+
+      <!-- Mobile Dropdown Selector (Visible on <= 640px) -->
+      <div class="mobile-country-selector-wrap">
+        <div class="mobile-select-box">
+          <span class="mobile-select-flag" id="mobile-selected-flag" aria-hidden="true">🇺🇸</span>
+          <select id="mobile-country-select" class="mobile-country-dropdown" aria-label="Select Country for Capital Gains Tax">
+            <option value="US" selected>United States (USD $)</option>
+            <option value="UK">United Kingdom (GBP £)</option>
+            <option value="AU">Australia (AUD $)</option>
+            <option value="IN">India (INR ₹)</option>
+            <option value="CA">Canada (CAD $)</option>
+            <option value="SG">Singapore (SGD S$)</option>
+          </select>
+          <svg class="mobile-select-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- Desktop Country Selector Tabs (Visible on > 640px) -->
+      <div class="country-selector-pills" role="tablist" aria-label="Select Country for Capital Gains Tax">
+        <button type="button" class="country-pill active" data-country="US" role="tab" aria-selected="true">
+          <span class="flag-icon">🇺🇸</span>
+          <span class="country-name">United States</span>
+          <span class="country-curr">(USD $)</span>
+        </button>
+        <button type="button" class="country-pill" data-country="UK" role="tab" aria-selected="false">
+          <span class="flag-icon">🇬🇧</span>
+          <span class="country-name">United Kingdom</span>
+          <span class="country-curr">(GBP £)</span>
+        </button>
+        <button type="button" class="country-pill" data-country="AU" role="tab" aria-selected="false">
+          <span class="flag-icon">🇦🇺</span>
+          <span class="country-name">Australia</span>
+          <span class="country-curr">(AUD $)</span>
+        </button>
+        <button type="button" class="country-pill" data-country="IN" role="tab" aria-selected="false">
+          <span class="flag-icon">🇮🇳</span>
+          <span class="country-name">India</span>
+          <span class="country-curr">(INR ₹)</span>
+        </button>
+        <button type="button" class="country-pill" data-country="CA" role="tab" aria-selected="false">
+          <span class="flag-icon">🇨🇦</span>
+          <span class="country-name">Canada</span>
+          <span class="country-curr">(CAD $)</span>
+        </button>
+        <button type="button" class="country-pill" data-country="SG" role="tab" aria-selected="false">
+          <span class="flag-icon">🇸🇬</span>
+          <span class="country-name">Singapore</span>
+          <span class="country-curr">(SGD S$)</span>
+        </button>
+      </div>
+      <span class="input-subtext" id="country-help-text" style="margin-top: var(--space-2);">
+        Official 2026 IRS federal capital gains tax rules, long-term rate bands (0%, 15%, 20%), and Net Investment Income Tax (NIIT).
+      </span>
+    </div>
+
+    <!-- Main Transaction Inputs -->
+    <div class="input-section" style="margin-top: var(--space-4);">
+      <h3 class="section-title">1. Transaction &amp; Asset Details</h3>
+
+      <!-- Asset Type Dropdown -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cgt-asset-type">Asset Type</label>
+          <select id="cgt-asset-type" class="currency-select" aria-label="Asset Type">
+            <!-- Dynamically populated based on selected country -->
+            <option value="stocks" selected>Stocks, ETFs &amp; Mutual Funds</option>
+            <option value="real_estate">Real Estate / Investment Property</option>
+            <option value="primary_residence">Primary Residence (Home Sale)</option>
+            <option value="collectibles">Collectibles &amp; Precious Metals (28% Max)</option>
+          </select>
+        </div>
+        <span class="input-subtext" id="asset-type-subtext">Taxed under standard US capital gains schedules with Section 121 exclusions for qualifying homes.</span>
+      </div>
+
+      <!-- Purchase Price / Cost Basis -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="cgt-purchase-price" id="lbl-purchase-price">Purchase Price / Cost Basis</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="curr-sym-1">$</span>
+            <input type="number" id="cgt-purchase-price" min="0" max="100000000" step="1000" value="50000" aria-label="Purchase Price or Cost Basis" />
+          </div>
+        </div>
+        <span class="input-subtext">Original purchase price paid for the asset.</span>
+      </div>
+
+      <!-- Sale Price / Total Proceeds -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="cgt-sale-price" id="lbl-sale-price">Sale Price / Proceeds</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="curr-sym-2">$</span>
+            <input type="number" id="cgt-sale-price" min="0" max="100000000" step="1000" value="120000" aria-label="Sale Price or Proceeds" />
+          </div>
+        </div>
+        <span class="input-subtext">Gross proceeds realized from disposing of or selling the asset.</span>
+      </div>
+
+      <!-- Eligible Buying & Selling Costs -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="cgt-eligible-costs">
+            Eligible Buying &amp; Selling Costs
+            <span class="optional-tag">(Optional)</span>
+          </label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="curr-sym-3">$</span>
+            <input type="number" id="cgt-eligible-costs" min="0" max="10000000" step="250" value="3000" aria-label="Eligible Buying and Selling Costs" />
+          </div>
+        </div>
+        <span class="input-subtext">Brokerage commissions, legal conveyancing, stamp duty, transfer fees, and qualifying capital improvements.</span>
+      </div>
+
+      <!-- Acquisition and Sale Dates for Holding Period -->
+      <div class="date-inputs-row" style="margin-top: var(--space-3);">
+        <div class="input-group date-col">
+          <label for="cgt-date-acquired">Acquisition Date</label>
+          <input type="date" id="cgt-date-acquired" value="2024-03-15" class="styled-date-input" aria-label="Acquisition Date" />
+        </div>
+        <div class="input-group date-col">
+          <label for="cgt-date-sold">Sale Date</label>
+          <input type="date" id="cgt-date-sold" value="2026-05-20" class="styled-date-input" aria-label="Sale Date" />
+        </div>
+      </div>
+      <div class="holding-badge-row" id="holding-badge-container">
+        <span class="holding-indicator-pill" id="holding-period-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="lbl-holding-text">Held 2 years, 2 months (796 days) &bull; Long-Term Capital Gain</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Step 2: Income & Country Specific Tax Parameters -->
+    <div class="input-section" style="margin-top: var(--space-4);">
+      <h3 class="section-title">2. Taxable Income &amp; Tax Profile</h3>
+
+      <!-- Annual Taxable Income Before the Gain -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cgt-other-income" id="lbl-other-income">Annual Taxable Income Before Gain</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="curr-sym-4">$</span>
+            <input type="number" id="cgt-other-income" min="0" max="10000000" step="2500" value="85000" aria-label="Annual Taxable Income Before Gain" />
+          </div>
+        </div>
+        <input type="range" id="cgt-other-income-slider" min="0" max="250000" step="2500" value="85000" class="slider-range" aria-label="Income Slider" />
+        <span class="input-subtext" id="subtext-other-income">Your ordinary taxable salary, business, and pension income before adding this capital gain.</span>
+      </div>
+
+      <!-- US: Filing Status -->
+      <div class="input-group country-specific-field" id="field-us-filing-status" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="cgt-filing-status">Filing Status (US Federal)</label>
+          <select id="cgt-filing-status" class="currency-select" aria-label="US Filing Status">
+            <option value="single" selected>Single</option>
+            <option value="mfj">Married Filing Jointly</option>
+            <option value="hoh">Head of Household</option>
+            <option value="mfs">Married Filing Separately</option>
+          </select>
+        </div>
+        <span class="input-subtext">Determines the 0%, 15%, and 20% LTCG rate bands and NIIT thresholds.</span>
+      </div>
+
+      <!-- Canada: Province / Territory -->
+      <div class="input-group country-specific-field hidden" id="field-ca-province" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="cgt-province">Province or Territory</label>
+          <select id="cgt-province" class="currency-select" aria-label="Canadian Province or Territory">
+            <option value="ON" selected>Ontario (ON)</option>
+            <option value="BC">British Columbia (BC)</option>
+            <option value="AB">Alberta (AB)</option>
+            <option value="QC">Quebec (QC)</option>
+            <option value="MB">Manitoba (MB)</option>
+            <option value="SK">Saskatchewan (SK)</option>
+            <option value="NS">Nova Scotia (NS)</option>
+            <option value="NB">New Brunswick (NB)</option>
+            <option value="NL">Newfoundland &amp; Labrador (NL)</option>
+            <option value="PE">Prince Edward Island (PE)</option>
+            <option value="NT">Northwest Territories (NT)</option>
+            <option value="YT">Yukon (YT)</option>
+            <option value="NU">Nunavut (NU)</option>
+          </select>
+        </div>
+        <span class="input-subtext">Applies progressive provincial brackets and surtaxes to taxable capital gains.</span>
+      </div>
+
+      <!-- Australia: Tax Residency -->
+      <div class="input-group country-specific-field hidden" id="field-au-residency" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="cgt-au-residency">Australian Tax Residency</label>
+          <select id="cgt-au-residency" class="currency-select" aria-label="Australian Tax Residency">
+            <option value="resident" selected>Australian Resident (Eligible for 50% CGT Discount)</option>
+            <option value="non_resident">Foreign / Non-Resident (No 50% CGT Discount)</option>
+          </select>
+        </div>
+        <span class="input-subtext">Australian resident individuals qualify for the 50% CGT discount if held for 12+ months.</span>
+      </div>
+
+      <!-- India: Tax Regime -->
+      <div class="input-group country-specific-field hidden" id="field-in-regime" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="cgt-in-regime">Tax Regime (FY 2026–27)</label>
+          <select id="cgt-in-regime" class="currency-select" aria-label="Indian Income Tax Regime">
+            <option value="new" selected>New Tax Regime (Default &amp; Recommended)</option>
+            <option value="old">Old Tax Regime</option>
+          </select>
+        </div>
+        <span class="input-subtext">New regime offers ₹3 lakh basic exemption limit with 5% to 30% slabs.</span>
+      </div>
+    </div>
+
+    <!-- Step 3: Collapsible Advanced Options (Capital Losses & State Taxes) -->
+    <div class="accordion-card" style="margin-top: var(--space-4);">
+      <button type="button" class="accordion-toggle" id="cgt-advanced-toggle" aria-expanded="false" aria-controls="cgt-advanced-content">
+        <span class="accordion-toggle-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Advanced Options: Capital Losses &amp; Local Tax
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="accordion-arrow"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+
+      <div class="accordion-body hidden" id="cgt-advanced-content">
+        <!-- Eligible Prior-Year Capital Losses -->
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="cgt-capital-losses">
+              Eligible Prior / Current Year Capital Losses
+              <span class="optional-tag">(Optional)</span>
+            </label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="curr-sym-5">$</span>
+              <input type="number" id="cgt-capital-losses" min="0" max="10000000" step="500" value="0" aria-label="Eligible Capital Losses" />
+            </div>
+          </div>
+          <span class="input-subtext">Available capital losses carried forward from prior tax years to offset against this gain.</span>
+        </div>
+
+        <!-- US Only: State Tax Rate (%) -->
+        <div class="input-group country-specific-field" id="field-us-state-rate" style="margin-top: var(--space-3);">
+          <div class="input-label-row">
+            <label for="cgt-state-rate">
+              Estimated State Income Tax Rate (%)
+              <span class="optional-tag">(Optional)</span>
+            </label>
+            <div class="input-symbol-wrapper">
+              <input type="number" id="cgt-state-rate" min="0" max="15" step="0.1" value="0.0" aria-label="State Income Tax Rate Percentage" />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+          <span class="input-subtext">Optional state capital gains tax estimate (e.g., California 9.3%–13.3%, New York 6%–10.9%, Texas/Florida 0%).</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Calculator Button -->
+    <div style="margin-top: var(--space-4);">
+      <Button variant="secondary" size="sm" id="cgt-reset-btn" class="w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset Calculator
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+
+    <!-- Primary Hero Card: Estimated Capital Gains Tax -->
+    <div class="primary-hero-card">
+      <div class="hero-top-row">
+        <span class="hero-badge" id="res-country-badge">🇺🇸 United States &bull; 2026 Federal</span>
+        <span class="hero-subtag" id="res-holding-badge">Long-Term (15% Bracket)</span>
+      </div>
+      <div class="hero-main-metric">
+        <span class="hero-label">Estimated Capital Gains Tax</span>
+        <div class="hero-amount-wrapper">
+          <span class="hero-currency" id="res-curr-sym">$</span>
+          <span class="hero-amount" id="res-total-tax">10,050</span>
+        </div>
+      </div>
+      <p class="hero-verdict" id="res-hero-verdict">
+        Based on an adjusted gross gain of <strong>$67,000</strong>, your estimated capital gains tax is <strong>$10,050</strong> (an effective tax rate of <strong>15.00%</strong>).
+      </p>
+    </div>
+
+    <!-- Sub-Hero Highlights: Taxable Capital Gain vs After-Tax Profit -->
+    <div class="sub-hero-grid">
+      <div class="sub-card sub-card-warning">
+        <span class="sub-card-label">Taxable Capital Gain</span>
+        <div class="sub-card-value-wrap">
+          <span class="sub-curr" id="sub-curr-1">$</span>
+          <span class="sub-val" id="res-taxable-gain">67,000</span>
+        </div>
+        <span class="sub-card-hint" id="res-taxable-hint">Amount subject to statutory tax rates</span>
+      </div>
+      
+      <div class="sub-card sub-card-success">
+        <span class="sub-card-label">Estimated After-Tax Profit</span>
+        <div class="sub-card-value-wrap">
+          <span class="sub-curr" id="sub-curr-2">$</span>
+          <span class="sub-val" id="res-after-tax-gain">56,950</span>
+        </div>
+        <span class="sub-card-hint" id="res-after-tax-hint">Net gain kept in your pocket</span>
+      </div>
+    </div>
+
+    <!-- Visual Portfolio Split Bar -->
+    <div class="visual-progress-card">
+      <div class="split-bar-header">
+        <span class="bar-title">Sale Proceeds Distribution</span>
+        <span class="bar-percent" id="res-bar-gain-pct">After-Tax Gain: 47.5%</span>
+      </div>
+      <div class="split-bar-track">
+        <div class="bar-segment segment-cost" id="bar-seg-cost" style="width: 44.2%;" title="Cost Basis + Costs"></div>
+        <div class="bar-segment segment-gain" id="bar-seg-gain" style="width: 47.5%;" title="After-Tax Gain"></div>
+        <div class="bar-segment segment-tax" id="bar-seg-tax" style="width: 8.3%;" title="Tax Payable"></div>
+      </div>
+      <div class="split-bar-legend">
+        <span class="legend-item"><span class="legend-dot dot-cost"></span> Original Cost &amp; Expenses (<span id="leg-cost-val">$53,000</span>)</span>
+        <span class="legend-item"><span class="legend-dot dot-gain"></span> After-Tax Profit (<span id="leg-gain-val">$56,950</span>)</span>
+        <span class="legend-item"><span class="legend-dot dot-tax"></span> Estimated Tax (<span id="leg-tax-val">$10,050</span>)</span>
+      </div>
+    </div>
+
+    <!-- Comprehensive Calculation Breakdown Table -->
+    <div class="table-card">
+      <div class="table-header-row">
+        <div class="table-header-text">
+          <h4 class="table-title">Capital Gains Tax Calculation Breakdown</h4>
+          <span class="table-sub" id="table-subtitle">Step-by-step audit of cost basis, allowances, taxable gain, and tax components.</span>
+        </div>
+        <span class="table-scroll-hint" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          Scroll table
+        </span>
+      </div>
+
+      <div class="table-responsive-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: left;">Step / Component</th>
+              <th scope="col" style="text-align: right;">Amount</th>
+              <th scope="col" style="text-align: left;">Explanation &amp; Rule</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 600;">Gross Sale Price / Proceeds</td>
+              <td style="text-align: right; font-weight: 600;" id="tbl-sale-price">$120,000.00</td>
+              <td style="color: var(--color-text-muted);">Total disposal consideration received</td>
+            </tr>
+            <tr>
+              <td>Less: Purchase Price / Cost Basis</td>
+              <td style="text-align: right; color: var(--color-text-muted);" id="tbl-cost-basis">−$50,000.00</td>
+              <td style="color: var(--color-text-muted);">Original acquisition cost</td>
+            </tr>
+            <tr>
+              <td>Less: Eligible Buying &amp; Selling Costs</td>
+              <td style="text-align: right; color: var(--color-text-muted);" id="tbl-eligible-costs">−$3,000.00</td>
+              <td style="color: var(--color-text-muted);">Allowable fees, commissions &amp; legal costs</td>
+            </tr>
+            <tr style="background: rgba(0, 0, 0, 0.02); font-weight: 600;">
+              <td>Gross Capital Gain</td>
+              <td style="text-align: right;" id="tbl-gross-gain">$67,000.00</td>
+              <td id="tbl-gross-gain-sub">Proceeds − (Cost Basis + Eligible Costs)</td>
+            </tr>
+            <tr id="row-tbl-exemptions">
+              <td>Less: Statutory Exemptions / Reliefs</td>
+              <td style="text-align: right; color: var(--color-success);" id="tbl-exemptions">$0.00</td>
+              <td id="tbl-exemptions-sub">Section 121 / PRR / Section 112A / AEA</td>
+            </tr>
+            <tr id="row-tbl-losses">
+              <td>Less: Capital Losses Applied</td>
+              <td style="text-align: right; color: var(--color-success);" id="tbl-losses">$0.00</td>
+              <td style="color: var(--color-text-muted);">Offsets against capital gains</td>
+            </tr>
+            <tr id="row-tbl-cgt-discount" class="hidden">
+              <td id="lbl-tbl-discount-name">Less: 50% CGT Discount (AU)</td>
+              <td style="text-align: right; color: var(--color-success);" id="tbl-discount-val">−$0.00</td>
+              <td id="lbl-tbl-discount-sub">Statutory discount for assets held 12+ months</td>
+            </tr>
+            <tr style="background: rgba(37, 99, 235, 0.04); font-weight: 700;">
+              <td id="lbl-tbl-taxable-title">Taxable Capital Gain (Assessable)</td>
+              <td style="text-align: right; color: var(--color-primary);" id="tbl-taxable-gain">$67,000.00</td>
+              <td id="tbl-taxable-gain-sub">Amount subject to applicable tax brackets</td>
+            </tr>
+            <tr id="row-tbl-base-tax">
+              <td id="lbl-tbl-base-tax">Federal / National Capital Gains Tax</td>
+              <td style="text-align: right; font-weight: 600;" id="tbl-base-tax">$10,050.00</td>
+              <td id="tbl-base-tax-sub">Applied at 15% federal LTCG rate</td>
+            </tr>
+            <tr id="row-tbl-extra-tax-1" class="hidden">
+              <td id="lbl-tbl-extra-tax-1">Net Investment Income Tax (NIIT 3.8%)</td>
+              <td style="text-align: right;" id="tbl-extra-tax-1">$0.00</td>
+              <td id="tbl-extra-tax-1-sub">MAGI above statutory threshold</td>
+            </tr>
+            <tr id="row-tbl-extra-tax-2" class="hidden">
+              <td id="lbl-tbl-extra-tax-2">State / Provincial / Cess Tax</td>
+              <td style="text-align: right;" id="tbl-extra-tax-2">$0.00</td>
+              <td id="tbl-extra-tax-2-sub">Local tax or mandatory health/education cess</td>
+            </tr>
+            <tr style="border-top: 2px solid var(--color-border); font-weight: 700; background: rgba(239, 68, 68, 0.04);">
+              <td style="font-size: 0.95rem;">Total Estimated Capital Gains Tax</td>
+              <td style="text-align: right; color: var(--color-danger); font-size: 0.95rem;" id="tbl-total-tax">$10,050.00</td>
+              <td style="font-weight: 600; color: var(--color-danger);" id="tbl-effective-rate">Effective Tax Rate: 15.00%</td>
+            </tr>
+            <tr style="border-top: 2px solid var(--color-border); font-weight: 700; background: rgba(16, 185, 129, 0.04);">
+              <td>Net Proceeds Kept After Tax</td>
+              <td style="text-align: right; color: var(--color-success); font-size: 0.95rem;" id="tbl-net-proceeds">$106,950.00</td>
+              <td style="color: var(--color-success);">Total cash realized after all costs and tax</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Responsive 8-Tile Metrics Grid (Rule 15 Responsive) -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <span class="metric-label">Gross Capital Gain</span>
+        <span class="metric-val" id="tile-gross-gain">$67,000</span>
+        <span class="metric-sub" id="tile-gross-sub">Proceeds − Cost</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Holding Period</span>
+        <span class="metric-val" id="tile-holding-time">2.2 yrs</span>
+        <span class="metric-sub" id="tile-holding-sub">796 days elapsed</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Tax Classification</span>
+        <span class="metric-val" id="tile-classification">Long-Term</span>
+        <span class="metric-sub" id="tile-class-sub">Preferential rates apply</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Allowances &amp; Reliefs</span>
+        <span class="metric-val" id="tile-exemptions">$0</span>
+        <span class="metric-sub" id="tile-exemptions-sub">Statutory exclusions</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Taxable Capital Gain</span>
+        <span class="metric-val" id="tile-taxable-gain">$67,000</span>
+        <span class="metric-sub" id="tile-taxable-sub">Tax base</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Effective Tax Rate</span>
+        <span class="metric-val" id="tile-effective-rate">15.0%</span>
+        <span class="metric-sub" id="tile-effective-sub">Tax / Gross Gain</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">After-Tax Gain</span>
+        <span class="metric-val" id="tile-after-tax-gain">$56,950</span>
+        <span class="metric-sub" id="tile-after-tax-sub">Net profit kept</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="metric-label">Total Cash Proceeds</span>
+        <span class="metric-val" id="tile-net-proceeds">$106,950</span>
+        <span class="metric-sub" id="tile-net-proceeds-sub">In your pocket</span>
+      </div>
+    </div>
+
+    <!-- Contextual Country Advisory Notes -->
+    <div class="callout-tip-box" id="cgt-contextual-note">
+      <div class="tip-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      </div>
+      <div class="tip-content">
+        <strong id="note-heading">IRS 2026 Federal Capital Gains Tax Notice</strong>
+        <p id="note-body">
+          Long-term gains are taxed at 0%, 15%, or 20% depending on your total taxable income. Short-term gains (held 1 year or less) are taxed as ordinary income. State capital gains taxes are excluded by default unless specified in Advanced Options.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<style>
+  /* -------------------------------------------------------------
+     MOBILE-FIRST CSS STYLES & RESPONSIVE LAYOUT
+     Tested for 320px, 360px, 375px, 390px, 430px, 768px, 1200px+
+     ------------------------------------------------------------- */
+
+  /* Ensure card wrappers do not blow out grid or flex parents */
+  :global(.calc-inputs-card),
+  :global(.calc-results-card) {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  @media (max-width: 480px) {
+    :global(.calc-inputs-card),
+    :global(.calc-results-card) {
+      padding: 12px !important;
+      border-radius: var(--radius-md) !important;
+    }
+  }
+
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-section {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* -------------------------------------------------------------
+     COUNTRY SELECTOR (Responsive Dropdown on Mobile, Pills on Desktop)
+     ------------------------------------------------------------- */
+  .mobile-country-selector-wrap {
+    display: none;
+    width: 100%;
+    margin-bottom: var(--space-2);
+  }
+
+  .mobile-select-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: var(--color-card);
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .mobile-select-flag {
+    position: absolute;
+    left: 12px;
+    font-size: 1.25rem;
+    line-height: 1;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .mobile-country-dropdown {
+    width: 100%;
+    height: 44px;
+    padding: 8px 36px 8px 44px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .mobile-country-dropdown:focus {
+    outline: none;
+  }
+
+  .mobile-select-arrow {
+    position: absolute;
+    right: 12px;
+    color: var(--color-primary);
+    pointer-events: none;
+  }
+
+  .country-selector-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+  }
+
+  .country-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-text);
+    transition: all 0.2s ease;
+    min-width: 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  .country-pill:hover {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.04);
+  }
+
+  .country-pill.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+  }
+
+  .flag-icon {
+    font-size: 1rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .country-curr {
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 640px) {
+    .mobile-country-selector-wrap {
+      display: block;
+    }
+    .country-selector-pills {
+      display: none;
+    }
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    word-break: break-word;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-heading);
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .optional-tag {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 140px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: 10px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .percent-symbol {
+    position: absolute;
+    right: 10px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .input-symbol-wrapper input[type="number"] {
+    width: 100%;
+    padding: 8px 10px 8px 26px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-card);
+    color: var(--color-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: right;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  #cgt-state-rate {
+    padding-right: 28px !important;
+    padding-left: 10px !important;
+  }
+
+  .input-symbol-wrapper input[type="number"]:focus {
+    border-color: var(--color-primary);
+    outline: none;
+  }
+
+  .currency-select {
+    width: 100%;
+    max-width: 260px;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-card);
+    color: var(--color-heading);
+    font-size: 0.84rem;
+    font-weight: 600;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .date-inputs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .date-col {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .styled-date-input {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-card);
+    color: var(--color-heading);
+    font-size: 0.84rem;
+    font-weight: 500;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .holding-badge-row {
+    margin-top: var(--space-2);
+    width: 100%;
+    min-width: 0;
+  }
+
+  .holding-indicator-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 7px 10px;
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--color-primary);
+    border-radius: var(--radius-md);
+    font-size: 0.76rem;
+    font-weight: 600;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+  }
+
+  .holding-indicator-pill svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .input-subtext {
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .slider-range {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  /* Accordion */
+  .accordion-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .accordion-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--color-card);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.84rem;
+    color: var(--color-heading);
+    transition: background 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .accordion-toggle:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  .accordion-toggle-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    word-break: break-word;
+    text-align: left;
+  }
+
+  .accordion-arrow {
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .accordion-arrow {
+    transform: rotate(180deg);
+  }
+
+  .accordion-body {
+    padding: 14px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-card);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .accordion-body.hidden {
+    display: none;
+  }
+
+  /* Results Wrapper */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Primary Hero Card */
+  .primary-hero-card {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.02) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  @media (max-width: 480px) {
+    .primary-hero-card {
+      padding: 12px;
+      border-radius: var(--radius-md);
+    }
+  }
+
+  .hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .hero-badge {
+    background: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: var(--radius-full);
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .hero-subtag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    max-width: 100%;
+    word-break: break-word;
+  }
+
+  .hero-main-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hero-label {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  .hero-amount-wrapper {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .hero-currency {
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
+    font-weight: 700;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .hero-amount {
+    font-size: clamp(1.5rem, 6.5vw, 2.2rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  .hero-verdict {
+    margin-top: var(--space-3);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Sub-Hero Grid */
+  .sub-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .sub-card {
+    border: 1px solid var(--color-border);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  @media (max-width: 480px) {
+    .sub-card {
+      padding: 10px 12px;
+    }
+  }
+
+  .sub-card-warning {
+    border-left: 4px solid var(--color-warning);
+    background: rgba(245, 158, 11, 0.04);
+  }
+
+  .sub-card-success {
+    border-left: 4px solid var(--color-success);
+    background: rgba(16, 185, 129, 0.04);
+  }
+
+  .sub-card-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  .sub-card-value-wrap {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 1px;
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .sub-curr {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    flex-shrink: 0;
+  }
+
+  .sub-val {
+    font-size: clamp(1.15rem, 5vw, 1.35rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .sub-card-hint {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  /* Visual Split Bar */
+  .visual-progress-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .split-bar-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .split-bar-track {
+    height: 12px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .bar-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .segment-cost { background: #94a3b8; }
+  .segment-gain { background: #10b981; }
+  .segment-tax { background: #ef4444; }
+
+  .split-bar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 0.73rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    word-break: break-word;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-cost { background: #94a3b8; }
+  .dot-gain { background: #10b981; }
+  .dot-tax { background: #ef4444; }
+
+  /* Table Card */
+  .table-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .table-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: var(--space-2);
+  }
+
+  .table-header-text {
+    min-width: 0;
+    flex: 1 1 200px;
+  }
+
+  .table-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin: 0;
+    word-break: break-word;
+  }
+
+  .table-sub {
+    font-size: 0.73rem;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  .table-scroll-hint {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    background: rgba(37, 99, 235, 0.08);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .table-responsive-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    border-radius: var(--radius-sm);
+  }
+
+  .comparison-table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .comparison-table th {
+    font-weight: 700;
+    color: var(--color-heading);
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  /* Responsive 8-Tile Metrics Grid (Rule 15) */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .metric-tile {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  .metric-val {
+    font-size: clamp(0.92rem, 3.5vw, 1.05rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .metric-sub {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  /* Callout Tip Box */
+  .callout-tip-box {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: rgba(37, 99, 235, 0.04);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    line-height: 1.45;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .tip-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tip-content {
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .tip-content strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--color-heading);
+  }
+
+  .tip-content p {
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* -------------------------------------------------------------
+     BREAKPOINTS & RESPONSIVE BEHAVIOR
+     ------------------------------------------------------------- */
+  @media (max-width: 900px) {
+    .metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .table-scroll-hint {
+      display: inline-flex;
+    }
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .input-symbol-wrapper input[type="number"],
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0;
+      height: 44px;
+      min-height: 44px;
+      font-size: 0.95rem;
+    }
+    .styled-date-input {
+      height: 44px;
+      min-height: 44px;
+      font-size: 0.9rem;
+    }
+    .sub-hero-grid {
+      grid-template-columns: 1fr;
+    }
+    .date-inputs-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .callout-tip-box {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // ===================================================================
+  // MULTI-COUNTRY CAPITAL GAINS TAX CALCULATION ENGINE
+  // ===================================================================
+
+  // 1. UNITED STATES (US) CONFIGURATION
+  const US_CONFIG = {
+    currSym: '$',
+    taxYearLabel: '2026 Federal',
+    ltcgBrackets: {
+      single: [
+        { max: 49600, rate: 0.0 },
+        { max: 547100, rate: 0.15 },
+        { max: Infinity, rate: 0.20 }
+      ],
+      mfj: [
+        { max: 99200, rate: 0.0 },
+        { max: 615500, rate: 0.15 },
+        { max: Infinity, rate: 0.20 }
+      ],
+      mfs: [
+        { max: 49600, rate: 0.0 },
+        { max: 307750, rate: 0.15 },
+        { max: Infinity, rate: 0.20 }
+      ],
+      hoh: [
+        { max: 66450, rate: 0.0 },
+        { max: 581000, rate: 0.15 },
+        { max: Infinity, rate: 0.20 }
+      ]
+    },
+    ordinaryBrackets: {
+      single: [
+        { min: 0, max: 12250, rate: 0.10 },
+        { min: 12250, max: 49600, rate: 0.12 },
+        { min: 49600, max: 105700, rate: 0.22 },
+        { min: 105700, max: 201800, rate: 0.24 },
+        { min: 201800, max: 256350, rate: 0.32 },
+        { min: 256350, max: 640600, rate: 0.35 },
+        { min: 640600, max: Infinity, rate: 0.37 }
+      ],
+      mfj: [
+        { min: 0, max: 24500, rate: 0.10 },
+        { min: 24500, max: 99200, rate: 0.12 },
+        { min: 99200, max: 211400, rate: 0.22 },
+        { min: 211400, max: 403600, rate: 0.24 },
+        { min: 403600, max: 512700, rate: 0.32 },
+        { min: 512700, max: 768700, rate: 0.35 },
+        { min: 768700, max: Infinity, rate: 0.37 }
+      ],
+      mfs: [
+        { min: 0, max: 12250, rate: 0.10 },
+        { min: 12250, max: 49600, rate: 0.12 },
+        { min: 49600, max: 105700, rate: 0.22 },
+        { min: 105700, max: 201800, rate: 0.24 },
+        { min: 201800, max: 256350, rate: 0.32 },
+        { min: 256350, max: 384350, rate: 0.35 },
+        { min: 384350, max: Infinity, rate: 0.37 }
+      ],
+      hoh: [
+        { min: 0, max: 17500, rate: 0.10 },
+        { min: 17500, max: 66450, rate: 0.12 },
+        { min: 66450, max: 105700, rate: 0.22 },
+        { min: 105700, max: 201800, rate: 0.24 },
+        { min: 201800, max: 256350, rate: 0.32 },
+        { min: 256350, max: 640600, rate: 0.35 },
+        { min: 640600, max: Infinity, rate: 0.37 }
+      ]
+    },
+    niitThresholds: { single: 200000, mfj: 250000, mfs: 125000, hoh: 200000 },
+    niitRate: 0.038
+  };
+
+  // 2. UNITED KINGDOM (UK) CONFIGURATION
+  const UK_CONFIG = {
+    currSym: '£',
+    taxYearLabel: '2026/27 (6 Apr 2026 – 5 Apr 2027)',
+    annualExemptAmount: 3000,
+    personalAllowance: 12570,
+    basicRateBandSize: 37700,
+    rates: {
+      shares: { basic: 0.18, higher: 0.24 },
+      residential: { basic: 0.18, higher: 0.24 },
+      other: { basic: 0.18, higher: 0.24 },
+      badr: 0.18 // 18% in 2026/27
+    }
+  };
+
+  // 3. AUSTRALIA (AU) CONFIGURATION
+  const AU_CONFIG = {
+    currSym: '$',
+    taxYearLabel: '2026–27 (Revised Stage 3)',
+    brackets: [
+      { min: 0, max: 18200, rate: 0.0, baseTax: 0 },
+      { min: 18200, max: 45000, rate: 0.16, baseTax: 0 },
+      { min: 45000, max: 135000, rate: 0.30, baseTax: 4288 },
+      { min: 135000, max: 190000, rate: 0.37, baseTax: 31288 },
+      { min: 190000, max: Infinity, rate: 0.45, baseTax: 51638 }
+    ],
+    medicareRate: 0.02,
+    medicareLowIncomeThreshold: 26000,
+    medicarePhaseInThreshold: 32500
+  };
+
+  // 4. INDIA (IN) CONFIGURATION
+  const IN_CONFIG = {
+    currSym: '₹',
+    taxYearLabel: 'FY 2026–27 (AY 2027–28)',
+    basicExemption: 300000,
+    equityLtcgExemption: 125000,
+    newRegimeBrackets: [
+      { min: 0, max: 300000, rate: 0.0 },
+      { min: 300000, max: 700000, rate: 0.05 },
+      { min: 700000, max: 1000000, rate: 0.10 },
+      { min: 1000000, max: 1200000, rate: 0.15 },
+      { min: 1200000, max: 1500000, rate: 0.20 },
+      { min: 1500000, max: Infinity, rate: 0.30 }
+    ],
+    cessRate: 0.04
+  };
+
+  // 5. CANADA (CA) CONFIGURATION
+  const CA_CONFIG = {
+    currSym: '$',
+    taxYearLabel: '2026 (Federal & Provincial)',
+    federalBrackets: [
+      { min: 0, max: 58500, rate: 0.15 },
+      { min: 58500, max: 117000, rate: 0.205 },
+      { min: 117000, max: 181400, rate: 0.26 },
+      { min: 181400, max: 258400, rate: 0.29 },
+      { min: 258400, max: Infinity, rate: 0.33 }
+    ],
+    provinces: {
+      ON: {
+        name: 'Ontario',
+        brackets: [
+          { min: 0, max: 52800, rate: 0.0505 },
+          { min: 52800, max: 105600, rate: 0.0915 },
+          { min: 105600, max: 150000, rate: 0.1116 },
+          { min: 150000, max: 220000, rate: 0.1216 },
+          { min: 220000, max: Infinity, rate: 0.1316 }
+        ],
+        surtax: true
+      },
+      BC: {
+        name: 'British Columbia',
+        brackets: [
+          { min: 0, max: 49300, rate: 0.0506 },
+          { min: 49300, max: 98600, rate: 0.0770 },
+          { min: 98600, max: 113200, rate: 0.1050 },
+          { min: 113200, max: 137500, rate: 0.1229 },
+          { min: 137500, max: 186400, rate: 0.1470 },
+          { min: 186400, max: 259800, rate: 0.1680 },
+          { min: 259800, max: Infinity, rate: 0.2050 }
+        ]
+      },
+      AB: {
+        name: 'Alberta',
+        brackets: [
+          { min: 0, max: 151900, rate: 0.10 },
+          { min: 151900, max: 182300, rate: 0.12 },
+          { min: 182300, max: 243100, rate: 0.13 },
+          { min: 243100, max: 364600, rate: 0.14 },
+          { min: 364600, max: Infinity, rate: 0.15 }
+        ]
+      },
+      QC: {
+        name: 'Quebec',
+        brackets: [
+          { min: 0, max: 53200, rate: 0.14 },
+          { min: 53200, max: 106500, rate: 0.19 },
+          { min: 106500, max: 129600, rate: 0.24 },
+          { min: 129600, max: Infinity, rate: 0.2575 }
+        ],
+        abatement: true
+      },
+      MB: {
+        name: 'Manitoba',
+        brackets: [
+          { min: 0, max: 47000, rate: 0.108 },
+          { min: 47000, max: 100000, rate: 0.1275 },
+          { min: 100000, max: Infinity, rate: 0.174 }
+        ]
+      },
+      SK: {
+        name: 'Saskatchewan',
+        brackets: [
+          { min: 0, max: 53800, rate: 0.105 },
+          { min: 53800, max: 153800, rate: 0.125 },
+          { min: 153800, max: Infinity, rate: 0.145 }
+        ]
+      },
+      NS: {
+        name: 'Nova Scotia',
+        brackets: [
+          { min: 0, max: 30500, rate: 0.0879 },
+          { min: 30500, max: 61100, rate: 0.1495 },
+          { min: 61100, max: 95700, rate: 0.1667 },
+          { min: 95700, max: 154800, rate: 0.1750 },
+          { min: 154800, max: Infinity, rate: 0.2100 }
+        ]
+      },
+      NB: {
+        name: 'New Brunswick',
+        brackets: [
+          { min: 0, max: 51700, rate: 0.0940 },
+          { min: 51700, max: 103400, rate: 0.1400 },
+          { min: 103400, max: 190400, rate: 0.1600 },
+          { min: 190400, max: Infinity, rate: 0.1950 }
+        ]
+      },
+      NL: {
+        name: 'Newfoundland and Labrador',
+        brackets: [
+          { min: 0, max: 44400, rate: 0.087 },
+          { min: 44400, max: 88800, rate: 0.145 },
+          { min: 88800, max: 158500, rate: 0.158 },
+          { min: 158500, max: 221900, rate: 0.178 },
+          { min: 221900, max: Infinity, rate: 0.198 }
+        ]
+      },
+      PE: {
+        name: 'Prince Edward Island',
+        brackets: [
+          { min: 0, max: 33400, rate: 0.0965 },
+          { min: 33400, max: 66800, rate: 0.1363 },
+          { min: 66800, max: 105000, rate: 0.1665 },
+          { min: 105000, max: 140000, rate: 0.1800 },
+          { min: 140000, max: Infinity, rate: 0.1875 }
+        ]
+      },
+      NT: {
+        name: 'Northwest Territories',
+        brackets: [
+          { min: 0, max: 51900, rate: 0.059 },
+          { min: 51900, max: 103900, rate: 0.086 },
+          { min: 103900, max: 168900, rate: 0.122 },
+          { min: 168900, max: Infinity, rate: 0.1405 }
+        ]
+      },
+      YT: {
+        name: 'Yukon',
+        brackets: [
+          { min: 0, max: 58500, rate: 0.064 },
+          { min: 58500, max: 117000, rate: 0.090 },
+          { min: 117000, max: 181400, rate: 0.109 },
+          { min: 181400, max: 500000, rate: 0.128 },
+          { min: 500000, max: Infinity, rate: 0.150 }
+        ]
+      },
+      NU: {
+        name: 'Nunavut',
+        brackets: [
+          { min: 0, max: 54400, rate: 0.04 },
+          { min: 54400, max: 108800, rate: 0.07 },
+          { min: 108800, max: 177000, rate: 0.09 },
+          { min: 177000, max: Infinity, rate: 0.115 }
+        ]
+      }
+    }
+  };
+
+  // Formatting helpers
+  function fmt(val: number, decimals = 0): string {
+    if (isNaN(val) || !isFinite(val)) return '0';
+    return Math.round(val).toLocaleString('en-US');
+  }
+
+  function fmtDec(val: number, decimals = 2): string {
+    if (isNaN(val) || !isFinite(val)) return '0.00';
+    return val.toLocaleString('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+
+  function getHoldingDays(dateAcquiredStr: string, dateSoldStr: string): number {
+    const d1 = new Date(dateAcquiredStr);
+    const d2 = new Date(dateSoldStr);
+    if (isNaN(d1.getTime()) || isNaN(d2.getTime())) return 366;
+    const diffTime = d2.getTime() - d1.getTime();
+    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    return days >= 0 ? days : 0;
+  }
+
+  function getHoldingText(days: number): { text: string; isLongTerm: boolean } {
+    const years = Math.floor(days / 365);
+    const remDays = days % 365;
+    const months = Math.floor(remDays / 30);
+    const isLongTerm = days > 365;
+    let label = '';
+    if (years > 0) {
+      label = `Held ${years} yr${years > 1 ? 's' : ''}${months > 0 ? `, ${months} mo` : ''} (${days} days)`;
+    } else if (months > 0) {
+      label = `Held ${months} month${months > 1 ? 's' : ''} (${days} days)`;
+    } else {
+      label = `Held ${days} day${days !== 1 ? 's' : ''}`;
+    }
+    return { text: `${label} • ${isLongTerm ? 'Long-Term Gain' : 'Short-Term Gain'}`, isLongTerm };
+  }
+
+  // -----------------------------------------------------------------
+  // US ENGINE
+  function calcUsOrdinaryTax(income: number, status: string): number {
+    if (income <= 0) return 0;
+    const brackets = US_CONFIG.ordinaryBrackets[status] || US_CONFIG.ordinaryBrackets.single;
+    let tax = 0;
+    for (const b of brackets) {
+      if (income > b.min) {
+        const taxable = Math.min(income, b.max) - b.min;
+        tax += taxable * b.rate;
+      }
+    }
+    return tax;
+  }
+
+  function calcUsLtcgTax(ordinaryIncome: number, ltcg: number, status: string): number {
+    if (ltcg <= 0) return 0;
+    const bands = US_CONFIG.ltcgBrackets[status] || US_CONFIG.ltcgBrackets.single;
+    let tax = 0;
+    let currentStart = ordinaryIncome;
+    let remaining = ltcg;
+    for (const band of bands) {
+      if (currentStart < band.max && remaining > 0) {
+        const room = band.max - currentStart;
+        const gainInBand = Math.min(remaining, room);
+        tax += gainInBand * band.rate;
+        remaining -= gainInBand;
+        currentStart += gainInBand;
+      }
+    }
+    return tax;
+  }
+
+  // -----------------------------------------------------------------
+  // AU ENGINE
+  function calcAuIncomeTax(income: number): number {
+    if (income <= 18200) return 0;
+    for (let i = AU_CONFIG.brackets.length - 1; i >= 0; i--) {
+      const b = AU_CONFIG.brackets[i];
+      if (income > b.min) {
+        return b.baseTax + (income - b.min) * b.rate;
+      }
+    }
+    return 0;
+  }
+
+  function calcAuMedicare(income: number): number {
+    if (income <= AU_CONFIG.medicareLowIncomeThreshold) return 0;
+    if (income <= AU_CONFIG.medicarePhaseInThreshold) {
+      return (income - AU_CONFIG.medicareLowIncomeThreshold) * 0.10;
+    }
+    return income * AU_CONFIG.medicareRate;
+  }
+
+  // -----------------------------------------------------------------
+  // IN ENGINE
+  function calcInSlabTax(income: number): number {
+    if (income <= 300000) return 0;
+    if (income <= 700000) return 0; // Section 87A rebate
+    let tax = 0;
+    for (const b of IN_CONFIG.newRegimeBrackets) {
+      if (income > b.min) {
+        const taxable = Math.min(income, b.max) - b.min;
+        tax += taxable * b.rate;
+      }
+    }
+    return tax;
+  }
+
+  // -----------------------------------------------------------------
+  // CA ENGINE
+  function calcProgressive(income: number, brackets: { min: number; max: number; rate: number }[]): number {
+    if (income <= 0) return 0;
+    let tax = 0;
+    for (const b of brackets) {
+      if (income > b.min) {
+        const taxable = Math.min(income, b.max) - b.min;
+        tax += taxable * b.rate;
+      }
+    }
+    return tax;
+  }
+
+  function calcCaTotalTax(income: number, provKey: string): { fed: number; prov: number; total: number } {
+    let fed = calcProgressive(income, CA_CONFIG.federalBrackets);
+    const provConfig = CA_CONFIG.provinces[provKey] || CA_CONFIG.provinces.ON;
+    if (provConfig.abatement) {
+      fed = fed * (1 - 0.165);
+    }
+    let prov = calcProgressive(income, provConfig.brackets);
+    if (provConfig.surtax) {
+      let surtax = 0;
+      if (prov > 5554) surtax += (prov - 5554) * 0.20;
+      if (prov > 7108) surtax += (prov - 7108) * 0.36;
+      prov += surtax;
+    }
+    return { fed, prov, total: fed + prov };
+  }
+
+  function getCountryFlag(country: string): string {
+    switch (country) {
+      case 'US': return '🇺🇸';
+      case 'UK': return '🇬🇧';
+      case 'AU': return '🇦🇺';
+      case 'IN': return '🇮🇳';
+      case 'CA': return '🇨🇦';
+      case 'SG': return '🇸🇬';
+      default: return '🌐';
+    }
+  }
+
+  // ===================================================================
+  // MAIN CONTROLLER FUNCTION
+  // ===================================================================
+  function initCapitalGainsCalculator() {
+    let activeCountry = 'US';
+
+    // Elements
+    const countryPills = document.querySelectorAll('.country-pill');
+    const mobileCountrySelect = document.getElementById('mobile-country-select') as HTMLSelectElement | null;
+    const mobileSelectedFlag = document.getElementById('mobile-selected-flag');
+    const countryHelpText = document.getElementById('country-help-text');
+    const assetTypeSelect = document.getElementById('cgt-asset-type') as HTMLSelectElement;
+    const assetTypeSubtext = document.getElementById('asset-type-subtext');
+
+    const purchasePriceInput = document.getElementById('cgt-purchase-price') as HTMLInputElement;
+    const salePriceInput = document.getElementById('cgt-sale-price') as HTMLInputElement;
+    const eligibleCostsInput = document.getElementById('cgt-eligible-costs') as HTMLInputElement;
+    const dateAcquiredInput = document.getElementById('cgt-date-acquired') as HTMLInputElement;
+    const dateSoldInput = document.getElementById('cgt-date-sold') as HTMLInputElement;
+
+    const otherIncomeInput = document.getElementById('cgt-other-income') as HTMLInputElement;
+    const otherIncomeSlider = document.getElementById('cgt-other-income-slider') as HTMLInputElement;
+    const filingStatusSelect = document.getElementById('cgt-filing-status') as HTMLSelectElement;
+    const provinceSelect = document.getElementById('cgt-province') as HTMLSelectElement;
+    const auResidencySelect = document.getElementById('cgt-au-residency') as HTMLSelectElement;
+    const inRegimeSelect = document.getElementById('cgt-in-regime') as HTMLSelectElement;
+
+    const advancedToggle = document.getElementById('cgt-advanced-toggle');
+    const advancedContent = document.getElementById('cgt-advanced-content');
+    const capitalLossesInput = document.getElementById('cgt-capital-losses') as HTMLInputElement;
+    const stateRateInput = document.getElementById('cgt-state-rate') as HTMLInputElement;
+    const resetBtn = document.getElementById('cgt-reset-btn');
+
+    // Labels & Symbols
+    const currSym1 = document.getElementById('curr-sym-1');
+    const currSym2 = document.getElementById('curr-sym-2');
+    const currSym3 = document.getElementById('curr-sym-3');
+    const currSym4 = document.getElementById('curr-sym-4');
+    const currSym5 = document.getElementById('curr-sym-5');
+    const resCurrSym = document.getElementById('res-curr-sym');
+    const subCurr1 = document.getElementById('sub-curr-1');
+    const subCurr2 = document.getElementById('sub-curr-2');
+
+    // Result elements
+    const resCountryBadge = document.getElementById('res-country-badge');
+    const resHoldingBadge = document.getElementById('res-holding-badge');
+    const resTotalTax = document.getElementById('res-total-tax');
+    const resHeroVerdict = document.getElementById('res-hero-verdict');
+    const resTaxableGain = document.getElementById('res-taxable-gain');
+    const resTaxableHint = document.getElementById('res-taxable-hint');
+    const resAfterTaxGain = document.getElementById('res-after-tax-gain');
+    const resAfterTaxHint = document.getElementById('res-after-tax-hint');
+
+    // Split bar
+    const barSegCost = document.getElementById('bar-seg-cost');
+    const barSegGain = document.getElementById('bar-seg-gain');
+    const barSegTax = document.getElementById('bar-seg-tax');
+    const resBarGainPct = document.getElementById('res-bar-gain-pct');
+    const legCostVal = document.getElementById('leg-cost-val');
+    const legGainVal = document.getElementById('leg-gain-val');
+    const legTaxVal = document.getElementById('leg-tax-val');
+
+    // Table elements
+    const tableSubtitle = document.getElementById('table-subtitle');
+    const tblSalePrice = document.getElementById('tbl-sale-price');
+    const tblCostBasis = document.getElementById('tbl-cost-basis');
+    const tblEligibleCosts = document.getElementById('tbl-eligible-costs');
+    const tblGrossGain = document.getElementById('tbl-gross-gain');
+    const tblGrossGainSub = document.getElementById('tbl-gross-gain-sub');
+    const tblExemptions = document.getElementById('tbl-exemptions');
+    const tblExemptionsSub = document.getElementById('tbl-exemptions-sub');
+    const tblLosses = document.getElementById('tbl-losses');
+    const rowTblCgtDiscount = document.getElementById('row-tbl-cgt-discount');
+    const lblTblDiscountName = document.getElementById('lbl-tbl-discount-name');
+    const tblDiscountVal = document.getElementById('tbl-discount-val');
+    const lblTblDiscountSub = document.getElementById('lbl-tbl-discount-sub');
+    const lblTblTaxableTitle = document.getElementById('lbl-tbl-taxable-title');
+    const tblTaxableGain = document.getElementById('tbl-taxable-gain');
+    const tblTaxableGainSub = document.getElementById('tbl-taxable-gain-sub');
+    const lblTblBaseTax = document.getElementById('lbl-tbl-base-tax');
+    const tblBaseTax = document.getElementById('tbl-base-tax');
+    const tblBaseTaxSub = document.getElementById('tbl-base-tax-sub');
+    const rowTblExtraTax1 = document.getElementById('row-tbl-extra-tax-1');
+    const lblTblExtraTax1 = document.getElementById('lbl-tbl-extra-tax-1');
+    const tblExtraTax1 = document.getElementById('tbl-extra-tax-1');
+    const tblExtraTax1Sub = document.getElementById('tbl-extra-tax-1-sub');
+    const rowTblExtraTax2 = document.getElementById('row-tbl-extra-tax-2');
+    const lblTblExtraTax2 = document.getElementById('lbl-tbl-extra-tax-2');
+    const tblExtraTax2 = document.getElementById('tbl-extra-tax-2');
+    const tblExtraTax2Sub = document.getElementById('tbl-extra-tax-2-sub');
+    const tblTotalTax = document.getElementById('tbl-total-tax');
+    const tblEffectiveRate = document.getElementById('tbl-effective-rate');
+    const tblNetProceeds = document.getElementById('tbl-net-proceeds');
+
+    // Tiles
+    const tileGrossGain = document.getElementById('tile-gross-gain');
+    const tileHoldingTime = document.getElementById('tile-holding-time');
+    const tileHoldingSub = document.getElementById('tile-holding-sub');
+    const tileClassification = document.getElementById('tile-classification');
+    const tileClassSub = document.getElementById('tile-class-sub');
+    const tileExemptions = document.getElementById('tile-exemptions');
+    const tileTaxableGain = document.getElementById('tile-taxable-gain');
+    const tileEffectiveRate = document.getElementById('tile-effective-rate');
+    const tileAfterTaxGain = document.getElementById('tile-after-tax-gain');
+    const tileNetProceeds = document.getElementById('tile-net-proceeds');
+
+    // Contextual Note
+    const noteHeading = document.getElementById('note-heading');
+    const noteBody = document.getElementById('note-body');
+    const lblHoldingText = document.getElementById('lbl-holding-text');
+
+    // Country-specific fields
+    const fieldUsFiling = document.getElementById('field-us-filing-status');
+    const fieldCaProvince = document.getElementById('field-ca-province');
+    const fieldAuResidency = document.getElementById('field-au-residency');
+    const fieldInRegime = document.getElementById('field-in-regime');
+    const fieldUsStateRate = document.getElementById('field-us-state-rate');
+
+    // Asset Types for Each Country
+    const ASSET_TYPES: Record<string, { val: string; label: string; subtext: string }[]> = {
+      US: [
+        { val: 'stocks', label: 'Stocks, ETFs & Mutual Funds', subtext: 'Taxed under standard US LTCG rates (0%, 15%, 20%) or ordinary income.' },
+        { val: 'real_estate', label: 'Investment Real Estate / Second Home', subtext: 'Standard capital gains rates apply.' },
+        { val: 'primary_residence', label: 'Primary Residence (Section 121)', subtext: 'Qualifies for up to $250k (Single) or $500k (Married) tax-free exclusion.' },
+        { val: 'collectibles', label: 'Collectibles & Precious Metals', subtext: 'Taxed at ordinary rate capped at maximum 28%.' }
+      ],
+      UK: [
+        { val: 'shares', label: 'Shares & Investment Funds', subtext: '18% basic rate / 24% higher rate with £3,000 Annual Exempt Amount.' },
+        { val: 'residential', label: 'Residential Property (Buy-to-Let / Second Home)', subtext: '18% basic rate / 24% higher rate in 2026/27.' },
+        { val: 'primary_home', label: 'Main Residence (Private Residence Relief)', subtext: '100% tax-free under UK Private Residence Relief (PRR).' },
+        { val: 'badr', label: 'Business Assets (BADR)', subtext: '18% statutory rate in 2026/27 on qualifying lifetime disposals.' },
+        { val: 'other', label: 'Other Chargeable Assets', subtext: '18% basic / 24% higher rate on chattels and valuable property.' }
+      ],
+      AU: [
+        { val: 'shares', label: 'Australian & Global Shares', subtext: '50% CGT discount applies to Australian residents holding for 12+ months.' },
+        { val: 'property', label: 'Investment Property', subtext: 'Taxed at marginal income rates + Medicare levy with 50% discount for 12+ months.' },
+        { val: 'main_residence', label: 'Main Residence (Home Sale)', subtext: '100% tax-exempt under ATO Main Residence Exemption rules.' },
+        { val: 'other', label: 'Other Capital Assets', subtext: 'Standard Australian assessable income rules.' }
+      ],
+      IN: [
+        { val: 'listed_equity', label: 'Listed Equity Shares & Equity Mutual Funds', subtext: 'LTCG: 12.5% over ₹1.25L exemption (held >12 mo); STCG: 20% (held ≤12 mo).' },
+        { val: 'real_estate', label: 'Immovable Property (Land & Building)', subtext: 'LTCG: 12.5% without indexation (held >24 mo); STCG: Slab rates.' },
+        { val: 'unlisted_shares', label: 'Unlisted Company Shares', subtext: 'LTCG: 12.5% (held >24 mo); STCG: Slab rates.' },
+        { val: 'debt_mf', label: 'Debt / Non-Equity Mutual Funds', subtext: 'Always taxed at slab rates under Section 50AA regardless of holding.' },
+        { val: 'gold', label: 'Gold & Other Capital Assets', subtext: 'LTCG: 12.5% (held >24 mo); STCG: Slab rates.' }
+      ],
+      CA: [
+        { val: 'stocks', label: 'Stocks & Non-Registered Mutual Funds', subtext: '50% inclusion on first $250k gain; 66.67% inclusion on gain above $250k.' },
+        { val: 'real_estate', label: 'Investment Real Estate / Cottage', subtext: 'Federal and provincial progressive tax brackets on taxable portion.' },
+        { val: 'primary_residence', label: 'Principal Residence', subtext: '100% tax-free under the Canadian Principal Residence Exemption (PRE).' },
+        { val: 'other', label: 'Other Chargeable Property', subtext: 'Standard Canadian capital gains inclusion rules.' }
+      ],
+      SG: [
+        { val: 'stocks', label: 'Stocks, ETFs & REITs', subtext: '0% capital gains tax. Singapore does not levy capital gains tax on investments under IRAS rules.' },
+        { val: 'residential', label: 'Residential Real Estate', subtext: '0% capital gains tax under IRAS rules. (Note: Seller\'s Stamp Duty / SSD may apply if sold within 3 years).' },
+        { val: 'crypto', label: 'Cryptocurrency & Digital Assets', subtext: '0% capital gains tax for personal investment under IRAS guidelines.' },
+        { val: 'other', label: 'Other Capital Assets', subtext: '100% tax-exempt under Singapore statutory tax rules.' }
+      ]
+    };
+
+    function updateCountryUI(country: string) {
+      activeCountry = country;
+      let curr = '$';
+      if (country === 'UK') curr = '£';
+      if (country === 'IN') curr = '₹';
+      if (country === 'SG') curr = 'S$';
+
+      // Sync mobile select & flag
+      if (mobileCountrySelect && mobileCountrySelect.value !== country) {
+        mobileCountrySelect.value = country;
+      }
+      if (mobileSelectedFlag) {
+        mobileSelectedFlag.textContent = getCountryFlag(country);
+      }
+
+      // Sync desktop pills
+      countryPills.forEach(p => {
+        const isCurrent = (p.getAttribute('data-country') === country);
+        p.classList.toggle('active', isCurrent);
+        p.setAttribute('aria-selected', String(isCurrent));
+      });
+
+      // Update currency symbols
+      if (currSym1) currSym1.textContent = curr;
+      if (currSym2) currSym2.textContent = curr;
+      if (currSym3) currSym3.textContent = curr;
+      if (currSym4) currSym4.textContent = curr;
+      if (currSym5) currSym5.textContent = curr;
+      if (resCurrSym) resCurrSym.textContent = curr;
+      if (subCurr1) subCurr1.textContent = curr;
+      if (subCurr2) subCurr2.textContent = curr;
+
+      // Update Country Help Text
+      if (countryHelpText) {
+        if (country === 'US') countryHelpText.textContent = 'Official 2026 IRS federal capital gains tax rules, long-term rate bands (0%, 15%, 20%), and Net Investment Income Tax (NIIT).';
+        if (country === 'UK') countryHelpText.textContent = 'Official HMRC 2026/27 Capital Gains Tax rates (18% & 24%), £3,000 Annual Exempt Amount, and BADR rules.';
+        if (country === 'AU') countryHelpText.textContent = 'Official ATO 2026–27 individual resident tax rates (Revised Stage 3), 2% Medicare levy, and 50% CGT discount for assets held 12+ months.';
+        if (country === 'IN') countryHelpText.textContent = 'Official FY 2026–27 (AY 2027–28) Indian Income Tax rules: 12.5% LTCG with ₹1.25 lakh equity exemption, 20% STCG, and 4% Health & Education cess.';
+        if (country === 'CA') countryHelpText.textContent = 'Official CRA 2026 rules: 50% inclusion on gains up to $250k and 66.67% on excess, integrated with federal & provincial tax brackets.';
+        if (country === 'SG') countryHelpText.textContent = 'Official Inland Revenue Authority of Singapore (IRAS) guidelines: 0% capital gains tax on investments, stocks, and real estate.';
+      }
+
+      // Populate Asset Types
+      if (assetTypeSelect) {
+        const assets = ASSET_TYPES[country] || ASSET_TYPES.US;
+        assetTypeSelect.innerHTML = '';
+        assets.forEach((a, i) => {
+          const opt = document.createElement('option');
+          opt.value = a.val;
+          opt.textContent = a.label;
+          if (i === 0) opt.selected = true;
+          assetTypeSelect.appendChild(opt);
+        });
+        if (assetTypeSubtext && assets[0]) {
+          assetTypeSubtext.textContent = assets[0].subtext;
+        }
+      }
+
+      // Toggle Country-Specific Inputs
+      if (fieldUsFiling) fieldUsFiling.classList.toggle('hidden', country !== 'US');
+      if (fieldUsStateRate) fieldUsStateRate.classList.toggle('hidden', country !== 'US');
+      if (fieldCaProvince) fieldCaProvince.classList.toggle('hidden', country !== 'CA');
+      if (fieldAuResidency) fieldAuResidency.classList.toggle('hidden', country !== 'AU');
+      if (fieldInRegime) fieldInRegime.classList.toggle('hidden', country !== 'IN');
+
+      // Adjust default input values if changing to India (INR scale) vs Western currencies
+      if (country === 'IN' && Number(purchasePriceInput.value) < 100000) {
+        purchasePriceInput.value = '500000';
+        salePriceInput.value = '1200000';
+        eligibleCostsInput.value = '25000';
+        otherIncomeInput.value = '1000000';
+        if (otherIncomeSlider) {
+          otherIncomeSlider.max = '3000000';
+          otherIncomeSlider.value = '1000000';
+        }
+      } else if (country !== 'IN' && Number(purchasePriceInput.value) >= 500000 && purchasePriceInput.value === '500000') {
+        purchasePriceInput.value = '50000';
+        salePriceInput.value = '120000';
+        eligibleCostsInput.value = '3000';
+        otherIncomeInput.value = '85000';
+        if (otherIncomeSlider) {
+          otherIncomeSlider.max = '250000';
+          otherIncomeSlider.value = '85000';
+        }
+      }
+
+      calculateAndRender();
+    }
+
+    function calculateAndRender() {
+      const country = activeCountry;
+      const curr = (country === 'UK') ? '£' : ((country === 'IN') ? '₹' : ((country === 'SG') ? 'S$' : '$'));
+      const purchasePrice = Math.max(0, parseFloat(purchasePriceInput.value) || 0);
+      const salePrice = Math.max(0, parseFloat(salePriceInput.value) || 0);
+      const eligibleCosts = Math.max(0, parseFloat(eligibleCostsInput.value) || 0);
+      const otherIncome = Math.max(0, parseFloat(otherIncomeInput.value) || 0);
+      const capitalLosses = Math.max(0, parseFloat(capitalLossesInput.value) || 0);
+      const assetType = assetTypeSelect.value;
+      const holdingDays = getHoldingDays(dateAcquiredInput.value, dateSoldInput.value);
+      const holdingInfo = getHoldingText(holdingDays);
+
+      // Update holding text indicator
+      if (lblHoldingText) {
+        lblHoldingText.textContent = holdingInfo.text;
+      }
+
+      const totalCost = purchasePrice + eligibleCosts;
+      const grossGain = salePrice - totalCost;
+
+      // Base calculation object
+      let res = {
+        grossGain,
+        exemptions: 0,
+        lossesApplied: 0,
+        taxableGain: 0,
+        discountApplied: 0,
+        baseTax: 0,
+        extraTax1: 0,
+        extraTax2: 0,
+        totalTax: 0,
+        effectiveRate: 0,
+        afterTaxGain: grossGain,
+        netProceeds: salePrice - eligibleCosts,
+        classification: holdingInfo.isLongTerm ? 'Long-Term' : 'Short-Term',
+        badgeTitle: '',
+        heroVerdict: '',
+        noteHeading: '',
+        noteBody: '',
+        baseTaxName: 'Federal / National Tax',
+        extraTax1Name: '',
+        extraTax2Name: ''
+      };
+
+      if (grossGain <= 0) {
+        // Zero gain or capital loss scenario
+        res.totalTax = 0;
+        res.afterTaxGain = grossGain;
+        res.netProceeds = salePrice - eligibleCosts;
+        res.heroVerdict = grossGain < 0
+          ? `You have realized a capital loss of <strong>${curr}${fmt(Math.abs(grossGain))}</strong>. No capital gains tax is due, and this loss can offset other capital gains.`
+          : `Your sale proceeds exactly equal your cost basis and expenses. No capital gains tax is due.`;
+      } else {
+        // Country specific logic
+        if (country === 'US') {
+          const filingStatus = filingStatusSelect.value || 'single';
+          const stateRate = Math.max(0, parseFloat(stateRateInput.value) || 0);
+
+          let exemption = 0;
+          if (assetType === 'primary_residence') {
+            exemption = (filingStatus === 'mfj') ? 500000 : 250000;
+          }
+          const gainAfterEx = Math.max(0, grossGain - exemption);
+          const netGain = Math.max(0, gainAfterEx - capitalLosses);
+
+          let fedTax = 0;
+          if (!holdingInfo.isLongTerm) {
+            const taxBefore = calcUsOrdinaryTax(otherIncome, filingStatus);
+            const taxAfter = calcUsOrdinaryTax(otherIncome + netGain, filingStatus);
+            fedTax = taxAfter - taxBefore;
+          } else {
+            if (assetType === 'collectibles') {
+              const taxBefore = calcUsOrdinaryTax(otherIncome, filingStatus);
+              const taxAfter = calcUsOrdinaryTax(otherIncome + netGain, filingStatus);
+              fedTax = Math.min(taxAfter - taxBefore, netGain * 0.28);
+            } else {
+              fedTax = calcUsLtcgTax(otherIncome, netGain, filingStatus);
+            }
+          }
+
+          // NIIT (3.8%)
+          let niitTax = 0;
+          const niitThreshold = US_CONFIG.niitThresholds[filingStatus] || 200000;
+          const magi = otherIncome + netGain;
+          if (magi > niitThreshold) {
+            const excess = magi - niitThreshold;
+            const subject = Math.min(netGain, excess);
+            niitTax = subject * US_CONFIG.niitRate;
+          }
+
+          const stateTax = netGain * (stateRate / 100);
+          const totalTax = fedTax + niitTax + stateTax;
+
+          res.exemptions = Math.min(grossGain, exemption);
+          res.lossesApplied = Math.min(gainAfterEx, capitalLosses);
+          res.taxableGain = netGain;
+          res.baseTax = fedTax;
+          res.extraTax1 = niitTax;
+          res.extraTax2 = stateTax;
+          res.totalTax = totalTax;
+          res.baseTaxName = 'US Federal Capital Gains Tax';
+          res.extraTax1Name = 'Net Investment Income Tax (3.8%)';
+          res.extraTax2Name = `State Income Tax (${stateRate.toFixed(1)}%)`;
+          res.badgeTitle = `🇺🇸 United States • 2026 Federal`;
+          res.noteHeading = 'IRS 2026 Federal Capital Gains Tax Rules';
+          res.noteBody = `Assets held for over 1 year qualify for preferential 0%, 15%, or 20% federal LTCG brackets based on filing status (${filingStatus.toUpperCase()}) and ordinary income. Short-term gains are taxed at ordinary rates.`;
+        }
+        else if (country === 'UK') {
+          if (assetType === 'primary_home') {
+            res.exemptions = grossGain;
+            res.taxableGain = 0;
+            res.totalTax = 0;
+            res.heroVerdict = `Your home sale is <strong>100% exempt from UK Capital Gains Tax</strong> under Private Residence Relief (PRR).`;
+          } else {
+            const gainAfterLosses = Math.max(0, grossGain - capitalLosses);
+            const aea = UK_CONFIG.annualExemptAmount; // £3,000
+            const taxableGain = Math.max(0, gainAfterLosses - aea);
+
+            let totalTax = 0;
+            if (assetType === 'badr') {
+              totalTax = taxableGain * UK_CONFIG.rates.badr; // 18% in 2026/27
+            } else {
+              const taxableIncomeAbovePa = Math.max(0, otherIncome - UK_CONFIG.personalAllowance);
+              const unusedBasicBand = Math.max(0, UK_CONFIG.basicRateBandSize - taxableIncomeAbovePa);
+              const gainInBasic = Math.min(taxableGain, unusedBasicBand);
+              const gainInHigher = taxableGain - gainInBasic;
+              const rates = UK_CONFIG.rates[assetType] || UK_CONFIG.rates.shares;
+              totalTax = (gainInBasic * rates.basic) + (gainInHigher * rates.higher);
+            }
+
+            res.exemptions = Math.min(gainAfterLosses, aea);
+            res.lossesApplied = Math.min(grossGain, capitalLosses);
+            res.taxableGain = taxableGain;
+            res.baseTax = totalTax;
+            res.totalTax = totalTax;
+            res.baseTaxName = 'UK HMRC Capital Gains Tax';
+            res.badgeTitle = '🇬🇧 United Kingdom • 2026/27';
+            res.noteHeading = 'HMRC 2026/27 Capital Gains Tax Rules';
+            res.noteBody = 'Following the Autumn Budget reforms, UK gains on shares and residential property are taxed at 18% (basic rate) and 24% (higher rate). Each individual receives a £3,000 Annual Exempt Amount.';
+          }
+        }
+        else if (country === 'AU') {
+          if (assetType === 'main_residence') {
+            res.exemptions = grossGain;
+            res.taxableGain = 0;
+            res.totalTax = 0;
+            res.heroVerdict = `Your property disposal is <strong>100% tax-free</strong> under the Australian Taxation Office (ATO) Main Residence Exemption.`;
+          } else {
+            const isResident = (auResidencySelect.value === 'resident');
+            const gainAfterLosses = Math.max(0, grossGain - capitalLosses);
+            const isEligibleDiscount = isResident && (holdingDays >= 365);
+            const discount = isEligibleDiscount ? gainAfterLosses * 0.5 : 0;
+            const taxableGain = gainAfterLosses - discount;
+
+            const taxBefore = calcAuIncomeTax(otherIncome) + calcAuMedicare(otherIncome);
+            const taxAfter = calcAuIncomeTax(otherIncome + taxableGain) + calcAuMedicare(otherIncome + taxableGain);
+            const totalTax = taxAfter - taxBefore;
+
+            res.lossesApplied = Math.min(grossGain, capitalLosses);
+            res.discountApplied = discount;
+            res.taxableGain = taxableGain;
+            res.baseTax = totalTax;
+            res.totalTax = totalTax;
+            res.baseTaxName = 'ATO Income Tax & Medicare on Gain';
+            res.badgeTitle = '🇦🇺 Australia • 2026–27 Revised Stage 3';
+            res.noteHeading = 'ATO 2026–27 Capital Gains Tax & Discount';
+            res.noteBody = isEligibleDiscount
+              ? `You qualify for the 50% CGT discount because you held the asset for 12+ months as an Australian resident. Only $${fmt(taxableGain)} is included in your assessable income.`
+              : 'The full capital gain is included in assessable income and taxed at your marginal rate + 2% Medicare levy (no 50% discount applied).';
+          }
+        }
+        else if (country === 'IN') {
+          // Indian Rules
+          let isLtcg = false;
+          if (assetType === 'listed_equity') isLtcg = (holdingDays > 365);
+          else if (assetType === 'debt_mf') isLtcg = false;
+          else isLtcg = (holdingDays > 730);
+
+          const gainAfterLosses = Math.max(0, grossGain - capitalLosses);
+          let exemption = 0;
+          let specialRate = null;
+          let isSlab = false;
+
+          if (assetType === 'listed_equity') {
+            if (isLtcg) {
+              exemption = IN_CONFIG.equityLtcgExemption; // ₹1,25,000
+              specialRate = 0.125;
+            } else {
+              specialRate = 0.20;
+            }
+          } else if (assetType === 'debt_mf') {
+            isSlab = true;
+          } else {
+            if (isLtcg) specialRate = 0.125;
+            else isSlab = true;
+          }
+
+          const taxableGain = Math.max(0, gainAfterLosses - exemption);
+          let baseTax = 0;
+          const unexhausted = Math.max(0, IN_CONFIG.basicExemption - otherIncome);
+
+          if (isSlab) {
+            const taxBefore = calcInSlabTax(otherIncome);
+            const taxAfter = calcInSlabTax(otherIncome + taxableGain);
+            baseTax = taxAfter - taxBefore;
+          } else if (specialRate !== null) {
+            const gainAdjusted = Math.max(0, taxableGain - unexhausted);
+            baseTax = gainAdjusted * specialRate;
+          }
+
+          let surchargeRate = 0;
+          const totalInc = otherIncome + taxableGain;
+          if (totalInc > 10000000) surchargeRate = 0.15;
+          else if (totalInc > 5000000) surchargeRate = 0.10;
+          const surcharge = baseTax * surchargeRate;
+          const cess = (baseTax + surcharge) * IN_CONFIG.cessRate;
+          const totalTax = baseTax + surcharge + cess;
+
+          res.exemptions = Math.min(gainAfterLosses, exemption);
+          res.lossesApplied = Math.min(grossGain, capitalLosses);
+          res.taxableGain = taxableGain;
+          res.baseTax = baseTax;
+          res.extraTax1 = surcharge;
+          res.extraTax2 = cess;
+          res.totalTax = totalTax;
+          res.baseTaxName = isSlab ? 'Tax at Applicable Slab Rate' : `Capital Gains Tax (${(specialRate * 100).toFixed(1)}%)`;
+          res.extraTax1Name = 'Surcharge';
+          res.extraTax2Name = 'Health & Education Cess (4%)';
+          res.badgeTitle = '🇮🇳 India • FY 2026–27 (AY 2027–28)';
+          res.noteHeading = 'Income Tax Department FY 2026–27 Rules';
+          res.noteBody = isLtcg && assetType === 'listed_equity'
+            ? 'Long-term equity gains qualify for the ₹1.25 lakh annual exemption under Section 112A. Gains above this limit are taxed at 12.5% plus 4% cess.'
+            : 'Tax computed under revised Budget 2024 simplified capital gains framework with 4% Health & Education cess.';
+        }
+        else if (country === 'CA') {
+          if (assetType === 'primary_residence') {
+            res.exemptions = grossGain;
+            res.taxableGain = 0;
+            res.totalTax = 0;
+            res.heroVerdict = `Your sale is <strong>100% tax-free</strong> under the Canadian Principal Residence Exemption (PRE).`;
+          } else {
+            const provKey = provinceSelect.value || 'ON';
+            const netGain = Math.max(0, grossGain - capitalLosses);
+
+            // Inclusion rate: 50% on first $250k, 66.67% on excess
+            let taxableGain = 0;
+            if (netGain <= 250000) {
+              taxableGain = netGain * 0.50;
+            } else {
+              taxableGain = (250000 * 0.50) + ((netGain - 250000) * (2 / 3));
+            }
+
+            const taxBefore = calcCaTotalTax(otherIncome, provKey);
+            const taxAfter = calcCaTotalTax(otherIncome + taxableGain, provKey);
+            const fedTax = taxAfter.fed - taxBefore.fed;
+            const provTax = taxAfter.prov - taxBefore.prov;
+            const totalTax = taxAfter.total - taxBefore.total;
+
+            res.lossesApplied = Math.min(grossGain, capitalLosses);
+            res.taxableGain = taxableGain;
+            res.baseTax = fedTax;
+            res.extraTax1 = provTax;
+            res.totalTax = totalTax;
+            res.baseTaxName = 'Federal Income Tax on Gain';
+            res.extraTax1Name = `Provincial Tax (${provKey})`;
+            res.badgeTitle = `🇨🇦 Canada • 2026 (${provKey})`;
+            res.noteHeading = 'CRA 2026 Capital Gains Inclusion Rules';
+            res.noteBody = `In Canada, 50% of the first $250,000 in net gains is taxable (${taxableGain <= 125000 ? '50% rate applied' : 'blended 50%/66.67% inclusion'}). The taxable gain is integrated with federal and provincial tax brackets.`;
+          }
+        }
+        else if (country === 'SG') {
+          res.exemptions = grossGain;
+          res.taxableGain = 0;
+          res.baseTax = 0;
+          res.totalTax = 0;
+          res.baseTaxName = 'IRAS Capital Gains Tax (0%)';
+          res.badgeTitle = '🇸🇬 Singapore • IRAS Rules (0% CGT)';
+          res.noteHeading = 'IRAS Singapore 0% Capital Gains Tax';
+          res.noteBody = 'Singapore does not levy capital gains tax on investments, stocks, mutual funds, or real estate. Your net capital gain is 100% tax-free under IRAS regulations, provided the disposal is an investment rather than commercial trading activity.';
+          res.heroVerdict = `In Singapore, capital gains are <strong>100% tax-free</strong>. You owe <strong>S$0</strong> in capital gains tax under Inland Revenue Authority of Singapore (IRAS) rules, leaving your entire net profit of <strong>S$${fmt(grossGain)}</strong> in your pocket.`;
+        }
+      }
+
+      // Calculations for output
+      res.effectiveRate = grossGain > 0 ? (res.totalTax / grossGain) * 100 : 0;
+      res.afterTaxGain = grossGain - res.totalTax;
+      res.netProceeds = salePrice - eligibleCosts - res.totalTax;
+
+      // Render Outputs
+      if (resCountryBadge) resCountryBadge.textContent = res.badgeTitle || `${country} • 2026`;
+      if (resHoldingBadge) resHoldingBadge.textContent = holdingInfo.text;
+      if (resTotalTax) resTotalTax.textContent = fmt(res.totalTax);
+      if (resTaxableGain) resTaxableGain.textContent = fmt(res.taxableGain);
+      if (resAfterTaxGain) resAfterTaxGain.textContent = fmt(res.afterTaxGain);
+
+      if (resHeroVerdict && !res.heroVerdict) {
+        res.heroVerdict = `Based on an adjusted capital gain of <strong>${curr}${fmt(grossGain)}</strong>, your estimated capital gains tax is <strong>${curr}${fmt(res.totalTax)}</strong> (an effective tax rate of <strong>${fmtDec(res.effectiveRate, 1)}%</strong>).`;
+      }
+      if (resHeroVerdict && res.heroVerdict) {
+        resHeroVerdict.innerHTML = res.heroVerdict;
+      }
+
+      // Split bar updates
+      if (salePrice > 0) {
+        const costPct = Math.max(0, Math.min(100, (totalCost / salePrice) * 100));
+        const taxPct = Math.max(0, Math.min(100, (res.totalTax / salePrice) * 100));
+        const gainPct = Math.max(0, 100 - costPct - taxPct);
+
+        if (barSegCost) barSegCost.style.width = `${costPct}%`;
+        if (barSegGain) barSegGain.style.width = `${gainPct}%`;
+        if (barSegTax) barSegTax.style.width = `${taxPct}%`;
+        if (resBarGainPct) resBarGainPct.textContent = `After-Tax Gain: ${fmtDec(gainPct, 1)}% of Sale`;
+        if (legCostVal) legCostVal.textContent = `${curr}${fmt(totalCost)}`;
+        if (legGainVal) legGainVal.textContent = `${curr}${fmt(res.afterTaxGain)}`;
+        if (legTaxVal) legTaxVal.textContent = `${curr}${fmt(res.totalTax)}`;
+      }
+
+      // Table updates
+      if (tblSalePrice) tblSalePrice.textContent = `${curr}${fmtDec(salePrice)}`;
+      if (tblCostBasis) tblCostBasis.textContent = `−${curr}${fmtDec(purchasePrice)}`;
+      if (tblEligibleCosts) tblEligibleCosts.textContent = `−${curr}${fmtDec(eligibleCosts)}`;
+      if (tblGrossGain) tblGrossGain.textContent = `${curr}${fmtDec(grossGain)}`;
+      if (tblExemptions) tblExemptions.textContent = `−${curr}${fmtDec(res.exemptions)}`;
+      if (tblLosses) tblLosses.textContent = `−${curr}${fmtDec(res.lossesApplied)}`;
+
+      // AU Discount row
+      if (rowTblCgtDiscount) {
+        if (country === 'AU' && res.discountApplied > 0) {
+          rowTblCgtDiscount.classList.remove('hidden');
+          if (tblDiscountVal) tblDiscountVal.textContent = `−${curr}${fmtDec(res.discountApplied)}`;
+        } else {
+          rowTblCgtDiscount.classList.add('hidden');
+        }
+      }
+
+      if (tblTaxableGain) tblTaxableGain.textContent = `${curr}${fmtDec(res.taxableGain)}`;
+      if (lblTblBaseTax) lblTblBaseTax.textContent = res.baseTaxName;
+      if (tblBaseTax) tblBaseTax.textContent = `${curr}${fmtDec(res.baseTax)}`;
+
+      // Extra tax 1
+      if (rowTblExtraTax1) {
+        if (res.extraTax1 > 0) {
+          rowTblExtraTax1.classList.remove('hidden');
+          if (lblTblExtraTax1) lblTblExtraTax1.textContent = res.extraTax1Name;
+          if (tblExtraTax1) tblExtraTax1.textContent = `${curr}${fmtDec(res.extraTax1)}`;
+        } else {
+          rowTblExtraTax1.classList.add('hidden');
+        }
+      }
+
+      // Extra tax 2
+      if (rowTblExtraTax2) {
+        if (res.extraTax2 > 0) {
+          rowTblExtraTax2.classList.remove('hidden');
+          if (lblTblExtraTax2) lblTblExtraTax2.textContent = res.extraTax2Name;
+          if (tblExtraTax2) tblExtraTax2.textContent = `${curr}${fmtDec(res.extraTax2)}`;
+        } else {
+          rowTblExtraTax2.classList.add('hidden');
+        }
+      }
+
+      if (tblTotalTax) tblTotalTax.textContent = `${curr}${fmtDec(res.totalTax)}`;
+      if (tblEffectiveRate) tblEffectiveRate.textContent = `Effective Tax Rate: ${fmtDec(res.effectiveRate, 2)}%`;
+      if (tblNetProceeds) tblNetProceeds.textContent = `${curr}${fmtDec(res.netProceeds)}`;
+
+      // Tiles
+      if (tileGrossGain) tileGrossGain.textContent = `${curr}${fmt(grossGain)}`;
+      if (tileHoldingTime) tileHoldingTime.textContent = `${(holdingDays / 365).toFixed(1)} yrs`;
+      if (tileHoldingSub) tileHoldingSub.textContent = `${holdingDays} days elapsed`;
+      if (tileClassification) tileClassification.textContent = holdingInfo.isLongTerm ? 'Long-Term' : 'Short-Term';
+      if (tileExemptions) tileExemptions.textContent = `${curr}${fmt(res.exemptions + res.lossesApplied + res.discountApplied)}`;
+      if (tileTaxableGain) tileTaxableGain.textContent = `${curr}${fmt(res.taxableGain)}`;
+      if (tileEffectiveRate) tileEffectiveRate.textContent = `${fmtDec(res.effectiveRate, 1)}%`;
+      if (tileAfterTaxGain) tileAfterTaxGain.textContent = `${curr}${fmt(res.afterTaxGain)}`;
+      if (tileNetProceeds) tileNetProceeds.textContent = `${curr}${fmt(res.netProceeds)}`;
+
+      // Contextual Notes
+      if (noteHeading && res.noteHeading) noteHeading.textContent = res.noteHeading;
+      if (noteBody && res.noteBody) noteBody.textContent = res.noteBody;
+    }
+
+    // Event Listeners
+    if (mobileCountrySelect) {
+      mobileCountrySelect.addEventListener('change', () => {
+        updateCountryUI(mobileCountrySelect.value);
+      });
+    }
+
+    countryPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const c = pill.getAttribute('data-country') || 'US';
+        updateCountryUI(c);
+      });
+    });
+
+    [purchasePriceInput, salePriceInput, eligibleCostsInput, dateAcquiredInput, dateSoldInput, capitalLossesInput, stateRateInput].forEach(inp => {
+      if (inp) inp.addEventListener('input', calculateAndRender);
+    });
+
+    if (otherIncomeInput && otherIncomeSlider) {
+      otherIncomeInput.addEventListener('input', () => {
+        otherIncomeSlider.value = otherIncomeInput.value;
+        calculateAndRender();
+      });
+      otherIncomeSlider.addEventListener('input', () => {
+        otherIncomeInput.value = otherIncomeSlider.value;
+        calculateAndRender();
+      });
+    }
+
+    [assetTypeSelect, filingStatusSelect, provinceSelect, auResidencySelect, inRegimeSelect].forEach(sel => {
+      if (sel) sel.addEventListener('change', calculateAndRender);
+    });
+
+    if (advancedToggle && advancedContent) {
+      advancedToggle.addEventListener('click', () => {
+        const isExp = advancedToggle.getAttribute('aria-expanded') === 'true';
+        advancedToggle.setAttribute('aria-expanded', String(!isExp));
+        advancedContent.classList.toggle('hidden', isExp);
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (mobileCountrySelect) mobileCountrySelect.value = activeCountry;
+        if (mobileSelectedFlag) mobileSelectedFlag.textContent = getCountryFlag(activeCountry);
+        purchasePriceInput.value = (activeCountry === 'IN') ? '500000' : '50000';
+        salePriceInput.value = (activeCountry === 'IN') ? '1200000' : '120000';
+        eligibleCostsInput.value = (activeCountry === 'IN') ? '25000' : '3000';
+        otherIncomeInput.value = (activeCountry === 'IN') ? '1000000' : '85000';
+        if (otherIncomeSlider) otherIncomeSlider.value = otherIncomeInput.value;
+        capitalLossesInput.value = '0';
+        if (stateRateInput) stateRateInput.value = '0.0';
+        dateAcquiredInput.value = '2024-03-15';
+        dateSoldInput.value = '2026-05-20';
+        calculateAndRender();
+      });
+    }
+
+    // Native platform clipboard copy
+    document.addEventListener('copy-calculator-results', () => {
+      const curr = (activeCountry === 'UK') ? '£' : ((activeCountry === 'IN') ? '₹' : ((activeCountry === 'SG') ? 'S$' : '$'));
+      const text = `Capital Gains Tax Calculation (${activeCountry}):
+Gross Gain: ${curr}${tileGrossGain?.textContent || '0'}
+Taxable Capital Gain: ${curr}${tileTaxableGain?.textContent || '0'}
+Estimated Capital Gains Tax: ${curr}${resTotalTax?.textContent || '0'} (${tileEffectiveRate?.textContent || '0%'})
+Estimated After-Tax Profit: ${curr}${tileAfterTaxGain?.textContent || '0'}
+Net Cash Proceeds: ${curr}${tileNetProceeds?.textContent || '0'}
+Calculated via FinCalcLab Capital Gains Tax Calculator (https://fincalclab.com/calculator/capital-gains-tax-calculator)`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Capital gains calculation copied to clipboard!');
+      }).catch(err => {
+        console.error('Copy failed: ', err);
+      });
+    });
+
+    // Initial calculation
+    calculateAndRender();
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCapitalGainsCalculator);
+  } else {
+    initCapitalGainsCalculator();
+  }
+</script>

@@ -38,9 +38,9 @@ const faqs = [
   <KidsCalculator />
 
   <!-- Educational Explanations -->
-  <div class="calculator-extra-seo-content container" style="max-width: 1040px; margin-top: var(--space-8);">
+  <div class="calculator-extra-seo-content container" style="max-width: 1000px; margin: 0 auto; margin-top: var(--space-8); padding: var(--space-4) var(--space-4);">
     <!-- Compounding logic -->
-    <section class="seo-section">
+    <section class="seo-section prose">
       <h2>Understanding the Compounding Math</h2>
       <p>Saving allowance without compounding means your money grows in a straight line (addition). When you compound it, your money grows in a curved line (multiplication), because you earn interest on top of previous interest!</p>
       
@@ -107,16 +107,54 @@ const faqs = [
 </Layout>
 
 <style>
-  .seo-section {
-    margin-bottom: var(--space-12);
+  .calculator-page-container,
+  .calculator-extra-seo-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
   }
 
+  .prose h2,
   .seo-section h2 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .seo-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .seo-section p {
     margin-bottom: var(--space-4);
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: var(--space-2);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .seo-section ul, .seo-section ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .seo-section li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .seo-section {
+    margin-bottom: var(--space-12);
   }
 
   .spaced-list li {

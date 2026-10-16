@@ -1,0 +1,1947 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="House Hacking Calculator"
+  description="Estimate how much rental income from your multi-family property or spare bedrooms can offset your mortgage, eliminate housing expenses, and generate positive cash flow."
+  category="Real Estate &amp; Investing"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="house-hacking-calculator">
+    
+    <!-- Section 1: Property Purchase & Financing -->
+    <h3 class="input-section-heading">1. Property Purchase &amp; Mortgage Financing</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="hh-currency-select">Currency</label>
+        <select id="hh-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Purchase Price -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="hh-price-input">Property Purchase Price</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-price">$</span>
+          <input 
+            type="number" 
+            id="hh-price-input" 
+            min="10000" 
+            step="5000" 
+            value="425000" 
+            aria-label="Property Purchase Price" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="hh-price-slider" 
+        min="100000" 
+        max="1200000" 
+        step="10000" 
+        value="425000" 
+        class="slider-range" 
+        aria-label="Purchase Price Slider" 
+      />
+      <span class="input-hint">Agreed purchase price for the duplex, triplex, fourplex, or single-family house.</span>
+    </div>
+
+    <!-- Down Payment Row (% and Amount) -->
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-dp-pct-input">Down Payment (%)</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="hh-dp-pct-input" 
+              min="0" 
+              max="100" 
+              step="0.5" 
+              value="5.0" 
+              aria-label="Down Payment Percentage" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="hh-dp-pct-slider" 
+          min="0" 
+          max="30" 
+          step="0.5" 
+          value="5.0" 
+          class="slider-range" 
+          aria-label="Down Payment Percentage Slider" 
+        />
+        <span class="input-hint">E.g., 3.5% FHA, 5% Conventional, or 20%.</span>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-dp-amt-input">Down Payment Amount</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-dp-amt">$</span>
+            <input 
+              type="number" 
+              id="hh-dp-amt-input" 
+              min="0" 
+              step="1000" 
+              value="21250" 
+              aria-label="Down Payment Dollar Amount" 
+            />
+          </div>
+        </div>
+        <span class="input-hint">Auto-calculated from down payment percentage.</span>
+      </div>
+    </div>
+
+    <!-- Closing Costs & Initial Repairs -->
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-closing-input">Closing Costs</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-closing">$</span>
+            <input 
+              type="number" 
+              id="hh-closing-input" 
+              min="0" 
+              step="500" 
+              value="9000" 
+              aria-label="Estimated Closing Costs" 
+            />
+          </div>
+        </div>
+        <span class="input-hint">Lender fees, title, escrow (~2%–4% of price).</span>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-repairs-input">Initial Repairs &amp; Renovation</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-repairs">$</span>
+            <input 
+              type="number" 
+              id="hh-repairs-input" 
+              min="0" 
+              step="500" 
+              value="8000" 
+              aria-label="Initial Repairs and Renovation Costs" 
+            />
+          </div>
+        </div>
+        <span class="input-hint">Upfront cosmetic or tenant unit repairs.</span>
+      </div>
+    </div>
+
+    <!-- Mortgage Interest Rate & Loan Term -->
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-rate-input">Interest Rate (%)</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="hh-rate-input" 
+              min="0.0" 
+              max="15.0" 
+              step="0.125" 
+              value="6.5" 
+              aria-label="Mortgage Interest Rate" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="hh-rate-slider" 
+          min="2.0" 
+          max="11.0" 
+          step="0.125" 
+          value="6.5" 
+          class="slider-range" 
+          aria-label="Interest Rate Slider" 
+        />
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-term-select">Mortgage Term</label>
+          <select id="hh-term-select" class="currency-select" aria-label="Mortgage Term in Years">
+            <option value="30" selected>30 Years Fixed</option>
+            <option value="25">25 Years Fixed</option>
+            <option value="20">20 Years Fixed</option>
+            <option value="15">15 Years Fixed</option>
+          </select>
+        </div>
+        <span class="input-hint">Standard residential financing term.</span>
+      </div>
+    </div>
+
+    <!-- Section 2: Monthly Rental Income -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">2. Monthly Rental Income (Tenant Units &amp; Rooms)</h3>
+      
+      <!-- Units / Bedrooms Count -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-units-count-select">Number of Rental Units / Rooms</label>
+          <select id="hh-units-count-select" class="currency-select" aria-label="Number of Tenant Units or Rooms">
+            <option value="1">1 Unit / Room (e.g. Duplex - 1 Tenant Unit)</option>
+            <option value="2" selected>2 Units / Rooms (e.g. Triplex - 2 Tenant Units)</option>
+            <option value="3">3 Units / Rooms (e.g. Fourplex - 3 Tenant Units)</option>
+            <option value="4">4 Units / Rooms (e.g. 4-Bedroom House Hack)</option>
+            <option value="5">5 Units / Rooms</option>
+            <option value="6">6 Units / Rooms</option>
+          </select>
+        </div>
+        <span class="input-hint">Specify how many tenant units or rented bedrooms you have alongside your own unit.</span>
+      </div>
+
+      <!-- Repeatable Rental Unit Inputs Container -->
+      <div id="hh-units-list" class="units-list-container">
+        <!-- Injected via JavaScript dynamically -->
+      </div>
+
+      <!-- Add Unit Button for Convenience -->
+      <div style="margin-top: var(--space-2); margin-bottom: var(--space-4);">
+        <button type="button" id="hh-add-unit-btn" class="add-unit-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add Another Rental Unit / Room
+        </button>
+      </div>
+
+      <!-- Other Monthly Rental Income & Vacancy Allowance -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-other-income-input">Other Monthly Rental Income</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-other-inc">$</span>
+              <input 
+                type="number" 
+                id="hh-other-income-input" 
+                min="0" 
+                step="25" 
+                value="50" 
+                aria-label="Other Monthly Rental Income" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Parking, garage, storage, laundry, pet rent.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-vacancy-input">Vacancy Allowance (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="hh-vacancy-input" 
+                min="0" 
+                max="25" 
+                step="0.5" 
+                value="5.0" 
+                aria-label="Vacancy Allowance Percentage" 
+              />
+              <span class="unit-symbol">%</span>
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="hh-vacancy-slider" 
+            min="0" 
+            max="15" 
+            step="0.5" 
+            value="5.0" 
+            class="slider-range" 
+            aria-label="Vacancy Rate Slider" 
+          />
+          <span class="input-hint">Standard buffer for tenant turnover (~5% = 18 days/yr).</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Monthly Property Operating Expenses -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">3. Monthly Property Operating Expenses</h3>
+      
+      <!-- Property Taxes & Insurance -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-tax-input">Property Taxes (Monthly)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-tax">$</span>
+              <input 
+                type="number" 
+                id="hh-tax-input" 
+                min="0" 
+                step="25" 
+                value="375" 
+                aria-label="Monthly Property Taxes" 
+              />
+            </div>
+          </div>
+          <span class="input-hint" id="hint-tax-annual">Annual: $4,500 (~1.06% of price)</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-insurance-input">Homeowners Insurance (Monthly)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-ins">$</span>
+              <input 
+                type="number" 
+                id="hh-insurance-input" 
+                min="0" 
+                step="10" 
+                value="140" 
+                aria-label="Monthly Homeowners Insurance" 
+              />
+            </div>
+          </div>
+          <span class="input-hint" id="hint-ins-annual">Annual: $1,680</span>
+        </div>
+      </div>
+
+      <!-- PMI & Maintenance -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-pmi-input">PMI / Mortgage Insurance</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-pmi">$</span>
+              <input 
+                type="number" 
+                id="hh-pmi-input" 
+                min="0" 
+                step="10" 
+                value="160" 
+                aria-label="Monthly PMI or Mortgage Insurance" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Applies when down payment is under 20%.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-maint-input">Maintenance &amp; CapEx</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-maint">$</span>
+              <input 
+                type="number" 
+                id="hh-maint-input" 
+                min="0" 
+                step="25" 
+                value="200" 
+                aria-label="Monthly Maintenance and Repairs" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Reserve fund for repairs, roof, HVAC, plumbing.</span>
+        </div>
+      </div>
+
+      <!-- Utilities, Management & HOA -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-utils-input">Owner-Paid Utilities</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-utils">$</span>
+              <input 
+                type="number" 
+                id="hh-utils-input" 
+                min="0" 
+                step="25" 
+                value="175" 
+                aria-label="Owner-Paid Monthly Utilities" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Water, sewer, trash, common electric, WiFi.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="hh-mgmt-input">Property Management</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-mgmt">$</span>
+              <input 
+                type="number" 
+                id="hh-mgmt-input" 
+                min="0" 
+                step="25" 
+                value="0" 
+                aria-label="Monthly Property Management Fee" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Leave $0 if you self-manage your house hack.</span>
+        </div>
+      </div>
+
+      <!-- HOA Fees -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-hoa-input">HOA Fees &amp; Other Recurring Expenses</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-hoa">$</span>
+            <input 
+              type="number" 
+              id="hh-hoa-input" 
+              min="0" 
+              step="25" 
+              value="0" 
+              aria-label="Monthly HOA Fees and Other Expenses" 
+            />
+          </div>
+        </div>
+        <span class="input-hint">Monthly condo or community association fees, if applicable.</span>
+      </div>
+    </div>
+
+    <!-- Section 4: Optional Comparison -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">4. Housing Cost Comparison (Optional)</h3>
+      
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="hh-current-cost-input">Current Monthly Housing Cost (Rent or Mortgage)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-curr">$</span>
+            <input 
+              type="number" 
+              id="hh-current-cost-input" 
+              min="0" 
+              step="50" 
+              value="2000" 
+              aria-label="Current Monthly Housing Cost" 
+            />
+          </div>
+        </div>
+        <span class="input-hint">Compare your new out-of-pocket payment against what you currently pay to live elsewhere.</span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="hh-reset-btn" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator to Defaults
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">House Hacking Cash Flow &amp; Housing Cost</h3>
+
+    <!-- Core Payout Display (Hero Boxes) -->
+    <div class="net-value-container">
+      <!-- Box 1: Primary Out-of-Pocket / Net Cash Flow -->
+      <div class="net-value-box out-of-pocket-box" id="box-primary-result">
+        <span class="net-box-label" id="lbl-primary-title">Net Monthly Out-of-Pocket Housing Cost</span>
+        <div id="res-primary-amount" class="net-box-amount text-primary">$1,061</div>
+        <span class="net-box-sub" id="lbl-primary-sub">You pay $1,061/mo instead of full $3,581 expenses</span>
+      </div>
+
+      <!-- Box 2: Total Property Expenses -->
+      <div class="net-value-box expenses-box">
+        <span class="net-box-label">Total Monthly Property Expenses</span>
+        <div id="res-total-expenses" class="net-box-amount text-muted">$3,581</div>
+        <span class="net-box-sub" id="lbl-expense-breakdown">Mortgage P&amp;I: $2,551 | OpEx: $1,030</span>
+      </div>
+
+      <!-- Box 3: Effective Rental Income -->
+      <div class="net-value-box income-box">
+        <span class="net-box-label">Effective Monthly Rental Income</span>
+        <div id="res-effective-income" class="net-box-amount text-accent">$2,520</div>
+        <span class="net-box-sub" id="lbl-gross-income">Gross: $2,650/mo | Vacancy Loss: -$130/mo</span>
+      </div>
+    </div>
+
+    <!-- Rental Coverage Visual Progress Bar -->
+    <div class="coverage-bar-card">
+      <div class="coverage-bar-header">
+        <span class="coverage-bar-title">Rental Income Expense Coverage</span>
+        <span class="coverage-bar-pct" id="res-coverage-pct">70.4%</span>
+      </div>
+      <div class="coverage-track" role="progressbar" aria-valuenow="70.4" aria-valuemin="0" aria-valuemax="100">
+        <div class="coverage-fill" id="bar-coverage-fill" style="width: 70.4%;"></div>
+      </div>
+      <div class="coverage-bar-labels">
+        <span>0% (Full Out-of-Pocket)</span>
+        <span>100% (Free Living)</span>
+        <span>120%+ (Positive Cash Flow)</span>
+      </div>
+    </div>
+
+    <!-- Dynamic Status Verdict Card -->
+    <div class="verdict-banner" id="verdict-banner">
+      <div class="verdict-icon" id="verdict-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <div class="verdict-content">
+        <h4 class="verdict-title" id="verdict-title">Substantial Housing Subsidy</h4>
+        <p class="verdict-desc" id="verdict-desc">
+          Your tenants cover 70.4% of your total property expenses. You save $939/month compared to your current housing cost!
+        </p>
+      </div>
+    </div>
+
+    <!-- 8-Metric Responsive Breakdown Grid (Rule 15 Compliant) -->
+    <div class="metrics-grid">
+      <!-- Metric 1: Monthly Mortgage (P&I) -->
+      <div class="metric-card">
+        <span class="metric-label">Monthly Mortgage (P&amp;I)</span>
+        <span class="metric-value" id="res-mortgage">$2,551</span>
+        <span class="metric-sub" id="lbl-mortgage-sub">Loan: $403,750 @ 6.5%</span>
+      </div>
+
+      <!-- Metric 2: Monthly Operating Expenses -->
+      <div class="metric-card">
+        <span class="metric-label">Monthly Operating Expenses</span>
+        <span class="metric-value" id="res-monthly-opex">$1,030</span>
+        <span class="metric-sub">Taxes, Insurance, PMI, Maint, Utils</span>
+      </div>
+
+      <!-- Metric 3: Gross Rental Income -->
+      <div class="metric-card">
+        <span class="metric-label">Gross Monthly Rental Income</span>
+        <span class="metric-value text-accent" id="res-gross-rent">$2,650</span>
+        <span class="metric-sub" id="lbl-gross-sub">2 Units/Rooms + Other Income</span>
+      </div>
+
+      <!-- Metric 4: Expected Vacancy Loss -->
+      <div class="metric-card">
+        <span class="metric-label">Expected Vacancy Loss</span>
+        <span class="metric-value text-muted" id="res-vacancy-loss">-$130</span>
+        <span class="metric-sub" id="lbl-vacancy-sub">5.0% turnover buffer</span>
+      </div>
+
+      <!-- Metric 5: Initial Cash Required -->
+      <div class="metric-card">
+        <span class="metric-label">Initial Cash to Close</span>
+        <span class="metric-value" id="res-initial-cash">$38,250</span>
+        <span class="metric-sub" id="lbl-cash-breakdown">Down ($21.3k) + Close ($9k) + Rep ($8k)</span>
+      </div>
+
+      <!-- Metric 6: Monthly Property Cash Flow -->
+      <div class="metric-card">
+        <span class="metric-label">Monthly Property Cash Flow</span>
+        <span class="metric-value" id="res-cash-flow">-$1,061</span>
+        <span class="metric-sub" id="lbl-cash-flow-sub">Owner covers remaining cost</span>
+      </div>
+
+      <!-- Metric 7: Monthly Housing Savings -->
+      <div class="metric-card highlight-card">
+        <span class="metric-label">Monthly Housing Savings</span>
+        <span class="metric-value text-success" id="res-monthly-savings">+$939</span>
+        <span class="metric-sub" id="lbl-savings-sub">vs $2,000/mo Current Rent</span>
+      </div>
+
+      <!-- Metric 8: Annual Housing Savings -->
+      <div class="metric-card highlight-card">
+        <span class="metric-label">Annual Housing Savings</span>
+        <span class="metric-value text-success" id="res-annual-savings">+$11,269</span>
+        <span class="metric-sub">Extra wealth accumulated each year</span>
+      </div>
+    </div>
+
+    <!-- Monthly Cash Flow & Expense Itemization Table -->
+    <div class="breakdown-table-wrapper" style="margin-top: var(--space-6);">
+      <h4 class="table-heading">Monthly House Hacking Cash Flow Statement</h4>
+      <div class="table-scroll-container">
+        <table class="cashflow-table">
+          <thead>
+            <tr>
+              <th>Line Item Category</th>
+              <th style="text-align: right;">Monthly Amount</th>
+              <th style="text-align: right;">Annual Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-highlight-income">
+              <td><strong>Gross Rental Income</strong></td>
+              <td style="text-align: right;" id="tbl-gross-rent">$2,650</td>
+              <td style="text-align: right;" id="tbl-annual-gross-rent">$31,800</td>
+            </tr>
+            <tr class="row-deduct">
+              <td>Less: Vacancy Allowance (<span id="tbl-vacancy-pct">5.0%</span>)</td>
+              <td style="text-align: right;" id="tbl-vacancy">-$130</td>
+              <td style="text-align: right;" id="tbl-annual-vacancy">-$1,560</td>
+            </tr>
+            <tr class="row-subtotal">
+              <td><strong>= Effective Rental Income</strong></td>
+              <td style="text-align: right;"><strong id="tbl-eff-rent">$2,520</strong></td>
+              <td style="text-align: right;"><strong id="tbl-annual-eff-rent">$30,240</strong></td>
+            </tr>
+            <tr>
+              <td>Mortgage Principal &amp; Interest</td>
+              <td style="text-align: right;" id="tbl-mortgage">-$2,551</td>
+              <td style="text-align: right;" id="tbl-annual-mortgage">-$30,612</td>
+            </tr>
+            <tr>
+              <td>Property Taxes</td>
+              <td style="text-align: right;" id="tbl-taxes">-$375</td>
+              <td style="text-align: right;" id="tbl-annual-taxes">-$4,500</td>
+            </tr>
+            <tr>
+              <td>Homeowners Insurance</td>
+              <td style="text-align: right;" id="tbl-insurance">-$140</td>
+              <td style="text-align: right;" id="tbl-annual-insurance">-$1,680</td>
+            </tr>
+            <tr>
+              <td>PMI / Mortgage Insurance</td>
+              <td style="text-align: right;" id="tbl-pmi">-$160</td>
+              <td style="text-align: right;" id="tbl-annual-pmi">-$1,920</td>
+            </tr>
+            <tr>
+              <td>Maintenance &amp; CapEx Reserves</td>
+              <td style="text-align: right;" id="tbl-maint">-$200</td>
+              <td style="text-align: right;" id="tbl-annual-maint">-$2,400</td>
+            </tr>
+            <tr>
+              <td>Owner-Paid Utilities</td>
+              <td style="text-align: right;" id="tbl-utils">-$175</td>
+              <td style="text-align: right;" id="tbl-annual-utils">-$2,100</td>
+            </tr>
+            <tr>
+              <td>Property Management &amp; HOA</td>
+              <td style="text-align: right;" id="tbl-mgmt-hoa">$0</td>
+              <td style="text-align: right;" id="tbl-annual-mgmt-hoa">$0</td>
+            </tr>
+            <tr class="row-subtotal">
+              <td><strong>= Total Property Expenses</strong></td>
+              <td style="text-align: right;"><strong id="tbl-total-exp">-$3,581</strong></td>
+              <td style="text-align: right;"><strong id="tbl-annual-total-exp">-$42,972</strong></td>
+            </tr>
+            <tr class="row-net-result">
+              <td><strong id="tbl-net-label">Net Monthly Out-of-Pocket Housing Cost</strong></td>
+              <td style="text-align: right;"><strong id="tbl-net-amount" class="text-primary">$1,061</strong></td>
+              <td style="text-align: right;"><strong id="tbl-annual-net-amount" class="text-primary">$12,732</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Mathematical Formula Breakdown Box -->
+    <div class="formula-callout-card" style="margin-top: var(--space-6);">
+      <h4 class="formula-heading">House Hacking Calculation Breakdown</h4>
+      <div class="formula-steps" id="formula-steps-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  /* Base Layout Styles */
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .input-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .input-label-row label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    min-width: 0;
+  }
+
+  .input-symbol-wrapper,
+  :global(.input-symbol-wrapper) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 140px;
+    flex-shrink: 0;
+  }
+
+  .input-symbol-wrapper input,
+  :global(.input-symbol-wrapper input) {
+    width: 100%;
+    height: 38px;
+    padding: 0 var(--space-3);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .input-symbol-wrapper input:focus,
+  :global(.input-symbol-wrapper input:focus) {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .currency-symbol,
+  :global(.currency-symbol) {
+    position: absolute;
+    left: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .unit-symbol,
+  :global(.unit-symbol) {
+    position: absolute;
+    right: var(--space-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .currency-select {
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    width: auto;
+    min-width: 180px;
+    max-width: 240px;
+    flex-shrink: 0;
+  }
+
+  #hh-units-count-select {
+    max-width: 320px;
+  }
+
+  .currency-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+    margin-top: var(--space-1);
+    accent-color: var(--color-primary);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-hint {
+    font-size: 0.775rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  @media (max-width: 600px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Repeatable Units List (Both local and dynamic global) */
+  .units-list-container,
+  :global(.units-list-container) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .tenant-unit-card,
+  :global(.tenant-unit-card) {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .tenant-unit-card:hover,
+  :global(.tenant-unit-card:hover) {
+    border-color: var(--color-primary-alpha-40, #93c5fd);
+  }
+
+  .tenant-unit-main,
+  :global(.tenant-unit-main) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-width: 0;
+    width: 100%;
+  }
+
+  .tenant-unit-header,
+  :global(.tenant-unit-header) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    flex: 1;
+  }
+
+  .tenant-unit-badge,
+  :global(.tenant-unit-badge) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm, 4px);
+    flex-shrink: 0;
+  }
+
+  .tenant-unit-label,
+  :global(.tenant-unit-label) {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tenant-unit-actions,
+  :global(.tenant-unit-actions) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  .unit-delete-btn,
+  :global(.unit-delete-btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .unit-delete-btn:hover,
+  :global(.unit-delete-btn:hover) {
+    color: #ef4444;
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  .add-unit-btn,
+  :global(.add-unit-btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: transparent;
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .add-unit-btn:hover,
+  :global(.add-unit-btn:hover) {
+    background: rgba(37, 99, 235, 0.05);
+  }
+
+  @media (max-width: 480px) {
+    .tenant-unit-card,
+    :global(.tenant-unit-card) {
+      padding: var(--space-3);
+    }
+
+    .tenant-unit-main,
+    :global(.tenant-unit-main) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .tenant-unit-header,
+    :global(.tenant-unit-header) {
+      width: 100%;
+    }
+
+    .tenant-unit-actions,
+    :global(.tenant-unit-actions) {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .tenant-unit-actions .input-symbol-wrapper,
+    :global(.tenant-unit-actions .input-symbol-wrapper) {
+      flex: 1;
+      width: auto;
+    }
+  }
+
+  /* Results Section Styles */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Net Value Container */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .net-value-box {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    box-shadow: var(--shadow-sm);
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .out-of-pocket-box {
+    border-top: 4px solid var(--color-primary);
+    background: linear-gradient(180deg, var(--color-bg-base) 0%, var(--color-bg-subtle, rgba(0,0,0,0.01)) 100%);
+  }
+
+  .net-box-label {
+    font-size: 0.825rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-amount {
+    font-size: 2.1rem;
+    font-weight: 900;
+    line-height: 1.15;
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .net-box-sub {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .text-primary { color: var(--color-primary); }
+  .text-accent { color: #0284c7; }
+  .text-success { color: #16a34a; }
+  .text-muted { color: var(--color-text-muted); }
+
+  /* Coverage Progress Bar Card */
+  .coverage-bar-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .coverage-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .coverage-bar-pct {
+    font-size: 1.15rem;
+    color: var(--color-primary);
+  }
+
+  .coverage-track {
+    width: 100%;
+    height: 12px;
+    background: var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .coverage-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+    border-radius: 6px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 100%;
+  }
+
+  .coverage-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Status Verdict Banner */
+  .verdict-banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-base);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .verdict-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+  }
+
+  .verdict-content {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .verdict-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .verdict-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* Rule 15 Compliant Metrics Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  @media (max-width: 480px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .metric-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .metric-card.highlight-card {
+    background: rgba(22, 163, 74, 0.04);
+    border-color: rgba(22, 163, 74, 0.3);
+  }
+
+  .metric-label {
+    font-size: 0.775rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  .metric-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-base);
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .metric-sub {
+    font-size: 0.725rem;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  /* Table Styles */
+  .breakdown-table-wrapper {
+    min-width: 0;
+  }
+
+  .table-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-2);
+  }
+
+  .table-scroll-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    max-width: 100%;
+  }
+
+  .cashflow-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 320px;
+  }
+
+  .cashflow-table th,
+  .cashflow-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-base);
+  }
+
+  .cashflow-table th {
+    background: var(--color-bg-subtle, rgba(0,0,0,0.03));
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .row-highlight-income td {
+    background: rgba(2, 132, 199, 0.05);
+  }
+
+  .row-deduct td {
+    color: var(--color-text-muted);
+  }
+
+  .row-subtotal td {
+    background: var(--color-bg-subtle, rgba(0,0,0,0.02));
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .row-net-result td {
+    background: rgba(37, 99, 235, 0.08);
+    font-size: 0.95rem;
+    border-top: 2px solid var(--color-primary);
+  }
+
+  /* Formula Callout Card */
+  .formula-callout-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .formula-heading {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .formula-steps,
+  :global(.formula-steps) {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .formula-step-item,
+  :global(.formula-step-item) {
+    background: var(--color-bg-subtle, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    overflow-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+  }
+
+  .formula-step-item.formula-step-highlight,
+  :global(.formula-step-item.formula-step-highlight) {
+    border: 1px solid rgba(22, 163, 74, 0.3);
+    border-left: 4px solid #16a34a;
+    background: rgba(22, 163, 74, 0.04);
+    padding: var(--space-3) var(--space-4);
+    padding-left: var(--space-4);
+  }
+
+  /* Mobile Responsiveness for Form Inputs */
+  @media (max-width: 540px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-label-row .input-symbol-wrapper,
+    .input-label-row .currency-select,
+    .input-label-row #hh-units-count-select {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+</style>
+
+<script>
+  // Setup Client-side Calculation Engine with Astro page lifecycle compatibility
+  document.addEventListener('DOMContentLoaded', initHouseHackingCalc);
+  document.addEventListener('astro:page-load', initHouseHackingCalc);
+
+  function initHouseHackingCalc() {
+    const root = document.getElementById('house-hacking-calculator');
+    if (!root) return;
+
+    // Currency Definitions
+    const currencyConfigs = {
+      USD: { symbol: '$', code: 'USD', locale: 'en-US' },
+      CAD: { symbol: 'C$', code: 'CAD', locale: 'en-CA' },
+      GBP: { symbol: '£', code: 'GBP', locale: 'en-GB' },
+      EUR: { symbol: '€', code: 'EUR', locale: 'de-DE' },
+      AUD: { symbol: 'A$', code: 'AUD', locale: 'en-AU' },
+      INR: { symbol: '₹', code: 'INR', locale: 'en-IN' },
+      SGD: { symbol: 'S$', code: 'SGD', locale: 'en-SG' },
+      JPY: { symbol: '¥', code: 'JPY', locale: 'ja-JP' },
+      CHF: { symbol: 'CHF', code: 'CHF', locale: 'de-CH' }
+    };
+
+    let activeCurrency = 'USD';
+
+    // Core Input Elements
+    const curSelect = document.getElementById('hh-currency-select');
+    const priceInput = document.getElementById('hh-price-input');
+    const priceSlider = document.getElementById('hh-price-slider');
+
+    const dpPctInput = document.getElementById('hh-dp-pct-input');
+    const dpPctSlider = document.getElementById('hh-dp-pct-slider');
+    const dpAmtInput = document.getElementById('hh-dp-amt-input');
+
+    const closingInput = document.getElementById('hh-closing-input');
+    const repairsInput = document.getElementById('hh-repairs-input');
+
+    const rateInput = document.getElementById('hh-rate-input');
+    const rateSlider = document.getElementById('hh-rate-slider');
+    const termSelect = document.getElementById('hh-term-select');
+
+    const unitsCountSelect = document.getElementById('hh-units-count-select');
+    const unitsListContainer = document.getElementById('hh-units-list');
+    const addUnitBtn = document.getElementById('hh-add-unit-btn');
+
+    const otherIncInput = document.getElementById('hh-other-income-input');
+    const vacancyInput = document.getElementById('hh-vacancy-input');
+    const vacancySlider = document.getElementById('hh-vacancy-slider');
+
+    const taxInput = document.getElementById('hh-tax-input');
+    const insuranceInput = document.getElementById('hh-insurance-input');
+    const pmiInput = document.getElementById('hh-pmi-input');
+    const maintInput = document.getElementById('hh-maint-input');
+    const utilsInput = document.getElementById('hh-utils-input');
+    const mgmtInput = document.getElementById('hh-mgmt-input');
+    const hoaInput = document.getElementById('hh-hoa-input');
+
+    const currentCostInput = document.getElementById('hh-current-cost-input');
+    const resetBtn = document.getElementById('hh-reset-btn');
+
+    // Default Unit Rents Array
+    let unitRents = [1400, 1200];
+
+    // Initialize Unit Input Rows
+    renderUnitInputs();
+
+    function renderUnitInputs() {
+      if (!unitsListContainer) return;
+      unitsListContainer.innerHTML = '';
+
+      unitRents.forEach((rent, idx) => {
+        const card = document.createElement('div');
+        card.className = 'tenant-unit-card';
+        card.innerHTML = `
+          <div class="tenant-unit-main">
+            <div class="tenant-unit-header">
+              <span class="tenant-unit-badge">Unit ${idx + 1}</span>
+              <label class="tenant-unit-label" for="hh-unit-rent-${idx}">Tenant Unit / Room ${idx + 1}</label>
+            </div>
+            <div class="tenant-unit-actions">
+              <div class="input-symbol-wrapper">
+                <span class="currency-symbol hh-unit-sym">${currencyConfigs[activeCurrency].symbol}</span>
+                <input 
+                  type="number" 
+                  id="hh-unit-rent-${idx}"
+                  class="hh-unit-rent-input" 
+                  data-index="${idx}" 
+                  min="0" 
+                  step="50" 
+                  value="${rent}" 
+                  aria-label="Tenant Unit / Room ${idx + 1} Monthly Rent" 
+                />
+              </div>
+              ${unitRents.length > 1 ? `
+                <button type="button" class="unit-delete-btn" data-delete-index="${idx}" title="Remove Tenant Unit / Room ${idx + 1}" aria-label="Remove Tenant Unit ${idx + 1}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        unitsListContainer.appendChild(card);
+      });
+
+      // Attach listeners to unit rent inputs
+      const rentInputs = unitsListContainer.querySelectorAll('.hh-unit-rent-input');
+      rentInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+          const index = Number(e.target.dataset.index);
+          const val = Math.max(0, Number(e.target.value) || 0);
+          unitRents[index] = val;
+          calculateAll();
+        });
+      });
+
+      // Attach listeners to delete buttons
+      const deleteBtns = unitsListContainer.querySelectorAll('.unit-delete-btn');
+      deleteBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const target = e.currentTarget;
+          const index = Number(target.dataset.deleteIndex);
+          if (unitRents.length > 1) {
+            unitRents.splice(index, 1);
+            if (unitsCountSelect) unitsCountSelect.value = String(Math.min(6, unitRents.length));
+            renderUnitInputs();
+            calculateAll();
+          }
+        });
+      });
+    }
+
+    if (unitsCountSelect) {
+      unitsCountSelect.addEventListener('change', () => {
+        const targetCount = Number(unitsCountSelect.value) || 1;
+        const currentCount = unitRents.length;
+        if (targetCount > currentCount) {
+          for (let i = currentCount; i < targetCount; i++) {
+            const lastVal = unitRents[unitRents.length - 1] || 1000;
+            unitRents.push(lastVal);
+          }
+        } else if (targetCount < currentCount) {
+          unitRents = unitRents.slice(0, targetCount);
+        }
+        renderUnitInputs();
+        calculateAll();
+      });
+    }
+
+    if (addUnitBtn) {
+      addUnitBtn.addEventListener('click', () => {
+        const lastVal = unitRents[unitRents.length - 1] || 1000;
+        unitRents.push(lastVal);
+        if (unitsCountSelect) {
+          unitsCountSelect.value = String(Math.min(6, unitRents.length));
+        }
+        renderUnitInputs();
+        calculateAll();
+      });
+    }
+
+    // Helper: Money Formatter
+    function formatMoney(num, decimal = 0) {
+      const cfg = currencyConfigs[activeCurrency] || currencyConfigs.USD;
+      if (isNaN(num) || !isFinite(num)) num = 0;
+      return new Intl.NumberFormat(cfg.locale, {
+        style: 'currency',
+        currency: cfg.code,
+        minimumFractionDigits: decimal,
+        maximumFractionDigits: decimal
+      }).format(num);
+    }
+
+    // Currency Switcher
+    if (curSelect) {
+      curSelect.addEventListener('change', () => {
+        activeCurrency = curSelect.value;
+        const sym = currencyConfigs[activeCurrency].symbol;
+        const symIds = [
+          'sym-price', 'sym-dp-amt', 'sym-closing', 'sym-repairs',
+          'sym-other-inc', 'sym-tax', 'sym-ins', 'sym-pmi',
+          'sym-maint', 'sym-utils', 'sym-mgmt', 'sym-hoa', 'sym-curr'
+        ];
+        symIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = sym;
+        });
+        const unitSymbols = document.querySelectorAll('.hh-unit-sym');
+        unitSymbols.forEach(el => el.textContent = sym);
+        calculateAll();
+      });
+    }
+
+    // Two-way synchronization helper for Sliders and Inputs
+    function linkSliderAndInput(inputEl, sliderEl, onChangeCallback) {
+      if (!inputEl || !sliderEl) return;
+      inputEl.addEventListener('input', () => {
+        sliderEl.value = inputEl.value;
+        if (onChangeCallback) onChangeCallback();
+        calculateAll();
+      });
+      sliderEl.addEventListener('input', () => {
+        inputEl.value = sliderEl.value;
+        if (onChangeCallback) onChangeCallback();
+        calculateAll();
+      });
+    }
+
+    // Link price
+    linkSliderAndInput(priceInput, priceSlider, () => {
+      syncDownPaymentFromPct();
+      updateTaxHint();
+    });
+
+    // Link Down Payment Percentage & Amount
+    function syncDownPaymentFromPct() {
+      const p = Math.max(0, Number(priceInput.value) || 0);
+      const pct = Math.max(0, Math.min(100, Number(dpPctInput.value) || 0));
+      const amt = (p * pct) / 100;
+      if (dpAmtInput) dpAmtInput.value = Math.round(amt);
+      // Auto-adjust PMI helper: if down payment >= 20%, suggest $0 PMI if not manually customized
+      if (pct >= 20 && pmiInput && Number(pmiInput.value) > 0) {
+        pmiInput.value = 0;
+      } else if (pct < 20 && pmiInput && Number(pmiInput.value) === 0) {
+        // Suggest typical PMI: ~0.5% loan / 12
+        const loan = p - amt;
+        pmiInput.value = Math.round((loan * 0.005) / 12);
+      }
+    }
+
+    function syncDownPaymentFromAmt() {
+      const p = Math.max(0, Number(priceInput.value) || 0);
+      const amt = Math.max(0, Number(dpAmtInput.value) || 0);
+      const pct = p > 0 ? (amt / p) * 100 : 0;
+      if (dpPctInput) dpPctInput.value = pct.toFixed(1);
+      if (dpPctSlider) dpPctSlider.value = pct.toFixed(1);
+    }
+
+    linkSliderAndInput(dpPctInput, dpPctSlider, syncDownPaymentFromPct);
+
+    if (dpAmtInput) {
+      dpAmtInput.addEventListener('input', () => {
+        syncDownPaymentFromAmt();
+        calculateAll();
+      });
+    }
+
+    // Link rate and term
+    linkSliderAndInput(rateInput, rateSlider);
+    if (termSelect) termSelect.addEventListener('change', calculateAll);
+
+    // Link vacancy
+    linkSliderAndInput(vacancyInput, vacancySlider);
+
+    // Other inputs
+    const standardInputs = [
+      closingInput, repairsInput, otherIncInput, taxInput, insuranceInput,
+      pmiInput, maintInput, utilsInput, mgmtInput, hoaInput, currentCostInput
+    ];
+
+    standardInputs.forEach(inp => {
+      if (inp) {
+        inp.addEventListener('input', () => {
+          if (inp === taxInput) updateTaxHint();
+          if (inp === insuranceInput) updateInsHint();
+          calculateAll();
+        });
+      }
+    });
+
+    function updateTaxHint() {
+      const hintTax = document.getElementById('hint-tax-annual');
+      if (hintTax && taxInput && priceInput) {
+        const mTax = Number(taxInput.value) || 0;
+        const p = Number(priceInput.value) || 0;
+        const aTax = mTax * 12;
+        const pct = p > 0 ? ((aTax / p) * 100).toFixed(2) : '0.00';
+        hintTax.textContent = `Annual: ${formatMoney(aTax)} (~${pct}% of price)`;
+      }
+    }
+
+    function updateInsHint() {
+      const hintIns = document.getElementById('hint-ins-annual');
+      if (hintIns && insuranceInput) {
+        const mIns = Number(insuranceInput.value) || 0;
+        hintIns.textContent = `Annual: ${formatMoney(mIns * 12)}`;
+      }
+    }
+
+    // Reset Button Handler
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (priceInput) priceInput.value = 425000;
+        if (priceSlider) priceSlider.value = 425000;
+        if (dpPctInput) dpPctInput.value = 5.0;
+        if (dpPctSlider) dpPctSlider.value = 5.0;
+        if (dpAmtInput) dpAmtInput.value = 21250;
+        if (closingInput) closingInput.value = 9000;
+        if (repairsInput) repairsInput.value = 8000;
+        if (rateInput) rateInput.value = 6.5;
+        if (rateSlider) rateSlider.value = 6.5;
+        if (termSelect) termSelect.value = '30';
+
+        unitRents = [1400, 1200];
+        if (unitsCountSelect) unitsCountSelect.value = '2';
+        renderUnitInputs();
+
+        if (otherIncInput) otherIncInput.value = 50;
+        if (vacancyInput) vacancyInput.value = 5.0;
+        if (vacancySlider) vacancySlider.value = 5.0;
+
+        if (taxInput) taxInput.value = 375;
+        if (insuranceInput) insuranceInput.value = 140;
+        if (pmiInput) pmiInput.value = 160;
+        if (maintInput) maintInput.value = 200;
+        if (utilsInput) utilsInput.value = 175;
+        if (mgmtInput) mgmtInput.value = 0;
+        if (hoaInput) hoaInput.value = 0;
+        if (currentCostInput) currentCostInput.value = 2000;
+
+        updateTaxHint();
+        updateInsHint();
+        calculateAll();
+      });
+    }
+
+    // Standard Amortization Formula
+    function calcMortgage(principal, annualRatePct, years) {
+      if (principal <= 0) return 0;
+      const n = years * 12;
+      if (n <= 0) return 0;
+      const r = (annualRatePct / 100) / 12;
+      if (r === 0) return principal / n;
+      return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }
+
+    // Primary Calculation Routine
+    function calculateAll() {
+      // 1. Property Purchase & Financing
+      const price = Math.max(0, Number(priceInput.value) || 0);
+      const dpPct = Math.max(0, Math.min(100, Number(dpPctInput.value) || 0));
+      const downPayment = (price * dpPct) / 100;
+      const closing = Math.max(0, Number(closingInput.value) || 0);
+      const repairs = Math.max(0, Number(repairsInput.value) || 0);
+      const initialCashRequired = downPayment + closing + repairs;
+
+      const principal = Math.max(0, price - downPayment);
+      const rate = Math.max(0, Number(rateInput.value) || 0);
+      const termYears = Math.max(1, Number(termSelect.value) || 30);
+      const mortgageMonthly = calcMortgage(principal, rate, termYears);
+
+      // 2. Rental Income
+      const grossUnitRent = unitRents.reduce((sum, r) => sum + (Number(r) || 0), 0);
+      const otherIncome = Math.max(0, Number(otherIncInput.value) || 0);
+      const grossMonthlyRent = grossUnitRent + otherIncome;
+
+      const vacancyPct = Math.max(0, Math.min(100, Number(vacancyInput.value) || 0));
+      const vacancyLoss = grossMonthlyRent * (vacancyPct / 100);
+      const effectiveMonthlyRent = grossMonthlyRent - vacancyLoss;
+
+      // 3. Operating Expenses
+      const propTax = Math.max(0, Number(taxInput.value) || 0);
+      const ins = Math.max(0, Number(insuranceInput.value) || 0);
+      const pmi = Math.max(0, Number(pmiInput.value) || 0);
+      const maint = Math.max(0, Number(maintInput.value) || 0);
+      const utils = Math.max(0, Number(utilsInput.value) || 0);
+      const mgmt = Math.max(0, Number(mgmtInput.value) || 0);
+      const hoa = Math.max(0, Number(hoaInput.value) || 0);
+
+      const totalMonthlyOpEx = propTax + ins + pmi + maint + utils + mgmt + hoa;
+      const totalMonthlyExpenses = mortgageMonthly + totalMonthlyOpEx;
+
+      // 4. Net Out-of-Pocket Cost vs Property Cash Flow
+      const outOfPocket = totalMonthlyExpenses - effectiveMonthlyRent;
+      const monthlyCashFlow = effectiveMonthlyRent - totalMonthlyExpenses;
+      const isPositiveCashFlow = monthlyCashFlow > 0;
+
+      // 5. Coverage Percentage
+      const coveragePct = totalMonthlyExpenses > 0 ? (effectiveMonthlyRent / totalMonthlyExpenses) * 100 : 0;
+
+      // 6. Savings vs Current Housing Cost
+      const currentHousingCost = Math.max(0, Number(currentCostInput.value) || 0);
+      let monthlySavings = 0;
+      let annualSavings = 0;
+      if (currentHousingCost > 0) {
+        monthlySavings = currentHousingCost - outOfPocket;
+        annualSavings = monthlySavings * 12;
+      }
+
+      // --- Update DOM Elements ---
+
+      // 1. Hero Boxes
+      const boxPrimary = document.getElementById('box-primary-result');
+      const lblPrimaryTitle = document.getElementById('lbl-primary-title');
+      const resPrimaryAmount = document.getElementById('res-primary-amount');
+      const lblPrimarySub = document.getElementById('lbl-primary-sub');
+
+      if (resPrimaryAmount && lblPrimaryTitle && lblPrimarySub) {
+        if (isPositiveCashFlow) {
+          lblPrimaryTitle.textContent = 'Net Positive Monthly Cash Flow';
+          resPrimaryAmount.textContent = `+${formatMoney(monthlyCashFlow)}`;
+          resPrimaryAmount.className = 'net-box-amount text-success';
+          lblPrimarySub.textContent = `Tenants pay 100% of expenses and give you ${formatMoney(monthlyCashFlow)} extra each month!`;
+          if (boxPrimary) boxPrimary.style.borderTopColor = '#16a34a';
+        } else {
+          lblPrimaryTitle.textContent = 'Net Monthly Out-of-Pocket Housing Cost';
+          resPrimaryAmount.textContent = formatMoney(outOfPocket);
+          resPrimaryAmount.className = 'net-box-amount text-primary';
+          lblPrimarySub.textContent = `You pay ${formatMoney(outOfPocket)}/mo instead of full ${formatMoney(totalMonthlyExpenses)} property costs`;
+          if (boxPrimary) boxPrimary.style.borderTopColor = 'var(--color-primary)';
+        }
+      }
+
+      const resTotalExp = document.getElementById('res-total-expenses');
+      if (resTotalExp) resTotalExp.textContent = formatMoney(totalMonthlyExpenses);
+
+      const lblExpBreakdown = document.getElementById('lbl-expense-breakdown');
+      if (lblExpBreakdown) {
+        lblExpBreakdown.textContent = `Mortgage P&I: ${formatMoney(mortgageMonthly)} | OpEx: ${formatMoney(totalMonthlyOpEx)}`;
+      }
+
+      const resEffIncome = document.getElementById('res-effective-income');
+      if (resEffIncome) resEffIncome.textContent = formatMoney(effectiveMonthlyRent);
+
+      const lblGrossIncome = document.getElementById('lbl-gross-income');
+      if (lblGrossIncome) {
+        lblGrossIncome.textContent = `Gross: ${formatMoney(grossMonthlyRent)}/mo | Vacancy Loss: -${formatMoney(vacancyLoss)}/mo`;
+      }
+
+      // 2. Coverage Bar & Verdict
+      const resCoveragePct = document.getElementById('res-coverage-pct');
+      const barCoverageFill = document.getElementById('bar-coverage-fill');
+      const verdictBanner = document.getElementById('verdict-banner');
+      const verdictIcon = document.getElementById('verdict-icon');
+      const verdictTitle = document.getElementById('verdict-title');
+      const verdictDesc = document.getElementById('verdict-desc');
+
+      const clampedFillPct = Math.min(100, Math.max(0, coveragePct));
+      if (resCoveragePct) resCoveragePct.textContent = `${coveragePct.toFixed(1)}%`;
+      if (barCoverageFill) {
+        barCoverageFill.style.width = `${clampedFillPct}%`;
+        if (coveragePct >= 100) {
+          barCoverageFill.style.background = '#16a34a';
+        } else if (coveragePct >= 60) {
+          barCoverageFill.style.background = 'linear-gradient(90deg, #2563eb 0%, #10b981 100%)';
+        } else {
+          barCoverageFill.style.background = '#2563eb';
+        }
+      }
+
+      if (verdictTitle && verdictDesc && verdictIcon) {
+        if (coveragePct >= 100) {
+          verdictTitle.textContent = '100%+ Coverage: Free Living & Positive Cash Flow!';
+          verdictDesc.innerHTML = `Rental income fully covers all mortgage payments and operating costs. You live completely rent-free and pocket <strong>+${formatMoney(monthlyCashFlow)}/month</strong> in positive cash flow!`;
+          verdictIcon.style.color = '#16a34a';
+          verdictIcon.style.background = 'rgba(22, 163, 74, 0.1)';
+        } else if (coveragePct >= 65) {
+          verdictTitle.textContent = 'Substantial Housing Subsidy (Major Savings)';
+          verdictDesc.innerHTML = `Tenants cover <strong>${coveragePct.toFixed(1)}%</strong> of your total property expenses. Your net out-of-pocket housing cost is slashed to <strong>${formatMoney(outOfPocket)}/mo</strong>${currentHousingCost > 0 ? `, saving you <strong>${formatMoney(monthlySavings)}/month</strong> compared to your current housing!` : '.'}`;
+          verdictIcon.style.color = 'var(--color-primary)';
+          verdictIcon.style.background = 'rgba(37, 99, 235, 0.1)';
+        } else if (coveragePct >= 35) {
+          verdictTitle.textContent = 'Moderate Housing Subsidy';
+          verdictDesc.innerHTML = `Tenants offset <strong>${coveragePct.toFixed(1)}%</strong> of your property costs. You pay <strong>${formatMoney(outOfPocket)}/month</strong> out-of-pocket while building substantial long-term real estate equity.`;
+          verdictIcon.style.color = '#d97706';
+          verdictIcon.style.background = 'rgba(217, 119, 6, 0.1)';
+        } else {
+          verdictTitle.textContent = 'Minor Housing Offset';
+          verdictDesc.innerHTML = `Rental income covers <strong>${coveragePct.toFixed(1)}%</strong> of expenses. High mortgage or operating costs leave an out-of-pocket payment of <strong>${formatMoney(outOfPocket)}/month</strong>.`;
+          verdictIcon.style.color = '#dc2626';
+          verdictIcon.style.background = 'rgba(220, 38, 38, 0.1)';
+        }
+      }
+
+      // 3. Metrics Grid
+      const resMortgage = document.getElementById('res-mortgage');
+      if (resMortgage) resMortgage.textContent = formatMoney(mortgageMonthly);
+
+      const lblMortgageSub = document.getElementById('lbl-mortgage-sub');
+      if (lblMortgageSub) lblMortgageSub.textContent = `Loan: ${formatMoney(principal)} @ ${rate.toFixed(2)}%`;
+
+      const resMonthlyOpEx = document.getElementById('res-monthly-opex');
+      if (resMonthlyOpEx) resMonthlyOpEx.textContent = formatMoney(totalMonthlyOpEx);
+
+      const resGrossRent = document.getElementById('res-gross-rent');
+      if (resGrossRent) resGrossRent.textContent = formatMoney(grossMonthlyRent);
+
+      const lblGrossSub = document.getElementById('lbl-gross-sub');
+      if (lblGrossSub) lblGrossSub.textContent = `${unitRents.length} Units/Rooms + Other Income`;
+
+      const resVacancyLoss = document.getElementById('res-vacancy-loss');
+      if (resVacancyLoss) resVacancyLoss.textContent = `-${formatMoney(vacancyLoss)}`;
+
+      const lblVacancySub = document.getElementById('lbl-vacancy-sub');
+      if (lblVacancySub) lblVacancySub.textContent = `${vacancyPct.toFixed(1)}% turnover buffer`;
+
+      const resInitialCash = document.getElementById('res-initial-cash');
+      if (resInitialCash) resInitialCash.textContent = formatMoney(initialCashRequired);
+
+      const lblCashBreakdown = document.getElementById('lbl-cash-breakdown');
+      if (lblCashBreakdown) {
+        lblCashBreakdown.textContent = `Down (${formatMoney(downPayment)}) + Close (${formatMoney(closing)}) + Rep (${formatMoney(repairs)})`;
+      }
+
+      const resCashFlow = document.getElementById('res-cash-flow');
+      if (resCashFlow) {
+        if (isPositiveCashFlow) {
+          resCashFlow.textContent = `+${formatMoney(monthlyCashFlow)}`;
+          resCashFlow.className = 'metric-value text-success';
+        } else {
+          resCashFlow.textContent = `-${formatMoney(Math.abs(monthlyCashFlow))}`;
+          resCashFlow.className = 'metric-value';
+        }
+      }
+
+      const lblCashFlowSub = document.getElementById('lbl-cash-flow-sub');
+      if (lblCashFlowSub) {
+        lblCashFlowSub.textContent = isPositiveCashFlow ? 'Net surplus pocketed by owner' : 'Owner covers remaining cost';
+      }
+
+      const resMonthlySavings = document.getElementById('res-monthly-savings');
+      const resAnnualSavings = document.getElementById('res-annual-savings');
+      const lblSavingsSub = document.getElementById('lbl-savings-sub');
+
+      if (resMonthlySavings && resAnnualSavings && lblSavingsSub) {
+        if (currentHousingCost > 0) {
+          const sign = monthlySavings >= 0 ? '+' : '';
+          resMonthlySavings.textContent = `${sign}${formatMoney(monthlySavings)}`;
+          resAnnualSavings.textContent = `${sign}${formatMoney(annualSavings)}`;
+          lblSavingsSub.textContent = `vs ${formatMoney(currentHousingCost)}/mo Current Rent`;
+        } else {
+          resMonthlySavings.textContent = '—';
+          resAnnualSavings.textContent = '—';
+          lblSavingsSub.textContent = 'Enter current housing cost above';
+        }
+      }
+
+      // 4. Cash Flow Statement Table
+      const setTableText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+
+      setTableText('tbl-gross-rent', formatMoney(grossMonthlyRent));
+      setTableText('tbl-annual-gross-rent', formatMoney(grossMonthlyRent * 12));
+
+      setTableText('tbl-vacancy-pct', `${vacancyPct.toFixed(1)}%`);
+      setTableText('tbl-vacancy', `-${formatMoney(vacancyLoss)}`);
+      setTableText('tbl-annual-vacancy', `-${formatMoney(vacancyLoss * 12)}`);
+
+      setTableText('tbl-eff-rent', formatMoney(effectiveMonthlyRent));
+      setTableText('tbl-annual-eff-rent', formatMoney(effectiveMonthlyRent * 12));
+
+      setTableText('tbl-mortgage', `-${formatMoney(mortgageMonthly)}`);
+      setTableText('tbl-annual-mortgage', `-${formatMoney(mortgageMonthly * 12)}`);
+
+      setTableText('tbl-taxes', `-${formatMoney(propTax)}`);
+      setTableText('tbl-annual-taxes', `-${formatMoney(propTax * 12)}`);
+
+      setTableText('tbl-insurance', `-${formatMoney(ins)}`);
+      setTableText('tbl-annual-insurance', `-${formatMoney(ins * 12)}`);
+
+      setTableText('tbl-pmi', `-${formatMoney(pmi)}`);
+      setTableText('tbl-annual-pmi', `-${formatMoney(pmi * 12)}`);
+
+      setTableText('tbl-maint', `-${formatMoney(maint)}`);
+      setTableText('tbl-annual-maint', `-${formatMoney(maint * 12)}`);
+
+      setTableText('tbl-utils', `-${formatMoney(utils)}`);
+      setTableText('tbl-annual-utils', `-${formatMoney(utils * 12)}`);
+
+      const mgmtHoa = mgmt + hoa;
+      setTableText('tbl-mgmt-hoa', `-${formatMoney(mgmtHoa)}`);
+      setTableText('tbl-annual-mgmt-hoa', `-${formatMoney(mgmtHoa * 12)}`);
+
+      setTableText('tbl-total-exp', `-${formatMoney(totalMonthlyExpenses)}`);
+      setTableText('tbl-annual-total-exp', `-${formatMoney(totalMonthlyExpenses * 12)}`);
+
+      const tblNetLabel = document.getElementById('tbl-net-label');
+      const tblNetAmount = document.getElementById('tbl-net-amount');
+      const tblAnnualNetAmount = document.getElementById('tbl-annual-net-amount');
+
+      if (tblNetLabel && tblNetAmount && tblAnnualNetAmount) {
+        if (isPositiveCashFlow) {
+          tblNetLabel.textContent = 'Net Monthly Cash Surplus (Positive Cash Flow)';
+          tblNetAmount.textContent = `+${formatMoney(monthlyCashFlow)}`;
+          tblNetAmount.className = 'text-success';
+          tblAnnualNetAmount.textContent = `+${formatMoney(monthlyCashFlow * 12)}`;
+          tblAnnualNetAmount.className = 'text-success';
+        } else {
+          tblNetLabel.textContent = 'Net Monthly Out-of-Pocket Housing Cost';
+          tblNetAmount.textContent = formatMoney(outOfPocket);
+          tblNetAmount.className = 'text-primary';
+          tblAnnualNetAmount.textContent = formatMoney(outOfPocket * 12);
+          tblAnnualNetAmount.className = 'text-primary';
+        }
+      }
+
+      // 5. Mathematical Formula Step-by-Step Callout
+      const stepsContainer = document.getElementById('formula-steps-container');
+      if (stepsContainer) {
+        stepsContainer.innerHTML = `
+          <div class="formula-step-item">
+            <strong>1. Initial Investment:</strong> Purchase Price (${formatMoney(price)}) × Down Payment (${dpPct.toFixed(1)}%) = <strong>${formatMoney(downPayment)}</strong>. Adding closing costs (${formatMoney(closing)}) and repairs (${formatMoney(repairs)}) yields total cash required: <strong>${formatMoney(initialCashRequired)}</strong>.
+          </div>
+          <div class="formula-step-item">
+            <strong>2. Mortgage P&amp;I Payment:</strong> Loan Principal ${formatMoney(principal)} at ${rate.toFixed(2)}% over ${termYears} years yields a monthly principal &amp; interest payment of <strong>${formatMoney(mortgageMonthly)}/month</strong>.
+          </div>
+          <div class="formula-step-item">
+            <strong>3. Effective Rental Income:</strong> Gross rent (${formatMoney(grossMonthlyRent)}) minus ${vacancyPct.toFixed(1)}% vacancy loss (${formatMoney(vacancyLoss)}) = <strong>${formatMoney(effectiveMonthlyRent)}/month</strong>.
+          </div>
+          <div class="formula-step-item">
+            <strong>4. Total Property Costs:</strong> Mortgage (${formatMoney(mortgageMonthly)}) + Taxes (${formatMoney(propTax)}) + Insurance (${formatMoney(ins)}) + PMI (${formatMoney(pmi)}) + Maintenance (${formatMoney(maint)}) + Utilities (${formatMoney(utils)}) + Mgmt/HOA (${formatMoney(mgmtHoa)}) = <strong>${formatMoney(totalMonthlyExpenses)}/month</strong>.
+          </div>
+          <div class="formula-step-item">
+            <strong>5. Net House Hacking Result:</strong> Total Expenses (${formatMoney(totalMonthlyExpenses)}) − Effective Rent (${formatMoney(effectiveMonthlyRent)}) = <strong>${isPositiveCashFlow ? `+${formatMoney(monthlyCashFlow)}/mo Net Cash Flow` : `${formatMoney(outOfPocket)}/mo Net Out-of-Pocket Cost`}</strong> (Rental Coverage: <strong>${coveragePct.toFixed(1)}%</strong>).
+          </div>
+          ${currentHousingCost > 0 ? `
+            <div class="formula-step-item formula-step-highlight">
+              <strong>6. Comparative Wealth Benefit:</strong> Current rent (${formatMoney(currentHousingCost)}) − Net out-of-pocket (${formatMoney(outOfPocket)}) = <strong>${formatMoney(monthlySavings)}/month</strong> in direct savings (<strong>${formatMoney(annualSavings)}/year</strong>).
+            </div>
+          ` : ''}
+        `;
+      }
+    }
+
+    // Run initial calculation on load
+    calculateAll();
+  }
+</script>

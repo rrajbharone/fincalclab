@@ -1,0 +1,2278 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Child Education Cost Calculator"
+  description="Calculate future school and college education costs with country-specific education inflation for India, the UAE, and Singapore. Estimate your required monthly savings, investment growth, and education corpus."
+  category="Education & Savings"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="child-edu-root">
+    <!-- Country Selection Section -->
+    <div class="input-section" style="border-top: none; padding-top: 0;">
+      <div class="section-header-row">
+        <h3 class="section-title">1. Select Country</h3>
+        <span class="country-badge-label" id="country-active-badge">India (INR ₹)</span>
+      </div>
+
+      <!-- Mobile Country Dropdown (<= 640px) -->
+      <div class="mobile-country-selector-wrap">
+        <label for="mobile-edu-country-select" class="sr-only">Choose Country</label>
+        <div class="mobile-select-box">
+          <span class="mobile-select-flag" id="mobile-selected-flag" aria-hidden="true">🇮🇳</span>
+          <select id="mobile-edu-country-select" class="mobile-country-dropdown" aria-label="Select Country">
+            <option value="IN" selected>India — INR (₹)</option>
+            <option value="UAE">United Arab Emirates — AED (د.إ)</option>
+            <option value="SG">Singapore — SGD (S$)</option>
+          </select>
+          <div class="mobile-select-arrow" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Country Pills (> 640px) -->
+      <div class="country-selector-pills" role="tablist" aria-label="Country Options">
+        <button type="button" class="country-pill active" data-country="IN" role="tab" aria-selected="true">
+          <span class="pill-flag">🇮🇳</span>
+          <span class="pill-name">India (₹)</span>
+        </button>
+        <button type="button" class="country-pill" data-country="UAE" role="tab" aria-selected="false">
+          <span class="pill-flag">🇦🇪</span>
+          <span class="pill-name">UAE (AED)</span>
+        </button>
+        <button type="button" class="country-pill" data-country="SG" role="tab" aria-selected="false">
+          <span class="pill-flag">🇸🇬</span>
+          <span class="pill-name">Singapore (S$)</span>
+        </button>
+      </div>
+      <span class="input-subtext" id="country-help-text">Verified Indian school and university fee structures, 10% average education inflation, and equity SIP benchmarks.</span>
+    </div>
+
+    <!-- Education Type & Category Section -->
+    <div class="input-section">
+      <h3 class="section-title">2. Education Goal &amp; Category</h3>
+
+      <!-- Singapore Student Status (Visible only for Singapore) -->
+      <div class="input-group hidden" id="field-sg-status">
+        <div class="input-label-row">
+          <label for="edu-sg-status">Student Residency Status</label>
+          <select id="edu-sg-status" class="currency-select" aria-label="Singapore Student Status">
+            <option value="citizen" selected>Singapore Citizen (Subsidized)</option>
+            <option value="pr">Permanent Resident (PR)</option>
+            <option value="international">International Student (IS)</option>
+          </select>
+        </div>
+        <span class="input-subtext">Tuition fees in Singapore vary substantially across Singapore Citizens, PRs, and International Students per MOE schedules.</span>
+      </div>
+
+      <!-- Education Level / Goal -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="edu-level-select">Education Goal</label>
+          <select id="edu-level-select" class="currency-select" aria-label="Education Goal">
+            <!-- Dynamically populated based on country -->
+          </select>
+        </div>
+        <span class="input-subtext" id="edu-level-subtext">Choose the target education stage you are funding for your child.</span>
+      </div>
+
+      <!-- Institution / Category Type -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="edu-category-select">Institution / Category</label>
+          <select id="edu-category-select" class="currency-select" aria-label="Institution Category">
+            <!-- Dynamically populated based on country and level -->
+          </select>
+        </div>
+        <span class="input-subtext" id="edu-category-subtext">Verified typical annual cost benchmark for this institution tier.</span>
+      </div>
+    </div>
+
+    <!-- Timeline & Duration Section -->
+    <div class="input-section">
+      <h3 class="section-title">3. Timeline &amp; Age</h3>
+
+      <!-- Child Age Grid -->
+      <div class="age-inputs-grid">
+        <!-- Child Current Age -->
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="edu-child-age">Child's Current Age</label>
+            <div class="input-symbol-wrapper unit-wrapper">
+              <input type="number" id="edu-child-age" min="0" max="22" step="1" value="5" aria-label="Child Current Age" />
+              <span class="unit-suffix">yrs</span>
+            </div>
+          </div>
+          <input type="range" id="edu-child-age-slider" min="0" max="20" step="1" value="5" class="slider-range" aria-label="Child Current Age Slider" />
+          <div class="preset-pills-row">
+            <span class="preset-label">Age:</span>
+            <button type="button" class="preset-pill age-pill" data-age="1">1</button>
+            <button type="button" class="preset-pill age-pill" data-age="3">3</button>
+            <button type="button" class="preset-pill age-pill active" data-age="5">5</button>
+            <button type="button" class="preset-pill age-pill" data-age="10">10</button>
+            <button type="button" class="preset-pill age-pill" data-age="14">14</button>
+          </div>
+        </div>
+
+        <!-- Start Age -->
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="edu-start-age">Education Begins At</label>
+            <div class="input-symbol-wrapper unit-wrapper">
+              <input type="number" id="edu-start-age" min="1" max="25" step="1" value="18" aria-label="Age When Education Begins" />
+              <span class="unit-suffix">yrs</span>
+            </div>
+          </div>
+          <input type="range" id="edu-start-age-slider" min="3" max="25" step="1" value="18" class="slider-range" aria-label="Start Age Slider" />
+          <div class="preset-pills-row">
+            <span class="preset-label">Target:</span>
+            <button type="button" class="preset-pill start-pill" data-start="4">Age 4 (KG)</button>
+            <button type="button" class="preset-pill start-pill" data-start="6">Age 6 (Grade 1)</button>
+            <button type="button" class="preset-pill start-pill active" data-start="18">Age 18 (UG)</button>
+            <button type="button" class="preset-pill start-pill" data-start="22">Age 22 (PG)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Duration -->
+      <div class="input-group" style="margin-top: var(--space-3);">
+        <div class="input-label-row">
+          <label for="edu-duration">Education Duration</label>
+          <div class="input-symbol-wrapper unit-wrapper">
+            <input type="number" id="edu-duration" min="1" max="15" step="1" value="4" aria-label="Duration in Years" />
+            <span class="unit-suffix">years</span>
+          </div>
+        </div>
+        <input type="range" id="edu-duration-slider" min="1" max="15" step="1" value="4" class="slider-range" aria-label="Duration Slider" />
+        <span class="input-subtext" id="edu-duration-subtext">Number of academic years to fund (e.g. 4 years for Bachelor's, 2 years for Master's, 12 years for School).</span>
+      </div>
+
+      <!-- Horizon Alert -->
+      <div class="horizon-indicator-pill" id="edu-horizon-pill">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span id="edu-horizon-text">13 years until education starts (Age 18 to 22)</span>
+      </div>
+    </div>
+
+    <!-- Cost & Inflation Section -->
+    <div class="input-section">
+      <h3 class="section-title">4. Current Costs &amp; Inflation</h3>
+
+      <!-- Annual Base Tuition Cost -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="edu-base-cost">Current Annual Tuition Cost</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="curr-sym-1">₹</span>
+            <input type="number" id="edu-base-cost" min="0" max="100000000" step="5000" value="400000" aria-label="Annual Tuition Cost Today" />
+          </div>
+        </div>
+        <span class="input-subtext">Current annual tuition fee in today's money. Fully editable.</span>
+      </div>
+
+      <!-- Additional Annual Expenses -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="edu-add-cost">Additional Annual Expenses</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="curr-sym-2">₹</span>
+            <input type="number" id="edu-add-cost" min="0" max="50000000" step="2000" value="50000" aria-label="Additional Annual Expenses" />
+          </div>
+        </div>
+        <span class="input-subtext">Living expenses, hostel/accommodation, books, uniforms, transport, exam fees, and coaching.</span>
+      </div>
+
+      <!-- Education Inflation Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="edu-inflation-rate">Annual Education Inflation Rate</label>
+          <div class="input-symbol-wrapper unit-wrapper">
+            <input type="number" id="edu-inflation-rate" min="0" max="25" step="0.5" value="10.0" aria-label="Annual Education Inflation Rate" />
+            <span class="unit-suffix">%</span>
+          </div>
+        </div>
+        <input type="range" id="edu-inflation-slider" min="0" max="20" step="0.5" value="10.0" class="slider-range" aria-label="Inflation Slider" />
+        <span class="input-subtext" id="edu-inflation-subtext">Education inflation typically outpaces general consumer CPI by 3%–5% annually.</span>
+      </div>
+    </div>
+
+    <!-- Savings & Investment Return Section -->
+    <div class="input-section">
+      <h3 class="section-title">5. Existing Savings &amp; Investment Plan</h3>
+
+      <!-- Existing Education Savings -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="edu-existing-savings">Existing Education Savings</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="curr-sym-3">₹</span>
+            <input type="number" id="edu-existing-savings" min="0" max="500000000" step="10000" value="200000" aria-label="Existing Education Savings" />
+          </div>
+        </div>
+        <span class="input-subtext">Current dedicated mutual funds, FDs, Sukanya Samriddhi, CPF, or cash earmarked for education.</span>
+      </div>
+
+      <!-- Expected Investment Return -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="edu-return-rate">Expected Annual Investment Return</label>
+          <div class="input-symbol-wrapper unit-wrapper">
+            <input type="number" id="edu-return-rate" min="0" max="25" step="0.5" value="11.0" aria-label="Expected Investment Return Rate" />
+            <span class="unit-suffix">%</span>
+          </div>
+        </div>
+        <input type="range" id="edu-return-slider" min="0" max="20" step="0.5" value="11.0" class="slider-range" aria-label="Return Slider" />
+        <span class="input-subtext" id="edu-return-subtext">Estimated annual growth rate on your monthly investments and existing savings portfolio.</span>
+      </div>
+
+      <!-- Savings Frequency Toggle -->
+      <div class="input-group">
+        <label class="control-label" style="display:block; margin-bottom: 8px;">Savings Frequency</label>
+        <div class="freq-toggle-group" role="radiogroup" aria-label="Savings Frequency">
+          <button type="button" class="freq-btn active" data-freq="monthly" role="radio" aria-checked="true">Monthly (SIP)</button>
+          <button type="button" class="freq-btn" data-freq="annual" role="radio" aria-checked="false">Annually (Lump Sum)</button>
+        </div>
+        <span class="input-subtext">How often you plan to deposit funds into your child's education investment portfolio.</span>
+      </div>
+    </div>
+
+    <!-- Reset Button -->
+    <div class="input-actions" style="margin-top: var(--space-4);">
+      <Button variant="secondary" size="md" id="edu-reset-btn" class="w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset to Country Defaults
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper" id="child-edu-results">
+    <!-- Primary Hero Card: Total Projected Education Cost -->
+    <div class="hero-result-card">
+      <div class="hero-top-row">
+        <span class="hero-label">Projected Total Education Cost</span>
+        <span class="hero-badge" id="res-inflation-multiplier">2.4× Today's Cost</span>
+      </div>
+      <div class="hero-amount-wrapper">
+        <span class="hero-currency" id="res-curr-sym">₹</span>
+        <span class="hero-value" id="res-total-cost">72,09,896</span>
+      </div>
+      <p class="hero-verdict" id="res-hero-verdict">
+        Over 4 years of education starting in 2039 at 10.0% annual inflation, you will need a total estimated corpus of ₹72.10 Lakh.
+      </p>
+    </div>
+
+    <!-- Sub-Hero Cards: Required Monthly & Annual Investment -->
+    <div class="sub-hero-grid">
+      <div class="sub-card sub-card-primary">
+        <span class="sub-card-label">Required Monthly Savings</span>
+        <div class="sub-card-value-wrap">
+          <span class="sub-curr" id="sub-curr-1">₹</span>
+          <span class="sub-val" id="res-monthly-savings">15,573</span>
+          <span class="sub-period">/ mo</span>
+        </div>
+        <span class="sub-card-hint" id="res-monthly-hint">For 13 years at 11.0% expected annual return</span>
+      </div>
+
+      <div class="sub-card sub-card-secondary">
+        <span class="sub-card-label">Required Annual Savings</span>
+        <div class="sub-card-value-wrap">
+          <span class="sub-curr" id="sub-curr-2">₹</span>
+          <span class="sub-val" id="res-annual-savings">1,99,750</span>
+          <span class="sub-period">/ yr</span>
+        </div>
+        <span class="sub-card-hint" id="res-annual-hint">If investing lump sum once a year</span>
+      </div>
+    </div>
+
+    <!-- Savings Gap / Surplus Callout Card -->
+    <div class="gap-status-card" id="res-gap-card">
+      <div class="gap-card-header">
+        <div class="gap-icon" id="gap-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="gap-content">
+          <strong id="gap-title">Estimated Savings Gap: ₹64,33,240</strong>
+          <p id="gap-desc">Your existing ₹2,00,000 savings will grow to ₹7,76,656 by college start. A disciplined monthly SIP of ₹15,573 closes the remaining funding gap.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual Portfolio Split Chart -->
+    <div class="visual-progress-card">
+      <div class="split-bar-header">
+        <span>Education Funding Breakdown</span>
+        <span id="res-growth-share">63.5% Funded by Compounding</span>
+      </div>
+      <div class="split-bar-track" aria-hidden="true">
+        <div class="bar-segment bar-savings" id="bar-seg-existing" style="width: 11%;" title="Existing Savings FV"></div>
+        <div class="bar-segment bar-invested" id="bar-seg-deposits" style="width: 34%;" title="Planned New Deposits"></div>
+        <div class="bar-segment bar-growth" id="bar-seg-growth" style="width: 55%;" title="Investment Growth"></div>
+      </div>
+      <div class="split-legend">
+        <div class="legend-item"><span class="dot dot-savings"></span>Existing Savings: <strong id="leg-existing-val">₹7.77 L</strong></div>
+        <div class="legend-item"><span class="dot dot-invested"></span>New Deposits: <strong id="leg-deposits-val">₹24.29 L</strong></div>
+        <div class="legend-item"><span class="dot dot-growth"></span>Compound Growth: <strong id="leg-growth-val">₹40.04 L</strong></div>
+      </div>
+    </div>
+
+    <!-- 8-Tile Responsive Metrics Grid -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <span class="metric-label">Today's Total Cost</span>
+        <span class="metric-val" id="tile-cost-today">₹18,00,000</span>
+        <span class="metric-sub">Without inflation</span>
+      </div>
+      <div class="metric-tile">
+        <span class="metric-label">First Year Cost</span>
+        <span class="metric-val" id="tile-first-year">₹15,53,522</span>
+        <span class="metric-sub">At education start</span>
+      </div>
+      <div class="metric-tile">
+        <span class="metric-label">Years to Start</span>
+        <span class="metric-val" id="tile-years-start">13 yrs</span>
+        <span class="metric-sub">Accumulation window</span>
+      </div>
+      <div class="metric-tile">
+        <span class="metric-label">Duration</span>
+        <span class="metric-val" id="tile-duration">4 yrs</span>
+        <span class="metric-sub">Education period</span>
+      </div>
+      <div class="metric-tile">
+        <span class="metric-label">FV of Existing Savings</span>
+        <span class="metric-val" id="tile-fv-savings">₹7,76,656</span>
+        <span class="metric-sub">At start of education</span>
+      </div>
+      <div class="metric-tile">
+        <span class="metric-label">Total Out-of-Pocket</span>
+        <span class="metric-val" id="tile-out-of-pocket">₹26,29,388</span>
+        <span class="metric-sub">Principal invested</span>
+      </div>
+      <div class="metric-tile">
+        <span class="metric-label">Compound Returns</span>
+        <span class="metric-val" id="tile-growth">₹45,80,508</span>
+        <span class="metric-sub">Wealth from returns</span>
+      </div>
+      <div class="metric-tile">
+        <span class="metric-label">Corpus Target</span>
+        <span class="metric-val" id="tile-corpus-target">₹61,30,617</span>
+        <span class="metric-sub">Required at start</span>
+      </div>
+    </div>
+
+    <!-- Year-by-Year Cost & Withdrawal Schedule Table -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div>
+          <h4 class="table-title">Year-by-Year Projected Education Expenses</h4>
+          <span class="table-subtitle" id="table-subtitle">Projected cash flows based on 10.0% annual education inflation</span>
+        </div>
+        <span class="table-scroll-hint" aria-hidden="true">Scroll table &rarr;</span>
+      </div>
+
+      <div class="table-responsive-wrapper">
+        <table class="edu-schedule-table" aria-label="Year-by-Year Education Cost Schedule">
+          <thead>
+            <tr>
+              <th scope="col" style="text-align: left;">Year</th>
+              <th scope="col" style="text-align: center;">Child Age</th>
+              <th scope="col" style="text-align: right;">Cost in Today's Money</th>
+              <th scope="col" style="text-align: right;">Inflation Factor</th>
+              <th scope="col" style="text-align: right;">Projected Annual Fee</th>
+              <th scope="col" style="text-align: right;">Cumulative Expenses</th>
+            </tr>
+          </thead>
+          <tbody id="edu-schedule-tbody">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Country Guidance & Assumptions Callout Box -->
+    <div class="callout-tip-box" id="res-country-tip">
+      <div class="tip-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+      </div>
+      <div class="tip-content">
+        <strong id="tip-heading">India Planning Guidance (NSSO &amp; Higher Education Benchmarks)</strong>
+        <p id="tip-body">
+          Indian higher education inflation historically tracks between 8%–12% per year. Private engineering degrees currently averaging ₹12–₹18 Lakh for 4 years can exceed ₹50–₹75 Lakh by the time a toddler reaches age 18. Starting an equity mutual fund SIP early harnesses compound returns to fund up to 60%+ of the goal.
+        </p>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  /* -------------------------------------------------------------
+     CHILD EDUCATION COST CALCULATOR COMPONENT STYLES
+     Fully responsive from 320px to 1920px (Mobile-First)
+     ------------------------------------------------------------- */
+  :global(.calc-inputs-card),
+  :global(.calc-results-card) {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  @media (max-width: 480px) {
+    :global(.calc-inputs-card),
+    :global(.calc-results-card) {
+      padding: 14px !important;
+      border-radius: var(--radius-md) !important;
+    }
+  }
+
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-section {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin: 0;
+  }
+
+  .country-badge-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--color-primary);
+  }
+
+  /* Country Selector (Mobile Dropdown vs Desktop Pills) */
+  .mobile-country-selector-wrap {
+    display: none;
+    width: 100%;
+    margin-bottom: var(--space-2);
+  }
+
+  .mobile-select-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: var(--color-card);
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .mobile-select-flag {
+    position: absolute;
+    left: 12px;
+    font-size: 1.25rem;
+    line-height: 1;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .mobile-country-dropdown {
+    width: 100%;
+    height: 44px;
+    padding: 8px 36px 8px 44px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .mobile-country-dropdown:focus {
+    outline: none;
+  }
+
+  .mobile-select-arrow {
+    position: absolute;
+    right: 12px;
+    color: var(--color-primary);
+    pointer-events: none;
+  }
+
+  .country-selector-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+  }
+
+  .country-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-text);
+    transition: all 0.2s ease;
+    min-width: 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  .country-pill:hover {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.04);
+  }
+
+  .country-pill.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .pill-flag {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  /* Input Groups & Form Controls */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: var(--space-3);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .input-label-row label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-heading);
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 180px;
+    max-width: 100%;
+    flex-shrink: 0;
+  }
+
+  .input-symbol-wrapper input[type="number"] {
+    width: 100%;
+    height: 38px;
+    padding: 6px 10px 6px 26px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    text-align: right;
+  }
+
+  .input-symbol-wrapper.unit-wrapper input[type="number"] {
+    padding-left: 10px;
+    padding-right: 44px;
+  }
+
+  .unit-suffix {
+    position: absolute;
+    right: 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .currency-select {
+    width: 220px;
+    max-width: 100%;
+    height: 38px;
+    padding: 6px 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-heading);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .slider-range {
+    width: 100%;
+    margin-top: 4px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+  }
+
+  .input-subtext {
+    font-size: 0.74rem;
+    line-height: 1.4;
+    color: var(--color-text-muted);
+  }
+
+  /* Age Inputs Grid */
+  .age-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+    width: 100%;
+  }
+
+  .preset-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .preset-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 2px;
+  }
+
+  .preset-pill {
+    padding: 3px 8px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .preset-pill:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .preset-pill.active {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  /* Horizon Indicator Pill */
+  .horizon-indicator-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: var(--space-3);
+    padding: 6px 12px;
+    background: rgba(37, 99, 235, 0.05);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: var(--radius-md);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+  }
+
+  /* Frequency Toggle Group */
+  .freq-toggle-group {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .freq-btn {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+    background: var(--color-card);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .freq-btn.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  /* -------------------------------------------------------------
+     RESULTS SECTION STYLES
+     ------------------------------------------------------------- */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Hero Result Card */
+  .hero-result-card {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.02) 100%);
+    border: 1.5px solid rgba(37, 99, 235, 0.35);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: var(--space-2);
+  }
+
+  .hero-label {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .hero-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: #ffffff;
+  }
+
+  .hero-amount-wrapper {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin: var(--space-1) 0;
+  }
+
+  .hero-currency {
+    font-size: clamp(1.4rem, 6vw, 1.85rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    flex-shrink: 0;
+  }
+
+  .hero-value {
+    font-size: clamp(1.75rem, 8vw, 2.45rem);
+    font-weight: 900;
+    color: var(--color-heading);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  .hero-verdict {
+    margin-top: var(--space-2);
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    overflow-wrap: break-word;
+  }
+
+  /* Sub-Hero Grid */
+  .sub-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .sub-card {
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .sub-card-primary {
+    border-left: 4px solid var(--color-primary);
+    background: rgba(37, 99, 235, 0.04);
+  }
+
+  .sub-card-secondary {
+    border-left: 4px solid #10b981;
+    background: rgba(16, 185, 129, 0.04);
+  }
+
+  .sub-card-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .sub-card-value-wrap {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .sub-curr {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    flex-shrink: 0;
+  }
+
+  .sub-val {
+    font-size: clamp(1.2rem, 5vw, 1.45rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .sub-period {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .sub-card-hint {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  /* Savings Gap Card */
+  .gap-status-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid #f59e0b;
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .gap-status-card.surplus {
+    border-left-color: #10b981;
+  }
+
+  .gap-card-header {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .gap-icon {
+    color: #f59e0b;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .gap-status-card.surplus .gap-icon {
+    color: #10b981;
+  }
+
+  .gap-content {
+    min-width: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .gap-content strong {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--color-heading);
+  }
+
+  .gap-content p {
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  /* Visual Progress Bar */
+  .visual-progress-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .split-bar-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .split-bar-track {
+    height: 12px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .bar-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .bar-savings {
+    background: #6366f1; /* Indigo */
+  }
+
+  .bar-invested {
+    background: var(--color-primary); /* Blue */
+  }
+
+  .bar-growth {
+    background: #10b981; /* Emerald */
+  }
+
+  .split-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot-savings { background: #6366f1; }
+  .dot-invested { background: var(--color-primary); }
+  .dot-growth { background: #10b981; }
+
+  /* 8-Tile Metrics Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .metric-tile {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  .metric-val {
+    font-size: clamp(0.92rem, 3.5vw, 1.05rem);
+    font-weight: 800;
+    color: var(--color-heading);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .metric-sub {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    word-break: break-word;
+  }
+
+  /* Table Card */
+  .table-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .table-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: var(--space-3);
+  }
+
+  .table-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin: 0;
+  }
+
+  .table-subtitle {
+    font-size: 0.74rem;
+    color: var(--color-text-muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .table-scroll-hint {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    display: none;
+  }
+
+  .table-responsive-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .edu-schedule-table {
+    min-width: 480px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .edu-schedule-table th,
+  .edu-schedule-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .edu-schedule-table th {
+    background: rgba(0, 0, 0, 0.02);
+    font-weight: 700;
+    color: var(--color-heading);
+  }
+
+  .edu-schedule-table tr:hover td {
+    background: rgba(37, 99, 235, 0.02);
+  }
+
+  /* Callout Tip Box */
+  .callout-tip-box {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: rgba(37, 99, 235, 0.04);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    line-height: 1.45;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .tip-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tip-content {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .tip-content strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--color-heading);
+  }
+
+  .tip-content p {
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* -------------------------------------------------------------
+     BREAKPOINTS & RESPONSIVE BEHAVIOR
+     ------------------------------------------------------------- */
+  @media (max-width: 900px) {
+    .metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mobile-country-selector-wrap {
+      display: block;
+    }
+    .country-selector-pills {
+      display: none;
+    }
+    .table-scroll-hint {
+      display: inline-flex;
+    }
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+    .input-symbol-wrapper,
+    .currency-select {
+      width: 100%;
+      max-width: 100%;
+    }
+    .input-symbol-wrapper input[type="number"],
+    .currency-select {
+      height: 42px;
+      font-size: 0.95rem;
+    }
+    .sub-hero-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .age-inputs-grid {
+      grid-template-columns: 1fr;
+    }
+    .metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .callout-tip-box {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+
+  @media (max-width: 340px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // ===================================================================
+  // CHILD EDUCATION COST CALCULATION ENGINE
+  // Multi-Country: India (INR), UAE (AED), Singapore (SGD)
+  // ===================================================================
+
+  interface EducationLevelConfig {
+    id: string;
+    label: string;
+    subtext: string;
+    defaultDuration: number;
+    defaultStartAge: number;
+    categories: {
+      id: string;
+      label: string;
+      subtext: string;
+      defaultBaseCost: number;
+      defaultAddCost: number;
+    }[];
+  }
+
+  interface CountryConfig {
+    name: string;
+    currencySym: string;
+    currencyCode: string;
+    flag: string;
+    defaultInflation: number;
+    defaultReturn: number;
+    defaultChildAge: number;
+    helpText: string;
+    guidanceHeading: string;
+    guidanceBody: string;
+    levels: EducationLevelConfig[];
+  }
+
+  const COUNTRY_CONFIGS: Record<string, CountryConfig> = {
+    IN: {
+      name: 'India',
+      currencySym: '₹',
+      currencyCode: 'INR',
+      flag: '🇮🇳',
+      defaultInflation: 10.0,
+      defaultReturn: 11.0,
+      defaultChildAge: 5,
+      helpText: 'Official NSSO education expenditure trends, 10% average annual education inflation, and equity SIP return benchmarks.',
+      guidanceHeading: 'India Planning Guidance (NSSO & Higher Education Benchmarks)',
+      guidanceBody: 'Indian higher education inflation historically tracks between 8%–12% per year. Private engineering degrees currently averaging ₹12–₹18 Lakh for 4 years can exceed ₹50–₹75 Lakh by the time a toddler reaches age 18. Starting an equity mutual fund SIP early harnesses compound returns to fund up to 60%+ of the goal.',
+      levels: [
+        {
+          id: 'ug',
+          label: 'Undergraduate Degree (UG: B.Tech, MBBS, B.Com, BA)',
+          subtext: '3 to 5-year bachelor degree program across Indian colleges and universities.',
+          defaultDuration: 4,
+          defaultStartAge: 18,
+          categories: [
+            {
+              id: 'private_college',
+              label: 'Private College / Deemed University (BITS, Manipal, SRM, Amity)',
+              subtext: 'Typical private college benchmark: ₹3.5L to ₹6L per year tuition.',
+              defaultBaseCost: 400000,
+              defaultAddCost: 100000
+            },
+            {
+              id: 'govt_college',
+              label: 'Government Premier College (IIT, NIT, Central Universities)',
+              subtext: 'Subsidized top-tier government institution: ₹1.5L to ₹2.5L per year tuition.',
+              defaultBaseCost: 200000,
+              defaultAddCost: 60000
+            },
+            {
+              id: 'private_medical',
+              label: 'Private Medical / Elite Specialist Degree (MBBS, Specialized Law)',
+              subtext: 'High-cost specialist degree: ₹12L to ₹20L per year.',
+              defaultBaseCost: 1500000,
+              defaultAddCost: 200000
+            }
+          ]
+        },
+        {
+          id: 'school',
+          label: 'School Education (K-12: Primary & High School)',
+          subtext: 'Annual schooling expenses from Kindergarten through Grade 12.',
+          defaultDuration: 12,
+          defaultStartAge: 6,
+          categories: [
+            {
+              id: 'pvt_cbse',
+              label: 'Private CBSE / ICSE School',
+              subtext: 'Established urban private day school: ₹80,000 to ₹2,00,000 per year.',
+              defaultBaseCost: 120000,
+              defaultAddCost: 35000
+            },
+            {
+              id: 'international_ib',
+              label: 'International School (IB / Cambridge IGCSE)',
+              subtext: 'Premium international curricula: ₹3,50,000 to ₹8,00,000+ per year.',
+              defaultBaseCost: 450000,
+              defaultAddCost: 80000
+            },
+            {
+              id: 'govt_kv',
+              label: 'Government / Kendriya Vidyalaya (KV)',
+              subtext: 'Nominal government school fee structure.',
+              defaultBaseCost: 15000,
+              defaultAddCost: 10000
+            }
+          ]
+        },
+        {
+          id: 'pg',
+          label: 'Postgraduate Degree (MBA, M.Tech, MD, MS)',
+          subtext: '2-year advanced masters or professional postgraduate degree.',
+          defaultDuration: 2,
+          defaultStartAge: 22,
+          categories: [
+            {
+              id: 'premier_bschool',
+              label: 'Premier Business School (IIM, ISB, XLRI)',
+              subtext: 'Top management institutes: ₹10L to ₹16L per year.',
+              defaultBaseCost: 1200000,
+              defaultAddCost: 150000
+            },
+            {
+              id: 'pvt_pg',
+              label: 'Private University Master\'s Degree',
+              subtext: 'Standard private postgraduate tuition: ₹4L to ₹7L per year.',
+              defaultBaseCost: 500000,
+              defaultAddCost: 100000
+            },
+            {
+              id: 'govt_pg',
+              label: 'Government University Master\'s (IIT, IISc, Central Universities)',
+              subtext: 'Subsidized postgrad research/tuition: ₹1.5L to ₹3L per year.',
+              defaultBaseCost: 180000,
+              defaultAddCost: 50000
+            }
+          ]
+        },
+        {
+          id: 'prof',
+          label: 'Professional Degree (CA, NLU Law, Architecture)',
+          subtext: '5-year integrated professional certification or dual degree.',
+          defaultDuration: 5,
+          defaultStartAge: 18,
+          categories: [
+            {
+              id: 'nlu_law',
+              label: 'National Law University (NLU) / Premier Design',
+              subtext: 'Integrated 5-year BA LLB / B.Des program: ₹2.5L to ₹4.5L per year.',
+              defaultBaseCost: 280000,
+              defaultAddCost: 80000
+            },
+            {
+              id: 'prof_cert',
+              label: 'Professional Certification & Coaching (CA, CFA, CS)',
+              subtext: 'Foundation, intermediate, and finals coaching and registration.',
+              defaultBaseCost: 120000,
+              defaultAddCost: 40000
+            }
+          ]
+        }
+      ]
+    },
+
+    UAE: {
+      name: 'United Arab Emirates',
+      currencySym: 'AED ',
+      currencyCode: 'AED',
+      flag: '🇦🇪',
+      defaultInflation: 5.0,
+      defaultReturn: 7.0,
+      defaultChildAge: 5,
+      helpText: 'KHDA Education Cost Index (ECI) benchmarks, UAE university fee schedules, and global balanced investment returns.',
+      guidanceHeading: 'UAE Planning Guidance (KHDA, ADEK & University Tiers)',
+      guidanceBody: 'In Dubai and Abu Dhabi, school fees are regulated under the KHDA Education Cost Index framework, with annual hikes typically averaging 4%–6%. For tertiary education, parents choosing between UAE branch campuses (e.g. Heriot-Watt, Wollongong, Middlesex) and overseas study (UK, US, Canada) should plan for total annual budgets of AED 75,000 to AED 160,000+ including living expenses.',
+      levels: [
+        {
+          id: 'ug',
+          label: 'Undergraduate Degree (Bachelor\'s in UAE or Abroad)',
+          subtext: '3 to 4-year undergraduate degree program.',
+          defaultDuration: 4,
+          defaultStartAge: 18,
+          categories: [
+            {
+              id: 'uae_branch',
+              label: 'International Branch Campus in UAE (Heriot-Watt, Wollongong, Middlesex)',
+              subtext: 'Recognized international degree delivered in Dubai/Abu Dhabi: AED 65,000 to AED 95,000/yr.',
+              defaultBaseCost: 75000,
+              defaultAddCost: 15000
+            },
+            {
+              id: 'uae_private',
+              label: 'Private UAE University (American University of Sharjah, AUS, AUD)',
+              subtext: 'Prominent local accredited private institution: AED 70,000 to AED 110,000/yr.',
+              defaultBaseCost: 85000,
+              defaultAddCost: 20000
+            },
+            {
+              id: 'overseas_study',
+              label: 'Overseas Study (UK, USA, Canada, Australia)',
+              subtext: 'Tuition plus international living and accommodation: AED 130,000 to AED 220,000/yr.',
+              defaultBaseCost: 120000,
+              defaultAddCost: 45000
+            },
+            {
+              id: 'uae_public',
+              label: 'Federal Public University (UAEU, Zayed University - Expat rate)',
+              subtext: 'Statutory fees for non-Emirati admissions: AED 35,000 to AED 55,000/yr.',
+              defaultBaseCost: 45000,
+              defaultAddCost: 10000
+            }
+          ]
+        },
+        {
+          id: 'school',
+          label: 'School Education (Primary & Secondary K-12)',
+          subtext: 'Schooling from Foundation Stage / KG through Year 13.',
+          defaultDuration: 12,
+          defaultStartAge: 4,
+          categories: [
+            {
+              id: 'pvt_curriculum',
+              label: 'Private Curriculum School (British, American, CBSE, Indian)',
+              subtext: 'Mid-to-high tier private schooling per KHDA ratings: AED 25,000 to AED 50,000/yr.',
+              defaultBaseCost: 35000,
+              defaultAddCost: 8000
+            },
+            {
+              id: 'intl_premium',
+              label: 'International Premium IB School (GEMS World, Dubai College, Repton)',
+              subtext: 'Top-tier international IB schools: AED 65,000 to AED 115,000+/yr.',
+              defaultBaseCost: 75000,
+              defaultAddCost: 15000
+            },
+            {
+              id: 'public_moe',
+              label: 'Public / Ministry of Education (MoE) School',
+              subtext: 'Free for Emirati nationals; AED 6,000/yr regulated statutory fee for eligible expat quota.',
+              defaultBaseCost: 6000,
+              defaultAddCost: 3000
+            }
+          ]
+        },
+        {
+          id: 'pg',
+          label: 'Postgraduate Degree (Master\'s / MBA)',
+          subtext: '1 to 2-year masters program.',
+          defaultDuration: 2,
+          defaultStartAge: 22,
+          categories: [
+            {
+              id: 'intl_mba',
+              label: 'International Executive MBA / Branch Master\'s',
+              subtext: 'Prestigious branch campus MBA programs: AED 90,000 to AED 140,000/yr.',
+              defaultBaseCost: 110000,
+              defaultAddCost: 20000
+            },
+            {
+              id: 'local_masters',
+              label: 'Local Accredited UAE Master\'s Degree',
+              subtext: 'Standard university masters: AED 50,000 to AED 80,000/yr.',
+              defaultBaseCost: 65000,
+              defaultAddCost: 12000
+            }
+          ]
+        }
+      ]
+    },
+
+    SG: {
+      name: 'Singapore',
+      currencySym: 'S$',
+      currencyCode: 'SGD',
+      flag: '🇸🇬',
+      defaultInflation: 4.0,
+      defaultReturn: 6.0,
+      defaultChildAge: 5,
+      helpText: 'Official Singapore Ministry of Education (MOE) fee schedules, Autonomous University subsidies, and CPF/balanced portfolio benchmarks.',
+      guidanceHeading: 'Singapore Planning Guidance (MOE Schedules & University Tiers)',
+      guidanceBody: 'In Singapore, education costs vary dramatically depending on whether the student is a Singapore Citizen, Permanent Resident (PR), or International Student. For primary school, citizens pay S$0 tuition (paying only S$13/mo miscellaneous fees), whereas international students pay S$900–S$2,300/mo. At Autonomous Universities (NUS, NTU, SMU), the MOE Tuition Grant heavily subsidizes citizens, keeping annual tuition around S$8,250–S$12,000 for standard degrees.',
+      levels: [
+        {
+          id: 'ug',
+          label: 'Undergraduate Degree (NUS, NTU, SMU, SUTD, SIT)',
+          subtext: '3 to 4-year bachelor degree at Singapore Autonomous Universities.',
+          defaultDuration: 4,
+          defaultStartAge: 19,
+          categories: [
+            {
+              id: 'auto_uni',
+              label: 'Autonomous University (MOE Subsidized - NUS, NTU, SMU)',
+              subtext: 'Citizen: ~S$9,500/yr; PR: ~S$13,500/yr; International Student: ~S$21,000/yr.',
+              defaultBaseCost: 9500,
+              defaultAddCost: 5500
+            },
+            {
+              id: 'private_inst',
+              label: 'Private Higher Education Institution (SIM GE, Kaplan, JCU)',
+              subtext: 'External degree partnerships: S$18,000 to S$28,000/yr.',
+              defaultBaseCost: 22000,
+              defaultAddCost: 7000
+            },
+            {
+              id: 'overseas_deg',
+              label: 'Overseas University (Australia, UK, USA)',
+              subtext: 'Tuition plus international accommodation & living: S$55,000 to S$85,000/yr.',
+              defaultBaseCost: 48000,
+              defaultAddCost: 22000
+            }
+          ]
+        },
+        {
+          id: 'school',
+          label: 'School Education (Primary & Secondary School)',
+          subtext: 'MOE primary and secondary schooling (10 years).',
+          defaultDuration: 10,
+          defaultStartAge: 7,
+          categories: [
+            {
+              id: 'govt_school',
+              label: 'Government / Government-Aided School',
+              subtext: 'Citizen: S$150/yr; PR: S$4,200/yr; International Student: S$11,500/yr.',
+              defaultBaseCost: 150,
+              defaultAddCost: 1200
+            },
+            {
+              id: 'indep_school',
+              label: 'Independent School (e.g. Raffles, Hwa Chong, ACS(I))',
+              subtext: 'Citizen: S$4,200/yr; PR: S$7,500/yr; International Student: S$19,000/yr.',
+              defaultBaseCost: 4200,
+              defaultAddCost: 2500
+            },
+            {
+              id: 'intl_school',
+              label: 'International School (e.g. UWCSEA, SAS, Tanglin Trust)',
+              subtext: 'Expatriate international curriculum: S$32,000 to S$55,000/yr.',
+              defaultBaseCost: 38000,
+              defaultAddCost: 5000
+            }
+          ]
+        },
+        {
+          id: 'pg',
+          label: 'Postgraduate Degree (Master\'s / MBA)',
+          subtext: '1 to 2-year postgraduate program.',
+          defaultDuration: 2,
+          defaultStartAge: 23,
+          categories: [
+            {
+              id: 'auto_masters',
+              label: 'Autonomous University Master\'s (NUS / NTU / SMU)',
+              subtext: 'Coursework or research masters: S$18,000 to S$38,000/yr.',
+              defaultBaseCost: 26000,
+              defaultAddCost: 8000
+            },
+            {
+              id: 'top_mba',
+              label: 'Premier MBA (NUS MBA, INSEAD Singapore)',
+              subtext: 'Executive management degree: S$65,000 to S$95,000/yr.',
+              defaultBaseCost: 75000,
+              defaultAddCost: 15000
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  // Singapore Status Cost Adjustments Table (MOE 2024-2026 fee structure)
+  const SG_STATUS_RATES: Record<string, Record<string, { base: number; add: number }>> = {
+    citizen: {
+      govt_school: { base: 150, add: 1200 },
+      indep_school: { base: 4200, add: 2500 },
+      intl_school: { base: 38000, add: 5000 },
+      auto_uni: { base: 9500, add: 5500 },
+      private_inst: { base: 22000, add: 7000 },
+      overseas_deg: { base: 48000, add: 22000 },
+      auto_masters: { base: 24000, add: 8000 },
+      top_mba: { base: 75000, add: 15000 }
+    },
+    pr: {
+      govt_school: { base: 4500, add: 1500 },
+      indep_school: { base: 7800, add: 2500 },
+      intl_school: { base: 38000, add: 5000 },
+      auto_uni: { base: 13500, add: 6000 },
+      private_inst: { base: 22000, add: 7000 },
+      overseas_deg: { base: 48000, add: 22000 },
+      auto_masters: { base: 32000, add: 8000 },
+      top_mba: { base: 75000, add: 15000 }
+    },
+    international: {
+      govt_school: { base: 12500, add: 2500 },
+      indep_school: { base: 19500, add: 3500 },
+      intl_school: { base: 42000, add: 6000 },
+      auto_uni: { base: 22000, add: 8500 },
+      private_inst: { base: 24000, add: 7500 },
+      overseas_deg: { base: 48000, add: 22000 },
+      auto_masters: { base: 42000, add: 10000 },
+      top_mba: { base: 75000, add: 15000 }
+    }
+  };
+
+  function initChildEducationCalculator() {
+    let activeCountry = 'IN';
+    let savingsFrequency = 'monthly';
+
+    // Elements Query
+    const countryPills = document.querySelectorAll('.country-pill');
+    const mobileCountrySelect = document.getElementById('mobile-edu-country-select') as HTMLSelectElement | null;
+    const mobileSelectedFlag = document.getElementById('mobile-selected-flag');
+    const countryActiveBadge = document.getElementById('country-active-badge');
+    const countryHelpText = document.getElementById('country-help-text');
+
+    const fieldSgStatus = document.getElementById('field-sg-status');
+    const sgStatusSelect = document.getElementById('edu-sg-status') as HTMLSelectElement | null;
+    const eduLevelSelect = document.getElementById('edu-level-select') as HTMLSelectElement | null;
+    const eduLevelSubtext = document.getElementById('edu-level-subtext');
+    const eduCategorySelect = document.getElementById('edu-category-select') as HTMLSelectElement | null;
+    const eduCategorySubtext = document.getElementById('edu-category-subtext');
+
+    const childAgeInput = document.getElementById('edu-child-age') as HTMLInputElement;
+    const childAgeSlider = document.getElementById('edu-child-age-slider') as HTMLInputElement;
+    const startAgeInput = document.getElementById('edu-start-age') as HTMLInputElement;
+    const startAgeSlider = document.getElementById('edu-start-age-slider') as HTMLInputElement;
+    const durationInput = document.getElementById('edu-duration') as HTMLInputElement;
+    const durationSlider = document.getElementById('edu-duration-slider') as HTMLInputElement;
+    const durationSubtext = document.getElementById('edu-duration-subtext');
+    const horizonText = document.getElementById('edu-horizon-text');
+
+    const baseCostInput = document.getElementById('edu-base-cost') as HTMLInputElement;
+    const addCostInput = document.getElementById('edu-add-cost') as HTMLInputElement;
+    const inflationInput = document.getElementById('edu-inflation-rate') as HTMLInputElement;
+    const inflationSlider = document.getElementById('edu-inflation-slider') as HTMLInputElement;
+    const returnInput = document.getElementById('edu-return-rate') as HTMLInputElement;
+    const returnSlider = document.getElementById('edu-return-slider') as HTMLInputElement;
+    const existingSavingsInput = document.getElementById('edu-existing-savings') as HTMLInputElement;
+
+    const freqButtons = document.querySelectorAll('.freq-btn');
+    const resetBtn = document.getElementById('edu-reset-btn');
+
+    // Currency Symbols in DOM
+    const currSym1 = document.getElementById('curr-sym-1');
+    const currSym2 = document.getElementById('curr-sym-2');
+    const currSym3 = document.getElementById('curr-sym-3');
+    const resCurrSym = document.getElementById('res-curr-sym');
+    const subCurr1 = document.getElementById('sub-curr-1');
+    const subCurr2 = document.getElementById('sub-curr-2');
+
+    // Results elements
+    const resInflationMultiplier = document.getElementById('res-inflation-multiplier');
+    const resTotalCost = document.getElementById('res-total-cost');
+    const resHeroVerdict = document.getElementById('res-hero-verdict');
+    const resMonthlySavings = document.getElementById('res-monthly-savings');
+    const resMonthlyHint = document.getElementById('res-monthly-hint');
+    const resAnnualSavings = document.getElementById('res-annual-savings');
+    const resAnnualHint = document.getElementById('res-annual-hint');
+
+    const resGapCard = document.getElementById('res-gap-card');
+    const gapTitle = document.getElementById('gap-title');
+    const gapDesc = document.getElementById('gap-desc');
+
+    const resGrowthShare = document.getElementById('res-growth-share');
+    const barSegExisting = document.getElementById('bar-seg-existing');
+    const barSegDeposits = document.getElementById('bar-seg-deposits');
+    const barSegGrowth = document.getElementById('bar-seg-growth');
+    const legExistingVal = document.getElementById('leg-existing-val');
+    const legDepositsVal = document.getElementById('leg-deposits-val');
+    const legGrowthVal = document.getElementById('leg-growth-val');
+
+    const tileCostToday = document.getElementById('tile-cost-today');
+    const tileFirstYear = document.getElementById('tile-first-year');
+    const tileYearsStart = document.getElementById('tile-years-start');
+    const tileDuration = document.getElementById('tile-duration');
+    const tileFvSavings = document.getElementById('tile-fv-savings');
+    const tileOutOfPocket = document.getElementById('tile-out-of-pocket');
+    const tileGrowth = document.getElementById('tile-growth');
+    const tileCorpusTarget = document.getElementById('tile-corpus-target');
+
+    const tableSubtitle = document.getElementById('table-subtitle');
+    const eduScheduleTbody = document.getElementById('edu-schedule-tbody');
+
+    const tipHeading = document.getElementById('tip-heading');
+    const tipBody = document.getElementById('tip-body');
+
+    // Helper: Number Formatter based on country
+    function formatMoney(amount: number, country: string): string {
+      const rounded = Math.round(amount);
+      if (country === 'IN') {
+        return rounded.toLocaleString('en-IN');
+      }
+      return rounded.toLocaleString('en-US');
+    }
+
+    function formatShortCurrency(amount: number, country: string): string {
+      const sym = COUNTRY_CONFIGS[country].currencySym;
+      if (country === 'IN') {
+        if (amount >= 10000000) {
+          return `${sym}${(amount / 10000000).toFixed(2)} Cr`;
+        }
+        if (amount >= 100000) {
+          return `${sym}${(amount / 100000).toFixed(2)} L`;
+        }
+      }
+      if (amount >= 1000000) {
+        return `${sym}${(amount / 1000000).toFixed(2)}M`;
+      }
+      if (amount >= 1000) {
+        return `${sym}${(amount / 1000).toFixed(0)}k`;
+      }
+      return `${sym}${Math.round(amount)}`;
+    }
+
+    // Populate Education Levels for Current Country
+    function populateEducationLevels(country: string, preserveSelection = false) {
+      if (!eduLevelSelect) return;
+      const cfg = COUNTRY_CONFIGS[country];
+      const previousValue = eduLevelSelect.value;
+      eduLevelSelect.innerHTML = '';
+
+      cfg.levels.forEach((lvl, idx) => {
+        const opt = document.createElement('option');
+        opt.value = lvl.id;
+        opt.textContent = lvl.label;
+        if (!preserveSelection && idx === 0) {
+          opt.selected = true;
+        } else if (preserveSelection && lvl.id === previousValue) {
+          opt.selected = true;
+        }
+        eduLevelSelect.appendChild(opt);
+      });
+
+      if (!preserveSelection || !cfg.levels.some(l => l.id === previousValue)) {
+        eduLevelSelect.value = cfg.levels[0].id;
+      }
+
+      onLevelChanged(false);
+    }
+
+    // When Level changes, populate categories and set default duration / start age
+    function onLevelChanged(isUserCategorySwitch = false) {
+      if (!eduLevelSelect || !eduCategorySelect) return;
+      const cfg = COUNTRY_CONFIGS[activeCountry];
+      const currentLevel = cfg.levels.find(l => l.id === eduLevelSelect.value) || cfg.levels[0];
+
+      if (eduLevelSubtext) {
+        eduLevelSubtext.textContent = currentLevel.subtext;
+      }
+
+      eduCategorySelect.innerHTML = '';
+      currentLevel.categories.forEach((cat, idx) => {
+        const opt = document.createElement('option');
+        opt.value = cat.id;
+        opt.textContent = cat.label;
+        if (idx === 0) opt.selected = true;
+        eduCategorySelect.appendChild(opt);
+      });
+
+      if (!isUserCategorySwitch) {
+        // Set default timeline
+        durationInput.value = String(currentLevel.defaultDuration);
+        durationSlider.value = String(currentLevel.defaultDuration);
+
+        // Adjust start age if needed
+        const curAge = Math.max(0, parseInt(childAgeInput.value) || 0);
+        let targetStart = currentLevel.defaultStartAge;
+        if (targetStart <= curAge) {
+          targetStart = curAge + 1;
+        }
+        startAgeInput.value = String(targetStart);
+        startAgeSlider.value = String(targetStart);
+      }
+
+      onCategoryChanged();
+    }
+
+    // When Category changes, update base cost and additional costs
+    function onCategoryChanged() {
+      if (!eduLevelSelect || !eduCategorySelect) return;
+      const cfg = COUNTRY_CONFIGS[activeCountry];
+      const currentLevel = cfg.levels.find(l => l.id === eduLevelSelect.value) || cfg.levels[0];
+      const currentCat = currentLevel.categories.find(c => c.id === eduCategorySelect.value) || currentLevel.categories[0];
+
+      if (eduCategorySubtext) {
+        eduCategorySubtext.textContent = currentCat.subtext;
+      }
+
+      let baseCost = currentCat.defaultBaseCost;
+      let addCost = currentCat.defaultAddCost;
+
+      // Special Singapore Student Status override
+      if (activeCountry === 'SG' && sgStatusSelect) {
+        const status = sgStatusSelect.value || 'citizen';
+        const statusRates = SG_STATUS_RATES[status];
+        if (statusRates && statusRates[currentCat.id]) {
+          baseCost = statusRates[currentCat.id].base;
+          addCost = statusRates[currentCat.id].add;
+        }
+      }
+
+      baseCostInput.value = String(baseCost);
+      addCostInput.value = String(addCost);
+
+      calculateAndRender();
+    }
+
+    // Update Country UI and reset/populate fields
+    function updateCountryUI(country: string) {
+      activeCountry = country;
+      const cfg = COUNTRY_CONFIGS[country];
+
+      // Sync mobile dropdown
+      if (mobileCountrySelect && mobileCountrySelect.value !== country) {
+        mobileCountrySelect.value = country;
+      }
+      if (mobileSelectedFlag) {
+        mobileSelectedFlag.textContent = cfg.flag;
+      }
+
+      // Sync desktop pills
+      countryPills.forEach(p => {
+        const isCurrent = (p.getAttribute('data-country') === country);
+        p.classList.toggle('active', isCurrent);
+        p.setAttribute('aria-selected', String(isCurrent));
+      });
+
+      // Update badge and descriptions
+      if (countryActiveBadge) countryActiveBadge.textContent = `${cfg.name} (${cfg.currencyCode} ${cfg.currencySym.trim()})`;
+      if (countryHelpText) countryHelpText.textContent = cfg.helpText;
+      if (tipHeading) tipHeading.textContent = cfg.guidanceHeading;
+      if (tipBody) tipBody.textContent = cfg.guidanceBody;
+
+      // Toggle Singapore specific status dropdown
+      if (fieldSgStatus) {
+        fieldSgStatus.classList.toggle('hidden', country !== 'SG');
+      }
+
+      // Update currency symbols across input & result cards
+      const sym = cfg.currencySym;
+      if (currSym1) currSym1.textContent = sym;
+      if (currSym2) currSym2.textContent = sym;
+      if (currSym3) currSym3.textContent = sym;
+      if (resCurrSym) resCurrSym.textContent = sym;
+      if (subCurr1) subCurr1.textContent = sym;
+      if (subCurr2) subCurr2.textContent = sym;
+
+      // Update defaults for inflation & return
+      inflationInput.value = cfg.defaultInflation.toFixed(1);
+      inflationSlider.value = String(cfg.defaultInflation);
+      returnInput.value = cfg.defaultReturn.toFixed(1);
+      returnSlider.value = String(cfg.defaultReturn);
+
+      // Default existing savings per country scale
+      if (country === 'IN') {
+        existingSavingsInput.value = '200000';
+      } else if (country === 'UAE') {
+        existingSavingsInput.value = '25000';
+      } else if (country === 'SG') {
+        existingSavingsInput.value = '15000';
+      }
+
+      // Populate education levels and categories
+      populateEducationLevels(country, false);
+    }
+
+    // Core Calculation and DOM Rendering
+    function calculateAndRender() {
+      const curAge = Math.max(0, parseInt(childAgeInput.value) || 0);
+      let startAge = Math.max(1, parseInt(startAgeInput.value) || 1);
+      if (startAge < curAge) {
+        startAge = curAge;
+        startAgeInput.value = String(curAge);
+        startAgeSlider.value = String(curAge);
+      }
+
+      const dur = Math.max(1, Math.min(20, parseInt(durationInput.value) || 1));
+      const yearsUntilStart = Math.max(0, startAge - curAge);
+
+      // Horizon indicator text
+      if (horizonText) {
+        const endAge = startAge + dur;
+        if (yearsUntilStart === 0) {
+          horizonText.textContent = `Education starts immediately (Child age ${curAge}) and runs for ${dur} years (until age ${endAge}).`;
+        } else {
+          horizonText.textContent = `${yearsUntilStart} years until education starts (Age ${startAge} to ${endAge}).`;
+        }
+      }
+
+      const baseCost = Math.max(0, parseFloat(baseCostInput.value) || 0);
+      const addCost = Math.max(0, parseFloat(addCostInput.value) || 0);
+      const annualCostToday = baseCost + addCost;
+      const totalCostToday = annualCostToday * dur;
+
+      const inflationRate = Math.max(0, parseFloat(inflationInput.value) || 0) / 100;
+      const returnRate = Math.max(0, parseFloat(returnInput.value) || 0) / 100;
+      const existingSavings = Math.max(0, parseFloat(existingSavingsInput.value) || 0);
+
+      // Year-by-year projected cash flows
+      const yearlyCosts: { yearIndex: number; childAge: number; calendarYear: number; inflatedCost: number; inflationFactor: number }[] = [];
+      let totalProjectedCost = 0;
+      let firstYearCost = 0;
+      const currentCalendarYear = new Date().getFullYear();
+
+      for (let y = 1; y <= dur; y++) {
+        const elapsedYears = yearsUntilStart + (y - 1);
+        const inflationFactor = Math.pow(1 + inflationRate, elapsedYears);
+        const inflatedCost = annualCostToday * inflationFactor;
+        yearlyCosts.push({
+          yearIndex: y,
+          childAge: startAge + (y - 1),
+          calendarYear: currentCalendarYear + elapsedYears,
+          inflatedCost,
+          inflationFactor
+        });
+        totalProjectedCost += inflatedCost;
+        if (y === 1) firstYearCost = inflatedCost;
+      }
+
+      // FV of existing savings at start of education
+      const fvExistingSavingsAtStart = existingSavings * Math.pow(1 + returnRate, yearsUntilStart);
+
+      // Present value of education cash flows at year T
+      let pvCorpusAtStart = 0;
+      for (let y = 1; y <= dur; y++) {
+        const discountYears = y - 1;
+        if (returnRate === 0) {
+          pvCorpusAtStart += yearlyCosts[y - 1].inflatedCost;
+        } else {
+          pvCorpusAtStart += yearlyCosts[y - 1].inflatedCost / Math.pow(1 + returnRate, discountYears);
+        }
+      }
+
+      // Net Target Corpus needed at Year T
+      const isSurplus = fvExistingSavingsAtStart >= pvCorpusAtStart;
+      const netCorpusGapAtStart = Math.max(0, pvCorpusAtStart - fvExistingSavingsAtStart);
+      const surplusAmount = isSurplus ? fvExistingSavingsAtStart - pvCorpusAtStart : 0;
+
+      // Required Monthly & Annual Investments
+      let requiredMonthlySavings = 0;
+      let requiredAnnualSavings = 0;
+
+      if (netCorpusGapAtStart > 0) {
+        if (yearsUntilStart === 0) {
+          const totalMonths = dur * 12;
+          const monthlyRate = returnRate / 12;
+          if (returnRate === 0) {
+            requiredMonthlySavings = netCorpusGapAtStart / totalMonths;
+            requiredAnnualSavings = netCorpusGapAtStart / dur;
+          } else {
+            requiredMonthlySavings = netCorpusGapAtStart * (monthlyRate / (Math.pow(1 + monthlyRate, totalMonths) - 1));
+            requiredAnnualSavings = netCorpusGapAtStart * (returnRate / (Math.pow(1 + returnRate, dur) - 1));
+          }
+        } else {
+          const totalMonths = yearsUntilStart * 12;
+          const monthlyRate = returnRate / 12;
+          if (returnRate === 0) {
+            requiredMonthlySavings = netCorpusGapAtStart / totalMonths;
+            requiredAnnualSavings = netCorpusGapAtStart / yearsUntilStart;
+          } else {
+            requiredMonthlySavings = netCorpusGapAtStart * (monthlyRate / (Math.pow(1 + monthlyRate, totalMonths) - 1));
+            requiredAnnualSavings = netCorpusGapAtStart * (returnRate / (Math.pow(1 + returnRate, yearsUntilStart) - 1));
+          }
+        }
+      }
+
+      // Total Capital Invested (Out of pocket)
+      let totalDeposits = 0;
+      if (yearsUntilStart > 0) {
+        if (savingsFrequency === 'monthly') {
+          totalDeposits = requiredMonthlySavings * (yearsUntilStart * 12);
+        } else {
+          totalDeposits = requiredAnnualSavings * yearsUntilStart;
+        }
+      } else {
+        totalDeposits = (savingsFrequency === 'monthly') ? requiredMonthlySavings * (dur * 12) : requiredAnnualSavings * dur;
+      }
+
+      const totalOutOfPocket = existingSavings + totalDeposits;
+      const totalInvestmentGrowth = Math.max(0, totalProjectedCost - totalOutOfPocket);
+      const growthSharePct = totalProjectedCost > 0 ? (totalInvestmentGrowth / totalProjectedCost) * 100 : 0;
+      const inflationMultiplier = totalCostToday > 0 ? (totalProjectedCost / totalCostToday) : 1;
+
+      // Update Hero Card
+      if (resInflationMultiplier) {
+        resInflationMultiplier.textContent = `${inflationMultiplier.toFixed(1)}× Today's Cost`;
+      }
+      if (resTotalCost) {
+        resTotalCost.textContent = formatMoney(totalProjectedCost, activeCountry);
+      }
+      if (resHeroVerdict) {
+        const startYr = currentCalendarYear + yearsUntilStart;
+        const curSym = COUNTRY_CONFIGS[activeCountry].currencySym;
+        if (activeCountry === 'IN') {
+          const formattedLakh = (totalProjectedCost / 100000).toFixed(2);
+          resHeroVerdict.textContent = `Over ${dur} years of education starting in ${startYr} at ${(inflationRate * 100).toFixed(1)}% annual inflation, you will need an estimated total corpus of ${curSym}${formattedLakh} Lakh.`;
+        } else {
+          resHeroVerdict.textContent = `Over ${dur} years of education starting in ${startYr} at ${(inflationRate * 100).toFixed(1)}% annual inflation, you will need an estimated total corpus of ${curSym}${formatMoney(totalProjectedCost, activeCountry)}.`;
+        }
+      }
+
+      // Update Sub-Hero Cards
+      if (resMonthlySavings) resMonthlySavings.textContent = formatMoney(requiredMonthlySavings, activeCountry);
+      if (resMonthlyHint) {
+        if (yearsUntilStart > 0) {
+          resMonthlyHint.textContent = `For ${yearsUntilStart} years at ${(returnRate * 100).toFixed(1)}% expected annual return`;
+        } else {
+          resMonthlyHint.textContent = `Across ${dur} years of education (starts immediately)`;
+        }
+      }
+
+      if (resAnnualSavings) resAnnualSavings.textContent = formatMoney(requiredAnnualSavings, activeCountry);
+      if (resAnnualHint) {
+        resAnnualHint.textContent = (yearsUntilStart > 0) ? `If investing lump sum once a year for ${yearsUntilStart} yrs` : `If funding annually during study period`;
+      }
+
+      // Update Savings Gap Callout Card
+      if (resGapCard && gapTitle && gapDesc) {
+        const curSym = COUNTRY_CONFIGS[activeCountry].currencySym;
+        if (isSurplus) {
+          resGapCard.classList.add('surplus');
+          gapTitle.textContent = `Goal Fully Funded! Projected Surplus: ${curSym}${formatMoney(surplusAmount, activeCountry)}`;
+          gapDesc.textContent = `Your existing savings of ${curSym}${formatMoney(existingSavings, activeCountry)} are projected to grow to ${curSym}${formatMoney(fvExistingSavingsAtStart, activeCountry)} by the start of education, fully covering the required ${curSym}${formatMoney(pvCorpusAtStart, activeCountry)} corpus. No additional savings are strictly required.`;
+        } else {
+          resGapCard.classList.remove('surplus');
+          gapTitle.textContent = `Estimated Savings Gap: ${curSym}${formatMoney(netCorpusGapAtStart, activeCountry)}`;
+          gapDesc.textContent = `Your existing ${curSym}${formatMoney(existingSavings, activeCountry)} savings will grow to ${curSym}${formatMoney(fvExistingSavingsAtStart, activeCountry)} by start of education. A disciplined ${savingsFrequency} investment of ${curSym}${formatMoney(savingsFrequency === 'monthly' ? requiredMonthlySavings : requiredAnnualSavings, activeCountry)} bridges the remaining ${curSym}${formatMoney(netCorpusGapAtStart, activeCountry)} target corpus.`;
+        }
+      }
+
+      // Update Visual Split Bar
+      const totalPool = Math.max(1, fvExistingSavingsAtStart + totalDeposits + totalInvestmentGrowth);
+      const pctExisting = Math.min(100, Math.max(0, (fvExistingSavingsAtStart / totalPool) * 100));
+      const pctDeposits = Math.min(100, Math.max(0, (totalDeposits / totalPool) * 100));
+      const pctGrowth = Math.min(100, Math.max(0, 100 - pctExisting - pctDeposits));
+
+      if (barSegExisting) barSegExisting.style.width = `${pctExisting.toFixed(1)}%`;
+      if (barSegDeposits) barSegDeposits.style.width = `${pctDeposits.toFixed(1)}%`;
+      if (barSegGrowth) barSegGrowth.style.width = `${pctGrowth.toFixed(1)}%`;
+
+      if (resGrowthShare) resGrowthShare.textContent = `${growthSharePct.toFixed(1)}% Funded by Compounding`;
+      if (legExistingVal) legExistingVal.textContent = formatShortCurrency(fvExistingSavingsAtStart, activeCountry);
+      if (legDepositsVal) legDepositsVal.textContent = formatShortCurrency(totalDeposits, activeCountry);
+      if (legGrowthVal) legGrowthVal.textContent = formatShortCurrency(totalInvestmentGrowth, activeCountry);
+
+      // Update 8 Metrics Grid
+      const sym = COUNTRY_CONFIGS[activeCountry].currencySym;
+      if (tileCostToday) tileCostToday.textContent = `${sym}${formatMoney(totalCostToday, activeCountry)}`;
+      if (tileFirstYear) tileFirstYear.textContent = `${sym}${formatMoney(firstYearCost, activeCountry)}`;
+      if (tileYearsStart) tileYearsStart.textContent = `${yearsUntilStart} yrs`;
+      if (tileDuration) tileDuration.textContent = `${dur} yrs`;
+      if (tileFvSavings) tileFvSavings.textContent = `${sym}${formatMoney(fvExistingSavingsAtStart, activeCountry)}`;
+      if (tileOutOfPocket) tileOutOfPocket.textContent = `${sym}${formatMoney(totalOutOfPocket, activeCountry)}`;
+      if (tileGrowth) tileGrowth.textContent = `${sym}${formatMoney(totalInvestmentGrowth, activeCountry)}`;
+      if (tileCorpusTarget) tileCorpusTarget.textContent = `${sym}${formatMoney(pvCorpusAtStart, activeCountry)}`;
+
+      // Update Year-by-Year Table
+      if (tableSubtitle) {
+        tableSubtitle.textContent = `Projected cash flows based on ${(inflationRate * 100).toFixed(1)}% annual education inflation`;
+      }
+
+      if (eduScheduleTbody) {
+        eduScheduleTbody.innerHTML = '';
+        let cumulative = 0;
+        yearlyCosts.forEach(item => {
+          cumulative += item.inflatedCost;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="text-align: left; font-weight: 600;">Year ${item.yearIndex} (${item.calendarYear})</td>
+            <td style="text-align: center;">Age ${item.childAge}</td>
+            <td style="text-align: right;">${sym}${formatMoney(annualCostToday, activeCountry)}</td>
+            <td style="text-align: right; color: var(--color-primary); font-weight: 600;">${item.inflationFactor.toFixed(2)}&times;</td>
+            <td style="text-align: right; font-weight: 700; color: var(--color-heading);">${sym}${formatMoney(item.inflatedCost, activeCountry)}</td>
+            <td style="text-align: right; font-weight: 600;">${sym}${formatMoney(cumulative, activeCountry)}</td>
+          `;
+          eduScheduleTbody.appendChild(tr);
+        });
+      }
+    }
+
+    // Event Listeners
+
+    // Country Pill Selection (Desktop)
+    countryPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const c = pill.getAttribute('data-country') || 'IN';
+        updateCountryUI(c);
+      });
+    });
+
+    // Mobile Country Select (Mobile)
+    if (mobileCountrySelect) {
+      mobileCountrySelect.addEventListener('change', () => {
+        updateCountryUI(mobileCountrySelect.value);
+      });
+    }
+
+    // Level & Category Selectors
+    if (eduLevelSelect) {
+      eduLevelSelect.addEventListener('change', () => onLevelChanged(false));
+    }
+    if (eduCategorySelect) {
+      eduCategorySelect.addEventListener('change', onCategoryChanged);
+    }
+    if (sgStatusSelect) {
+      sgStatusSelect.addEventListener('change', onCategoryChanged);
+    }
+
+    // Sync Slider & Numeric Inputs
+    function bindSliderInput(slider: HTMLInputElement, input: HTMLInputElement, callback: () => void) {
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        callback();
+      });
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        callback();
+      });
+    }
+
+    bindSliderInput(childAgeSlider, childAgeInput, calculateAndRender);
+    bindSliderInput(startAgeSlider, startAgeInput, calculateAndRender);
+    bindSliderInput(durationSlider, durationInput, calculateAndRender);
+    bindSliderInput(inflationSlider, inflationInput, calculateAndRender);
+    bindSliderInput(returnSlider, returnInput, calculateAndRender);
+
+    [baseCostInput, addCostInput, existingSavingsInput].forEach(inp => {
+      inp.addEventListener('input', calculateAndRender);
+    });
+
+    // Age Preset Pills
+    document.querySelectorAll('.age-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.age-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const age = pill.getAttribute('data-age') || '5';
+        childAgeInput.value = age;
+        childAgeSlider.value = age;
+        calculateAndRender();
+      });
+    });
+
+    // Start Age Preset Pills
+    document.querySelectorAll('.start-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.start-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const start = pill.getAttribute('data-start') || '18';
+        startAgeInput.value = start;
+        startAgeSlider.value = start;
+        calculateAndRender();
+      });
+    });
+
+    // Frequency Buttons
+    freqButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        freqButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-checked', 'true');
+        savingsFrequency = btn.getAttribute('data-freq') || 'monthly';
+        calculateAndRender();
+      });
+    });
+
+    // Reset Button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        updateCountryUI(activeCountry);
+      });
+    }
+
+    // Native Platform Clipboard Export
+    document.addEventListener('copy-calculator-results', () => {
+      const sym = COUNTRY_CONFIGS[activeCountry].currencySym;
+      const text = `Child Education Cost Calculation (${COUNTRY_CONFIGS[activeCountry].name}):
+Projected Total Education Cost: ${sym}${resTotalCost?.textContent || '0'}
+Required Monthly Savings: ${sym}${resMonthlySavings?.textContent || '0'}/mo
+Required Annual Savings: ${sym}${resAnnualSavings?.textContent || '0'}/yr
+Cost in Today's Money: ${tileCostToday?.textContent || '0'}
+First Year Projected Fee: ${tileFirstYear?.textContent || '0'}
+Future Value of Existing Savings: ${tileFvSavings?.textContent || '0'}
+Total Investment Growth: ${tileGrowth?.textContent || '0'}
+Target Corpus Needed at Start: ${tileCorpusTarget?.textContent || '0'}
+Calculated via FinCalcLab Child Education Cost Calculator (https://fincalclab.com/calculator/child-education-cost-calculator)`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Child education calculation results copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    });
+
+    // Initial load
+    updateCountryUI('IN');
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChildEducationCalculator);
+  } else {
+    initChildEducationCalculator();
+  }
+</script>

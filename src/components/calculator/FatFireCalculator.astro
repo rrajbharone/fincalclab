@@ -1,0 +1,1097 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Fat FIRE Calculator"
+  description="Calculate your abundant early retirement target. Project your inflation-adjusted Fat FIRE nest egg, required monthly investments, and wealth accumulation timeline."
+  category="Retirement &amp; Investing"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="fat-fire-calculator">
+    
+    <!-- Step 1: Currency & Retirement Goals -->
+    <h3 class="input-section-heading">1. Retirement Lifestyle &amp; Withdrawal Strategy</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ff-currency-select">Currency</label>
+        <select id="ff-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Current Age (Optional) -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ff-age-input">
+          Current Age <span class="optional-tag">(Optional)</span>
+        </label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="ff-age-input" 
+            min="18" 
+            max="100" 
+            step="1" 
+            value="35" 
+            placeholder="e.g. 35"
+            aria-label="Current Age" 
+          />
+          <span class="unit-symbol">yrs</span>
+        </div>
+      </div>
+      <span class="input-hint">Used to calculate your projected retirement age.</span>
+    </div>
+
+    <!-- Years Until Retirement -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ff-years-input">Years Until Retirement</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="ff-years-input" 
+            min="1" 
+            max="50" 
+            step="1" 
+            value="15" 
+            aria-label="Years Until Retirement" 
+          />
+          <span class="unit-symbol">yrs</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="ff-years-slider" 
+        min="1" 
+        max="40" 
+        step="1" 
+        value="15" 
+        class="slider-range" 
+        aria-label="Years Until Retirement Slider" 
+      />
+    </div>
+
+    <!-- Desired Monthly Expenses in Today's Money -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ff-exp-input">Desired Monthly Expenses (Today's Money)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-exp">$</span>
+          <input 
+            type="number" 
+            id="ff-exp-input" 
+            min="1000" 
+            step="500" 
+            value="10000" 
+            aria-label="Desired Monthly Living Expenses" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="ff-exp-slider" 
+        min="3000" 
+        max="30000" 
+        step="500" 
+        value="10000" 
+        class="slider-range" 
+        aria-label="Monthly Expenses Slider" 
+      />
+      <span class="input-hint">Abundant living budget: housing, travel, luxury, healthcare, and hobbies.</span>
+    </div>
+
+    <!-- Safe Withdrawal Rate (SWR) -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="ff-swr-input">Safe Withdrawal Rate (SWR)</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="ff-swr-input" 
+            min="2.0" 
+            max="6.0" 
+            step="0.1" 
+            value="3.5" 
+            aria-label="Safe Withdrawal Rate Percentage" 
+          />
+          <span class="unit-symbol">%</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="ff-swr-slider" 
+        min="2.5" 
+        max="5.0" 
+        step="0.1" 
+        value="3.5" 
+        class="slider-range" 
+        aria-label="Safe Withdrawal Rate Slider" 
+      />
+      <span class="input-hint">Fat FIRE retirees often target 3.25%–3.5% for 40+ year retirement security.</span>
+    </div>
+
+    <!-- Step 2: Current Portfolio & Growth Assumptions -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">2. Portfolio Accumulation &amp; Market Assumptions</h3>
+      
+      <!-- Current Investment Portfolio -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ff-port-input">Current Investment Portfolio</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-port">$</span>
+            <input 
+              type="number" 
+              id="ff-port-input" 
+              min="0" 
+              step="10000" 
+              value="500000" 
+              aria-label="Current Investment Portfolio Balance" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="ff-port-slider" 
+          min="0" 
+          max="2000000" 
+          step="25000" 
+          value="500000" 
+          class="slider-range" 
+          aria-label="Current Portfolio Balance Slider" 
+        />
+      </div>
+
+      <!-- Monthly Investment Contribution -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ff-contrib-input">
+            Monthly Investment Contribution <span class="optional-tag">(Optional)</span>
+          </label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-contrib">$</span>
+            <input 
+              type="number" 
+              id="ff-contrib-input" 
+              min="0" 
+              step="250" 
+              value="3000" 
+              aria-label="Monthly Investment Contribution" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="ff-contrib-slider" 
+          min="0" 
+          max="15000" 
+          step="250" 
+          value="3000" 
+          class="slider-range" 
+          aria-label="Monthly Contribution Slider" 
+        />
+        <span class="input-hint">How much you currently invest each month from income.</span>
+      </div>
+
+      <!-- Expected Annual Investment Return -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ff-return-input">Expected Annual Investment Return</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="ff-return-input" 
+              min="0.0" 
+              max="20.0" 
+              step="0.25" 
+              value="8.0" 
+              aria-label="Expected Annual Investment Return Rate" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="ff-return-slider" 
+          min="3.0" 
+          max="14.0" 
+          step="0.25" 
+          value="8.0" 
+          class="slider-range" 
+          aria-label="Investment Return Rate Slider" 
+        />
+        <span class="input-hint">Historical broad-market equity returns have averaged ~7%–10% nominal.</span>
+      </div>
+
+      <!-- Expected Annual Inflation Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="ff-inflation-input">Expected Annual Inflation Rate</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="ff-inflation-input" 
+              min="0.0" 
+              max="15.0" 
+              step="0.1" 
+              value="2.5" 
+              aria-label="Expected Annual Inflation Rate" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="ff-inflation-slider" 
+          min="1.0" 
+          max="7.0" 
+          step="0.1" 
+          value="2.5" 
+          class="slider-range" 
+          aria-label="Inflation Rate Slider" 
+        />
+        <span class="input-hint">Long-term developed market central bank inflation targets typically average 2.0%–3.0%.</span>
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="ff-reset" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Fat FIRE Projection &amp; Targets</h3>
+
+    <!-- Core Payout Displays -->
+    <div class="net-value-container">
+      <!-- Card 1: Inflation-Adjusted Future Target -->
+      <div class="net-value-box target-box">
+        <span class="net-box-label">Required Fat FIRE Corpus at Retirement</span>
+        <div id="res-future-target" class="net-box-amount text-primary">$4,965,594</div>
+        <span class="net-box-sub" id="lbl-today-target">Today's Purchasing Power: $3,428,571</span>
+      </div>
+
+      <!-- Card 2: Projected Portfolio at Retirement -->
+      <div class="net-value-box portfolio-box" id="box-projected-portfolio">
+        <span class="net-box-label">Projected Portfolio at Retirement</span>
+        <div id="res-projected-portfolio" class="net-box-amount text-accent">$2,691,575</div>
+        <span class="net-box-sub" id="lbl-surplus-shortfall">Estimated Shortfall: $2,274,018</span>
+      </div>
+    </div>
+
+    <!-- Visual Progress Bar -->
+    <div class="funding-progress-card">
+      <div class="progress-label-row">
+        <span class="progress-title">Projected Target Funded</span>
+        <span class="progress-pct" id="res-funded-pct">54.2%</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuenow="54" aria-valuemin="0" aria-valuemax="100" aria-label="Percentage of Fat FIRE Target Funded" id="res-progress-track">
+        <div class="progress-fill" id="res-progress-fill" style="width: 54.2%;"></div>
+      </div>
+      <div class="progress-meta-row">
+        <span id="lbl-existing-funded">Current Balance Today: 14.6% of Target</span>
+        <span id="lbl-retirement-milestone">Retirement at Age 50</span>
+      </div>
+    </div>
+
+    <!-- Optimization Verdict -->
+    <div style="margin-bottom: var(--space-6);">
+      <Card elevation="sm" id="ff-verdict-card" class="verdict-card">
+        <span class="verdict-eyebrow">Fat FIRE Financial Assessment</span>
+        <p id="res-verdict-text" class="verdict-text">
+          Under your current monthly contribution of $3,000, your portfolio will reach $2,691,575—leaving a shortfall of $2,274,018. To retire comfortably in 15 years, your required monthly contribution is <strong>$9,572/mo</strong> (an additional <strong>$6,572/mo</strong>).
+        </p>
+      </Card>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <h4 class="metrics-section-heading">Detailed Wealth &amp; Cash Flow Breakdown</h4>
+    <div class="results-grid ff-metrics-grid">
+      <!-- Tile 1 -->
+      <div class="result-tile">
+        <span class="tile-label">Today's FIRE Number</span>
+        <div class="tile-value text-base" id="tile-today-target">$3,428,571</div>
+        <span class="tile-sub" id="lbl-tile-today-sub">At 3.5% SWR ($120k/yr)</span>
+      </div>
+
+      <!-- Tile 2 -->
+      <div class="result-tile">
+        <span class="tile-label">Future Annual Expenses</span>
+        <div class="tile-value text-base" id="tile-future-annual-exp">$173,796/yr</div>
+        <span class="tile-sub" id="tile-future-monthly-exp">$14,483/month in 15 yrs</span>
+      </div>
+
+      <!-- Tile 3 -->
+      <div class="result-tile">
+        <span class="tile-label">Required Monthly Investment</span>
+        <div class="tile-value text-primary" id="tile-required-monthly">$9,572/mo</div>
+        <span class="tile-sub" id="lbl-required-monthly-sub">Total needed to hit target</span>
+      </div>
+
+      <!-- Tile 4 -->
+      <div class="result-tile">
+        <span class="tile-label">Additional Monthly Needed</span>
+        <div class="tile-value" id="tile-additional-monthly" style="color: #dc2626;">+$6,572/mo</div>
+        <span class="tile-sub" id="lbl-additional-sub">Beyond current $3,000/mo</span>
+      </div>
+
+      <!-- Tile 5 -->
+      <div class="result-tile">
+        <span class="tile-label">Existing Portfolio Growth</span>
+        <div class="tile-value text-base" id="tile-existing-growth">$1,653,461</div>
+        <span class="tile-sub" id="lbl-existing-growth-sub">$500k compounded @ 8.0%</span>
+      </div>
+
+      <!-- Tile 6 -->
+      <div class="result-tile">
+        <span class="tile-label">Target Retirement Age</span>
+        <div class="tile-value text-base" id="tile-retirement-age">Age 50</div>
+        <span class="tile-sub" id="lbl-retirement-age-sub">35 current age + 15 yrs</span>
+      </div>
+    </div>
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initFatFireCalculator() {
+    const currencySelect = document.getElementById('ff-currency-select') as HTMLSelectElement;
+
+    const ageInput = document.getElementById('ff-age-input') as HTMLInputElement;
+    const yearsInput = document.getElementById('ff-years-input') as HTMLInputElement;
+    const yearsSlider = document.getElementById('ff-years-slider') as HTMLInputElement;
+    const expInput = document.getElementById('ff-exp-input') as HTMLInputElement;
+    const expSlider = document.getElementById('ff-exp-slider') as HTMLInputElement;
+    const swrInput = document.getElementById('ff-swr-input') as HTMLInputElement;
+    const swrSlider = document.getElementById('ff-swr-slider') as HTMLInputElement;
+
+    const portInput = document.getElementById('ff-port-input') as HTMLInputElement;
+    const portSlider = document.getElementById('ff-port-slider') as HTMLInputElement;
+    const contribInput = document.getElementById('ff-contrib-input') as HTMLInputElement;
+    const contribSlider = document.getElementById('ff-contrib-slider') as HTMLInputElement;
+    const returnInput = document.getElementById('ff-return-input') as HTMLInputElement;
+    const returnSlider = document.getElementById('ff-return-slider') as HTMLInputElement;
+    const inflationInput = document.getElementById('ff-inflation-input') as HTMLInputElement;
+    const inflationSlider = document.getElementById('ff-inflation-slider') as HTMLInputElement;
+
+    const resetBtn = document.getElementById('ff-reset');
+
+    if (!expInput || !currencySelect || !yearsInput || !portInput) return;
+
+    // Currency Configurations
+    const currencyConfigs: Record<string, { symbol: string; locale: string }> = {
+      USD: { symbol: '$', locale: 'en-US' },
+      EUR: { symbol: '€', locale: 'de-DE' },
+      GBP: { symbol: '£', locale: 'en-GB' },
+      INR: { symbol: '₹', locale: 'en-IN' },
+      AUD: { symbol: 'A$', locale: 'en-AU' },
+      CAD: { symbol: 'C$', locale: 'en-CA' },
+      SGD: { symbol: 'S$', locale: 'en-SG' },
+      JPY: { symbol: '¥', locale: 'ja-JP' },
+      CHF: { symbol: 'CHF ', locale: 'de-CH' }
+    };
+
+    function getCurrencyConfig() {
+      const code = currencySelect ? currencySelect.value : 'USD';
+      return currencyConfigs[code] || { symbol: '$', locale: 'en-US' };
+    }
+
+    function formatMoney(amount: number, roundWhole = true): string {
+      const config = getCurrencyConfig();
+      if (!isFinite(amount) || isNaN(amount)) return `${config.symbol}0`;
+      
+      const absVal = Math.abs(amount);
+      let formatted: string;
+
+      if (roundWhole) {
+        formatted = Math.round(absVal).toLocaleString(config.locale, {
+          maximumFractionDigits: 0
+        });
+      } else {
+        formatted = absVal.toLocaleString(config.locale, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      return `${amount < 0 ? '-' : ''}${config.symbol}${formatted}`;
+    }
+
+    // Bidirectional Slider Binding
+    function bindSlider(input: HTMLInputElement, slider: HTMLInputElement) {
+      if (!input || !slider) return;
+      input.addEventListener('input', () => {
+        slider.value = input.value;
+        calculateAll();
+      });
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateAll();
+      });
+    }
+
+    bindSlider(yearsInput, yearsSlider);
+    bindSlider(expInput, expSlider);
+    bindSlider(swrInput, swrSlider);
+    bindSlider(portInput, portSlider);
+    bindSlider(contribInput, contribSlider);
+    bindSlider(returnInput, returnSlider);
+    bindSlider(inflationInput, inflationSlider);
+
+    if (ageInput) {
+      ageInput.addEventListener('input', () => calculateAll());
+    }
+
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        const config = getCurrencyConfig();
+        const syms = ['sym-exp', 'sym-port', 'sym-contrib'];
+        syms.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = config.symbol;
+        });
+        calculateAll();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (ageInput) ageInput.value = '35';
+        yearsInput.value = '15';
+        yearsSlider.value = '15';
+        expInput.value = '10000';
+        expSlider.value = '10000';
+        swrInput.value = '3.5';
+        swrSlider.value = '3.5';
+        portInput.value = '500000';
+        portSlider.value = '500000';
+        contribInput.value = '3000';
+        contribSlider.value = '3000';
+        returnInput.value = '8.0';
+        returnSlider.value = '8.0';
+        inflationInput.value = '2.5';
+        inflationSlider.value = '2.5';
+        if (currencySelect) currencySelect.value = 'USD';
+        
+        const syms = ['sym-exp', 'sym-port', 'sym-contrib'];
+        syms.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = '$';
+        });
+
+        calculateAll();
+      });
+    }
+
+    function calculateAll() {
+      // 1. Parse Inputs safely
+      const rawAge = ageInput ? ageInput.value.trim() : '';
+      const hasAge = rawAge !== '' && !isNaN(Number(rawAge)) && Number(rawAge) > 0;
+      const currentAge = hasAge ? Number(rawAge) : null;
+
+      const n = Math.max(0, Math.min(60, Number(yearsInput.value) || 0));
+      const expMonthly = Math.max(0, Number(expInput.value) || 0);
+      const expAnnual = expMonthly * 12;
+
+      let swrVal = Number(swrInput.value) || 3.5;
+      if (swrVal <= 0.1) swrVal = 0.1;
+      const swrDec = swrVal / 100;
+
+      const pv = Math.max(0, Number(portInput.value) || 0);
+      const pmt = Math.max(0, Number(contribInput.value) || 0);
+
+      const rAnnual = Math.max(0, (Number(returnInput.value) || 0) / 100);
+      const infAnnual = Math.max(0, (Number(inflationInput.value) || 0) / 100);
+
+      // 2. Compute FIRE Targets
+      const fireTargetToday = swrDec > 0 ? expAnnual / swrDec : 0;
+      const futureAnnualExp = expAnnual * Math.pow(1 + infAnnual, n);
+      const futureMonthlyExp = futureAnnualExp / 12;
+      const fireTargetFuture = swrDec > 0 ? futureAnnualExp / swrDec : 0;
+
+      // 3. Project Portfolio (Monthly Compounding)
+      const m = n * 12;
+      const i = rAnnual / 12;
+
+      let fvExisting = 0;
+      let fvContrib = 0;
+
+      if (m === 0) {
+        fvExisting = pv;
+        fvContrib = 0;
+      } else if (i === 0) {
+        fvExisting = pv;
+        fvContrib = pmt * m;
+      } else {
+        fvExisting = pv * Math.pow(1 + i, m);
+        fvContrib = pmt * ((Math.pow(1 + i, m) - 1) / i);
+      }
+
+      const fvTotal = fvExisting + fvContrib;
+
+      // 4. Surplus or Shortfall
+      const netDiff = fvTotal - fireTargetFuture;
+      const isSurplus = netDiff >= 0;
+      const surplusOrShortfall = Math.abs(netDiff);
+
+      // 5. Monthly Contribution Requirements
+      let requiredMonthlyContrib = 0;
+      let additionalMonthlyRequired = 0;
+
+      if (fvExisting >= fireTargetFuture) {
+        requiredMonthlyContrib = 0;
+        additionalMonthlyRequired = 0;
+      } else if (m > 0) {
+        const deficit = fireTargetFuture - fvExisting;
+        if (i === 0) {
+          requiredMonthlyContrib = deficit / m;
+        } else {
+          requiredMonthlyContrib = (deficit * i) / (Math.pow(1 + i, m) - 1);
+        }
+        additionalMonthlyRequired = Math.max(0, requiredMonthlyContrib - pmt);
+      } else {
+        // m === 0 and pv < target
+        requiredMonthlyContrib = Math.max(0, fireTargetFuture - pv);
+        additionalMonthlyRequired = requiredMonthlyContrib;
+      }
+
+      // 6. Percentage Funded
+      const fundedPctToday = fireTargetToday > 0 ? (pv / fireTargetToday) * 100 : 0;
+      const fundedPctFuture = fireTargetFuture > 0 ? (fvTotal / fireTargetFuture) * 100 : 0;
+
+      // 7. Update DOM Outputs
+      const resFutureTarget = document.getElementById('res-future-target');
+      if (resFutureTarget) resFutureTarget.textContent = formatMoney(fireTargetFuture);
+
+      const lblTodayTarget = document.getElementById('lbl-today-target');
+      if (lblTodayTarget) lblTodayTarget.textContent = `Today's Purchasing Power: ${formatMoney(fireTargetToday)}`;
+
+      const resProjPortfolio = document.getElementById('res-projected-portfolio');
+      if (resProjPortfolio) resProjPortfolio.textContent = formatMoney(fvTotal);
+
+      const lblSurplusShortfall = document.getElementById('lbl-surplus-shortfall');
+      const boxProjPortfolio = document.getElementById('box-projected-portfolio');
+
+      if (lblSurplusShortfall) {
+        if (isSurplus) {
+          lblSurplusShortfall.textContent = `Estimated Surplus: +${formatMoney(surplusOrShortfall)}`;
+          lblSurplusShortfall.style.color = 'var(--color-success)';
+        } else {
+          lblSurplusShortfall.textContent = `Estimated Shortfall: -${formatMoney(surplusOrShortfall)}`;
+          lblSurplusShortfall.style.color = '#dc2626';
+        }
+      }
+
+      if (boxProjPortfolio) {
+        boxProjPortfolio.style.borderTopColor = isSurplus ? 'var(--color-success)' : '#dc2626';
+      }
+
+      // Progress Bar
+      const resFundedPct = document.getElementById('res-funded-pct');
+      const resProgressFill = document.getElementById('res-progress-fill');
+      const resProgressTrack = document.getElementById('res-progress-track');
+      const boundedPct = Math.min(100, Math.max(0, fundedPctFuture));
+
+      if (resFundedPct) resFundedPct.textContent = `${fundedPctFuture.toFixed(1)}%`;
+      if (resProgressFill) {
+        resProgressFill.style.width = `${boundedPct}%`;
+        resProgressFill.style.backgroundColor = isSurplus ? 'var(--color-success)' : 'var(--color-primary)';
+      }
+      if (resProgressTrack) {
+        resProgressTrack.setAttribute('aria-valuenow', Math.round(boundedPct).toString());
+      }
+
+      const lblExistingFunded = document.getElementById('lbl-existing-funded');
+      if (lblExistingFunded) {
+        lblExistingFunded.textContent = `Current Balance Today: ${fundedPctToday.toFixed(1)}% of Target`;
+      }
+
+      const lblRetirementMilestone = document.getElementById('lbl-retirement-milestone');
+      if (lblRetirementMilestone) {
+        if (currentAge !== null) {
+          lblRetirementMilestone.textContent = `Retirement at Age ${currentAge + n}`;
+        } else {
+          lblRetirementMilestone.textContent = `Retirement Horizon: ${n} Years`;
+        }
+      }
+
+      // Verdict Card
+      const verdictCard = document.getElementById('ff-verdict-card');
+      const resVerdictText = document.getElementById('res-verdict-text');
+      if (resVerdictText && verdictCard) {
+        if (isSurplus) {
+          verdictCard.style.borderLeftColor = 'var(--color-success)';
+          verdictCard.style.backgroundColor = 'rgba(16, 185, 129, 0.04)';
+          if (fvExisting >= fireTargetFuture) {
+            resVerdictText.innerHTML = `<strong>Goal Already Secured!</strong> Your current portfolio (${formatMoney(pv)}) will compound into <strong>${formatMoney(fvExisting)}</strong> over ${n} years at ${Number(returnInput.value)}% annual return—exceeding your future Fat FIRE target of ${formatMoney(fireTargetFuture)} with <strong>$0 required monthly savings</strong>.`;
+          } else {
+            resVerdictText.innerHTML = `<strong>Surplus Projected!</strong> With monthly investments of ${formatMoney(pmt)}, your portfolio will compound to <strong>${formatMoney(fvTotal)}</strong> over ${n} years. You are projected to exceed your Fat FIRE target (${formatMoney(fireTargetFuture)}) with a comfortable cushion of <strong>${formatMoney(surplusOrShortfall)}</strong>.`;
+          }
+        } else {
+          verdictCard.style.borderLeftColor = '#f59e0b';
+          verdictCard.style.backgroundColor = 'rgba(245, 158, 11, 0.04)';
+          if (m === 0) {
+            resVerdictText.innerHTML = `<strong>Immediate Deficit:</strong> To retire today with a ${formatMoney(expMonthly)} monthly living standard, your target is ${formatMoney(fireTargetToday)}. You currently have ${formatMoney(pv)}, leaving an immediate capital deficit of <strong>${formatMoney(surplusOrShortfall)}</strong>.`;
+          } else {
+            resVerdictText.innerHTML = `Under your current contribution of ${formatMoney(pmt)}/mo, your projected portfolio (${formatMoney(fvTotal)}) falls <strong>${formatMoney(surplusOrShortfall)}</strong> short of the required ${formatMoney(fireTargetFuture)} corpus. To close this gap in ${n} years, you must invest <strong>${formatMoney(requiredMonthlyContrib)}/mo</strong> (an additional <strong>${formatMoney(additionalMonthlyRequired)}/mo</strong>).`;
+          }
+        }
+      }
+
+      // Key Metrics Tiles
+      const tileTodayTarget = document.getElementById('tile-today-target');
+      if (tileTodayTarget) tileTodayTarget.textContent = formatMoney(fireTargetToday);
+
+      const lblTileTodaySub = document.getElementById('lbl-tile-today-sub');
+      if (lblTileTodaySub) lblTileTodaySub.textContent = `At ${swrVal}% SWR (${formatMoney(expAnnual)}/yr)`;
+
+      const tileFutureAnnualExp = document.getElementById('tile-future-annual-exp');
+      if (tileFutureAnnualExp) tileFutureAnnualExp.textContent = `${formatMoney(futureAnnualExp)}/yr`;
+
+      const tileFutureMonthlyExp = document.getElementById('tile-future-monthly-exp');
+      if (tileFutureMonthlyExp) tileFutureMonthlyExp.textContent = `${formatMoney(futureMonthlyExp)}/month in ${n} yrs`;
+
+      const tileRequiredMonthly = document.getElementById('tile-required-monthly');
+      if (tileRequiredMonthly) tileRequiredMonthly.textContent = `${formatMoney(requiredMonthlyContrib)}/mo`;
+
+      const lblRequiredMonthlySub = document.getElementById('lbl-required-monthly-sub');
+      if (lblRequiredMonthlySub) {
+        lblRequiredMonthlySub.textContent = isSurplus ? 'Target met with current pace' : 'Total needed to hit target';
+      }
+
+      const tileAdditionalMonthly = document.getElementById('tile-additional-monthly');
+      if (tileAdditionalMonthly) {
+        if (additionalMonthlyRequired <= 0) {
+          tileAdditionalMonthly.textContent = '$0/mo';
+          tileAdditionalMonthly.style.color = 'var(--color-success)';
+        } else {
+          tileAdditionalMonthly.textContent = `+${formatMoney(additionalMonthlyRequired)}/mo`;
+          tileAdditionalMonthly.style.color = '#dc2626';
+        }
+      }
+
+      const lblAdditionalSub = document.getElementById('lbl-additional-sub');
+      if (lblAdditionalSub) {
+        lblAdditionalSub.textContent = additionalMonthlyRequired <= 0 ? 'No extra savings needed' : `Beyond current ${formatMoney(pmt)}/mo`;
+      }
+
+      const tileExistingGrowth = document.getElementById('tile-existing-growth');
+      if (tileExistingGrowth) tileExistingGrowth.textContent = formatMoney(fvExisting);
+
+      const lblExistingGrowthSub = document.getElementById('lbl-existing-growth-sub');
+      if (lblExistingGrowthSub) lblExistingGrowthSub.textContent = `${formatMoney(pv)} compounded @ ${Number(returnInput.value)}%`;
+
+      const tileRetirementAge = document.getElementById('tile-retirement-age');
+      if (tileRetirementAge) {
+        tileRetirementAge.textContent = currentAge !== null ? `Age ${currentAge + n}` : `${n} Years`;
+      }
+
+      const lblRetirementAgeSub = document.getElementById('lbl-retirement-age-sub');
+      if (lblRetirementAgeSub) {
+        lblRetirementAgeSub.textContent = currentAge !== null ? `${currentAge} current age + ${n} yrs` : `Retirement in ${n} years`;
+      }
+    }
+
+    // Initial execution
+    calculateAll();
+  }
+
+  // Support Astro View Transitions and initial DOM ready
+  document.addEventListener('DOMContentLoaded', initFatFireCalculator);
+  document.addEventListener('astro:page-load', initFatFireCalculator);
+</script>
+
+<style>
+  .input-section-heading {
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+    margin-bottom: var(--space-3);
+    color: var(--color-heading);
+  }
+
+  .optional-tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .input-group {
+    margin-bottom: var(--space-4);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    gap: var(--space-2);
+  }
+
+  .input-label-row label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 10px;
+    height: 38px;
+    min-width: 130px;
+    max-width: 170px;
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .currency-symbol,
+  .unit-symbol {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .input-symbol-wrapper input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    padding: 0 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    text-align: right;
+    outline: none;
+  }
+
+  .currency-select {
+    height: 38px;
+    padding: 0 10px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-surface);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    min-width: 160px;
+    max-width: 200px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .input-hint {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    margin-top: 3px;
+  }
+
+  /* Range Sliders */
+  .slider-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 6px 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: var(--color-primary-hover);
+  }
+
+  /* Results Slot Styling */
+  .results-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 var(--space-4) 0;
+    color: var(--color-heading);
+  }
+
+  .net-value-container {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .net-value-box {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-base);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+  }
+
+  .target-box {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .portfolio-box {
+    border-top: 4px solid var(--color-accent);
+    transition: border-top-color 0.2s ease;
+  }
+
+  .net-box-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+  }
+
+  .net-box-amount {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+    word-break: break-all;
+  }
+
+  .net-box-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  /* Progress Bar Card */
+  .funding-progress-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-base);
+    margin-bottom: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .progress-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .progress-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .progress-pct {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--color-heading);
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 10px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .progress-meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--color-text-light);
+    margin-top: 2px;
+  }
+
+  /* Verdict Card */
+  .verdict-card {
+    padding: var(--space-4);
+    border-left: 4px solid var(--color-primary);
+    background: var(--color-bg-base);
+  }
+
+  .verdict-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .verdict-text {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--color-text-base);
+  }
+
+  /* Metrics Grid (Rule 15 Responsive) */
+  .metrics-section-heading {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin: 0 0 var(--space-3) 0;
+    color: var(--color-heading);
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .result-tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background: var(--color-bg-base);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .tile-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tile-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tile-sub {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Text color utilities */
+  .text-primary { color: var(--color-primary); }
+  .text-accent { color: var(--color-accent); }
+  .text-base { color: var(--color-text-base); }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 640px) {
+    .net-value-container {
+      flex-direction: column;
+    }
+
+    .results-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+
+    .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .currency-select {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .net-box-amount {
+      font-size: 1.35rem;
+    }
+
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .progress-meta-row {
+      flex-direction: column;
+      gap: 2px;
+    }
+  }
+</style>

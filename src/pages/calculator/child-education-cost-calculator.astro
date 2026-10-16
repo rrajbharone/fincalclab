@@ -1,0 +1,994 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ChildEducationCostCalculator from '../../components/calculator/ChildEducationCostCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Child Education Cost Calculator', item: '/calculator/child-education-cost-calculator' }
+];
+
+const faqs = [
+  {
+    question: "What is a Child Education Cost Calculator?",
+    answer: "A Child Education Cost Calculator is a specialized financial planning tool designed to project the future cost of your child's schooling or higher education by factoring in education inflation, investment compounding, existing savings, and multi-year fee withdrawals."
+  },
+  {
+    question: "Why is education inflation higher than normal retail inflation?",
+    answer: "Education inflation typically outpaces general consumer CPI by 3% to 6% annually across India, the UAE, and Singapore. This higher rate is driven by rising faculty salaries, campus technology infrastructure, specialized laboratory equipment, administrative compliance, and high competition for accredited, top-tier private and international curricula."
+  },
+  {
+    question: "How does the calculator determine required monthly savings (SIP)?",
+    answer: "The calculator first projects each academic year's inflated fee and discounts them back to the start of education to compute the target corpus required at Year T. It then subtracts the compounded future value of your existing savings. Finally, it uses the compound annuity sinking fund formula to determine the exact fixed monthly SIP needed to reach that net target."
+  },
+  {
+    question: "What realistic education inflation rate should I assume for India?",
+    answer: "For India, historical National Sample Survey Office (NSSO) and industry benchmarks indicate an average education inflation rate of 8% to 12% annually for private engineering, medical, management, and reputable private K-12 schools. We recommend using 10% as a prudent baseline."
+  },
+  {
+    question: "How do school fees work in Dubai and the UAE?",
+    answer: "In Dubai and the UAE, private school tuition increases are regulated by the Knowledge and Human Development Authority (KHDA) via the Education Cost Index (ECI) framework, with annual adjustments typically ranging between 3% and 6%. Public school admission is free for UAE citizens, while eligible expatriates face statutory annual fees around AED 6,000."
+  },
+  {
+    question: "How does student status affect university tuition in Singapore?",
+    answer: "In Singapore, the Ministry of Education (MOE) Tuition Grant heavily subsidizes tuition for Singapore Citizens (paying roughly S$8,250 to S$12,000 annually for standard undergraduate degrees). Permanent Residents pay approximately 40% to 50% more, while International Students pay more than double the citizen rate."
+  },
+  {
+    question: "What happens if my expected investment return is zero?",
+    answer: "If you set the expected annual investment return to 0%, the calculator assumes cash hoarding without any capital growth. Your required monthly savings will equal the uncompounded shortfall divided linearly by the total number of months available before education starts."
+  },
+  {
+    question: "How does the calculator treat existing education savings?",
+    answer: "Existing savings (such as mutual funds, fixed deposits, Sukanya Samriddhi, or dedicated cash reserves) are compounded forward at your expected return rate until the year education begins. This future accumulated value directly reduces the net target corpus you must fund through new monthly contributions."
+  },
+  {
+    question: "Should I plan for additional expenses beyond university tuition?",
+    answer: "Yes. Non-tuition expenses—such as hostel accommodation, food, textbooks, laptop technology, medical insurance, transport, and entrance coaching—frequently constitute 30% to 60% of total education outlays. Always input realistic additional expenses in the calculator for comprehensive planning."
+  },
+  {
+    question: "Are the calculator's results guaranteed financial outcomes?",
+    answer: "No. All projections are educational mathematical models based on the inflation and return assumptions you supply. Actual tuition fees, currency fluctuations, market returns, and institutional policies vary over time and cannot be guaranteed."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Child Education Cost Calculator",
+  "url": "https://fincalclab.com/calculator/child-education-cost-calculator",
+  "description": "Calculate future child education costs with education inflation in India, UAE, and Singapore. Estimate school and university fees, required monthly SIP/savings, and investment growth.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Child Education Cost Calculator (India, UAE, Singapore) | FinCalcLab"
+  description="Calculate future school and college education costs with education inflation for India, UAE, and Singapore. Estimate required monthly savings, investment growth, and education corpus."
+  breadcrumbs={breadcrumbs}
+  faqs={faqs}
+>
+  <!-- WebApplication Schema Injection -->
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(webAppSchema)} />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Multi-Country Calculator -->
+    <ChildEducationCostCalculator />
+
+    <!-- Country Guidance Header Callout -->
+    <section class="edu-intro-callout" aria-labelledby="edu-callout-heading">
+      <Card elevation="sm" class="edu-callout-card">
+        <div class="edu-callout-header">
+          <div class="edu-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </div>
+          <div>
+            <span class="edu-callout-eyebrow">Comprehensive Education Planning</span>
+            <h2 id="edu-callout-heading" class="edu-callout-title">Plan Ahead for India, UAE &amp; Singapore Education Costs</h2>
+          </div>
+        </div>
+        <p class="edu-callout-desc">
+          Education is one of the largest single financial investments a family will ever make. However, traditional savings calculators fail because education inflation runs significantly higher than general consumer price inflation. This tool models realistic, country-specific education cost trajectories, multi-year cash flow withdrawals, and monthly compounding to ensure your child never faces funding compromises.
+        </p>
+
+        <!-- 3-Country Summary Pills -->
+        <div class="edu-country-features-grid">
+          <div class="edu-feature-item">
+            <span class="edu-feature-flag" aria-hidden="true">🇮🇳</span>
+            <div class="edu-feature-text-wrap">
+              <strong class="edu-feature-title">India (INR ₹)</strong>
+              <p class="edu-feature-text">K-12 CBSE/IB, IIT/NIT engineering, private universities, NEET medical, and IIM management programs with 8%–12% historical inflation.</p>
+            </div>
+          </div>
+          <div class="edu-feature-item">
+            <span class="edu-feature-flag" aria-hidden="true">🇦🇪</span>
+            <div class="edu-feature-text-wrap">
+              <strong class="edu-feature-title">UAE (AED د.إ)</strong>
+              <p class="edu-feature-text">KHDA &amp; ADEK private school fee bands, public expat quotas, Dubai international branch campuses, and overseas study abroad budgets.</p>
+            </div>
+          </div>
+          <div class="edu-feature-item">
+            <span class="edu-feature-flag" aria-hidden="true">🇸🇬</span>
+            <div class="edu-feature-text-wrap">
+              <strong class="edu-feature-title">Singapore (SGD S$)</strong>
+              <p class="edu-feature-text">MOE fee schedules across Singapore Citizens, Permanent Residents (PRs), and International Students for primary, secondary, and Autonomous Universities.</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Educational Guide Article -->
+    <article class="edu-guide-article prose">
+      <!-- Section 1: Introduction -->
+      <section class="guide-block">
+        <h2 class="guide-title">How the Child Education Cost Calculator Works</h2>
+        <p>
+          Funding a child's educational journey requires far more than guessing a future lump sum. Whether you are using this tool as a <strong>Child Education Planning Calculator</strong> for primary schooling, a <strong>Future Education Cost Calculator</strong> for high school, or a comprehensive <strong>College Education Cost Calculator</strong> for university tuition, education expenses are dynamic, multi-year obligations subject to intense compounding cost pressures.
+        </p>
+        <p>
+          A dedicated <strong>Child Education Cost Calculator</strong> bridges the gap between today's tuition reality and tomorrow's fee invoice. Rather than assuming a single flat cost, this calculator executes a complete actuarial projection:
+        </p>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Compounding Education Inflation:</strong> Calculates the inflated annual cost for every individual year of your child's study horizon, recognizing that Year 4 of college will cost significantly more than Year 1.
+          </li>
+          <li>
+            <strong>Present Value of Multi-Year Fees:</strong> Dispatches realistic fee withdrawals at the start of each academic year while allowing the remaining corpus to continue compounding at your expected investment return.
+          </li>
+          <li>
+            <strong>Future Value of Existing Savings:</strong> Compounds any mutual funds, fixed deposits, Sukanya Samriddhi accounts, or cash reserves you have already set aside.
+          </li>
+          <li>
+            <strong>Required Monthly Savings (SIP):</strong> Applies the sinking-fund annuity formula to specify the exact monthly or annual investment required to close the net funding gap.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section 2: Education Inflation Dynamics -->
+      <section class="guide-block">
+        <h2 class="guide-title">Why Education Inflation Outpaces General CPI</h2>
+        <p>
+          Most central banks target headline consumer price index (CPI) inflation between 2% and 5%. However, across India, the United Arab Emirates, and Singapore, published education cost inflation consistently prints between <strong>4% and 12% per year</strong>. Serving as both a <strong>School Fee Inflation Calculator</strong> and an <strong>Education Inflation Calculator</strong>, this model accounts for the persistent "cost disease" in education:
+        </p>
+        <div class="table-responsive-wrapper">
+          <table class="guide-table">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left;">Driver</th>
+                <th scope="col" style="text-align: left;">Mechanism</th>
+                <th scope="col" style="text-align: left;">Impact on Family Budget</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 600;">Faculty &amp; Talent Scarcity</td>
+                <td>Top professors, accredited STEM educators, and international IB teachers command market-competitive salaries that rise faster than retail goods.</td>
+                <td>Institutions pass faculty compensation directly into base tuition hikes.</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Infrastructure &amp; Tech CapEx</td>
+                <td>Modern campuses require advanced robotics labs, high-speed digital networks, climate-controlled sports complexes, and specialized software licenses.</td>
+                <td>High capital maintenance fees are baked into recurring term invoices.</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">International Demand Pressures</td>
+                <td>High demand for globally recognized credentials (IB, Cambridge, ABET-accredited engineering, AACSB business degrees) creates intense pricing power.</td>
+                <td>Parents face non-negotiable annual tuition increments to retain accredited status.</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Ancillary Living &amp; Housing Costs</td>
+                <td>Student hostel accommodation, campus meal plans, transport, and city rents experience heavy urban cost inflation.</td>
+                <td>Non-tuition costs frequently exceed the tuition component itself.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="formula-callout-box">
+          <span class="formula-label">Core Future Education Cost Formula</span>
+          <div class="formula-equation">
+            Future Annual Cost = Current Annual Cost &times; (1 + Annual Inflation Rate)<sup>Years Until Start + Academic Year - 1</sup>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 6px 0 0 0;">
+            For a 4-year undergraduate degree, the calculator evaluates this exponential equation for each year (Year 1, 2, 3, and 4) and sums the cash flows to determine total nominal commitment.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 3: Country Deep-Dive: India -->
+      <section class="guide-block">
+        <h2 class="guide-title">India Child Education Cost Calculator (Catering to NSSO Benchmarks)</h2>
+        <p>
+          In India, higher education costs have seen explosive growth over the past two decades. The National Sample Survey Office (NSSO) and industry studies consistently show that private professional education expenses compound at roughly <strong>10% to 12% annually</strong>.
+        </p>
+        <h3 class="guide-sub-title">1. Schooling Tiers in India</h3>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Government &amp; Kendriya Vidyalaya:</strong> Highly subsidized by central or state governments. Annual tuition fees are nominal (₹5,000 to ₹25,000/year), making them accessible but subject to competitive admission quotas.
+          </li>
+          <li>
+            <strong>Private CBSE / ICSE Day Schools:</strong> The standard benchmark for urban middle-class families. Current tuition and mandatory activity fees typically range from <strong>₹80,000 to ₹2,50,000 per year</strong>, excluding transportation and after-school tuition.
+          </li>
+          <li>
+            <strong>International Baccalaureate (IB) &amp; Cambridge:</strong> Premium international institutions in metros (Mumbai, Delhi-NCR, Bengaluru, Hyderabad) charge <strong>₹4,00,000 to ₹12,00,000+ per year</strong>.
+          </li>
+        </ul>
+
+        <h3 class="guide-sub-title">2. Higher Education &amp; Degree Costs in India</h3>
+        <p>
+          When planning for college, Indian parents must account for sharp differences between government-subsidized institutions and private colleges:
+        </p>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Premier Government Colleges (IITs, NITs, Central Universities):</strong> A 4-year B.Tech at an IIT currently costs roughly ₹10 Lakh to ₹12 Lakh in total tuition and hostel fees (₹2.5L to ₹3L/year).
+          </li>
+          <li>
+            <strong>Private Engineering &amp; Universities (BITS, Manipal, VIT, SRM, Amity):</strong> A 4-year degree currently requires between <strong>₹16 Lakh and ₹28 Lakh</strong> (₹4L to ₹7L/year) including hostel and mess fees.
+          </li>
+          <li>
+            <strong>Private Medical Colleges (MBBS):</strong> Management and NRI quota medical seats in India currently range from <strong>₹60 Lakh to ₹1.2 Crore</strong> for the full 4.5-year program.
+          </li>
+          <li>
+            <strong>Premier Business Schools (IIMs, ISB, XLRI):</strong> A 2-year flagship MBA currently costs between <strong>₹25 Lakh and ₹42 Lakh</strong>.
+          </li>
+        </ul>
+        <p>
+          <strong>Inflation Example:</strong> A 4-year private engineering program costing ₹20 Lakh today will cost approximately <strong>₹69.7 Lakh</strong> in 13 years at 10% annual education inflation.
+        </p>
+      </section>
+
+      <!-- Section 4: Country Deep-Dive: UAE -->
+      <section class="guide-block">
+        <h2 class="guide-title">UAE Child Education Cost Calculator (KHDA, ADEK &amp; University Tiers)</h2>
+        <p>
+          In the United Arab Emirates, education represents one of the largest budget line items for expatriate families. School fees in Dubai are monitored and regulated by the <strong>Knowledge and Human Development Authority (KHDA)</strong>, while Abu Dhabi schools operate under the <strong>Abu Dhabi Department of Education and Knowledge (ADEK)</strong>.
+        </p>
+        <h3 class="guide-sub-title">1. UAE School Fee Framework</h3>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>Public Ministry of Education (MoE) Schools:</strong> Public schools offer Arabic-medium education. While tuition is 100% free for UAE citizens, eligible expatriates admitted under strict government quotas pay a standardized statutory fee of approximately <strong>AED 6,000 per year</strong>.
+          </li>
+          <li>
+            <strong>Private Curriculum Schools (British, American, CBSE, Indian):</strong> These accommodate the majority of expatriates. Annual tuition ranges from <strong>AED 15,000 to AED 55,000 per year</strong> depending on the school's KHDA inspection rating (Outstanding, Very Good, Good, Acceptable).
+          </li>
+          <li>
+            <strong>International Premium IB Schools:</strong> Elite day and boarding academies (such as GEMS World Academy, Dubai College, and Repton) charge <strong>AED 65,000 to AED 115,000+ per year</strong> in the upper secondary years.
+          </li>
+        </ul>
+
+        <h3 class="guide-sub-title">2. Higher Education in the UAE vs. Overseas</h3>
+        <p>
+          UAE expatriates have two distinct pathways for university education:
+        </p>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>International Branch Campuses in UAE (Dubai Knowledge Park / DIAC):</strong> Institutions such as Heriot-Watt University Dubai, University of Wollongong Dubai (UOWD), Middlesex University Dubai, and Rochester Institute of Technology (RIT) Dubai offer international degrees locally for <strong>AED 65,000 to AED 105,000 per year</strong> in tuition.
+          </li>
+          <li>
+            <strong>Overseas University Study (UK, USA, Canada, Australia):</strong> Parents sending children abroad must budget for international tuition plus living expenses, flights, and student health cover—typically requiring <strong>AED 140,000 to AED 220,000 per year</strong>.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section 5: Country Deep-Dive: Singapore -->
+      <section class="guide-block">
+        <h2 class="guide-title">Singapore Child Education Cost Calculator (MOE Schedules &amp; Status Tiers)</h2>
+        <p>
+          Singapore maintains world-renowned education standards, but tuition fees are strictly stratified based on legal residency status: <strong>Singapore Citizen (SC)</strong>, <strong>Permanent Resident (PR)</strong>, and <strong>International Student (IS)</strong>.
+        </p>
+        <h3 class="guide-sub-title">1. MOE Primary &amp; Secondary School Schedules</h3>
+        <p>
+          Under the Singapore Ministry of Education (MOE) fee revisions, the monthly difference across residency tiers is substantial:
+        </p>
+        <div class="table-responsive-wrapper">
+          <table class="guide-table">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left;">Education Tier</th>
+                <th scope="col" style="text-align: left;">Singapore Citizen (SC)</th>
+                <th scope="col" style="text-align: left;">Permanent Resident (PR)</th>
+                <th scope="col" style="text-align: left;">International Student (IS - Non-ASEAN)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 600;">Primary School (Per Year)</td>
+                <td>S$0 tuition + ~S$156 misc fees</td>
+                <td>~S$3,420 to S$4,200 / year</td>
+                <td>~S$10,800 to S$12,500 / year</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Secondary School (Per Year)</td>
+                <td>~S$300 / year</td>
+                <td>~S$6,200 to S$7,500 / year</td>
+                <td>~S$21,000 to S$24,000 / year</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Junior College / Pre-U (Per Year)</td>
+                <td>~S$400 / year</td>
+                <td>~S$8,000 to S$9,500 / year</td>
+                <td>~S$25,000 to S$28,000 / year</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 600;">Autonomous University (UG)</td>
+                <td>~S$8,250 to S$11,500 / year (Subsidized)</td>
+                <td>~S$12,500 to S$16,500 / year (Subsidized)</td>
+                <td>~S$19,500 to S$32,000 / year (Subsidized)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>MOE Tuition Grant Nuance:</strong> International students who receive the MOE Tuition Grant at Singapore Autonomous Universities (NUS, NTU, SMU, SUTD) are legally required to execute a Service Obligation to work in a Singapore-registered company for 3 years following graduation. Non-subsidized fees exceed S$35,000 to S$45,000 per year.
+        </p>
+      </section>
+
+      <!-- Section 6: Mathematics of Multi-Year Savings -->
+      <section class="guide-block">
+        <h2 class="guide-title">How Required Monthly Savings (SIP) Are Calculated</h2>
+        <p>
+          Functioning as an actuarial <strong>Child Education Savings Calculator</strong>, our model accurately determines the target <strong>Monthly Savings for Child Education</strong> by modeling real-life cash flow mechanics. Many basic tools make the fatal flaw of treating a 4-year degree as a single lump-sum bill due on Day 1. In reality, tuition fees are paid in annual or semester installments. This means unspent funds remaining in your education corpus continue compounding during your child's freshman, sophomore, and junior years.
+        </p>
+        <h3 class="guide-sub-title">1. The Two-Phase Financial Simulation</h3>
+        <ol class="guide-ordered-list">
+          <li>
+            <strong>Phase 1: Accumulation Phase (From Current Age to Start Age):</strong>
+            You deposit monthly SIP contributions into an investment portfolio growing at nominal monthly return rate <code>i = r / 12</code>. Concurrently, your existing savings compound forward:
+            <br />
+            <code>FV_existing = Initial_Savings &times; (1 + r)<sup>Years_to_Start</sup></code>
+          </li>
+          <li>
+            <strong>Phase 2: Distribution Phase (During Academic Years):</strong>
+            At the beginning of academic Year 1, tuition is withdrawn. The remaining capital continues to earn return <code>r</code> until Year 2 tuition is withdrawn, and so forth. The total required lump sum corpus needed on Day 1 of education is:
+            <br />
+            <code>Corpus_Target = &Sigma; [ Annual_Fee<sub>y</sub> / (1 + r)<sup>y-1</sup> ]</code>
+          </li>
+          <li>
+            <strong>Net Funding Gap &amp; Sinking Fund Formula:</strong>
+            The net gap to accumulate is <code>Net_Target = MAX(0, Corpus_Target - FV_existing)</code>. The required monthly investment is:
+            <br />
+            <code>Required_Monthly_SIP = Net_Target &times; [ i / ((1 + i)<sup>12 &times; Years</sup> - 1) ]</code>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Section 7: Practical Worked Examples -->
+      <section class="guide-block">
+        <h2 class="guide-title">Real-World Case Studies Across India, UAE &amp; Singapore</h2>
+        <div class="example-cards-grid">
+          <!-- India Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇮🇳 India Scenario</span>
+            <h4 class="example-card-title">4-Year Private B.Tech for a 5-Year-Old</h4>
+            <p class="example-card-p">
+              Rohan and Neha have a 5-year-old daughter. They want to fund a 4-year private engineering degree starting at age 18. Today's annual fee is ₹4,00,000 tuition + ₹1,00,000 hostel/coaching.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Current Annual Cost:</strong> ₹5,00,000 (Today's 4-year cost: ₹20,00,000)</li>
+              <li><strong>Assumed Inflation &amp; Return:</strong> 10% inflation, 11% equity SIP return</li>
+              <li><strong>Accumulation Horizon:</strong> 13 years (Age 5 to 18)</li>
+              <li><strong>Existing Savings:</strong> ₹2,00,000 in equity mutual funds</li>
+              <li><strong>Year 1 Inflated Fee:</strong> ₹17,26,136</li>
+              <li><strong>Total Projected 4-Year Cost:</strong> <strong>₹80,10,996</strong></li>
+              <li><strong>FV of Existing Savings:</strong> ₹7,76,656</li>
+              <li><strong>Required Monthly SIP:</strong> <strong>₹17,303 / month</strong></li>
+            </ul>
+          </div>
+
+          <!-- UAE Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇦🇪 UAE Scenario</span>
+            <h4 class="example-card-title">Branch Campus Degree for a 4-Year-Old</h4>
+            <p class="example-card-p">
+              Tariq and Fatima live in Dubai and have a 4-year-old son. They plan to fund a 4-year undergraduate degree at Heriot-Watt Dubai starting at age 18. Current annual cost is AED 75,000 tuition + AED 15,000 living.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Current Annual Cost:</strong> AED 90,000 (Today's 4-year cost: AED 360,000)</li>
+              <li><strong>Assumed Inflation &amp; Return:</strong> 5% inflation, 7% balanced index return</li>
+              <li><strong>Accumulation Horizon:</strong> 14 years (Age 4 to 18)</li>
+              <li><strong>Existing Savings:</strong> AED 30,000</li>
+              <li><strong>Total Projected 4-Year Cost:</strong> <strong>AED 768,038</strong></li>
+              <li><strong>Required Monthly Savings:</strong> <strong>AED 1,675 / month</strong></li>
+            </ul>
+          </div>
+
+          <!-- Singapore Example -->
+          <div class="country-example-card">
+            <span class="example-card-flag">🇸🇬 Singapore Scenario</span>
+            <h4 class="example-card-title">NUS Degree for a 3-Year-Old Citizen</h4>
+            <p class="example-card-p">
+              Wei Jie and Mei Ling are Singapore Citizens planning for their 3-year-old daughter to attend an Autonomous University (NUS/NTU) at age 19. Current annual fee is S$9,500 tuition + S$5,500 hall/living.
+            </p>
+            <ul class="example-breakdown">
+              <li><strong>Current Annual Cost:</strong> S$15,000 (Today's 4-year cost: S$60,000)</li>
+              <li><strong>Assumed Inflation &amp; Return:</strong> 4% inflation, 6% balanced ETF return</li>
+              <li><strong>Accumulation Horizon:</strong> 16 years (Age 3 to 19)</li>
+              <li><strong>Existing Savings:</strong> S$15,000 in CPF-OA / Unit Trusts</li>
+              <li><strong>Total Projected 4-Year Cost:</strong> <strong>S$120,683</strong></li>
+              <li><strong>Required Monthly Savings:</strong> <strong>S$182 / month</strong></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 8: Five Education Planning Mistakes -->
+      <section class="guide-block">
+        <h2 class="guide-title">5 Costly Education Planning Mistakes to Avoid</h2>
+        <ul class="guide-bullet-list">
+          <li>
+            <strong>1. Confusing General CPI with Education Inflation:</strong> Assuming a 4% inflation rate for Indian or UAE education will leave parents with a 40% to 60% funding shortfall. Always use realistic 8%–12% benchmarks for India and 5%–6% for the UAE.
+          </li>
+          <li>
+            <strong>2. Relying Solely on Debt Instruments &amp; Fixed Deposits:</strong> Bank fixed deposits yielding 6% to 7% in India generate negative real returns when education inflation is 10%. Over a 10+ year horizon, equity mutual funds or index funds are essential to outpace inflation.
+          </li>
+          <li>
+            <strong>3. Forgetting Living Expenses and Hostel Fees:</strong> Tuition is often less than half the total cost of higher education. For international study in the US, UK, or Canada, accommodation, flights, and medical insurance frequently exceed the academic tuition invoice.
+          </li>
+          <li>
+            <strong>4. Delaying the Start by 5 Years:</strong> Starting a monthly SIP when your child is 3 years old requires less than half the monthly capital compared to starting when your child is 10, because of the compounding time horizon.
+          </li>
+          <li>
+            <strong>5. Neglecting Term Life Insurance on the Breadwinner:</strong> If an unforeseen event occurs, an adequate term life insurance cover guarantees that your child's education fund will be paid out as planned.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section 9: Cross-Links to Related Financial Calculators -->
+      <section class="guide-block">
+        <h2 class="guide-title">Explore Related Financial Planning Calculators</h2>
+        <p>
+          Strengthen your household wealth strategy with our dedicated suite of companion financial tools:
+        </p>
+        <div class="edu-links-grid">
+          <a href="/calculator/monthly-savings-goal-calculator" class="edu-tool-card">
+            <span class="tool-card-flag">🎯 Wealth Planning</span>
+            <strong class="tool-card-name">Monthly Savings Goal Calculator</strong>
+            <span class="tool-card-desc">Calculate the exact monthly deposit needed to reach any custom target corpus across fixed time horizons.</span>
+          </a>
+          <a href="/calculator/savings-target-calculator" class="edu-tool-card">
+            <span class="tool-card-flag">📈 Sinking Fund</span>
+            <strong class="tool-card-name">Savings Target Calculator</strong>
+            <span class="tool-card-desc">Model lump-sum accumulation targets with variable compounding frequencies and inflation adjustments.</span>
+          </a>
+          <a href="/calculator/lumpsum-vs-sip-calculator" class="edu-tool-card">
+            <span class="tool-card-flag">📊 Investment Strategy</span>
+            <strong class="tool-card-name">Lumpsum vs SIP Calculator</strong>
+            <span class="tool-card-desc">Compare the wealth-building potential of systematic monthly investing against single lump-sum deployments.</span>
+          </a>
+          <a href="/calculator/compound-percentage-decrease-calculator" class="edu-tool-card">
+            <span class="tool-card-flag">📉 Purchasing Power</span>
+            <strong class="tool-card-name">Compound Percentage Decrease Calculator</strong>
+            <span class="tool-card-desc">See how persistent inflation erodes uninvested cash purchasing power over multi-year horizons.</span>
+          </a>
+          <a href="/calculator/capital-gains-tax-calculator" class="edu-tool-card">
+            <span class="tool-card-flag">🌐 Tax Optimization</span>
+            <strong class="tool-card-name">Capital Gains Tax Calculator</strong>
+            <span class="tool-card-desc">Estimate net after-tax proceeds when redeeming equity mutual funds or investments across India, the US, UK, and Canada.</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Section 10: Frequently Asked Questions -->
+      <section class="guide-block">
+        <h2 class="guide-title">Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3 class="faq-question">What is a Child Education Cost Calculator?</h3>
+            <p class="faq-answer">
+              A Child Education Cost Calculator is a specialized financial planning tool designed to project the future cost of your child's schooling or higher education by factoring in education inflation, investment compounding, existing savings, and multi-year fee withdrawals.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Why is education inflation higher than normal retail inflation?</h3>
+            <p class="faq-answer">
+              Education inflation typically outpaces general consumer CPI by 3% to 6% annually across India, the UAE, and Singapore. This higher rate is driven by rising faculty salaries, campus technology infrastructure, specialized laboratory equipment, administrative compliance, and high competition for accredited, top-tier private and international curricula.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How does the calculator determine required monthly savings (SIP)?</h3>
+            <p class="faq-answer">
+              The calculator first projects each academic year's inflated fee and discounts them back to the start of education to compute the target corpus required at Year T. It then subtracts the compounded future value of your existing savings. Finally, it uses the compound annuity sinking fund formula to determine the exact fixed monthly SIP needed to reach that net target.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What realistic education inflation rate should I assume for India?</h3>
+            <p class="faq-answer">
+              For India, historical National Sample Survey Office (NSSO) and industry benchmarks indicate an average education inflation rate of 8% to 12% annually for private engineering, medical, management, and reputable private K-12 schools. We recommend using 10% as a prudent baseline.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How do school fees work in Dubai and the UAE?</h3>
+            <p class="faq-answer">
+              In Dubai and the UAE, private school tuition increases are regulated by the Knowledge and Human Development Authority (KHDA) via the Education Cost Index (ECI) framework, with annual adjustments typically ranging between 3% and 6%. Public school admission is free for UAE citizens, while eligible expatriates face statutory annual fees around AED 6,000.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How does student status affect university tuition in Singapore?</h3>
+            <p class="faq-answer">
+              In Singapore, the Ministry of Education (MOE) Tuition Grant heavily subsidizes tuition for Singapore Citizens (paying roughly S$8,250 to S$12,000 annually for standard undergraduate degrees). Permanent Residents pay approximately 40% to 50% more, while International Students pay more than double the citizen rate.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">What happens if my expected investment return is zero?</h3>
+            <p class="faq-answer">
+              If you set the expected annual investment return to 0%, the calculator assumes cash hoarding without any capital growth. Your required monthly savings will equal the uncompounded shortfall divided linearly by the total number of months available before education starts.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">How does the calculator treat existing education savings?</h3>
+            <p class="faq-answer">
+              Existing savings (such as mutual funds, fixed deposits, Sukanya Samriddhi, or dedicated cash reserves) are compounded forward at your expected return rate until the year education begins. This future accumulated value directly reduces the net target corpus you must fund through new monthly contributions.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Should I plan for additional expenses beyond university tuition?</h3>
+            <p class="faq-answer">
+              Yes. Non-tuition expenses—such as hostel accommodation, food, textbooks, laptop technology, medical insurance, transport, and entrance coaching—frequently constitute 30% to 60% of total education outlays. Always input realistic additional expenses in the calculator for comprehensive planning.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3 class="faq-question">Are the calculator's results guaranteed financial outcomes?</h3>
+            <p class="faq-answer">
+              No. All projections are educational mathematical models based on the inflation and return assumptions you supply. Actual tuition fees, currency fluctuations, market returns, and institutional policies vary over time and cannot be guaranteed.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 11: Statutory Educational Disclaimer -->
+      <section class="edu-disclaimer-card" aria-label="Disclaimer">
+        <div class="disclaimer-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <strong>Official Educational &amp; Financial Planning Disclaimer</strong>
+        </div>
+        <p>
+          This Child Education Cost Calculator is developed strictly for educational and illustrative purposes. Default fee benchmarks reflect published averages from regulatory bodies and educational authorities (including India NSSO surveys, UAE KHDA schedules, and Singapore MOE tuition schedules).
+        </p>
+        <p>
+          Actual tuition fees vary widely by specific institution, academic program, student citizenship or visa category, location, and annual institutional governance decisions. Projected investment returns and education inflation rates are user-editable assumptions, not guaranteed outcomes. Consult a qualified, licensed financial advisor or certified wealth planner before executing binding financial commitments or purchasing financial products.
+        </p>
+      </section>
+    </article>
+  </div>
+</Layout>
+
+<style>
+  /* -------------------------------------------------------------
+     CHILD EDUCATION LANDING PAGE STYLES & TYPOGRAPHY
+     Mobile-First, fully responsive from 320px to 1920px
+     ------------------------------------------------------------- */
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2,
+  .guide-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .guide-sub-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .guide-block p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .guide-bullet-list, .guide-ordered-list {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .guide-bullet-list li, .guide-ordered-list li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* Intro Callout Card */
+  .edu-intro-callout {
+    margin-top: var(--space-6);
+  }
+
+  .edu-callout-card {
+    padding: var(--space-4);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .edu-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .edu-callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .edu-callout-eyebrow {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: block;
+  }
+
+  .edu-callout-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-heading);
+    margin: 2px 0 0 0;
+  }
+
+  .edu-callout-desc {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+  }
+
+  .edu-country-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .edu-feature-item {
+    display: flex;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .edu-feature-flag {
+    font-size: 1.35rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .edu-feature-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .edu-feature-text {
+    font-size: 0.73rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  /* Educational Article Sections */
+  .edu-guide-article {
+    margin-top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .guide-block {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+  }
+
+
+
+  .formula-callout-box {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.01) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .formula-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .formula-equation {
+    font-size: clamp(0.82rem, 3.5vw, 0.95rem);
+    font-weight: 700;
+    color: var(--color-heading);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .table-responsive-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+    box-sizing: border-box;
+  }
+
+  .guide-table {
+    min-width: 480px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .guide-table th,
+  .guide-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .guide-table th {
+    background: rgba(0, 0, 0, 0.03);
+    font-weight: 700;
+    color: var(--color-heading);
+  }
+
+  /* Example Cards Grid */
+  .example-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .country-example-card {
+    background: rgba(0, 0, 0, 0.015);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+  }
+
+  .example-card-flag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .example-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin: 0;
+  }
+
+  .example-card-p {
+    font-size: 0.82rem;
+    color: var(--color-text);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .example-breakdown {
+    margin: 4px 0 0 0;
+    padding-left: var(--space-3);
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-wrap: break-word;
+  }
+
+  /* Cross Links Grid */
+  .edu-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .edu-tool-card {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: all 0.2s ease;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .edu-tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .tool-card-flag {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .tool-card-name {
+    font-size: 0.92rem;
+    color: var(--color-heading);
+  }
+
+  .tool-card-desc {
+    font-size: 0.76rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+  }
+
+  /* FAQs */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-3);
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .faq-question {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    margin-top: 0;
+    margin-bottom: 6px;
+    overflow-wrap: break-word;
+  }
+
+  .faq-answer {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    margin: 0;
+    overflow-wrap: break-word;
+  }
+
+  /* Disclaimer Card */
+  .edu-disclaimer-card {
+    background: rgba(245, 158, 11, 0.04);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .disclaimer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-warning);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .edu-disclaimer-card p {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+    overflow-wrap: break-word;
+  }
+
+  .edu-disclaimer-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 640px) {
+    .guide-block {
+      padding: var(--space-4);
+    }
+    .guide-title {
+      font-size: 1.15rem;
+    }
+    .edu-country-features-grid {
+      grid-template-columns: 1fr;
+    }
+    .example-cards-grid {
+      grid-template-columns: 1fr;
+    }
+    .edu-links-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .guide-block {
+      padding: 14px;
+      border-radius: var(--radius-md);
+    }
+    .edu-callout-card {
+      padding: 14px;
+    }
+    .formula-callout-box {
+      padding: 12px;
+    }
+    .edu-disclaimer-card {
+      padding: 14px;
+    }
+  }
+</style>

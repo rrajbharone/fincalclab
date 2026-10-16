@@ -1,0 +1,672 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HouseHackingCalculator from '../../components/calculator/HouseHackingCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'House Hacking Calculator', item: '/calculator/house-hacking-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is house hacking and how does it work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "House hacking is a real estate investment strategy where you purchase a multi-family residential property (such as a duplex, triplex, or fourplex) or a single-family home with extra bedrooms, occupy one unit or room as your primary residence, and rent out the remaining units or bedrooms to tenants. The rental income received from tenants directly offsets or completely eliminates your monthly mortgage payments and operating costs, drastically reducing your personal cost of living."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you live for free by house hacking?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, living for free is achievable when the effective rental income from your tenant units equals or exceeds the property's total monthly operating costs—including the mortgage principal and interest, property taxes, insurance, maintenance reserves, utilities, and vacancy buffers. In high-rent or multi-unit scenarios (such as a triplex or fourplex), house hackers frequently achieve a 100%+ expense coverage ratio, allowing them to live rent-free while generating positive net cash flow."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What loan programs allow low down payments for house hacking?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because house hackers occupy the property as their primary residence, they qualify for favorable residential owner-occupied financing rather than commercial investment loans. Common loan options include FHA Loans (requiring as little as 3.5% down for 1 to 4 units), Conventional Loans (requiring 3% to 5% down for single-family homes or duplexes/triplexes/fourplexes under updated Fannie Mae guidelines), and VA Loans (0% down payment for eligible US military veterans and service members)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why shouldn't you only compare rental income to the mortgage payment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Focusing solely on whether rental income covers the mortgage principal and interest (P&I) is a dangerous financial mistake. Operating expenses—such as property taxes, homeowner hazard insurance, private mortgage insurance (PMI), vacancy allowances, repair reserves, CapEx (capital expenditures for roofs and HVAC), owner-paid utilities, and HOA fees—frequently comprise 35% to 50% of the total monthly cost of owning a property. Evaluating cash flow against all recurring expenses ensures you understand your true out-of-pocket obligation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between house hacking a duplex and a single-family home?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A multi-family duplex provides private living quarters with separate entrances, private kitchens, individual bathrooms, and often separately metered utilities, maximizing personal privacy. House hacking a single-family home involves renting spare bedrooms, a basement suite, or an accessory dwelling unit (ADU), which requires sharing common spaces (kitchen, living room, laundry) with roommates or tenants. However, single-family room house hacking typically requires lower purchase prices and less initial capital."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does vacancy allowance protect house hackers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A vacancy allowance (typically 5% to 8% of gross rental income) builds a financial cushion into your monthly projections for tenant turnover, lease transitions, advertising, and unit turnover cleaning. Even in strong rental markets, units occasionally sit empty for 2 to 4 weeks between leases. Factoring in vacancy prevents budget surprises when a tenant moves out."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the Fannie Mae 5% down multi-family rule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under updated Fannie Mae and Freddie Mac lending guidelines, owner-occupant borrowers can purchase 2-, 3-, and 4-unit residential properties with as little as a 5% down payment using standard conventional financing. This change eliminated the previous requirement for a 15% to 25% down payment on multi-family conventional loans, making conventional house hacking accessible without the self-sufficiency test restrictions of FHA 3- to 4-unit loans."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens when you move out of a house hack property?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When you eventually move out of your house hack property, you can rent out the unit or room you previously occupied. This instantly increases your gross rental income by 30% to 100%, transforming the property into a fully cash-flowing pure investment asset. Many real estate investors repeat this process every 1 to 2 years, building a sizable rental property portfolio using low-down-payment owner-occupied financing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do house hackers have to pay income tax on tenant rental payments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Rental income received from tenants is considered taxable gross income. However, as an owner-occupant landlord, you can deduct a proportional share of mortgage interest, property taxes, insurance, repairs, utilities, and tax depreciation based on the square footage or percentage of units rented out. These tax deductions frequently shelter a substantial portion of the rental cash flow from immediate income taxes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the biggest risks of house hacking?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The primary risks of house hacking include dealing with difficult, loud, or non-paying tenants living right next door or under the same roof, major unexpected maintenance failures (such as a burst sewer line or failed HVAC system), extended vacancy, and local zoning or short-term rental restrictions. Rigorous tenant screening, adequate emergency cash reserves, and proper landlord insurance coverage are essential safeguards."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "House Hacking Calculator",
+  "url": "https://fincalclab.com/calculator/house-hacking-calculator",
+  "description": "Calculate house hacking cash flow, net monthly out-of-pocket housing costs, mortgage amortization, rental coverage ratio, and comparative housing savings for duplexes, triplexes, and room rentals.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="House Hacking Calculator - Cash Flow, Mortgage & Savings Analysis"
+  description="Free House Hacking Calculator. Estimate duplex, triplex, and room-rental cash flow, mortgage payments, operating expenses, and monthly out-of-pocket housing savings."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
+
+  <!-- Interactive Calculator Component -->
+  <HouseHackingCalculator />
+
+  <!-- Educational Content Section (Matching Super Salary Sacrifice Layout & Typography) -->
+  <div class="calculator-page-container container">
+    <div class="prose">
+      
+      <h2>What Is House Hacking?</h2>
+      <p>
+        <strong>House hacking</strong> is one of the most powerful and accessible real estate wealth-building strategies in personal finance. In simple terms, house hacking means purchasing a residential property, occupying one portion of the home as your primary residence, and renting out the remaining units or bedrooms to tenants. The rental revenue generated by your tenants directly offsets your monthly mortgage payment, property taxes, insurance, and maintenance costs.
+      </p>
+      <p>
+        For most working adults and families, housing represents their single largest recurring monthly expense—frequently consuming <strong>30% to 50% of take-home pay</strong>. By using rental income to subsidize or completely eliminate this baseline housing liability, house hackers redirect thousands of dollars every month into high-yield investments, retirement portfolios, or savings for subsequent property acquisitions.
+      </p>
+      <p>
+        House hacking is traditionally executed across three primary property formats:
+      </p>
+      <ul>
+        <li>
+          <strong>Small Multi-Family Properties (2 to 4 Units):</strong> Buying a duplex, triplex, or fourplex. You live in one private apartment unit and lease the remaining 1, 2, or 3 units to long-term tenants. Each unit features its own private kitchen, bathroom, and entrance.
+        </li>
+        <li>
+          <strong>Single-Family Home with Spare Bedrooms:</strong> Buying a 3- to 5-bedroom single-family house and renting out individual bedrooms to friends, roommates, or young professionals while sharing common kitchen and living spaces.
+        </li>
+        <li>
+          <strong>Properties with Accessory Dwelling Units (ADUs):</strong> Living in the main house and renting out a detached garage apartment, carriage house, garden suite, or converted basement apartment (or vice-versa).
+        </li>
+      </ul>
+
+      <h2>How Does a House Hacking Calculator Work?</h2>
+      <p>
+        A comprehensive <strong>House Hacking Calculator</strong> evaluates the complete financial ecosystem of an owner-occupied investment property. Unlike a generic mortgage calculator that only computes loan repayments, a true house hacking model evaluates both the <strong>capital accumulation side</strong> (rental revenues minus vacancy) and the <strong>full operating expenditure side</strong> (mortgage, escrow, maintenance, utilities, management, and reserves).
+      </p>
+      <p>
+        Our calculator executes a structured four-stage analysis:
+      </p>
+      <ol>
+        <li>
+          <strong>Acquisition &amp; Financing:</strong> Calculates your loan principal, down payment capital, upfront closing fees, initial renovation outlays, and exact monthly principal and interest (P&amp;I) amortization.
+        </li>
+        <li>
+          <strong>Effective Rental Revenue:</strong> Aggregates individual tenant unit rents and supplemental income streams (parking, storage, laundry), deducting an essential vacancy buffer to establish true effective income.
+        </li>
+        <li>
+          <strong>Total Operating Expenses (OpEx):</strong> Models ongoing holding costs including municipal property taxes, hazard insurance, private mortgage insurance (PMI), ongoing repair reserves, owner-paid utilities, and HOA dues.
+        </li>
+        <li>
+          <strong>Net Financial Output &amp; Comparative Savings:</strong> Subtracts effective rental revenue from total property expenditures to reveal your <strong>Net Monthly Out-of-Pocket Housing Cost</strong> (or positive cash flow) and compares that against your prior baseline housing cost.
+        </li>
+      </ol>
+
+      <h2>How to Calculate House Hacking Cash Flow</h2>
+      <p>
+        Understanding the underlying mathematical formulas ensures you make informed, confident acquisition decisions. Here is the verified step-by-step mathematical framework:
+      </p>
+
+      <h3>1. Initial Capital Required</h3>
+      <p>
+        Before closing on a home, you must prepare sufficient liquid capital to cover your down payment, lender and title fees, and immediate repair needs:
+      </p>
+      <p style="text-align: center; font-size: 1.1rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+        {"\\(\\text{Initial Cash Required} = \\text{Down Payment} + \\text{Closing Costs} + \\text{Initial Repairs}\\)"}
+      </p>
+
+      <h3>2. Monthly Mortgage Payment (Amortization Formula)</h3>
+      <p>
+        The monthly mortgage repayment for principal and interest (P&amp;I) is computed using standard loan amortization:
+      </p>
+      <p style="text-align: center; font-size: 1.1rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+        {"\\(M = P \\times \\frac{r(1 + r)^n}{(1 + r)^n - 1}\\)"}
+      </p>
+      <p>
+        Where <em>P</em> represents the borrowed mortgage principal (Purchase Price − Down Payment), <em>r</em> is the monthly interest rate (Annual Rate ÷ 12), and <em>n</em> is the total number of monthly payments (Loan Term in Years × 12). If the loan carries a 0% interest rate, the monthly payment simplifies to <em>P ÷ n</em>.
+      </p>
+
+      <h3>3. Effective Rental Revenue</h3>
+      <p>
+        Gross rental income counts all collected rents before accounting for tenant turnover:
+      </p>
+      <p style="text-align: center; font-size: 1.1rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+        {"\\(\\text{Gross Rental Income} = \\sum (\\text{Unit Rents}) + \\text{Other Income}\\)"}
+      </p>
+      <p>
+        Deducting the vacancy allowance provides your sustainable effective monthly income:
+      </p>
+      <p style="text-align: center; font-size: 1.1rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+        {"\\(\\text{Effective Rental Income} = \\text{Gross Rental Income} \\times \\left(1 - \\frac{\\text{Vacancy } \\%}{100}\\right)\\)"}
+      </p>
+
+      <h3>4. Total Monthly Property Expenses</h3>
+      <p>
+        Your total monthly holding cost equals the mortgage payment plus all non-mortgage operating costs:
+      </p>
+      <p style="text-align: center; font-size: 1.1rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+        {"\\(\\text{Total Expenses} = \\text{Mortgage (P\\&I)} + \\text{Taxes} + \\text{Insurance} + \\text{PMI} + \\text{Maintenance} + \\text{Utilities} + \\text{Mgmt/HOA}\\)"}
+      </p>
+
+      <h3>5. Net Out-of-Pocket Housing Cost vs. Monthly Cash Flow</h3>
+      <p>
+        The central metric for an owner-occupant house hacker is the net amount required from personal salary to cover all bills:
+      </p>
+      <p style="text-align: center; font-size: 1.1rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+        {"\\(\\text{Monthly Out-of-Pocket Cost} = \\text{Total Monthly Expenses} - \\text{Effective Rental Income}\\)"}
+      </p>
+      <p>
+        If effective rental income exceeds total expenses, the property produces <strong>positive monthly cash flow</strong> (you live 100% rent-free and pocket the surplus). If total expenses exceed rental income, you pay the difference as your subsidized personal living cost.
+      </p>
+
+      <h2>How Much Rental Income Do You Need to Cover Your Mortgage?</h2>
+      <p>
+        A frequent novice mistake is believing that if tenant rent covers the mortgage check, you are living for free. In reality, mortgage principal and interest usually accounts for only <strong>55% to 65%</strong> of true property holding costs.
+      </p>
+      <p>
+        To truly break even and eliminate all housing costs, your tenant rental revenue must satisfy this comprehensive equation:
+      </p>
+      <div style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-left: 4px solid var(--color-primary); border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-5) 0;">
+        <p style="font-size: 1.05rem; font-weight: 700; color: var(--color-text-base); margin-bottom: var(--space-2);">
+          True Break-Even Rental Revenue Target:
+        </p>
+        <p style="font-size: 0.95rem; color: var(--color-text-muted); margin: 0; line-height: 1.6;">
+          {"\\(\\text{Required Tenant Rent} = \\frac{\\text{Mortgage (P\\&I)} + \\text{Taxes} + \\text{Insurance} + \\text{PMI} + \\text{Maintenance} + \\text{Utilities} + \\text{HOA}}{1 - \\text{Vacancy Rate}}\\)"}
+        </p>
+      </div>
+      <p>
+        For instance, if your mortgage payment is $2,400/month, but taxes, insurance, PMI, and maintenance add another $1,000/month (total expenses $3,400/month), you need approximately <strong>$3,579/month in gross rental income</strong> (at a 5% vacancy rate) to achieve 100% expense coverage.
+      </p>
+
+      <h2>House Hacking Example: Buying a Duplex and Renting One Unit</h2>
+      <p>
+        Let us walk through a concrete, mathematically verified real-world duplex scenario:
+      </p>
+
+      <div class="table-scroll-container" style="margin: var(--space-5) 0;">
+        <table class="cashflow-table">
+          <thead>
+            <tr>
+              <th>Property Parameter</th>
+              <th style="text-align: right;">Modeled Input Value</th>
+              <th>Description / Calculation Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Purchase Price</strong></td>
+              <td style="text-align: right;"><strong>$450,000</strong></td>
+              <td>Turnkey 2-unit residential duplex</td>
+            </tr>
+            <tr>
+              <td><strong>Down Payment (5% Conventional)</strong></td>
+              <td style="text-align: right;">$22,500</td>
+              <td>Low-down-payment owner-occupied financing</td>
+            </tr>
+            <tr>
+              <td><strong>Closing Costs &amp; Initial Repairs</strong></td>
+              <td style="text-align: right;">$17,500</td>
+              <td>$10,000 loan/title closing + $7,500 tenant unit paint/refresh</td>
+            </tr>
+            <tr>
+              <td><strong>Total Initial Cash Required</strong></td>
+              <td style="text-align: right;"><strong>$40,000</strong></td>
+              <td>Total out-of-pocket capital to close and prepare unit</td>
+            </tr>
+            <tr>
+              <td><strong>Mortgage Principal Loan</strong></td>
+              <td style="text-align: right;">$427,500</td>
+              <td>$450,000 price − $22,500 down payment</td>
+            </tr>
+            <tr>
+              <td><strong>Monthly Mortgage (P&amp;I)</strong></td>
+              <td style="text-align: right;">$2,702 / mo</td>
+              <td>30-year fixed @ 6.50% interest rate</td>
+            </tr>
+            <tr>
+              <td><strong>Property Taxes &amp; Insurance</strong></td>
+              <td style="text-align: right;">$550 / mo</td>
+              <td>$400 property taxes + $150 hazard insurance</td>
+            </tr>
+            <tr>
+              <td><strong>PMI, Maintenance &amp; Utilities</strong></td>
+              <td style="text-align: right;">$530 / mo</td>
+              <td>$180 PMI + $200 repair reserves + $150 owner water/trash</td>
+            </tr>
+            <tr style="background: var(--color-bg-subtle, rgba(0,0,0,0.03));">
+              <td><strong>Total Monthly Property Expenses</strong></td>
+              <td style="text-align: right;"><strong>$3,782 / mo</strong></td>
+              <td>Complete monthly holding cost of the entire building</td>
+            </tr>
+            <tr>
+              <td><strong>Tenant Unit 2 Rent</strong></td>
+              <td style="text-align: right;">$1,850 / mo</td>
+              <td>$1,800 unit rent + $50 garage/storage fee</td>
+            </tr>
+            <tr>
+              <td><strong>Less: 5% Vacancy Allowance</strong></td>
+              <td style="text-align: right;">-$93 / mo</td>
+              <td>Built-in buffer for tenant turnover (~18 days/yr)</td>
+            </tr>
+            <tr style="background: rgba(2, 132, 199, 0.05);">
+              <td><strong>Effective Monthly Rental Income</strong></td>
+              <td style="text-align: right;"><strong>$1,757 / mo</strong></td>
+              <td>Reliable cash income collected from tenant</td>
+            </tr>
+            <tr style="background: rgba(37, 99, 235, 0.08); font-size: 1rem;">
+              <td><strong>Net Out-of-Pocket Housing Cost</strong></td>
+              <td style="text-align: right;"><strong>$2,025 / mo</strong></td>
+              <td>$3,782 expenses − $1,757 effective rent (46.5% covered)</td>
+            </tr>
+            <tr style="background: rgba(22, 163, 74, 0.06);">
+              <td><strong>Monthly Housing Savings vs. Renting</strong></td>
+              <td style="text-align: right;"><strong style="color: #16a34a;">+$475 / mo</strong></td>
+              <td>Compared to renting a comparable 2-bedroom home at $2,500/mo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        In this scenario, rather than spending $2,500 per month on apartment rent with zero equity return, the house hacker pays just <strong>$2,025 per month</strong> to own a $450,000 building. In addition to saving <strong>$5,700 every year</strong> in direct cash, the owner pays down approximately <strong>$5,000 to $6,000 in mortgage principal</strong> during the first year alone and captures 100% of the property's market appreciation and tax depreciation write-offs.
+      </p>
+
+      <h2>House Hacking a Single-Family Home by Renting Spare Rooms</h2>
+      <p>
+        If multi-family duplexes or triplexes are unavailable or cost-prohibitive in your metropolitan market, house hacking a single-family home (SFH) by renting individual bedrooms is an equally viable path.
+      </p>
+      <p>
+        Consider a 4-bedroom, 2.5-bathroom single-family property:
+      </p>
+      <ul>
+        <li>You occupy the primary master suite.</li>
+        <li>You lease the remaining 3 bedrooms to qualified individual tenants at $850, $800, and $750 per month ($2,400 gross rent).</li>
+        <li>If your total monthly mortgage, taxes, insurance, and utilities amount to $2,600/month, your tenant roommates cover <strong>$2,280/month</strong> (after 5% vacancy).</li>
+        <li>Your net out-of-pocket housing cost drops to just <strong>$320 per month</strong>!</li>
+      </ul>
+      <p>
+        While room-by-room house hacking requires sharing kitchen, laundry, and living spaces, it frequently yields higher aggregate gross rents per square foot than leasing an entire home to a single family.
+      </p>
+
+      <h2>Comparing House Hacking Property Strategies</h2>
+      <p>
+        The table below highlights the trade-offs between different house hacking property types:
+      </p>
+
+      <div class="table-scroll-container" style="margin: var(--space-5) 0;">
+        <table class="cashflow-table">
+          <thead>
+            <tr>
+              <th>Property Configuration</th>
+              <th>Privacy Level</th>
+              <th>Financing Accessibility</th>
+              <th>Rental Income Potential</th>
+              <th>Management Effort</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Duplex (2 Units)</strong></td>
+              <td>High (Completely separate private unit)</td>
+              <td>FHA 3.5% down, Conventional 5% down</td>
+              <td>Moderate (Single tenant unit)</td>
+              <td>Low (1 tenant lease to manage)</td>
+            </tr>
+            <tr>
+              <td><strong>Triplex / Fourplex (3–4 Units)</strong></td>
+              <td>High (Completely separate private unit)</td>
+              <td>Conventional 5% down, FHA (subject to self-sufficiency test)</td>
+              <td>Very High (2 to 3 tenant units often cover 100%+ costs)</td>
+              <td>Moderate (Multiple leases, maintenance turnover)</td>
+            </tr>
+            <tr>
+              <td><strong>Single-Family with ADU</strong></td>
+              <td>High to Very High (Detached or basement suite)</td>
+              <td>Conventional 3%–5% down, FHA 3.5% down</td>
+              <td>Moderate to High (1 premium tenant suite)</td>
+              <td>Low (1 tenant unit)</td>
+            </tr>
+            <tr>
+              <td><strong>Single-Family Spare Rooms</strong></td>
+              <td>Low (Shared kitchen, living room, bathrooms)</td>
+              <td>Standard residential financing (3%–5% down)</td>
+              <td>High per square foot (Multiple individual room leases)</td>
+              <td>High (Roommate dynamics, shared cleaning rules)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Understanding Down Payments, Closing Costs, and Mortgage Payments</h2>
+      <p>
+        The defining competitive advantage of house hacking is the ability to utilize <strong>residential owner-occupied mortgage programs</strong>. Pure real estate investors purchasing rental properties must generally contribute <strong>20% to 25% cash down</strong> and pay higher commercial interest rates. Because house hackers live on-site, lenders offer premium residential terms:
+      </p>
+      <ul>
+        <li>
+          <strong>FHA Loan (3.5% Down Payment):</strong> Backed by the Federal Housing Administration, this program permits 3.5% down on 1- to 4-unit properties with credit scores as low as 580. Note: FHA loans on 3- and 4-unit buildings must satisfy the stringent <em>FHA Self-Sufficiency Test</em> (75% of market rent across all units must exceed the total PITI mortgage payment).
+        </li>
+        <li>
+          <strong>Conventional Loan (5% Down Payment):</strong> Under Fannie Mae guidelines, borrowers can purchase 2-, 3-, and 4-unit properties with just 5% down without being subject to the FHA self-sufficiency test. Furthermore, conventional Private Mortgage Insurance (PMI) cancels automatically once you achieve 20% to 22% equity.
+        </li>
+        <li>
+          <strong>VA Loan (0% Down Payment):</strong> Active-duty military personnel, veterans, and eligible surviving spouses can finance 1- to 4-unit properties with <strong>0% down payment</strong> and zero monthly mortgage insurance.
+        </li>
+      </ul>
+
+      <h2>Property Taxes, Insurance, Maintenance, and Vacancy Costs</h2>
+      <p>
+        Accurate underwriting requires honest accounting for non-mortgage ownership expenses:
+      </p>
+      <ol>
+        <li>
+          <strong>Property Taxes:</strong> Assessed by county and municipal governments, typically ranging from 0.7% to 2.5% of assessed property value annually. Be cautious: newly purchased properties are frequently reassessed at your purchase price, causing tax bills to jump in year two.
+        </li>
+        <li>
+          <strong>Homeowner / Landlord Insurance:</strong> You must inform your insurer that units will be occupied by tenants. A specialized owner-occupied landlord policy covers the structure, common liability, and loss of rental income.
+        </li>
+        <li>
+          <strong>Maintenance &amp; CapEx Reserves:</strong> Real estate assets require ongoing preventative maintenance and long-term capital replacement (roofs, water heaters, HVAC compressors, appliances). Budgeting <strong>5% to 10% of gross rents</strong> (or $150–$250/unit/month) prevents unexpected repair shocks.
+        </li>
+        <li>
+          <strong>Vacancy Buffer:</strong> Even in prime rental markets, tenants occasionally transition. Factoring in a <strong>5% vacancy allowance</strong> equals approximately 18 days of vacancy per unit per year.
+        </li>
+      </ol>
+
+      <h2>House Hacking Benefits, Risks, and Common Mistakes</h2>
+      
+      <h3>The Key Benefits</h3>
+      <ul>
+        <li>
+          <strong>Radical Expense Reduction:</strong> Slashing your personal housing payment immediately elevates your monthly savings rate, supercharging your journey to Financial Independence (FIRE).
+        </li>
+        <li>
+          <strong>Accelerated Wealth Creation:</strong> You benefit from debt paydown (tenants pay off your loan), property appreciation, and annual tax depreciation deductions.
+        </li>
+        <li>
+          <strong>Hands-On Landlord Training:</strong> Living on-site allows you to learn property management, tenant relations, and basic maintenance skills with minimal friction.
+        </li>
+      </ul>
+
+      <h3>Risks and Mistakes to Avoid</h3>
+      <ul>
+        <li>
+          <strong>Inadequate Tenant Screening:</strong> Never compromise on tenant vetting simply to fill a room quickly. Living next door to a problematic, noisy, or non-paying tenant creates tremendous personal stress. Always verify credit scores, criminal backgrounds, employment, and prior landlord references.
+        </li>
+        <li>
+          <strong>Ignoring Local Municipal Zoning &amp; Occupancy Rules:</strong> Ensure your municipality permits non-related roommates, accessory dwelling units, or multi-family leasing. Certain jurisdictions impose strict rental licensing or rent-stabilization ordinances.
+        </li>
+        <li>
+          <strong>Underestimating Owner-Paid Utilities:</strong> If gas, electric, or water meters are master-metered for the entire building, the owner must pay the entire bill. Factor this into your monthly expense projections or implement a Ratio Utility Billing System (RUBS).
+        </li>
+      </ul>
+
+      <h2>How to Evaluate Whether a House Hacking Property Is Worth Buying</h2>
+      <p>
+        When evaluating prospective properties on FinCalcLab, ask these three critical questions:
+      </p>
+      <ol>
+        <li>
+          <strong>Does it significantly lower your personal cost of living today?</strong> If buying the property results in an out-of-pocket housing cost of $1,100/month compared to paying $2,000/month in rent, the property delivers an immediate $900/month ($10,800/year) lifestyle dividend.
+        </li>
+        <li>
+          <strong>Will the property cash-flow when you eventually move out?</strong> When you relocate after 1 to 2 years, your former unit will generate market rent. If the entire property generates positive net operating cash flow as a full investment asset, it is an outstanding acquisition.
+        </li>
+        <li>
+          <strong>Are the capital reserves adequate?</strong> Ensure you retain an emergency reserve fund of at least 3 to 6 months of total property expenses beyond your down payment and closing costs.
+        </li>
+      </ol>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6);">Frequently Asked Questions</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open>
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is house hacking and how does it work?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              House hacking is a real estate investment strategy where you purchase a multi-family residential property (such as a duplex, triplex, or fourplex) or a single-family home with extra bedrooms, occupy one unit or room as your primary residence, and rent out the remaining units or bedrooms to tenants. The rental income received from tenants directly offsets or completely eliminates your monthly mortgage payments and operating costs, drastically reducing your personal cost of living.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Can you live for free by house hacking?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              Yes, living for free is achievable when the effective rental income from your tenant units equals or exceeds the property's total monthly operating costs—including the mortgage principal and interest, property taxes, insurance, maintenance reserves, utilities, and vacancy buffers. In high-rent or multi-unit scenarios (such as a triplex or fourplex), house hackers frequently achieve a 100%+ expense coverage ratio, allowing them to live rent-free while generating positive net cash flow.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What loan programs allow low down payments for house hacking?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              Because house hackers occupy the property as their primary residence, they qualify for favorable residential owner-occupied financing rather than commercial investment loans. Common loan options include FHA Loans (requiring as little as 3.5% down for 1 to 4 units), Conventional Loans (requiring 3% to 5% down for single-family homes or duplexes/triplexes/fourplexes under updated Fannie Mae guidelines), and VA Loans (0% down payment for eligible US military veterans and service members).
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Why shouldn't you only compare rental income to the mortgage payment?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              Focusing solely on whether rental income covers the mortgage principal and interest (P&amp;I) is a dangerous financial mistake. Operating expenses—such as property taxes, homeowner hazard insurance, private mortgage insurance (PMI), vacancy allowances, repair reserves, CapEx (capital expenditures for roofs and HVAC), owner-paid utilities, and HOA fees—frequently comprise 35% to 50% of the total monthly cost of owning a property. Evaluating cash flow against all recurring expenses ensures you understand your true out-of-pocket obligation.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the difference between house hacking a duplex and a single-family home?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              A multi-family duplex provides private living quarters with separate entrances, private kitchens, individual bathrooms, and often separately metered utilities, maximizing personal privacy. House hacking a single-family home involves renting spare bedrooms, a basement suite, or an accessory dwelling unit (ADU), which requires sharing common spaces (kitchen, living room, laundry) with roommates or tenants. However, single-family room house hacking typically requires lower purchase prices and less initial capital.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">How does vacancy allowance protect house hackers?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              A vacancy allowance (typically 5% to 8% of gross rental income) builds a financial cushion into your monthly projections for tenant turnover, lease transitions, advertising, and unit turnover cleaning. Even in strong rental markets, units occasionally sit empty for 2 to 4 weeks between leases. Factoring in vacancy prevents budget surprises when a tenant moves out.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What is the Fannie Mae 5% down multi-family rule?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              Under updated Fannie Mae and Freddie Mac lending guidelines, owner-occupant borrowers can purchase 2-, 3-, and 4-unit residential properties with as little as a 5% down payment using standard conventional financing. This change eliminated the previous requirement for a 15% to 25% down payment on multi-family conventional loans, making conventional house hacking accessible without the self-sufficiency test restrictions of FHA 3- to 4-unit loans.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What happens when you move out of a house hack property?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              When you eventually move out of your house hack property, you can rent out the unit or room you previously occupied. This instantly increases your gross rental income by 30% to 100%, transforming the property into a fully cash-flowing pure investment asset. Many real estate investors repeat this process every 1 to 2 years, building a sizable rental property portfolio using low-down-payment owner-occupied financing.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">Do house hackers have to pay income tax on tenant rental payments?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              Rental income received from tenants is considered taxable gross income. However, as an owner-occupant landlord, you can deduct a proportional share of mortgage interest, property taxes, insurance, repairs, utilities, and tax depreciation based on the square footage or percentage of units rented out. These tax deductions frequently shelter a substantial portion of the rental cash flow from immediate income taxes.
+            </p>
+          </details>
+
+          <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+            <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none;">What are the biggest risks of house hacking?</summary>
+            <p style="margin-top: var(--space-2); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted);">
+              The primary risks of house hacking include dealing with difficult, loud, or non-paying tenants living right next door or under the same roof, major unexpected maintenance failures (such as a burst sewer line or failed HVAC system), extended vacancy, and local zoning or short-term rental restrictions. Rigorous tenant screening, adequate emergency cash reserves, and proper landlord insurance coverage are essential safeguards.
+            </p>
+          </details>
+        </div>
+      </div>
+
+      <!-- Related Calculators Section -->
+      <div style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: var(--space-4); color: var(--color-text-base);">Related Real Estate &amp; Wealth Calculators</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
+          <Card hoverable elevation="sm">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-2);"><a href="/calculator/cap-rate-calculator" style="color: inherit; text-decoration: none;">Cap Rate Calculator</a></h4>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5; margin: 0;">Calculate capitalization rates and net operating income (NOI) for multi-family and commercial real estate investments.</p>
+          </Card>
+          <Card hoverable elevation="sm">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-2);"><a href="/calculator/mortgage-early-repayment-calculator" style="color: inherit; text-decoration: none;">Mortgage Early Repayment Calculator</a></h4>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5; margin: 0;">See how extra monthly principal payments reduce total interest and shorten your mortgage loan term.</p>
+          </Card>
+          <Card hoverable elevation="sm">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-2);"><a href="/calculator/fat-fire-calculator" style="color: inherit; text-decoration: none;">Fat FIRE Calculator</a></h4>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5; margin: 0;">Plan your early retirement target nest egg with abundant living expenses and safe withdrawal rates.</p>
+          </Card>
+          <Card hoverable elevation="sm">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: var(--space-2);"><a href="/calculator/buy-to-let-tax-calculator" style="color: inherit; text-decoration: none;">Buy to Let Tax Calculator</a></h4>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5; margin: 0;">Estimate income taxes, mortgage interest tax credits, and net cash flow on rental properties.</p>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Statutory Financial Disclaimer -->
+      <div style="margin-top: var(--space-8); padding: var(--space-4); background: var(--color-bg-subtle, rgba(0,0,0,0.02)); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+        <p style="font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.5; margin: 0;">
+          <strong>Financial &amp; Real Estate Disclaimer:</strong> This House Hacking Calculator is designed solely for informational, educational, and preliminary planning purposes. All calculations are estimates based on user-provided financial assumptions and standard amortization formulas. Actual mortgage rates, loan origination fees, closing costs, property taxes, insurance premiums, maintenance expenditures, vacancy rates, and rental revenues vary significantly based on geographic market, lender criteria, and property condition. This tool does not account for local landlord-tenant laws, zoning regulations, short-term rental rules, or future property appreciation. Consult a licensed mortgage lender, real estate broker, certified public accountant (CPA), or legal counsel prior to executing any real estate transactions.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .table-scroll-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    max-width: 100%;
+  }
+
+  .cashflow-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    min-width: 480px;
+  }
+
+  .cashflow-table th,
+  .cashflow-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-base);
+  }
+
+  .cashflow-table th {
+    background: var(--color-bg-subtle, rgba(0,0,0,0.03));
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+</style>

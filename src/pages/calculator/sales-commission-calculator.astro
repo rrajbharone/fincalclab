@@ -37,8 +37,8 @@ const faqs = [
   <SalesCommissionCalculator />
 
   <!-- Educational Explanations Section (800+ Words Guide) -->
-  <div class="calculator-extra-seo-content container" style="max-width: 1040px; margin-top: var(--space-8);">
-    <section class="seo-section">
+  <div class="calculator-extra-seo-content container" style="max-width: 1000px; margin: 0 auto; margin-top: var(--space-8); padding: var(--space-4) var(--space-4);">
+    <section class="seo-section prose">
       <h2>A Comprehensive Guide to Sales Commission Calculations</h2>
       <p>
         Sales compensation structures are designed to align sales representative behaviors with company revenue targets. A well-designed commission structure rewards top performers, establishes a reliable income baseline, and incentivizes sales velocity. 
@@ -130,7 +130,7 @@ const faqs = [
     </section>
 
     <!-- FAQ Section -->
-    <section class="seo-section" style="margin-top: var(--space-8);">
+    <section class="seo-section prose" style="margin-top: var(--space-8);">
       <h2>Frequently Asked Questions</h2>
       <div class="faq-accordion-group">
         {faqs.map((faq) => (
@@ -144,46 +144,54 @@ const faqs = [
 </Layout>
 
 <style>
+  .calculator-page-container,
   .calculator-extra-seo-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
     margin-bottom: var(--space-16);
     display: flex;
     flex-direction: column;
     gap: var(--space-10);
   }
 
+  .prose h2,
   .seo-section h2 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--color-text-base);
-    margin-bottom: var(--space-4);
-  }
-
-  .seo-section h3 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--color-text-base);
-    margin-top: var(--space-6);
+    margin-top: var(--space-8);
     margin-bottom: var(--space-3);
+    color: var(--color-text-base);
   }
 
+  .prose h3,
+  .seo-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
   .seo-section p {
-    font-size: 1.05rem;
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
     line-height: 1.7;
     color: var(--color-text-muted);
-    margin-bottom: var(--space-4);
   }
 
+  .prose ul, .prose ol,
   .seo-section ul, .seo-section ol {
     margin-bottom: var(--space-4);
     padding-left: var(--space-6);
   }
 
+  .prose li,
   .seo-section li {
-    font-size: 1.05rem;
-    line-height: 1.6;
-    color: var(--color-text-muted);
     margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
   }
 
   .formula-box-grid {

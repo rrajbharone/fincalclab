@@ -1,0 +1,785 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AduRoiCalculator from '../../components/calculator/AduRoiCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'ADU ROI Calculator', item: '/calculator/adu-roi-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a good ROI for an Accessory Dwelling Unit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In residential real estate, a healthy unleveraged Cash-on-Cost return for an ADU typically ranges between 8% and 15%. Because homeowners already own the underlying land and do not incur additional land acquisition costs, ADU cash yields frequently double or triple the 4% to 7% capitalization rates typical of standalone single-family rental homes in prime suburban markets."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does an ADU's Cash-on-Cost return compare to traditional rental properties?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Traditional rental investments require buying both land and building, which dilutes cash yields. For example, buying a $500,000 turnkey rental home that produces $30,000 in annual net operating income yields a 6.0% cap rate. In contrast, building a $150,000 detached ADU in an existing backyard that rents for $1,800/month produces approximately $16,920 in annual NOI—delivering an 11.3% Cash-on-Cost return on capital expended."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Cash-on-Cost return and Cash-on-Cash return?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cash-on-Cost return measures unleveraged annual Net Operating Income against the total all-in construction cost (NOI ÷ Total Investment × 100), regardless of how the build was financed. Cash-on-Cash return evaluates leveraged performance by taking annual pre-tax cash flow after debt service (NOI − Mortgage Payments) divided by the actual out-of-pocket cash down payment contributed by the investor."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is the simple payback period of an ADU calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The simple payback period represents the number of years required for cumulative net operating income to equal the initial upfront building cost: Payback Period = Total ADU Investment Cost ÷ Annual Net Operating Income (NOI). For a $150,000 build generating $16,920 in annual NOI, the payback period is 8.9 years, after which the unit produces pure profit above the recovered capital basis."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do operating expenses affect my ADU Net Operating Income (NOI)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Operating expenses directly subtract from your gross rental revenues to produce your Net Operating Income (NOI). For an ADU, typical operating expenses include municipal property tax reassessment increments, hazard and landlord liability insurance policy riders, ongoing plumbing and appliance maintenance reserves, and tenant turnover costs. Failing to budget for 15% to 25% in ongoing operating overhead results in overly optimistic ROI projections."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can an ADU increase my primary home's property value?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Real estate appraisal studies demonstrate that a permitted, quality ADU typically adds 20% to 35% to a property's overall market valuation. In high-demand rental markets, appraisers increasingly use income-capitalization approaches in addition to comparable sales, recognizing the present value of the unit's steady monthly cash flow stream."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does financing an ADU with a loan impact my actual ROI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Financing an ADU introduces mortgage debt service (principal and interest payments), which reduces your immediate net monthly cash in hand, but enhances your Cash-on-Cash return by minimizing your out-of-pocket cash commitment. To model exact borrowing costs, down payments, and monthly loan payments, use our companion ADU Loan Calculator."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I rent my ADU as a long-term rental or a short-term Airbnb?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Short-term rentals (such as Airbnb or VRBO) can generate 30% to 60% higher gross revenues in tourist destinations, but require active hospitality management, high utility bills, furnishing capital, and frequent turnover costs. Long-term 12-month residential leases offer steady, predictable passive income, minimal management overhead, and lower vacancy risk, while complying with local short-term rental bans or licensing caps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does tenant vacancy affect ADU profitability?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because an ADU is a single rental unit, it is either 100% occupied or 100% vacant. A single month of tenant vacancy represents an immediate 8.3% annual revenue loss. Factoring in a standard 5% to 8% annual vacancy rate allowance ensures your cash flow projections remain conservative and realistic over multi-year holding horizons."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are ADU rental profits subject to income taxes and depreciation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Rental income from an ADU must be reported on federal and state income tax returns (e.g., Schedule E in the United States). However, homeowners can offset taxable rental income through legitimate tax deductions, including operational expenses, mortgage interest, insurance premiums, and non-cash residential building depreciation spread over 27.5 years."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ADU ROI Calculator",
+  "url": "https://fincalclab.com/calculator/adu-roi-calculator",
+  "description": "Calculate estimated rental return on investment (ROI), Net Operating Income (NOI), Cash-on-Cost yield, payback period, and 10-year cumulative wealth growth for an Accessory Dwelling Unit.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="ADU ROI Calculator | Return on Investment & Cash-on-Cost Analysis"
+  description="Calculate ADU return on investment (ROI), Net Operating Income (NOI), cash-on-cost return, simple payback period, and 10-year cumulative rental wealth growth."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <AduRoiCalculator />
+
+    <!-- Featured ADU Strategy Callout -->
+    <section class="adu-callout-section" aria-labelledby="adu-roi-insight-heading">
+      <Card elevation="sm" class="adu-callout-card">
+        <div class="adu-callout-header">
+          <div class="adu-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+          <div class="adu-callout-heading-wrap">
+            <span class="adu-callout-eyebrow">Real Estate Investment Analysis</span>
+            <h2 id="adu-roi-insight-heading" class="adu-callout-title">The "Zero Land Cost" Advantage: Why ADUs Outperform Traditional Rentals</h2>
+          </div>
+        </div>
+
+        <p class="adu-callout-desc">
+          When purchasing traditional rental real estate, up to <strong>30% to 50% of your capital</strong> goes strictly toward acquiring the underlying land parcel—an asset that produces zero immediate cash flow. With an <strong>Accessory Dwelling Unit (ADU)</strong>, you already own the land. 100% of your investment capital is deployed into physical, rentable square footage. This structural efficiency creates double-digit <strong>Cash-on-Cost yields (10% to 15%+)</strong> that traditional residential acquisitions rarely match in today's high-interest-rate environment.
+        </p>
+
+        <div class="adu-callout-action">
+          <a href="/calculator/cap-rate-calculator" class="adu-callout-btn">
+            <span>Compare Commercial Yields With Our Cap Rate Calculator</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Educational Guide -->
+    <article class="educational-guide prose">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is ADU Return on Investment (ROI)?</h2>
+        <p>
+          <strong>ADU Return on Investment (ROI)</strong> is the comprehensive financial metric that quantifies the net profitability of constructing and leasing an Accessory Dwelling Unit relative to its all-in capital expenditure. 
+        </p>
+        <p>
+          Unlike passive stock market investments or traditional buy-and-hold real estate, building an ADU is an active real estate development project on land you already control. Evaluating an ADU's true financial viability requires tracking two distinct wealth creation engines:
+        </p>
+        <ol class="ordered-list">
+          <li><strong>Immediate Cash Flow (Net Operating Income):</strong> The recurring, inflation-hedged monthly net rental profit after deducting vacancy reserves and operating expenses.</li>
+          <li><strong>Long-Term Capital Appreciation:</strong> The forced equity created by adding permitted livable square footage to your residential property, plus compound neighborhood market appreciation over your investment horizon.</li>
+        </ol>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>How ADU Cash Flow and Returns Are Calculated</h2>
+        <p>
+          To calculate the return on an accessory unit objectively, professional real estate underwriters separate gross top-line collections from true bottom-line operating cash flow using standardized income-property accounting:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">The Fundamental ADU Cash Flow Equations</div>
+          <ul class="bullet-list" style="margin-bottom: 0;">
+            <li><strong>Gross Annual Rental Income:</strong> Monthly Market Rent × 12 Months</li>
+            <li><strong>Vacancy Loss:</strong> Gross Annual Rental Income × Vacancy Rate (%)</li>
+            <li><strong>Effective Annual Rental Income:</strong> Gross Annual Rental Income − Vacancy Loss</li>
+            <li><strong>Annual Operating Expenses:</strong> Monthly Operating Expenses × 12 Months</li>
+            <li><strong>Annual Net Operating Income (NOI):</strong> Effective Annual Rental Income − Annual Operating Expenses</li>
+            <li><strong>Cash-on-Cost Return (%):</strong> (Annual NOI ÷ Total ADU Investment Cost) × 100</li>
+            <li><strong>Simple Payback Period:</strong> Total ADU Investment Cost ÷ Annual NOI</li>
+            <li><strong>Projected Total ROI (%):</strong> [(Cumulative Projected NOI + Estimated Appreciation) ÷ Total ADU Investment Cost] × 100</li>
+          </ul>
+        </div>
+
+        <p>
+          Let us trace our default calculator scenario step by step for a <strong>$150,000 all-in ADU build</strong>:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">Worked Example: $150,000 ADU Investment ($1,800/mo Rent)</div>
+          <ol class="callout-steps">
+            <li><strong>Initial Investment Cost:</strong> $150,000 (all-in design, permits, site prep, and construction)</li>
+            <li><strong>Expected Monthly Rent:</strong> $1,800 per month</li>
+            <li><strong>Gross Annual Rent:</strong> $1,800 × 12 = <strong>$21,600 per year</strong></li>
+            <li><strong>Vacancy Loss (5.0%):</strong> $21,600 × 0.05 = <strong>-$1,080</strong></li>
+            <li><strong>Effective Annual Income:</strong> $21,600 − $1,080 = <strong>$20,520</strong></li>
+            <li><strong>Annual Operating Expenses ($300/mo):</strong> $300 × 12 = <strong>-$3,600</strong> (taxes, insurance, maintenance reserves)</li>
+            <li><strong>Year 1 Net Operating Income (NOI):</strong> $20,520 − $3,600 = <strong>$16,920 per year</strong> ($1,410 per month)</li>
+            <li><strong>Annual Cash-on-Cost Yield:</strong> ($16,920 ÷ $150,000) × 100 = <strong>11.28%</strong> (rounded to 11.3%)</li>
+            <li><strong>Simple Payback Period:</strong> $150,000 ÷ $16,920 = <strong>8.87 years</strong> (rounded to 8.9 years)</li>
+            <li><strong>10-Year Cumulative Rental NOI:</strong> Accounting for 3% annual rent growth = <strong>$199,239</strong></li>
+            <li><strong>Estimated 10-Year Future ADU Value:</strong> $150,000 × (1.03)¹⁰ = <strong>$201,587</strong> (+$51,587 capital appreciation)</li>
+            <li><strong>Total Net Wealth Created:</strong> $199,239 (cash flow) + $51,587 (appreciation) = <strong>$250,826</strong></li>
+            <li><strong>Projected Total ROI (10 Years):</strong> ($250,826 ÷ $150,000) × 100 = <strong>167.2%</strong></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>Cash-on-Cost Return vs. Cap Rate vs. Cash-on-Cash Return</h2>
+        <p>
+          Real estate investors often confuse these three essential return metrics. Understanding how they differ ensures you underwrite your ADU with precision:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Return Metric</th>
+                <th scope="col">Formula</th>
+                <th scope="col">What It Measures</th>
+                <th scope="col">Typical ADU Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Cash-on-Cost Return</strong></td>
+                <td>Annual NOI ÷ Total Construction Cost</td>
+                <td>Unleveraged yield on total capital expended to construct the unit.</td>
+                <td style="color: var(--color-success); font-weight: 700;">8.0% – 15.0%</td>
+              </tr>
+              <tr>
+                <td><strong>Capitalization Rate (Cap Rate)</strong></td>
+                <td>Annual NOI ÷ Current Fair Market Value</td>
+                <td>Property market pricing valuation independent of construction cost.</td>
+                <td>5.0% – 8.0%</td>
+              </tr>
+              <tr>
+                <td><strong>Cash-on-Cash Return</strong></td>
+                <td>Annual Cash Flow after Debt Service ÷ Out-of-Pocket Cash Down Payment</td>
+                <td>Leveraged return on the investor's actual cash equity when financed with a loan.</td>
+                <td style="color: var(--color-success); font-weight: 700;">12.0% – 25.0%+</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          *Note: When an ADU is built entirely with cash, Cash-on-Cost return and Cash-on-Cash return are mathematically identical.
+        </p>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>Multi-Year Cash Flow &amp; Equity Projection (10-Year Horizon)</h2>
+        <p>
+          Because rental rates and property values compound over time, evaluating an ADU strictly on Year 1 metrics understates its true wealth generation. The table below illustrates how cash flow and asset value expand across a 10-year holding period assuming <strong>3.0% annual rent growth</strong> and <strong>3.0% annual property appreciation</strong> on our baseline $150,000 project:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Holding Year</th>
+                <th scope="col">Monthly Rent</th>
+                <th scope="col">Gross Annual Rent</th>
+                <th scope="col">Effective Rent (5% Vacancy)</th>
+                <th scope="col">Annual NOI</th>
+                <th scope="col">Cumulative Net Cash Flow</th>
+                <th scope="col">Estimated ADU Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Year 1</strong></td>
+                <td>$1,800 / mo</td>
+                <td>$21,600</td>
+                <td>$20,520</td>
+                <td>$16,920</td>
+                <td>$16,920</td>
+                <td>$154,500</td>
+              </tr>
+              <tr>
+                <td><strong>Year 2</strong></td>
+                <td>$1,854 / mo</td>
+                <td>$22,248</td>
+                <td>$21,136</td>
+                <td>$17,536</td>
+                <td>$34,456</td>
+                <td>$159,135</td>
+              </tr>
+              <tr>
+                <td><strong>Year 3</strong></td>
+                <td>$1,910 / mo</td>
+                <td>$22,915</td>
+                <td>$21,770</td>
+                <td>$18,170</td>
+                <td>$52,625</td>
+                <td>$163,909</td>
+              </tr>
+              <tr>
+                <td><strong>Year 5</strong></td>
+                <td>$2,026 / mo</td>
+                <td>$24,311</td>
+                <td>$23,096</td>
+                <td>$19,496</td>
+                <td>$90,968</td>
+                <td>$173,891</td>
+              </tr>
+              <tr>
+                <td><strong>Year 7</strong></td>
+                <td>$2,149 / mo</td>
+                <td>$25,792</td>
+                <td>$24,502</td>
+                <td>$20,902</td>
+                <td>$131,974</td>
+                <td>$184,481</td>
+              </tr>
+              <tr>
+                <td><strong>Year 10</strong></td>
+                <td>$2,349 / mo</td>
+                <td>$28,183</td>
+                <td>$26,774</td>
+                <td>$23,174</td>
+                <td style="color: var(--color-success); font-weight: 700;">$199,239</td>
+                <td style="color: var(--color-primary); font-weight: 700;">$201,587</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          *Figures assume fixed $300/month operating expenses, 5% annual vacancy, 3% rent growth, and 3% property appreciation.
+        </p>
+
+        <p>
+          By Year 9, your cumulative rental NOI crosses the $176,000 mark—<strong>completely reimbursing your original $150,000 investment in pure cash flow</strong>. By Year 10, the ADU has produced $199,239 in cumulative cash flow while the physical structure has appreciated in value to $201,587.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>What Costs Does This Simplified ROI Estimate Exclude?</h2>
+        <p>
+          To maintain transparency and prevent unrealistic expectations, homeowners should understand that this calculator produces an <strong>unleveraged operating return estimate</strong>. In real-world property ownership, several additional factors influence net cash in bank:
+        </p>
+
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>1. Financing &amp; Debt Service Costs</h3>
+            <p>
+              If you fund the ADU using a HELOC, cash-out refinance, or construction loan, monthly principal and interest debt service will reduce your immediate take-home rental cash flow. Use our <a href="/calculator/adu-loan-calculator">ADU Loan Calculator</a> to model your monthly mortgage payments and financing interest.
+            </p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>2. Income Taxes &amp; Depreciation</h3>
+            <p>
+              Net rental income is taxable as ordinary income. However, the IRS permits offsetting rental earnings through non-cash depreciation over 27.5 years, mortgage interest deductions, and operational write-offs, significantly shielding your profits from tax liability.
+            </p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>3. Periodic Major Capital Expenditures (CapEx)</h3>
+            <p>
+              While brand-new ADUs require minimal maintenance during their first 5 to 7 years, components like mini-split heat pumps, water heaters, and roofing will eventually require replacement after 10 to 15 years.
+            </p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>4. Liquidity &amp; Selling Costs</h3>
+            <p>
+              An ADU cannot be sold separately from the primary residence in most jurisdictions (unless legally subdivided under specialized laws like California's AB 1033). Realizing the property's appreciated value generally requires selling the entire property or executing a cash-out refinance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: How to Underwrite a Complete ADU Deal -->
+      <section class="guide-section">
+        <h2>How to Underwrite an ADU Deal on FinCalcLab</h2>
+        <p>
+          To model your project from initial conception through long-term cash flow, follow this 3-step underwriting workflow using our integrated real estate calculator suite:
+        </p>
+        <ol class="ordered-list">
+          <li><strong>Step 1: Estimate Total Build Costs:</strong> Use the <a href="/calculator/adu-cost-calculator">ADU Cost Calculator</a> to budget site preparation, utility trenching, permits, architectural fees, and construction costs per square foot.</li>
+          <li><strong>Step 2: Model Your Financing &amp; Debt Service:</strong> Use the <a href="/calculator/adu-loan-calculator">ADU Loan Calculator</a> to determine down payment requirements, interest rates, loan terms, and monthly principal and interest payments.</li>
+          <li><strong>Step 3: Analyze Cash Flow &amp; Payback:</strong> Use this <strong>ADU ROI Calculator</strong> to input your expected market rent, compare your Cash-on-Cost return against alternative investments, and determine your exact payback timeline.</li>
+          <li><strong>Step 4: Explore House Hacking Strategies:</strong> If you plan to live in the primary home while renting the ADU (or downsize into the ADU while leasing the main house), model your net housing savings with our <a href="/calculator/house-hacking-calculator">House Hacking Calculator</a>.</li>
+        </ol>
+      </section>
+
+      <!-- Section 7: FAQ -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions About ADU ROI &amp; Profitability</h2>
+        <div class="faq-list">
+          {faqSchema.mainEntity.map((item) => (
+            <div class="faq-item">
+              <h3>{item.name}</h3>
+              <p>{item.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Section 8: Related Tools -->
+      <section class="guide-section">
+        <h2>Related Real Estate &amp; Housing Calculators</h2>
+        <p>
+          Explore companion tools on FinCalcLab to evaluate construction budgets, loan financing terms, and investment yields:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/adu-cost-calculator" class="related-tool-card">
+            <h3>ADU Cost Calculator</h3>
+            <p>Estimate all-in construction expenses, site preparation, utility trenching, municipal permits, and contingency reserves.</p>
+          </a>
+          <a href="/calculator/adu-loan-calculator" class="related-tool-card">
+            <h3>ADU Loan Calculator</h3>
+            <p>Calculate monthly principal and interest debt service, loan borrowing capacity, and total financing interest.</p>
+          </a>
+          <a href="/calculator/cap-rate-calculator" class="related-tool-card">
+            <h3>Cap Rate Calculator</h3>
+            <p>Evaluate capitalization rates and net operating income (NOI) across commercial and residential rental investments.</p>
+          </a>
+          <a href="/calculator/house-hacking-calculator" class="related-tool-card">
+            <h3>House Hacking Calculator</h3>
+            <p>Model how rental income from an ADU, duplex, or spare room offsets your primary mortgage payment and builds long-term wealth.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Statutory Disclaimer -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Investment &amp; Financial Disclaimer:</strong> This ADU ROI calculator is designed for preliminary informational, educational, and financial modeling purposes only. Calculations of Net Operating Income (NOI), Cash-on-Cost return, payback periods, and future property appreciation represent mathematical projections based on user-supplied assumptions and do not guarantee future rental earnings or real estate valuations. Actual market rents, tenant vacancy rates, operating expenses, tax assessments, and construction costs vary significantly across micro-markets and economic cycles. Consult a licensed real estate broker, certified property manager, CPA, or certified financial planner before making capital investment commitments.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2,
+  .guide-section h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .guide-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .guide-section p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .guide-section ul, .guide-section ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .guide-section li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* Featured Callout Banner */
+  .adu-callout-section {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .adu-callout-card {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .adu-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .adu-callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  :global(.dark) .adu-callout-icon {
+    background: rgba(37, 99, 235, 0.18);
+  }
+
+  .adu-callout-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .adu-callout-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .adu-callout-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .adu-callout-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .adu-callout-action {
+    display: flex;
+    align-items: center;
+  }
+
+  .adu-callout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: gap var(--transition-fast), color var(--transition-fast);
+  }
+
+  .adu-callout-btn:hover {
+    gap: 12px;
+    text-decoration: underline;
+  }
+
+  /* Key Callout Box */
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin: var(--space-5) 0;
+  }
+
+  .callout-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-3);
+  }
+
+  .callout-steps {
+    padding-left: var(--space-5);
+    margin: 0;
+  }
+
+  .callout-steps li {
+    font-size: 0.925rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  /* Scenario Cards */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+
+  .scenario-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .scenario-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+  }
+
+  /* Comparison Tables */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    margin: var(--space-5) 0 var(--space-2) 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+    min-width: 600px;
+  }
+
+  .growth-comparison-table th {
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-weight: 700;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .growth-comparison-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .growth-comparison-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .growth-comparison-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.03);
+  }
+
+  :global(.dark) .growth-comparison-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.08);
+  }
+
+  .table-caption {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  /* FAQ Accordion List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+
+  .faq-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .faq-item h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.925rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-4) 0;
+  }
+
+  .related-tool-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-decoration: none;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .related-tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .related-tool-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Disclaimer Box */
+  .disclaimer-section {
+    margin-top: var(--space-8);
+    padding: var(--space-4);
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .disclaimer-text {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Responsive Adjustments for Mobile (< 640px) */
+  @media (max-width: 640px) {
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .adu-callout-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

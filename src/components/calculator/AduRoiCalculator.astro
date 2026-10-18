@@ -1,0 +1,1181 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="ADU ROI Calculator"
+  description="Estimate Net Operating Income (NOI), Cash-on-Cost return, payback period, and long-term cumulative ROI for an Accessory Dwelling Unit rental investment."
+  category="Real Estate &amp; Investing"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="adu-roi-calculator">
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <label for="roi-currency-select" class="field-label-top">Currency</label>
+      <select id="roi-currency-select" class="form-select-full" aria-label="Select Currency">
+        <option value="USD" selected>USD ($) - US Dollar</option>
+        <option value="CAD">CAD (C$) - Canadian Dollar</option>
+        <option value="GBP">GBP (£) - British Pound</option>
+        <option value="EUR">EUR (€) - Euro</option>
+        <option value="AUD">AUD (A$) - Australian Dollar</option>
+        <option value="INR">INR (₹) - Indian Rupee</option>
+        <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        <option value="JPY">JPY (¥) - Japanese Yen</option>
+        <option value="CHF">CHF (CHF) - Swiss Franc</option>
+      </select>
+    </div>
+
+    <!-- Section 1: Investment Cost & Rental Cash Flow -->
+    <h3 class="input-section-heading">1. Initial Investment &amp; Rental Cash Flow</h3>
+
+    <!-- Input 1: Total ADU Investment Cost -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="adu-invest-cost">Total ADU Investment Cost ($)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-cost">$</span>
+          <input 
+            type="number" 
+            id="adu-invest-cost" 
+            min="10000" 
+            max="2000000" 
+            step="5000" 
+            value="150000" 
+            aria-label="Total ADU Investment Cost" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="adu-invest-cost-slider" 
+        min="30000" 
+        max="400000" 
+        step="5000" 
+        value="150000" 
+        class="slider-range" 
+        aria-label="Investment Cost Slider" 
+      />
+      <span class="input-hint">Total all-in capital expended for construction, site prep, permitting, and finishing.</span>
+    </div>
+
+    <!-- Input 2: Expected Monthly Rental Income -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="adu-monthly-rent">Expected Monthly Rental Income ($)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-rent">$</span>
+          <input 
+            type="number" 
+            id="adu-monthly-rent" 
+            min="0" 
+            max="30000" 
+            step="50" 
+            value="1800" 
+            aria-label="Expected Monthly Rental Income" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="adu-monthly-rent-slider" 
+        min="500" 
+        max="4500" 
+        step="50" 
+        value="1800" 
+        class="slider-range" 
+        aria-label="Monthly Rent Slider" 
+      />
+      <div class="quick-chips-row" aria-label="Quick rent presets">
+        <span class="chips-label">Presets:</span>
+        <button type="button" class="rent-chip-btn" data-rent="1400">$1,400</button>
+        <button type="button" class="rent-chip-btn active" data-rent="1800">$1,800</button>
+        <button type="button" class="rent-chip-btn" data-rent="2400">$2,400</button>
+        <button type="button" class="rent-chip-btn" data-rent="3000">$3,000</button>
+      </div>
+      <span class="input-hint">Projected gross market rent collected each month from qualified tenants.</span>
+    </div>
+
+    <!-- Input 3: Monthly Operating Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="adu-monthly-expenses">Monthly Operating Expenses ($)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-exp">$</span>
+          <input 
+            type="number" 
+            id="adu-monthly-expenses" 
+            min="0" 
+            max="15000" 
+            step="25" 
+            value="300" 
+            aria-label="Monthly Operating Expenses" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="adu-monthly-expenses-slider" 
+        min="0" 
+        max="1200" 
+        step="25" 
+        value="300" 
+        class="slider-range" 
+        aria-label="Monthly Expenses Slider" 
+      />
+      <span class="input-hint">Incremental property taxes, hazard/liability insurance riders, maintenance reserves, management, and tenant turnover.</span>
+    </div>
+
+    <!-- Section 2: Market Dynamics & Holding Period -->
+    <div style="margin-top: var(--space-5);">
+      <h3 class="input-section-heading">2. Market Growth &amp; Investment Horizon</h3>
+      
+      <!-- Vacancy & Rent Increase Grid -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-vacancy-rate">Expected Vacancy Rate (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="adu-vacancy-rate" 
+                min="0" 
+                max="30" 
+                step="0.5" 
+                value="5.0" 
+                aria-label="Annual Vacancy Rate" 
+              />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+          <span class="input-hint">Expected annual vacancy and collection loss allowance (typically 4%–8%).</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-rent-increase">Annual Rent Increase (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="adu-rent-increase" 
+                min="0" 
+                max="15" 
+                step="0.5" 
+                value="3.0" 
+                aria-label="Annual Rent Increase Rate" 
+              />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+          <span class="input-hint">Projected annual escalation in rental market rates over time.</span>
+        </div>
+      </div>
+
+      <!-- Appreciation & Period Grid -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-appreciation">Property Appreciation (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="adu-appreciation" 
+                min="0" 
+                max="15" 
+                step="0.5" 
+                value="3.0" 
+                aria-label="Annual Property Appreciation Rate" 
+              />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+          <span class="input-hint">Expected annual compound growth rate of the real estate asset.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-holding-years">Investment Period (Years)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="adu-holding-years" 
+                min="1" 
+                max="40" 
+                step="1" 
+                value="10" 
+                aria-label="Investment Period in Years" 
+              />
+              <span class="unit-symbol">yrs</span>
+            </div>
+          </div>
+          <div class="quick-chips-row" style="margin-top: 6px;" aria-label="Quick investment horizon options">
+            <button type="button" class="year-chip-btn" data-yr="5">5y</button>
+            <button type="button" class="year-chip-btn active" data-yr="10">10y</button>
+            <button type="button" class="year-chip-btn" data-yr="15">15y</button>
+            <button type="button" class="year-chip-btn" data-yr="20">20y</button>
+          </div>
+          <span class="input-hint">Number of years modeled for cumulative cash flow and capital appreciation.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Form Button -->
+    <div class="reset-action-row">
+      <button type="button" id="roi-reset-btn" class="reset-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        <span>Reset to Default Example</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper" id="adu-roi-results-panel">
+    
+    <div class="results-header">
+      <h2 class="results-title">ADU Rental Investment Returns</h2>
+      <span class="results-subtitle">Unleveraged cash flow, payback timeline, and wealth projection</span>
+    </div>
+
+    <!-- 4 Hero Cards (Prominent Required Results) -->
+    <div class="hero-metrics-grid">
+      <!-- Hero 1: Annual NOI -->
+      <div class="hero-metric-card primary-hero">
+        <span class="hero-label">Annual Net Operating Income</span>
+        <div class="hero-value-wrap">
+          <span class="hero-value" id="res-annual-noi">$16,920</span>
+          <span class="hero-unit">/yr</span>
+        </div>
+        <span class="hero-subtext" id="res-monthly-noi-subtext">$1,410/mo net cash flow (Year 1)</span>
+      </div>
+
+      <!-- Hero 2: Cash-on-Cost Return -->
+      <div class="hero-metric-card secondary-hero">
+        <span class="hero-label">Annual Cash-on-Cost Return</span>
+        <div class="hero-value-wrap">
+          <span class="hero-value text-success" id="res-cash-on-cost">11.3%</span>
+        </div>
+        <span class="hero-subtext">Year 1 unleveraged net rental yield</span>
+      </div>
+
+      <!-- Hero 3: Simple Payback Period -->
+      <div class="hero-metric-card secondary-hero">
+        <span class="hero-label">Simple Payback Period</span>
+        <div class="hero-value-wrap">
+          <span class="hero-value" id="res-payback-years">8.9</span>
+          <span class="hero-unit" id="res-payback-unit">Years</span>
+        </div>
+        <span class="hero-subtext" id="res-payback-subtext">Full investment recovered via NOI</span>
+      </div>
+
+      <!-- Hero 4: Projected Total ROI -->
+      <div class="hero-metric-card primary-hero">
+        <span class="hero-label" id="res-roi-label">Projected Total ROI (10 Yrs)</span>
+        <div class="hero-value-wrap">
+          <span class="hero-value" id="res-total-roi">167.2%</span>
+        </div>
+        <span class="hero-subtext" id="res-roi-subtext">+$250,826 cumulative net gain</span>
+      </div>
+    </div>
+
+    <!-- 4-Metric Grid (Year 1 Supporting Breakdown) -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <span class="tile-label">Gross Annual Rent (Year 1)</span>
+        <span class="tile-value" id="res-gross-rent">$21,600</span>
+        <span class="tile-caption" id="res-gross-caption">$1,800/mo × 12 months</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">Vacancy &amp; Deductions</span>
+        <span class="tile-value text-danger" id="res-vacancy-loss">-$1,080</span>
+        <span class="tile-caption" id="res-vacancy-caption">5.0% vacancy rate allowance</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">Effective Annual Rent</span>
+        <span class="tile-value" id="res-effective-rent">$20,520</span>
+        <span class="tile-caption">Gross rent minus vacancy loss</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">Annual Operating Expenses</span>
+        <span class="tile-value text-danger" id="res-annual-expenses">-$3,600</span>
+        <span class="tile-caption" id="res-expenses-caption">$300/mo taxes, insurance &amp; upkeep</span>
+      </div>
+    </div>
+
+    <!-- Multi-Year Projection Highlights Card -->
+    <div class="projection-card">
+      <div class="projection-header">
+        <span class="projection-title">Long-Term Wealth Generation (<span id="res-horizon-display">10</span>-Year Horizon)</span>
+      </div>
+      
+      <div class="projection-metrics-row">
+        <div class="proj-col">
+          <span class="proj-label">Cumulative Rental NOI</span>
+          <span class="proj-val text-success" id="res-cum-noi">$199,239</span>
+          <span class="proj-sub">132.8% of investment</span>
+        </div>
+        <div class="proj-col">
+          <span class="proj-label">Estimated Future Value</span>
+          <span class="proj-val" id="res-future-val">$201,587</span>
+          <span class="proj-sub" id="res-apprec-sub">+$51,587 appreciation</span>
+        </div>
+        <div class="proj-col">
+          <span class="proj-label">Projected Final Rent</span>
+          <span class="proj-val" id="res-final-rent">$28,183/yr</span>
+          <span class="proj-sub" id="res-final-monthly">$2,349/month</span>
+        </div>
+      </div>
+
+      <!-- Visual Cumulative Distribution Bar -->
+      <div class="wealth-bar-container">
+        <div class="bar-seg bar-cost" id="bar-cost" style="width: 37.4%;" title="Initial Capital Recovered"></div>
+        <div class="bar-seg bar-noi" id="bar-noi" style="width: 49.7%;" title="Cumulative Rental Profit"></div>
+        <div class="bar-seg bar-apprec" id="bar-apprec" style="width: 12.9%;" title="Capital Appreciation"></div>
+      </div>
+      
+      <div class="wealth-legend">
+        <div class="wealth-leg-item">
+          <span class="leg-dot dot-cost"></span>
+          <span>Initial Investment ($150,000)</span>
+        </div>
+        <div class="wealth-leg-item">
+          <span class="leg-dot dot-noi"></span>
+          <span id="leg-noi-text">Net Rental Profit ($199,239)</span>
+        </div>
+        <div class="wealth-leg-item">
+          <span class="leg-dot dot-apprec"></span>
+          <span id="leg-apprec-text">Property Appreciation ($51,587)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plain English Dynamic Narrative Explanation -->
+    <div class="narrative-card">
+      <div class="narrative-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <span>ROI Performance Assessment</span>
+      </div>
+      <p class="narrative-text" id="res-narrative">
+        An initial ADU investment of <strong>$150,000</strong> renting at <strong>$1,800/month</strong> generates <strong>$20,520</strong> in effective annual income after a <strong>5.0%</strong> vacancy allowance. Deducting <strong>$3,600</strong> in annual operating expenses yields a Year 1 Net Operating Income of <strong>$16,920</strong> ($1,410/mo), representing an <strong>11.3% Cash-on-Cost return</strong>. At this rate, your upfront capital will be fully repaid in <strong>8.9 years</strong>. Over a <strong>10-year</strong> horizon with 3.0% rent growth and 3.0% property appreciation, the ADU is projected to generate <strong>$199,239</strong> in cumulative net rental cash flow and <strong>$51,587</strong> in capital appreciation, producing a <strong>167.2% total ROI</strong> (+$250,826 in net wealth created).
+      </p>
+    </div>
+
+    <!-- Companion Tool Callouts -->
+    <div class="companion-tools-row">
+      <a href="/calculator/adu-cost-calculator" class="companion-tool-chip">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span>Budget Construction: <strong>ADU Cost Calculator &rarr;</strong></span>
+      </a>
+      <a href="/calculator/adu-loan-calculator" class="companion-tool-chip">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+        <span>Finance the Build: <strong>ADU Loan Calculator &rarr;</strong></span>
+      </a>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initAduRoiCalculator() {
+    const currencySymbols = {
+      USD: '$',
+      CAD: 'C$',
+      GBP: '£',
+      EUR: '€',
+      AUD: 'A$',
+      INR: '₹',
+      SGD: 'S$',
+      JPY: '¥',
+      CHF: 'CHF '
+    };
+
+    let currentCurrency = 'USD';
+    let currentSymbol = '$';
+
+    // Inputs
+    const currencySelect = document.getElementById('roi-currency-select');
+    const costInput = document.getElementById('adu-invest-cost');
+    const costSlider = document.getElementById('adu-invest-cost-slider');
+    const rentInput = document.getElementById('adu-monthly-rent');
+    const rentSlider = document.getElementById('adu-monthly-rent-slider');
+    const expInput = document.getElementById('adu-monthly-expenses');
+    const expSlider = document.getElementById('adu-monthly-expenses-slider');
+    const vacInput = document.getElementById('adu-vacancy-rate');
+    const rentIncInput = document.getElementById('adu-rent-increase');
+    const apprecInput = document.getElementById('adu-appreciation');
+    const yearsInput = document.getElementById('adu-holding-years');
+    const resetBtn = document.getElementById('roi-reset-btn');
+
+    // Preset Chips
+    const rentChips = document.querySelectorAll('.rent-chip-btn');
+    const yearChips = document.querySelectorAll('.year-chip-btn');
+
+    // Symbols
+    const symCost = document.getElementById('sym-cost');
+    const symRent = document.getElementById('sym-rent');
+    const symExp = document.getElementById('sym-exp');
+
+    // Hero Outputs
+    const resAnnualNoi = document.getElementById('res-annual-noi');
+    const resMonthlyNoiSubtext = document.getElementById('res-monthly-noi-subtext');
+    const resCashOnCost = document.getElementById('res-cash-on-cost');
+    const resPaybackYears = document.getElementById('res-payback-years');
+    const resPaybackUnit = document.getElementById('res-payback-unit');
+    const resPaybackSubtext = document.getElementById('res-payback-subtext');
+    const resRoiLabel = document.getElementById('res-roi-label');
+    const resTotalRoi = document.getElementById('res-total-roi');
+    const resRoiSubtext = document.getElementById('res-roi-subtext');
+
+    // 4-Tile Supporting Metrics
+    const resGrossRent = document.getElementById('res-gross-rent');
+    const resGrossCaption = document.getElementById('res-gross-caption');
+    const resVacancyLoss = document.getElementById('res-vacancy-loss');
+    const resVacancyCaption = document.getElementById('res-vacancy-caption');
+    const resEffectiveRent = document.getElementById('res-effective-rent');
+    const resAnnualExpenses = document.getElementById('res-annual-expenses');
+    const resExpensesCaption = document.getElementById('res-expenses-caption');
+
+    // Long-Term Card
+    const resHorizonDisplay = document.getElementById('res-horizon-display');
+    const resCumNoi = document.getElementById('res-cum-noi');
+    const resFutureVal = document.getElementById('res-future-val');
+    const resApprecSub = document.getElementById('res-apprec-sub');
+    const resFinalRent = document.getElementById('res-final-rent');
+    const resFinalMonthly = document.getElementById('res-final-monthly');
+    const barCost = document.getElementById('bar-cost');
+    const barNoi = document.getElementById('bar-noi');
+    const barApprec = document.getElementById('bar-apprec');
+    const legNoiText = document.getElementById('leg-noi-text');
+    const legApprecText = document.getElementById('leg-apprec-text');
+
+    // Narrative
+    const resNarrative = document.getElementById('res-narrative');
+
+    if (!costInput) return;
+
+    function formatMoney(amount, decimals = 0) {
+      if (isNaN(amount) || amount === null) amount = 0;
+      const formatted = Math.round(amount).toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+      return `${currentSymbol}${formatted}`;
+    }
+
+    function formatNumber(amount, decimals = 0) {
+      if (isNaN(amount) || amount === null) amount = 0;
+      return amount.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function updateCurrency(curr) {
+      currentCurrency = curr;
+      currentSymbol = currencySymbols[curr] || '$';
+      if (symCost) symCost.textContent = currentSymbol;
+      if (symRent) symRent.textContent = currentSymbol;
+      if (symExp) symExp.textContent = currentSymbol;
+      recalculate();
+    }
+
+    function recalculate() {
+      const cost = Math.max(0, parseFloat(costInput.value) || 0);
+      const rent = Math.max(0, parseFloat(rentInput.value) || 0);
+      const expenses = Math.max(0, parseFloat(expInput.value) || 0);
+      const vacRate = Math.max(0, Math.min(100, parseFloat(vacInput.value) || 0));
+      const rentGrowth = Math.max(-50, Math.min(100, parseFloat(rentIncInput.value) || 0));
+      const apprecRate = Math.max(-50, Math.min(100, parseFloat(apprecInput.value) || 0));
+      const termYears = Math.max(1, Math.min(50, Math.round(parseFloat(yearsInput.value) || 1)));
+
+      // Year 1 Calculations
+      const annualGrossRent = rent * 12;
+      const vacancyLoss = annualGrossRent * (vacRate / 100);
+      const effectiveAnnualRent = annualGrossRent - vacancyLoss;
+      const annualExpenses = expenses * 12;
+      const annualNoi = effectiveAnnualRent - annualExpenses;
+      const monthlyNoi = annualNoi / 12;
+
+      const cashOnCost = cost > 0 ? (annualNoi / cost) * 100 : 0;
+      const isProfitable = annualNoi > 0;
+      const paybackYears = isProfitable && cost > 0 ? cost / annualNoi : null;
+
+      // Multi-Year Cumulative Projections
+      let cumulativeNoi = 0;
+      let currRent = rent;
+
+      for (let t = 1; t <= termYears; t++) {
+        const yrGross = currRent * 12;
+        const yrVac = yrGross * (vacRate / 100);
+        const yrEff = yrGross - yrVac;
+        const yrNoi = yrEff - annualExpenses;
+        cumulativeNoi += yrNoi;
+
+        if (t < termYears) {
+          currRent *= (1 + rentGrowth / 100);
+        }
+      }
+
+      const projectedFinalMonthlyRent = currRent;
+      const projectedFinalAnnualRent = currRent * 12;
+      const futureAduValue = cost * Math.pow(1 + apprecRate / 100, termYears);
+      const estimatedAppreciation = Math.max(0, futureAduValue - cost);
+      const totalNetGain = cumulativeNoi + (futureAduValue - cost);
+      const projectedTotalRoi = cost > 0 ? (totalNetGain / cost) * 100 : 0;
+
+      // Update Hero Card 1: Annual NOI
+      if (resAnnualNoi) {
+        resAnnualNoi.textContent = formatMoney(annualNoi);
+        resAnnualNoi.className = isProfitable ? 'hero-value' : 'hero-value text-danger';
+      }
+      if (resMonthlyNoiSubtext) {
+        if (isProfitable) {
+          resMonthlyNoiSubtext.textContent = `${formatMoney(monthlyNoi)}/mo net cash flow (Year 1)`;
+        } else {
+          resMonthlyNoiSubtext.textContent = `Operating at a net loss of ${formatMoney(Math.abs(monthlyNoi))}/mo`;
+        }
+      }
+
+      // Update Hero Card 2: Cash-on-Cost
+      if (resCashOnCost) {
+        resCashOnCost.textContent = `${cashOnCost.toFixed(1)}%`;
+        resCashOnCost.className = cashOnCost >= 0 ? 'hero-value text-success' : 'hero-value text-danger';
+      }
+
+      // Update Hero Card 3: Payback Period
+      if (resPaybackYears) {
+        if (paybackYears !== null) {
+          resPaybackYears.textContent = paybackYears.toFixed(1);
+          if (resPaybackUnit) resPaybackUnit.textContent = 'Years';
+          if (resPaybackSubtext) resPaybackSubtext.textContent = 'Full investment recovered via NOI';
+        } else {
+          resPaybackYears.textContent = 'N/A';
+          if (resPaybackUnit) resPaybackUnit.textContent = '';
+          if (resPaybackSubtext) resPaybackSubtext.textContent = 'Annual NOI is zero or negative';
+        }
+      }
+
+      // Update Hero Card 4: Total ROI
+      if (resRoiLabel) {
+        resRoiLabel.textContent = `Projected Total ROI (${termYears} Yrs)`;
+      }
+      if (resTotalRoi) {
+        resTotalRoi.textContent = `${projectedTotalRoi.toFixed(1)}%`;
+        resTotalRoi.className = projectedTotalRoi >= 0 ? 'hero-value' : 'hero-value text-danger';
+      }
+      if (resRoiSubtext) {
+        const sign = totalNetGain >= 0 ? '+' : '';
+        resRoiSubtext.textContent = `${sign}${formatMoney(totalNetGain)} cumulative net gain`;
+      }
+
+      // Update 4 Supporting Metrics Grid
+      if (resGrossRent) resGrossRent.textContent = formatMoney(annualGrossRent);
+      if (resGrossCaption) resGrossCaption.textContent = `${formatMoney(rent)}/mo × 12 months`;
+      if (resVacancyLoss) resVacancyLoss.textContent = `-${formatMoney(vacancyLoss)}`;
+      if (resVacancyCaption) resVacancyCaption.textContent = `${vacRate.toFixed(1)}% vacancy rate allowance`;
+      if (resEffectiveRent) resEffectiveRent.textContent = formatMoney(effectiveAnnualRent);
+      if (resAnnualExpenses) resAnnualExpenses.textContent = `-${formatMoney(annualExpenses)}`;
+      if (resExpensesCaption) resExpensesCaption.textContent = `${formatMoney(expenses)}/mo operating expenses`;
+
+      // Update Projection Highlights
+      if (resHorizonDisplay) resHorizonDisplay.textContent = String(termYears);
+      if (resCumNoi) resCumNoi.textContent = formatMoney(cumulativeNoi);
+      if (resFutureVal) resFutureVal.textContent = formatMoney(futureAduValue);
+      if (resApprecSub) resApprecSub.textContent = `+${formatMoney(estimatedAppreciation)} appreciation`;
+      if (resFinalRent) resFinalRent.textContent = `${formatMoney(projectedFinalAnnualRent)}/yr`;
+      if (resFinalMonthly) resFinalMonthly.textContent = `${formatMoney(projectedFinalMonthlyRent)}/month`;
+
+      // Wealth bar calculations
+      const totalPool = cost + Math.max(0, cumulativeNoi) + Math.max(0, estimatedAppreciation);
+      const basis = totalPool > 0 ? totalPool : 1;
+      const costPct = (cost / basis) * 100;
+      const noiPct = (Math.max(0, cumulativeNoi) / basis) * 100;
+      const apprecPct = (Math.max(0, estimatedAppreciation) / basis) * 100;
+
+      if (barCost) barCost.style.width = `${costPct.toFixed(1)}%`;
+      if (barNoi) barNoi.style.width = `${noiPct.toFixed(1)}%`;
+      if (barApprec) barApprec.style.width = `${apprecPct.toFixed(1)}%`;
+
+      if (legNoiText) legNoiText.textContent = `Net Rental Profit (${formatMoney(cumulativeNoi)})`;
+      if (legApprecText) legApprecText.textContent = `Property Appreciation (${formatMoney(estimatedAppreciation)})`;
+
+      // Dynamic Narrative
+      if (resNarrative) {
+        if (!isProfitable) {
+          resNarrative.innerHTML = `At an expected monthly rent of <strong>${formatMoney(rent)}</strong> and monthly expenses of <strong>${formatMoney(expenses)}</strong>, your ADU operates at an annual net loss of <strong>${formatMoney(Math.abs(annualNoi))}</strong> (-${Math.abs(cashOnCost).toFixed(1)}% yield). Payback cannot occur while operational costs exceed rental collections. Consider adjusting rental pricing or trimming operating expenditures.`;
+        } else {
+          resNarrative.innerHTML = `An initial ADU investment of <strong>${formatMoney(cost)}</strong> renting at <strong>${formatMoney(rent)}/month</strong> generates <strong>${formatMoney(effectiveAnnualRent)}</strong> in effective annual income after a <strong>${vacRate.toFixed(1)}%</strong> vacancy allowance. Deducting <strong>${formatMoney(annualExpenses)}</strong> in annual operating expenses yields a Year 1 Net Operating Income of <strong>${formatMoney(annualNoi)}</strong> (${formatMoney(monthlyNoi)}/mo), representing an <strong>${cashOnCost.toFixed(1)}% Cash-on-Cost return</strong>. At this rate, your upfront capital will be fully repaid in <strong>${paybackYears ? paybackYears.toFixed(1) : 'N/A'} years</strong>. Over a <strong>${termYears}-year</strong> horizon with ${rentGrowth.toFixed(1)}% rent growth and ${apprecRate.toFixed(1)}% property appreciation, the ADU is projected to generate <strong>${formatMoney(cumulativeNoi)}</strong> in cumulative net rental cash flow and <strong>${formatMoney(estimatedAppreciation)}</strong> in capital appreciation, producing a <strong>${projectedTotalRoi.toFixed(1)}% total ROI</strong> (+${formatMoney(totalNetGain)} in net wealth created).`;
+        }
+      }
+
+      // Sync Chip Active States
+      rentChips.forEach(chip => {
+        const val = parseFloat(chip.getAttribute('data-rent'));
+        chip.classList.toggle('active', Math.abs(rent - val) < 10);
+      });
+
+      yearChips.forEach(chip => {
+        const val = parseFloat(chip.getAttribute('data-yr'));
+        chip.classList.toggle('active', Math.abs(termYears - val) < 0.5);
+      });
+    }
+
+    // Currency Change
+    if (currencySelect) {
+      currencySelect.addEventListener('change', (e) => {
+        updateCurrency(e.target.value);
+      });
+    }
+
+    // Bidirectional sync: Cost
+    costInput.addEventListener('input', () => {
+      costSlider.value = costInput.value;
+      recalculate();
+    });
+    costSlider.addEventListener('input', () => {
+      costInput.value = costSlider.value;
+      recalculate();
+    });
+
+    // Bidirectional sync: Rent
+    rentInput.addEventListener('input', () => {
+      rentSlider.value = rentInput.value;
+      recalculate();
+    });
+    rentSlider.addEventListener('input', () => {
+      rentInput.value = rentSlider.value;
+      recalculate();
+    });
+
+    // Rent chips
+    rentChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const rVal = parseFloat(chip.getAttribute('data-rent')) || 1800;
+        rentInput.value = rVal;
+        rentSlider.value = rVal;
+        recalculate();
+      });
+    });
+
+    // Bidirectional sync: Expenses
+    expInput.addEventListener('input', () => {
+      expSlider.value = expInput.value;
+      recalculate();
+    });
+    expSlider.addEventListener('input', () => {
+      expInput.value = expSlider.value;
+      recalculate();
+    });
+
+    // Inputs: Vacancy, Rent increase, Appreciation, Holding Years
+    vacInput.addEventListener('input', recalculate);
+    rentIncInput.addEventListener('input', recalculate);
+    apprecInput.addEventListener('input', recalculate);
+    yearsInput.addEventListener('input', recalculate);
+
+    // Year Chips
+    yearChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const yVal = parseFloat(chip.getAttribute('data-yr')) || 10;
+        yearsInput.value = yVal;
+        recalculate();
+      });
+    });
+
+    // Reset button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        costInput.value = '150000';
+        costSlider.value = '150000';
+        rentInput.value = '1800';
+        rentSlider.value = '1800';
+        expInput.value = '300';
+        expSlider.value = '300';
+        vacInput.value = '5.0';
+        rentIncInput.value = '3.0';
+        apprecInput.value = '3.0';
+        yearsInput.value = '10';
+        if (currencySelect) {
+          currencySelect.value = 'USD';
+          updateCurrency('USD');
+        } else {
+          recalculate();
+        }
+      });
+    }
+
+    // Action Toolbar Clipboard Integration
+    window.addEventListener('copy-calculator-results', async () => {
+      try {
+        const cost = costInput.value;
+        const rent = rentInput.value;
+        const noi = resAnnualNoi ? resAnnualNoi.textContent : '';
+        const yieldVal = resCashOnCost ? resCashOnCost.textContent : '';
+        const payback = resPaybackYears ? resPaybackYears.textContent : '';
+        const roi = resTotalRoi ? resTotalRoi.textContent : '';
+        const horizon = yearsInput.value;
+
+        const textToCopy = `FinCalcLab ADU ROI Calculator Results:
+• Initial Investment Cost: ${formatMoney(cost)}
+• Monthly Rental Income: ${formatMoney(rent)}/mo
+---------------------------------------
+• Annual Net Operating Income (NOI): ${noi}/yr
+• Cash-on-Cost Yield: ${yieldVal}
+• Simple Payback Period: ${payback} Years
+• Projected Total ROI (${horizon} Yrs): ${roi}
+• Calculated online at: ${window.location.href}`;
+
+        await navigator.clipboard.writeText(textToCopy);
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      } catch (err) {
+        console.error('Failed to copy results:', err);
+      }
+    });
+
+    // Initial calculation
+    recalculate();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAduRoiCalculator);
+  } else {
+    initAduRoiCalculator();
+  }
+  document.addEventListener('astro:page-load', initAduRoiCalculator);
+</script>
+
+<style>
+  /* ==========================================================================
+     FINCALCLAB STANDARDIZED ADU ROI CALCULATOR STYLING
+     Compliant with Mobile-First, Global Form Field System, and Dark Mode
+     ========================================================================== */
+
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .input-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: var(--space-2) 0 var(--space-3) 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Quick Option Chips */
+  .quick-chips-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .chips-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 2px;
+  }
+
+  .rent-chip-btn,
+  .year-chip-btn {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-base);
+    color: var(--color-text-muted);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  :global(.dark) .rent-chip-btn,
+  :global(.dark) .year-chip-btn {
+    background: var(--color-bg-surface);
+  }
+
+  .rent-chip-btn:hover,
+  .year-chip-btn:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-primary);
+  }
+
+  .rent-chip-btn.active,
+  .year-chip-btn.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  /* Reset Button Action Row */
+  .reset-action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.825rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .reset-btn:hover {
+    color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.08);
+  }
+
+  /* Results Panel */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-header {
+    margin-bottom: var(--space-1);
+  }
+
+  .results-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0 0 2px 0;
+  }
+
+  .results-subtitle {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Hero Cards */
+  .hero-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .hero-metric-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .primary-hero {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.04) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.35);
+  }
+
+  :global(.dark) .primary-hero {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0.08) 100%);
+    border-color: rgba(37, 99, 235, 0.5);
+  }
+
+  .secondary-hero {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+  }
+
+  .hero-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .primary-hero .hero-label {
+    color: var(--color-primary);
+  }
+
+  .hero-value-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+
+  .hero-value {
+    font-size: 1.85rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--color-text-base);
+    word-break: break-all;
+  }
+
+  .primary-hero .hero-value {
+    color: var(--color-primary);
+  }
+
+  .text-success {
+    color: #10b981;
+  }
+
+  .text-danger {
+    color: #ef4444;
+  }
+
+  .hero-unit {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .hero-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  /* 4-Metric Grid (Strict Rule 15 Compliance) */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .metric-tile {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    line-height: 1.2;
+    word-break: break-all;
+  }
+
+  .tile-caption {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Long-term Projection Card */
+  .projection-card {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .projection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .projection-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .projection-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+  }
+
+  .proj-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .proj-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .proj-val {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    word-break: break-all;
+  }
+
+  .proj-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+
+  .wealth-bar-container {
+    display: flex;
+    width: 100%;
+    height: 14px;
+    border-radius: 7px;
+    overflow: hidden;
+    background: var(--color-border);
+  }
+
+  .bar-seg {
+    height: 100%;
+    transition: width var(--transition-normal);
+  }
+
+  .bar-cost {
+    background-color: var(--color-primary);
+  }
+
+  .bar-noi {
+    background-color: #10b981;
+  }
+
+  .bar-apprec {
+    background-color: #eab308;
+  }
+
+  .wealth-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .wealth-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .leg-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot-cost { background-color: var(--color-primary); }
+  .dot-noi { background-color: #10b981; }
+  .dot-apprec { background-color: #eab308; }
+
+  /* Narrative Card */
+  .narrative-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  :global(.dark) .narrative-card {
+    background: var(--color-bg-surface);
+  }
+
+  .narrative-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .narrative-text {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Companion Tools Row */
+  .companion-tools-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .companion-tool-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    color: var(--color-text-base);
+    font-size: 0.775rem;
+    transition: all var(--transition-fast);
+  }
+
+  .companion-tool-chip svg {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .companion-tool-chip:hover {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.05);
+  }
+
+  /* Responsive Adjustments for Mobile (< 580px) */
+  @media (max-width: 580px) {
+    .hero-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-value {
+      font-size: 1.65rem;
+    }
+
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .projection-metrics-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .companion-tools-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,1310 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="ADU Cost Calculator"
+  description="Estimate the total cost to build an Accessory Dwelling Unit (ADU). Calculate base construction, site preparation, permits, utilities, architectural fees, and contingency reserves."
+  category="Real Estate &amp; Construction"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="adu-cost-calculator">
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <label for="cost-currency-select" class="field-label-top">Currency</label>
+      <select id="cost-currency-select" class="form-select-full" aria-label="Select Currency">
+        <option value="USD" selected>USD ($) - US Dollar</option>
+        <option value="CAD">CAD (C$) - Canadian Dollar</option>
+        <option value="GBP">GBP (£) - British Pound</option>
+        <option value="EUR">EUR (€) - Euro</option>
+        <option value="AUD">AUD (A$) - Australian Dollar</option>
+        <option value="INR">INR (₹) - Indian Rupee</option>
+        <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        <option value="JPY">JPY (¥) - Japanese Yen</option>
+        <option value="CHF">CHF (CHF) - Swiss Franc</option>
+      </select>
+    </div>
+
+    <!-- Section 1: ADU Size & Base Construction Rate -->
+    <h3 class="input-section-heading">1. Size &amp; Base Construction</h3>
+
+    <!-- Input 1: ADU Size -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="adu-size-sqft">ADU Size (Square Feet)</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="adu-size-sqft" 
+            min="100" 
+            max="3000" 
+            step="25" 
+            value="600" 
+            aria-label="ADU Size in Square Feet" 
+          />
+          <span class="unit-symbol">sq ft</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="adu-size-sqft-slider" 
+        min="200" 
+        max="1200" 
+        step="25" 
+        value="600" 
+        class="slider-range" 
+        aria-label="ADU Size Slider" 
+      />
+      <div class="quick-chips-row" aria-label="Quick ADU size presets">
+        <span class="chips-label">Presets:</span>
+        <button type="button" class="size-chip-btn" data-size="400">400 sf (Studio)</button>
+        <button type="button" class="size-chip-btn active" data-size="600">600 sf (1-Bed)</button>
+        <button type="button" class="size-chip-btn" data-size="800">800 sf (2-Bed)</button>
+        <button type="button" class="size-chip-btn" data-size="1000">1,000 sf (3-Bed)</button>
+      </div>
+      <span class="input-hint">Total finished interior livable area of the planned accessory dwelling unit.</span>
+    </div>
+
+    <!-- Input 2: Construction Cost per Square Foot -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="adu-cost-per-sqft">Construction Cost per Square Foot ($)</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-cost-sqft">$</span>
+          <input 
+            type="number" 
+            id="adu-cost-per-sqft" 
+            min="50" 
+            max="1000" 
+            step="10" 
+            value="250" 
+            aria-label="Construction Cost per Square Foot" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="adu-cost-per-sqft-slider" 
+        min="100" 
+        max="500" 
+        step="10" 
+        value="250" 
+        class="slider-range" 
+        aria-label="Construction Cost per Square Foot Slider" 
+      />
+      <div class="quick-chips-row" aria-label="Quick cost per square foot tiers">
+        <span class="chips-label">Finish Level:</span>
+        <button type="button" class="rate-chip-btn" data-rate="175">$175 (Basic/Garage)</button>
+        <button type="button" class="rate-chip-btn active" data-rate="250">$250 (Mid-Range)</button>
+        <button type="button" class="rate-chip-btn" data-rate="350">$350 (High-End)</button>
+      </div>
+      <span class="input-hint">Estimated materials and labor cost for foundation, framing, roofing, plumbing, electrical, and interior finishes.</span>
+    </div>
+
+    <!-- Section 2: Site, Permits & Additional Costs -->
+    <div style="margin-top: var(--space-5);">
+      <h3 class="input-section-heading">2. Site Preparation, Permits &amp; Utilities</h3>
+      
+      <!-- Site Prep & Permits Row -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-site-prep">Site Preparation ($)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-prep">$</span>
+              <input 
+                type="number" 
+                id="adu-site-prep" 
+                min="0" 
+                max="100000" 
+                step="500" 
+                value="5000" 
+                aria-label="Site Preparation Cost" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Excavation, grading, soil clearing, tree removal, and concrete pad prep.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-permits-fees">Permits and Fees ($)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-permits">$</span>
+              <input 
+                type="number" 
+                id="adu-permits-fees" 
+                min="0" 
+                max="50000" 
+                step="500" 
+                value="3000" 
+                aria-label="Permits and Municipal Fees" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Building permits, plan-check review, and municipal impact assessments.</span>
+        </div>
+      </div>
+
+      <!-- Utilities & Design Fees Row -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-utilities">Utility Connections ($)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-util">$</span>
+              <input 
+                type="number" 
+                id="adu-utilities" 
+                min="0" 
+                max="60000" 
+                step="500" 
+                value="5000" 
+                aria-label="Utility Connection Cost" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Sewer lateral trenching, separate electrical sub-panel, water, and gas lines.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-design-fees">Design &amp; Professional Fees ($)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-design">$</span>
+              <input 
+                type="number" 
+                id="adu-design-fees" 
+                min="0" 
+                max="60000" 
+                step="500" 
+                value="5000" 
+                aria-label="Design and Architectural Fees" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Architectural drafting, structural engineering, and Title 24 energy compliance.</span>
+        </div>
+      </div>
+
+      <!-- Landscaping & Contingency Row -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-landscaping">Landscaping &amp; Finishing ($)</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-land">$</span>
+              <input 
+                type="number" 
+                id="adu-landscaping" 
+                min="0" 
+                max="50000" 
+                step="500" 
+                value="3000" 
+                aria-label="Landscaping and Exterior Finishing" 
+              />
+            </div>
+          </div>
+          <span class="input-hint">Walkways, fencing, outdoor lighting, patio slab, and turf restoration.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="adu-contingency-pct">Contingency (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="adu-contingency-pct" 
+                min="0" 
+                max="40" 
+                step="1" 
+                value="10" 
+                aria-label="Contingency Percentage" 
+              />
+              <span class="percent-symbol">%</span>
+            </div>
+          </div>
+          <div class="quick-chips-row" style="margin-top: 6px;" aria-label="Quick contingency percentages">
+            <button type="button" class="cont-chip-btn" data-cont="5">5%</button>
+            <button type="button" class="cont-chip-btn active" data-cont="10">10%</button>
+            <button type="button" class="cont-chip-btn" data-cont="15">15%</button>
+            <button type="button" class="cont-chip-btn" data-cont="20">20%</button>
+          </div>
+          <span class="input-hint">Emergency reserve for unanticipated site hurdles, change orders, or material price swings.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Form Button -->
+    <div class="reset-action-row">
+      <button type="button" id="cost-reset-btn" class="reset-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        <span>Reset to Default Example</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper" id="adu-cost-results-panel">
+    
+    <div class="results-header">
+      <h2 class="results-title">ADU Cost Estimate Summary</h2>
+      <span class="results-subtitle">Comprehensive all-in budget and itemized cost breakdown</span>
+    </div>
+
+    <!-- Hero Cards (Primary Prominent Outputs) -->
+    <div class="hero-metrics-grid">
+      <div class="hero-metric-card primary-hero">
+        <span class="hero-label">Estimated Total ADU Cost</span>
+        <div class="hero-value-wrap">
+          <span class="hero-value" id="res-total-cost">$188,100</span>
+        </div>
+        <span class="hero-subtext" id="res-total-subtext">All-in budget including site, permits &amp; 10% contingency</span>
+      </div>
+
+      <div class="hero-metric-card secondary-hero">
+        <span class="hero-label">Total All-In Cost / Sq Ft</span>
+        <div class="hero-value-wrap">
+          <span class="hero-value" id="res-cost-per-sqft">$314</span>
+          <span class="hero-unit">/sq ft</span>
+        </div>
+        <span class="hero-subtext" id="res-cost-sqft-subtext">Base build ($250) + soft costs &amp; buffer ($64)</span>
+      </div>
+    </div>
+
+    <!-- 4-Metric Grid (Responsive wrapping) -->
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <span class="tile-label">Base Construction Cost</span>
+        <span class="tile-value" id="res-base-cost">$150,000</span>
+        <span class="tile-caption" id="res-base-caption">600 sq ft × $250 / sq ft</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">Site &amp; Soft Costs</span>
+        <span class="tile-value" id="res-soft-costs">$21,000</span>
+        <span class="tile-caption">Permits, utilities, design, site prep</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">Subtotal Before Contingency</span>
+        <span class="tile-value" id="res-subtotal">$171,000</span>
+        <span class="tile-caption">Direct project expenditures</span>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">Contingency Reserve</span>
+        <span class="tile-value text-accent" id="res-contingency-amt">$17,100</span>
+        <span class="tile-caption" id="res-contingency-caption">10% buffer on subtotal</span>
+      </div>
+    </div>
+
+    <!-- Visual Cost Distribution Bar -->
+    <div class="cost-breakdown-card">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Project Expenditure Distribution</span>
+        <span class="breakdown-total" id="res-bar-total">$188,100</span>
+      </div>
+
+      <div class="stacked-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="res-progress-bar" aria-label="ADU cost breakdown bar">
+        <div class="bar-segment bar-base" id="bar-base" style="width: 79.7%;" title="Base Construction"></div>
+        <div class="bar-segment bar-prep-util" id="bar-prep-util" style="width: 5.3%;" title="Site Prep & Utilities"></div>
+        <div class="bar-segment bar-permits-design" id="bar-permits-design" style="width: 5.8%;" title="Permits, Design & Landscaping"></div>
+        <div class="bar-segment bar-contingency" id="bar-contingency" style="width: 9.1%;" title="Contingency Reserve"></div>
+      </div>
+
+      <div class="breakdown-legend">
+        <div class="legend-item">
+          <span class="legend-color-dot dot-base"></span>
+          <div class="legend-text-col">
+            <span class="legend-title">Base Construction</span>
+            <span class="legend-numbers" id="legend-base">$150,000 (79.7%)</span>
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color-dot dot-prep-util"></span>
+          <div class="legend-text-col">
+            <span class="legend-title">Site Prep &amp; Utilities</span>
+            <span class="legend-numbers" id="legend-prep-util">$10,000 (5.3%)</span>
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color-dot dot-permits-design"></span>
+          <div class="legend-text-col">
+            <span class="legend-title">Permits &amp; Design</span>
+            <span class="legend-numbers" id="legend-permits-design">$11,000 (5.8%)</span>
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color-dot dot-contingency"></span>
+          <div class="legend-text-col">
+            <span class="legend-title">Contingency Buffer</span>
+            <span class="legend-numbers" id="legend-contingency">$17,100 (9.1%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Itemized Cost Table -->
+    <div class="itemized-table-card">
+      <div class="itemized-header">
+        <span class="itemized-title">Itemized Budget Breakdown</span>
+      </div>
+      <div class="table-compact-wrapper">
+        <table class="itemized-table">
+          <thead>
+            <tr>
+              <th scope="col">Cost Category</th>
+              <th scope="col" style="text-align: right;">Amount</th>
+              <th scope="col" style="text-align: right;">Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Base Construction (Materials &amp; Labor)</td>
+              <td style="text-align: right; font-weight: 700;" id="row-base">$150,000</td>
+              <td style="text-align: right;" id="row-base-share">79.7%</td>
+            </tr>
+            <tr>
+              <td>Site Preparation &amp; Grading</td>
+              <td style="text-align: right; font-weight: 700;" id="row-prep">$5,000</td>
+              <td style="text-align: right;" id="row-prep-share">2.7%</td>
+            </tr>
+            <tr>
+              <td>Permits &amp; Municipal Review Fees</td>
+              <td style="text-align: right; font-weight: 700;" id="row-permits">$3,000</td>
+              <td style="text-align: right;" id="row-permits-share">1.6%</td>
+            </tr>
+            <tr>
+              <td>Utility Trenching &amp; Meter Connections</td>
+              <td style="text-align: right; font-weight: 700;" id="row-util">$5,000</td>
+              <td style="text-align: right;" id="row-util-share">2.7%</td>
+            </tr>
+            <tr>
+              <td>Architectural Design &amp; Engineering</td>
+              <td style="text-align: right; font-weight: 700;" id="row-design">$5,000</td>
+              <td style="text-align: right;" id="row-design-share">2.7%</td>
+            </tr>
+            <tr>
+              <td>Landscaping &amp; Exterior Finishing</td>
+              <td style="text-align: right; font-weight: 700;" id="row-land">$3,000</td>
+              <td style="text-align: right;" id="row-land-share">1.6%</td>
+            </tr>
+            <tr>
+              <td>Contingency Reserve (<span id="row-cont-pct">10</span>%)</td>
+              <td style="text-align: right; font-weight: 700; color: #eab308;" id="row-cont">$17,100</td>
+              <td style="text-align: right; color: #eab308;" id="row-cont-share">9.1%</td>
+            </tr>
+            <tr class="table-total-row">
+              <td><strong>Estimated Total ADU Budget</strong></td>
+              <td style="text-align: right; font-weight: 800; color: var(--color-primary);" id="row-total">$188,100</td>
+              <td style="text-align: right; font-weight: 800;">100.0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Plain English Dynamic Narrative Explanation -->
+    <div class="narrative-card">
+      <div class="narrative-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <span>Cost Analysis Breakdown</span>
+      </div>
+      <p class="narrative-text" id="res-narrative">
+        Constructing a <strong>600 sq ft</strong> ADU at a base rate of <strong>$250/sq ft</strong> results in a base construction estimate of <strong>$150,000</strong>. Adding <strong>$21,000</strong> for site prep, permits, utility connections, architectural design, and landscaping yields a subtotal of <strong>$171,000</strong>. Factoring in a <strong>10%</strong> contingency reserve (<strong>$17,100</strong>) brings your estimated all-in ADU cost to <strong>$188,100</strong>, or <strong>$314 per square foot</strong>.
+      </p>
+    </div>
+
+    <!-- Financing Link Callout -->
+    <div class="financing-callout-card">
+      <div class="financing-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+      </div>
+      <div class="financing-text-col">
+        <span class="financing-heading">Planning to Finance This ADU?</span>
+        <p class="financing-desc">
+          Model your monthly principal &amp; interest payments, borrowing capacity, and total financing interest with our companion <a href="/calculator/adu-loan-calculator" class="financing-link">ADU Loan Calculator &rarr;</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initAduCostCalculator() {
+    const currencySymbols = {
+      USD: '$',
+      CAD: 'C$',
+      GBP: '£',
+      EUR: '€',
+      AUD: 'A$',
+      INR: '₹',
+      SGD: 'S$',
+      JPY: '¥',
+      CHF: 'CHF '
+    };
+
+    let currentCurrency = 'USD';
+    let currentSymbol = '$';
+
+    // Inputs & Sliders
+    const currencySelect = document.getElementById('cost-currency-select');
+    const sizeInput = document.getElementById('adu-size-sqft');
+    const sizeSlider = document.getElementById('adu-size-sqft-slider');
+    const costSqFtInput = document.getElementById('adu-cost-per-sqft');
+    const costSqFtSlider = document.getElementById('adu-cost-per-sqft-slider');
+    const prepInput = document.getElementById('adu-site-prep');
+    const permitsInput = document.getElementById('adu-permits-fees');
+    const utilInput = document.getElementById('adu-utilities');
+    const designInput = document.getElementById('adu-design-fees');
+    const landInput = document.getElementById('adu-landscaping');
+    const contPctInput = document.getElementById('adu-contingency-pct');
+    const resetBtn = document.getElementById('cost-reset-btn');
+
+    // Symbols
+    const symCostSqFt = document.getElementById('sym-cost-sqft');
+    const symPrep = document.getElementById('sym-prep');
+    const symPermits = document.getElementById('sym-permits');
+    const symUtil = document.getElementById('sym-util');
+    const symDesign = document.getElementById('sym-design');
+    const symLand = document.getElementById('sym-land');
+
+    // Preset Chips
+    const sizeChips = document.querySelectorAll('.size-chip-btn');
+    const rateChips = document.querySelectorAll('.rate-chip-btn');
+    const contChips = document.querySelectorAll('.cont-chip-btn');
+
+    // Hero Outputs
+    const resTotalCost = document.getElementById('res-total-cost');
+    const resTotalSubtext = document.getElementById('res-total-subtext');
+    const resCostPerSqFt = document.getElementById('res-cost-per-sqft');
+    const resCostSqFtSubtext = document.getElementById('res-cost-sqft-subtext');
+
+    // Metric Tiles
+    const resBaseCost = document.getElementById('res-base-cost');
+    const resBaseCaption = document.getElementById('res-base-caption');
+    const resSoftCosts = document.getElementById('res-soft-costs');
+    const resSubtotal = document.getElementById('res-subtotal');
+    const resContingencyAmt = document.getElementById('res-contingency-amt');
+    const resContingencyCaption = document.getElementById('res-contingency-caption');
+
+    // Bar & Legend
+    const resBarTotal = document.getElementById('res-bar-total');
+    const barBase = document.getElementById('bar-base');
+    const barPrepUtil = document.getElementById('bar-prep-util');
+    const barPermitsDesign = document.getElementById('bar-permits-design');
+    const barContingency = document.getElementById('bar-contingency');
+    const legendBase = document.getElementById('legend-base');
+    const legendPrepUtil = document.getElementById('legend-prep-util');
+    const legendPermitsDesign = document.getElementById('legend-permits-design');
+    const legendContingency = document.getElementById('legend-contingency');
+
+    // Itemized Table Rows
+    const rowBase = document.getElementById('row-base');
+    const rowBaseShare = document.getElementById('row-base-share');
+    const rowPrep = document.getElementById('row-prep');
+    const rowPrepShare = document.getElementById('row-prep-share');
+    const rowPermits = document.getElementById('row-permits');
+    const rowPermitsShare = document.getElementById('row-permits-share');
+    const rowUtil = document.getElementById('row-util');
+    const rowUtilShare = document.getElementById('row-util-share');
+    const rowDesign = document.getElementById('row-design');
+    const rowDesignShare = document.getElementById('row-design-share');
+    const rowLand = document.getElementById('row-land');
+    const rowLandShare = document.getElementById('row-land-share');
+    const rowContPct = document.getElementById('row-cont-pct');
+    const rowCont = document.getElementById('row-cont');
+    const rowContShare = document.getElementById('row-cont-share');
+    const rowTotal = document.getElementById('row-total');
+
+    // Narrative
+    const resNarrative = document.getElementById('res-narrative');
+
+    if (!sizeInput) return;
+
+    function formatMoney(amount, decimals = 0) {
+      if (isNaN(amount) || amount === null) amount = 0;
+      const formatted = Math.round(amount).toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+      return `${currentSymbol}${formatted}`;
+    }
+
+    function formatNumber(amount, decimals = 0) {
+      if (isNaN(amount) || amount === null) amount = 0;
+      return amount.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function updateCurrency(curr) {
+      currentCurrency = curr;
+      currentSymbol = currencySymbols[curr] || '$';
+      if (symCostSqFt) symCostSqFt.textContent = currentSymbol;
+      if (symPrep) symPrep.textContent = currentSymbol;
+      if (symPermits) symPermits.textContent = currentSymbol;
+      if (symUtil) symUtil.textContent = currentSymbol;
+      if (symDesign) symDesign.textContent = currentSymbol;
+      if (symLand) symLand.textContent = currentSymbol;
+      recalculate();
+    }
+
+    function recalculate() {
+      const size = Math.max(0, parseFloat(sizeInput.value) || 0);
+      const costSqFt = Math.max(0, parseFloat(costSqFtInput.value) || 0);
+      const prep = Math.max(0, parseFloat(prepInput.value) || 0);
+      const permits = Math.max(0, parseFloat(permitsInput.value) || 0);
+      const util = Math.max(0, parseFloat(utilInput.value) || 0);
+      const design = Math.max(0, parseFloat(designInput.value) || 0);
+      const land = Math.max(0, parseFloat(landInput.value) || 0);
+      const contPct = Math.max(0, parseFloat(contPctInput.value) || 0);
+
+      const baseCost = size * costSqFt;
+      const prepAndUtil = prep + util;
+      const permitsAndDesign = permits + design + land;
+      const softCosts = prep + permits + util + design + land;
+      const subtotal = baseCost + softCosts;
+      const contingencyAmt = subtotal * (contPct / 100);
+      const totalCost = subtotal + contingencyAmt;
+      const allInCostPerSqFt = size > 0 ? totalCost / size : 0;
+      const softCostPerSqFt = size > 0 ? (totalCost - baseCost) / size : 0;
+
+      // Hero outputs
+      if (resTotalCost) resTotalCost.textContent = formatMoney(totalCost);
+      if (resTotalSubtext) {
+        resTotalSubtext.textContent = `All-in budget including site, permits & ${contPct.toFixed(0)}% contingency`;
+      }
+      if (resCostPerSqFt) {
+        resCostPerSqFt.textContent = formatMoney(allInCostPerSqFt);
+      }
+      if (resCostSqFtSubtext) {
+        resCostSqFtSubtext.textContent = `Base build (${formatMoney(costSqFt)}) + soft costs & buffer (${formatMoney(softCostPerSqFt)})`;
+      }
+
+      // 4-Metric Grid
+      if (resBaseCost) resBaseCost.textContent = formatMoney(baseCost);
+      if (resBaseCaption) {
+        resBaseCaption.textContent = `${formatNumber(size)} sq ft × ${formatMoney(costSqFt)} / sq ft`;
+      }
+      if (resSoftCosts) resSoftCosts.textContent = formatMoney(softCosts);
+      if (resSubtotal) resSubtotal.textContent = formatMoney(subtotal);
+      if (resContingencyAmt) resContingencyAmt.textContent = formatMoney(contingencyAmt);
+      if (resContingencyCaption) {
+        resContingencyCaption.textContent = `${contPct.toFixed(0)}% buffer on subtotal`;
+      }
+
+      // Stacked Bar & Legend
+      const basis = totalCost > 0 ? totalCost : 1;
+      const basePct = (baseCost / basis) * 100;
+      const prepUtilPct = (prepAndUtil / basis) * 100;
+      const permitsDesignPct = (permitsAndDesign / basis) * 100;
+      const contSharePct = (contingencyAmt / basis) * 100;
+
+      if (resBarTotal) resBarTotal.textContent = formatMoney(totalCost);
+      if (barBase) barBase.style.width = `${basePct.toFixed(1)}%`;
+      if (barPrepUtil) barPrepUtil.style.width = `${prepUtilPct.toFixed(1)}%`;
+      if (barPermitsDesign) barPermitsDesign.style.width = `${permitsDesignPct.toFixed(1)}%`;
+      if (barContingency) barContingency.style.width = `${contSharePct.toFixed(1)}%`;
+
+      if (legendBase) legendBase.textContent = `${formatMoney(baseCost)} (${basePct.toFixed(1)}%)`;
+      if (legendPrepUtil) legendPrepUtil.textContent = `${formatMoney(prepAndUtil)} (${prepUtilPct.toFixed(1)}%)`;
+      if (legendPermitsDesign) legendPermitsDesign.textContent = `${formatMoney(permitsAndDesign)} (${permitsDesignPct.toFixed(1)}%)`;
+      if (legendContingency) legendContingency.textContent = `${formatMoney(contingencyAmt)} (${contSharePct.toFixed(1)}%)`;
+
+      // Itemized Table
+      if (rowBase) rowBase.textContent = formatMoney(baseCost);
+      if (rowBaseShare) rowBaseShare.textContent = `${basePct.toFixed(1)}%`;
+      if (rowPrep) rowPrep.textContent = formatMoney(prep);
+      if (rowPrepShare) rowPrepShare.textContent = `${((prep / basis) * 100).toFixed(1)}%`;
+      if (rowPermits) rowPermits.textContent = formatMoney(permits);
+      if (rowPermitsShare) rowPermitsShare.textContent = `${((permits / basis) * 100).toFixed(1)}%`;
+      if (rowUtil) rowUtil.textContent = formatMoney(util);
+      if (rowUtilShare) rowUtilShare.textContent = `${((util / basis) * 100).toFixed(1)}%`;
+      if (rowDesign) rowDesign.textContent = formatMoney(design);
+      if (rowDesignShare) rowDesignShare.textContent = `${((design / basis) * 100).toFixed(1)}%`;
+      if (rowLand) rowLand.textContent = formatMoney(land);
+      if (rowLandShare) rowLandShare.textContent = `${((land / basis) * 100).toFixed(1)}%`;
+      if (rowContPct) rowContPct.textContent = contPct.toFixed(0);
+      if (rowCont) rowCont.textContent = formatMoney(contingencyAmt);
+      if (rowContShare) rowContShare.textContent = `${contSharePct.toFixed(1)}%`;
+      if (rowTotal) rowTotal.textContent = formatMoney(totalCost);
+
+      // Narrative
+      if (resNarrative) {
+        if (size === 0 || totalCost === 0) {
+          resNarrative.innerHTML = `Enter your planned ADU square footage and construction cost rate to calculate your estimated total building expenditure.`;
+        } else {
+          resNarrative.innerHTML = `Constructing a <strong>${formatNumber(size)} sq ft</strong> ADU at a base rate of <strong>${formatMoney(costSqFt)}/sq ft</strong> results in a base construction estimate of <strong>${formatMoney(baseCost)}</strong>. Adding <strong>${formatMoney(softCosts)}</strong> for site prep, permits, utility connections, architectural design, and landscaping yields a subtotal of <strong>${formatMoney(subtotal)}</strong>. Factoring in a <strong>${contPct.toFixed(0)}%</strong> contingency reserve (<strong>${formatMoney(contingencyAmt)}</strong>) brings your estimated all-in ADU cost to <strong>${formatMoney(totalCost)}</strong>, or <strong>${formatMoney(allInCostPerSqFt)} per square foot</strong>.`;
+        }
+      }
+
+      // Sync active chip states
+      sizeChips.forEach(chip => {
+        const val = parseFloat(chip.getAttribute('data-size'));
+        chip.classList.toggle('active', Math.abs(size - val) < 1);
+      });
+
+      rateChips.forEach(chip => {
+        const val = parseFloat(chip.getAttribute('data-rate'));
+        chip.classList.toggle('active', Math.abs(costSqFt - val) < 1);
+      });
+
+      contChips.forEach(chip => {
+        const val = parseFloat(chip.getAttribute('data-cont'));
+        chip.classList.toggle('active', Math.abs(contPct - val) < 0.5);
+      });
+    }
+
+    // Currency Switcher
+    if (currencySelect) {
+      currencySelect.addEventListener('change', (e) => {
+        updateCurrency(e.target.value);
+      });
+    }
+
+    // Bidirectional sync: Size
+    sizeInput.addEventListener('input', () => {
+      sizeSlider.value = sizeInput.value;
+      recalculate();
+    });
+    sizeSlider.addEventListener('input', () => {
+      sizeInput.value = sizeSlider.value;
+      recalculate();
+    });
+
+    // Size preset chips
+    sizeChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const sizeVal = parseFloat(chip.getAttribute('data-size')) || 600;
+        sizeInput.value = sizeVal;
+        sizeSlider.value = sizeVal;
+        recalculate();
+      });
+    });
+
+    // Bidirectional sync: Cost per Sq Ft
+    costSqFtInput.addEventListener('input', () => {
+      costSqFtSlider.value = costSqFtInput.value;
+      recalculate();
+    });
+    costSqFtSlider.addEventListener('input', () => {
+      costSqFtInput.value = costSqFtSlider.value;
+      recalculate();
+    });
+
+    // Rate preset chips
+    rateChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const rateVal = parseFloat(chip.getAttribute('data-rate')) || 250;
+        costSqFtInput.value = rateVal;
+        costSqFtSlider.value = rateVal;
+        recalculate();
+      });
+    });
+
+    // Soft cost inputs
+    prepInput.addEventListener('input', recalculate);
+    permitsInput.addEventListener('input', recalculate);
+    utilInput.addEventListener('input', recalculate);
+    designInput.addEventListener('input', recalculate);
+    landInput.addEventListener('input', recalculate);
+    contPctInput.addEventListener('input', recalculate);
+
+    // Contingency chips
+    contChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const contVal = parseFloat(chip.getAttribute('data-cont')) || 10;
+        contPctInput.value = contVal;
+        recalculate();
+      });
+    });
+
+    // Reset button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        sizeInput.value = '600';
+        sizeSlider.value = '600';
+        costSqFtInput.value = '250';
+        costSqFtSlider.value = '250';
+        prepInput.value = '5000';
+        permitsInput.value = '3000';
+        utilInput.value = '5000';
+        designInput.value = '5000';
+        landInput.value = '3000';
+        contPctInput.value = '10';
+        if (currencySelect) {
+          currencySelect.value = 'USD';
+          updateCurrency('USD');
+        } else {
+          recalculate();
+        }
+      });
+    }
+
+    // Action Toolbar Clipboard Integration
+    window.addEventListener('copy-calculator-results', async () => {
+      try {
+        const size = sizeInput.value;
+        const total = resTotalCost ? resTotalCost.textContent : '';
+        const perSqFt = resCostPerSqFt ? resCostPerSqFt.textContent : '';
+        const base = resBaseCost ? resBaseCost.textContent : '';
+        const soft = resSoftCosts ? resSoftCosts.textContent : '';
+        const cont = resContingencyAmt ? resContingencyAmt.textContent : '';
+
+        const textToCopy = `FinCalcLab ADU Cost Calculator Results:
+• ADU Size: ${size} sq ft
+• Estimated Total ADU Cost: ${total}
+• All-In Cost per Sq Ft: ${perSqFt}/sq ft
+---------------------------------------
+• Base Construction Cost: ${base}
+• Site, Permits & Soft Costs: ${soft}
+• Contingency Reserve: ${cont}
+• Calculated online at: ${window.location.href}`;
+
+        await navigator.clipboard.writeText(textToCopy);
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      } catch (err) {
+        console.error('Failed to copy results:', err);
+      }
+    });
+
+    // Initial calculation
+    recalculate();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAduCostCalculator);
+  } else {
+    initAduCostCalculator();
+  }
+  document.addEventListener('astro:page-load', initAduCostCalculator);
+</script>
+
+<style>
+  /* ==========================================================================
+     FINCALCLAB STANDARDIZED ADU COST CALCULATOR STYLING
+     Compliant with Mobile-First, Global Form Field System, and Dark Mode
+     ========================================================================== */
+
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .input-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: var(--space-2) 0 var(--space-3) 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Quick Option Chips */
+  .quick-chips-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .chips-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-right: 2px;
+  }
+
+  .size-chip-btn,
+  .rate-chip-btn,
+  .cont-chip-btn {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-base);
+    color: var(--color-text-muted);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  :global(.dark) .size-chip-btn,
+  :global(.dark) .rate-chip-btn,
+  :global(.dark) .cont-chip-btn {
+    background: var(--color-bg-surface);
+  }
+
+  .size-chip-btn:hover,
+  .rate-chip-btn:hover,
+  .cont-chip-btn:hover {
+    color: var(--color-text-base);
+    border-color: var(--color-primary);
+  }
+
+  .size-chip-btn.active,
+  .rate-chip-btn.active,
+  .cont-chip-btn.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+  }
+
+  /* Reset Button Action Row */
+  .reset-action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.825rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .reset-btn:hover {
+    color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.08);
+  }
+
+  /* Results Panel */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-header {
+    margin-bottom: var(--space-1);
+  }
+
+  .results-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0 0 2px 0;
+  }
+
+  .results-subtitle {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Hero Cards */
+  .hero-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .hero-metric-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .primary-hero {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.04) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.35);
+  }
+
+  :global(.dark) .primary-hero {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0.08) 100%);
+    border-color: rgba(37, 99, 235, 0.5);
+  }
+
+  .secondary-hero {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+  }
+
+  .hero-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .primary-hero .hero-label {
+    color: var(--color-primary);
+  }
+
+  .hero-value-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    flex-wrap: wrap;
+  }
+
+  .hero-value {
+    font-size: 1.85rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--color-text-base);
+    word-break: break-all;
+  }
+
+  .primary-hero .hero-value {
+    color: var(--color-primary);
+  }
+
+  .hero-unit {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .hero-subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  /* 4-Metric Grid (Strict Rule 15 Compliance) */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .metric-tile {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    line-height: 1.2;
+    word-break: break-all;
+  }
+
+  .text-accent {
+    color: #eab308;
+  }
+
+  :global(.dark) .text-accent {
+    color: #facc15;
+  }
+
+  .tile-caption {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Cost Breakdown Stacked Bar */
+  .cost-breakdown-card {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .breakdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .breakdown-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .breakdown-total {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  .stacked-bar-container {
+    display: flex;
+    width: 100%;
+    height: 14px;
+    border-radius: 7px;
+    overflow: hidden;
+    background: var(--color-border);
+  }
+
+  .bar-segment {
+    height: 100%;
+    transition: width var(--transition-normal);
+  }
+
+  .bar-base {
+    background-color: var(--color-primary);
+  }
+
+  .bar-prep-util {
+    background-color: #06b6d4;
+  }
+
+  .bar-permits-design {
+    background-color: #10b981;
+  }
+
+  .bar-contingency {
+    background-color: #eab308;
+  }
+
+  .breakdown-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .legend-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .dot-base {
+    background-color: var(--color-primary);
+  }
+
+  .dot-prep-util {
+    background-color: #06b6d4;
+  }
+
+  .dot-permits-design {
+    background-color: #10b981;
+  }
+
+  .dot-contingency {
+    background-color: #eab308;
+  }
+
+  .legend-text-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .legend-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .legend-numbers {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    word-break: break-all;
+  }
+
+  /* Itemized Budget Table */
+  .itemized-table-card {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .itemized-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .itemized-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .table-compact-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .itemized-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.825rem;
+  }
+
+  .itemized-table th {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .itemized-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--color-text-base);
+  }
+
+  :global(.dark) .itemized-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .table-total-row td {
+    border-top: 2px solid var(--color-border);
+    border-bottom: none;
+    padding-top: 10px;
+    font-size: 0.9rem;
+  }
+
+  /* Narrative Card */
+  .narrative-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  :global(.dark) .narrative-card {
+    background: var(--color-bg-surface);
+  }
+
+  .narrative-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .narrative-text {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Financing Callout Card */
+  .financing-callout-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: rgba(37, 99, 235, 0.06);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    border-radius: var(--radius-md);
+  }
+
+  :global(.dark) .financing-callout-card {
+    background: rgba(37, 99, 235, 0.12);
+  }
+
+  .financing-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .financing-text-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .financing-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .financing-desc {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .financing-link {
+    color: var(--color-primary);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  /* Responsive Adjustments for Mobile (< 580px) */
+  @media (max-width: 580px) {
+    .hero-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-value {
+      font-size: 1.65rem;
+    }
+
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .breakdown-legend {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+</style>

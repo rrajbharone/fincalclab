@@ -1,0 +1,718 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AduCostCalculator from '../../components/calculator/AduCostCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'ADU Cost Calculator', item: '/calculator/adu-cost-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does an ADU cost per square foot?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nationwide, building an Accessory Dwelling Unit (ADU) typically ranges from $175 to $400+ per square foot for all-in construction, design, and permitting. Garage conversions and simple interior basement conversions average between $150 and $225 per square foot, while ground-up detached backyard cottages in high-cost metro areas (such as Los Angeles, San Francisco, or Seattle) frequently cost $300 to $500 per square foot due to foundation requirements, utility trenching, and local labor rates."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the cheapest type of ADU to build?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An attached interior conversion—such as converting an existing attached two-car garage or a finished basement—is generally the most affordable ADU option. Because the foundation, exterior framing, structural roof, and building envelope already exist, attached conversions typically cost between $80,000 and $140,000, compared to $175,000 to $300,000+ for a brand-new ground-up detached backyard home."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much do ADU permits and city impact fees cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Permit and plan-check fees typically cost between $2,000 and $8,000 depending on your municipality. Many forward-thinking jurisdictions (such as California under state ADU legislation) have legally exempted ADUs under 750 square feet from hefty local development impact fees (school, traffic, and park assessments), saving homeowners $5,000 to $15,000 in upfront soft costs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do utility connections cost so much for an ADU?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Utility connections for a detached ADU require trenching underground across your yard to connect sewer pipes, water supply lines, natural gas, and electrical power. Costs range from $4,000 to $15,000+ depending on the distance between the main house and the ADU, whether your main electrical service panel requires a 200-amp service upgrade, and whether separate municipal utility meters are mandated by local code."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between hard costs and soft costs in an ADU budget?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hard costs are direct physical construction expenses, including foundation concrete, lumber, roofing, drywall, plumbing fixtures, cabinetry, flooring, and contractor labor. Soft costs are non-physical professional and administrative expenses required to get the project approved, such as architectural drawings, structural engineering calculations, boundary surveys, Title 24 energy reports, and city permit fees."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much contingency buffer should I include in my ADU budget?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You should allocate a contingency reserve of 10% to 15% of your total estimated project subtotal for new detached builds, and 15% to 20% for garage or older home conversions. Contingency funds absorb unexpected obstacles discovered during excavation (such as tree roots, rocky soil, or sewer slope issues), municipal plan-check revisions, material supply price increases, and mid-construction change orders."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a prefab or modular ADU cheaper than a stick-built custom ADU?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Prefab or factory-built modular ADUs offer significant construction time savings (weeks instead of months) and predictable base unit pricing, but they are not always dramatically cheaper overall. While the factory shell might cost less, you must still pay for custom foundation pouring, utility trenching, high-capacity crane delivery rentals, and municipal permits, which represent 30% to 40% of the total all-in project cost."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does an ADU increase my home's property taxes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, but only incrementally. In most jurisdictions (including California under Proposition 13), building an ADU does not trigger a full reassessment of your existing primary house. Instead, the local county tax assessor conducts a 'blended' reassessment that evaluates and taxes only the market value added by the new ADU construction."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I build an ADU myself as an owner-builder to save money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Acting as an owner-builder can technically eliminate a general contractor's 15% to 20% overhead and profit margin, but it carries high risk. ADUs require complex coordination of licensed trade subcontractors (foundation, framing, electrical, plumbing, HVAC, roofing), strict inspection pass rates, and lien management. Additionally, most construction lenders will not finance a project unless an insured, licensed general contractor is bound to a fixed-price contract."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I finance an ADU construction project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Homeowners finance ADU construction primarily through home equity lines of credit (HELOCs), fixed-rate home equity loans, cash-out refinancing, construction-to-permanent loans, or renovation mortgages like Fannie Mae HomeStyle and FHA 203(k). To calculate your monthly debt service and loan interest for your estimated project cost, use our companion ADU Loan Calculator."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ADU Cost Calculator",
+  "url": "https://fincalclab.com/calculator/adu-cost-calculator",
+  "description": "Calculate estimated all-in building costs for an Accessory Dwelling Unit (ADU). Estimate base construction, site preparation, permits, utilities, architectural fees, and contingency reserves.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="ADU Cost Calculator | Accessory Dwelling Unit Construction Cost Estimate"
+  description="Estimate total all-in costs to build an Accessory Dwelling Unit (ADU). Calculate cost per square foot, site prep, permits, utility hookups, and contingency buffers."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <AduCostCalculator />
+
+    <!-- Featured ADU Strategy Callout -->
+    <section class="adu-callout-section" aria-labelledby="adu-cost-insight-heading">
+      <Card elevation="sm" class="adu-callout-card">
+        <div class="adu-callout-header">
+          <div class="adu-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div class="adu-callout-heading-wrap">
+            <span class="adu-callout-eyebrow">Real Estate Construction Insight</span>
+            <h2 id="adu-cost-insight-heading" class="adu-callout-title">The "Iceberg" of ADU Budgeting: Hard Costs vs. Soft Costs</h2>
+          </div>
+        </div>
+
+        <p class="adu-callout-desc">
+          When budgeting to build an <strong>Accessory Dwelling Unit (ADU)</strong>—whether a backyard cottage, granny flat, or garage conversion—many homeowners only consider the contractor's raw building estimate. In reality, site preparation, utility hookups, architectural engineering, city permitting, and mandatory contingency reserves often represent <strong>20% to 30% of your total checkbook expenditure</strong>. Understanding the full all-in cost per square foot protects your project from budget overruns before you break ground.
+        </p>
+
+        <div class="adu-callout-action">
+          <a href="/calculator/adu-loan-calculator" class="adu-callout-btn">
+            <span>Calculate Monthly Payments With Our ADU Loan Calculator</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Educational Guide -->
+    <article class="educational-guide prose">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>How Much Does It Really Cost to Build an ADU?</h2>
+        <p>
+          Building an <strong>Accessory Dwelling Unit (ADU)</strong> is one of the most lucrative ways to unlock density and wealth from single-family residential property. An ADU can generate <strong>$1,500 to $3,500+ per month in rental income</strong>, house an aging parent or adult child, or provide a private detached home office.
+        </p>
+        <p>
+          However, because an ADU is a fully functional independent residence complete with its own kitchen, bathroom, plumbing stack, electrical panel, and HVAC system, it has a high concentration of expensive building systems packed into a compact footprint. Nationally, total ADU construction expenses typically fall within these broad brackets:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Garage Conversions (350 – 500 sq ft):</strong> $80,000 to $150,000 ($175 to $275/sq ft). Conversions save money by reusing an existing concrete slab, framing, and roof structure.</li>
+          <li><strong>Attached Home Additions (400 – 800 sq ft):</strong> $120,000 to $225,000 ($225 to $325/sq ft). Sharing a common wall reduces exterior siding and foundation runs, but requires tie-ins to existing plumbing and structural trusses.</li>
+          <li><strong>Detached Backyard Cottages (400 – 1,000 sq ft):</strong> $175,000 to $350,000+ ($275 to $450+/sq ft). Standalone structures require ground-up grading, perimeter foundations, separate utility trenching across yards, and full four-sided exterior finishes.</li>
+          <li><strong>Prefab &amp; Modular ADUs (400 – 900 sq ft):</strong> $160,000 to $300,000+ ($250 to $380/sq ft). Factory-built boxes offer predictable build schedules, but crane rentals, transport fees, and site utility connections remain significant expenditures.</li>
+        </ul>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>How This ADU Cost Calculator Works</h2>
+        <p>
+          This calculator provides a transparent, customizable cost modeling framework designed to distinguish between <strong>direct physical construction costs (hard costs)</strong> and <strong>supporting development fees (soft costs)</strong>:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">The All-In ADU Budgeting Formula</div>
+          <ol class="callout-steps">
+            <li><strong>Base Construction Cost:</strong> ADU Size (Sq Ft) × Construction Cost per Square Foot</li>
+            <li><strong>Additional Project Costs:</strong> Site Preparation + Permits &amp; Municipal Fees + Utility Connections + Design &amp; Engineering Fees + Landscaping &amp; Finishing</li>
+            <li><strong>Subtotal Before Contingency:</strong> Base Construction Cost + Additional Project Costs</li>
+            <li><strong>Contingency Reserve:</strong> Subtotal × Contingency Percentage (typically 10% to 15%)</li>
+            <li><strong>Estimated Total ADU Cost:</strong> Subtotal + Contingency Reserve</li>
+            <li><strong>All-In Cost per Square Foot:</strong> Estimated Total ADU Cost ÷ ADU Size</li>
+          </ol>
+        </div>
+
+        <p>
+          Let us trace our default calculator scenario step by step for a <strong>600 sq ft detached accessory dwelling unit</strong>:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">Worked Example: 600 Sq Ft Backyard Cottage ($250/sq ft Base)</div>
+          <ol class="callout-steps">
+            <li><strong>ADU Size:</strong> 600 sq ft (standard 1-bedroom / 1-bathroom layout)</li>
+            <li><strong>Base Construction Rate:</strong> $250 per sq ft</li>
+            <li><strong>Base Construction Cost:</strong> 600 sq ft × $250 = <strong>$150,000</strong></li>
+            <li><strong>Site Preparation:</strong> Grading, soil compaction &amp; tree clearing = <strong>$5,000</strong></li>
+            <li><strong>Permits &amp; Plan-Check Fees:</strong> City review, building &amp; trade permits = <strong>$3,000</strong></li>
+            <li><strong>Utility Connections:</strong> Trenching 60 feet for sewer, water &amp; electrical = <strong>$5,000</strong></li>
+            <li><strong>Design &amp; Engineering Fees:</strong> Architectural drafting &amp; structural engineering = <strong>$5,000</strong></li>
+            <li><strong>Landscaping &amp; Exterior Finishing:</strong> Paver walkway, privacy fence &amp; exterior lighting = <strong>$3,000</strong></li>
+            <li><strong>Subtotal Before Contingency:</strong> $150,000 + $21,000 soft costs = <strong>$171,000</strong></li>
+            <li><strong>Contingency Buffer (10%):</strong> $171,000 × 0.10 = <strong>$17,100</strong></li>
+            <li><strong>Estimated Total ADU Investment:</strong> $171,000 + $17,100 = <strong>$188,100</strong></li>
+            <li><strong>All-In Cost per Square Foot:</strong> $188,100 ÷ 600 sq ft = <strong>$313.50 per sq ft</strong> (rounded to $314/sq ft)</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>Comparing ADU Types: Size, Cost Ranges &amp; Timelines</h2>
+        <p>
+          The architectural configuration of your accessory unit determines the structural complexity, labor intensity, and permitting requirements. Here is a breakdown of common ADU configurations:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">ADU Build Type</th>
+                <th scope="col">Typical Size</th>
+                <th scope="col">Typical Cost Range</th>
+                <th scope="col">Avg Cost / Sq Ft</th>
+                <th scope="col">Construction Timeline</th>
+                <th scope="col">Primary Cost Driver</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Garage Conversion</strong></td>
+                <td>350 – 500 sq ft</td>
+                <td>$80,000 – $150,000</td>
+                <td>$175 – $250</td>
+                <td>3 – 6 months</td>
+                <td>Slab moisture sealing, wall insulation &amp; plumbing rough-in</td>
+              </tr>
+              <tr>
+                <td><strong>Attached Addition</strong></td>
+                <td>400 – 800 sq ft</td>
+                <td>$120,000 – $225,000</td>
+                <td>$225 – $325</td>
+                <td>5 – 9 months</td>
+                <td>Roofline tie-in, fire separation walls &amp; foundation tying</td>
+              </tr>
+              <tr>
+                <td><strong>Detached New Build</strong></td>
+                <td>400 – 1,000 sq ft</td>
+                <td>$175,000 – $350,000+</td>
+                <td>$275 – $450+</td>
+                <td>8 – 14 months</td>
+                <td>Perimeter foundation, full utility trenching &amp; 4-sided envelope</td>
+              </tr>
+              <tr>
+                <td><strong>Prefab / Modular Unit</strong></td>
+                <td>400 – 900 sq ft</td>
+                <td>$160,000 – $300,000</td>
+                <td>$250 – $380</td>
+                <td>4 – 8 months</td>
+                <td>Crane access logistics, foundation engineering &amp; site utility hookups</td>
+              </tr>
+              <tr>
+                <td><strong>Basement Conversion</strong></td>
+                <td>400 – 900 sq ft</td>
+                <td>$70,000 – $160,000</td>
+                <td>$150 – $225</td>
+                <td>3 – 7 months</td>
+                <td>Ceiling height compliance, egress window wells &amp; sub-slab sewer pumps</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>Why Smaller ADUs Cost More Per Square Foot</h2>
+        <p>
+          Homeowners are often surprised to discover that a <strong>400 sq ft studio ADU</strong> might cost <strong>$350 per square foot</strong>, while an <strong>800 sq ft 2-bedroom ADU</strong> on the same property costs <strong>$260 per square foot</strong>. This occurs because of how residential construction costs are distributed:
+        </p>
+        <p>
+          Every legal ADU requires the same high-cost core amenities regardless of its square footage:
+        </p>
+        <ul class="bullet-list">
+          <li>A complete kitchen with cabinets, stone countertops, sink, refrigerator, range, and ventilation hood.</li>
+          <li>A full three-piece bathroom with toilet, vanity, and shower/tub combo.</li>
+          <li>A dedicated water heater, electrical sub-panel, and multi-zone mini-split heat pump.</li>
+          <li>Independent sewer lateral connections and underground electrical service conduits.</li>
+        </ul>
+        <p>
+          These core mechanical and plumbing systems cost roughly <strong>$40,000 to $60,000</strong> whether installed in a 350 sq ft unit or a 900 sq ft unit. In a larger unit, that fixed mechanical overhead is amortized over additional square footage composed of inexpensive "dry" living space (carpet/vinyl flooring, drywall, and empty bedroom space), lowering the average cost per square foot.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>Hard Costs vs. Soft Costs: What You Must Budget For</h2>
+        <p>
+          A comprehensive ADU budget must cover two distinct categories of expenditure:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Budget Category</th>
+                <th scope="col">Included Items</th>
+                <th scope="col">Typical Cost Share</th>
+                <th scope="col">Budgeting Tips</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Hard Construction Costs</strong></td>
+                <td>Foundation concrete, lumber, roofing, windows, insulation, drywall, cabinetry, plumbing, electrical, HVAC</td>
+                <td>70% – 80%</td>
+                <td>Lock in fixed-price contractor bids rather than time-and-materials to avoid labor creep.</td>
+              </tr>
+              <tr>
+                <td><strong>Site Preparation &amp; Utilities</strong></td>
+                <td>Excavation, tree removal, soil testing, sewer lateral line trenching, electrical service upgrade (200A)</td>
+                <td>8% – 12%</td>
+                <td>Check sewer line depth early; shallow sewer mains may require an expensive ejector pump.</td>
+              </tr>
+              <tr>
+                <td><strong>Architecture &amp; Engineering</strong></td>
+                <td>Site surveys, architectural floor plans, Title 24 energy calculations, structural truss engineering</td>
+                <td>4% – 7%</td>
+                <td>Using city pre-approved standard ADU plans can cut design fees and accelerate permit approval by weeks.</td>
+              </tr>
+              <tr>
+                <td><strong>Permits &amp; Impact Fees</strong></td>
+                <td>Building inspection fees, plan-check fees, school impact fees, environmental review</td>
+                <td>2% – 5%</td>
+                <td>Verify local exemptions; many states waive impact fees for units under 750 square feet.</td>
+              </tr>
+              <tr>
+                <td><strong>Contingency Reserve</strong></td>
+                <td>Emergency buffer for unseen underground obstructions, material price changes, city revision requests</td>
+                <td>10% – 15%</td>
+                <td>Keep this in a liquid high-yield savings account or line of credit; do not spend it on luxury finishes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>Why a Contingency Reserve Is Non-Negotiable</h2>
+        <p>
+          No residential construction project ever goes 100% according to initial blueprints. A <strong>10% to 15% contingency reserve</strong> is your financial insurance policy against common real-world surprises:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Underground Obstacles:</strong> Digging utility trenches frequently uncovers buried concrete footings, unmapped sewer pipes, or large tree root networks that require specialized machinery.</li>
+          <li><strong>Sub-Panel &amp; Electrical Capacity:</strong> Older main homes often have 100-amp electrical panels. Powering an all-electric ADU with heat pumps and induction cooking usually requires upgrading the main electrical service to 200 amps ($2,500 – $4,500).</li>
+          <li><strong>City Plan-Check Revisions:</strong> Municipal plan examiners frequently mandate structural adjustments (e.g., additional shear walls, upgraded fire-rated drywall on property setbacks, or specific window egress requirements) that add framing labor and material costs.</li>
+          <li><strong>Material Price Swings &amp; Finish Upgrades:</strong> Changing tile selections, upgrading from laminate to quartz countertops, or replacing basic vinyl flooring with engineered hardwood mid-build.</li>
+        </ul>
+      </section>
+
+      <!-- Section 7: FAQ -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions About ADU Building Costs</h2>
+        <div class="faq-list">
+          {faqSchema.mainEntity.map((item) => (
+            <div class="faq-item">
+              <h3>{item.name}</h3>
+              <p>{item.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Section 8: Related Tools -->
+      <section class="guide-section">
+        <h2>Related Real Estate &amp; Housing Calculators</h2>
+        <p>
+          Use companion financial tools on FinCalcLab to evaluate financing terms, rental cash flow, and property investment strategies:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/adu-loan-calculator" class="related-tool-card">
+            <h3>ADU Loan Calculator</h3>
+            <p>Estimate monthly principal and interest payments, borrowing capacity, and total loan interest for financing your ADU project.</p>
+          </a>
+          <a href="/calculator/cap-rate-calculator" class="related-tool-card">
+            <h3>Cap Rate Calculator</h3>
+            <p>Calculate capitalization rates and net operating income (NOI) to evaluate the annual investment return of your rental properties.</p>
+          </a>
+          <a href="/calculator/house-hacking-calculator" class="related-tool-card">
+            <h3>House Hacking Calculator</h3>
+            <p>Model how rental income from an ADU, duplex, or spare room offsets your primary mortgage payment and builds long-term wealth.</p>
+          </a>
+          <a href="/calculator/brrrr-calculator" class="related-tool-card">
+            <h3>BRRRR Calculator</h3>
+            <p>Analyze Buy, Rehab, Rent, Refinance, Repeat strategies to estimate forced appreciation and cash-out refinance capital recovery.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Statutory Disclaimer -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Construction Cost &amp; Estimation Disclaimer:</strong> This ADU cost calculator is provided for preliminary planning and educational budgeting purposes only. Figures generated reflect user inputs, standard industry averages, and illustrative mathematical models. They do not constitute an official contractor quote, architectural proposal, engineering specification, or guaranteed construction bid. Real-world construction costs vary significantly by geographical region, local labor availability, municipal permitting guidelines, soil conditions, and finish quality. Always obtain multiple itemized, fixed-price bids from licensed general contractors and consult with your local municipal planning department before commencing construction.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2,
+  .guide-section h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .guide-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .guide-section p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .guide-section ul, .guide-section ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .guide-section li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* Featured Callout Banner */
+  .adu-callout-section {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .adu-callout-card {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .adu-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .adu-callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  :global(.dark) .adu-callout-icon {
+    background: rgba(37, 99, 235, 0.18);
+  }
+
+  .adu-callout-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .adu-callout-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .adu-callout-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .adu-callout-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .adu-callout-action {
+    display: flex;
+    align-items: center;
+  }
+
+  .adu-callout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: gap var(--transition-fast), color var(--transition-fast);
+  }
+
+  .adu-callout-btn:hover {
+    gap: 12px;
+    text-decoration: underline;
+  }
+
+  /* Key Callout Box */
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin: var(--space-5) 0;
+  }
+
+  .callout-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-3);
+  }
+
+  .callout-steps {
+    padding-left: var(--space-5);
+    margin: 0;
+  }
+
+  .callout-steps li {
+    font-size: 0.925rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  /* Comparison Tables */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    margin: var(--space-5) 0 var(--space-2) 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+    min-width: 600px;
+  }
+
+  .growth-comparison-table th {
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-weight: 700;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .growth-comparison-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .growth-comparison-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .growth-comparison-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.03);
+  }
+
+  :global(.dark) .growth-comparison-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.08);
+  }
+
+  /* FAQ Accordion List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+
+  .faq-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .faq-item h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.925rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-4) 0;
+  }
+
+  .related-tool-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-decoration: none;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .related-tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .related-tool-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Disclaimer Box */
+  .disclaimer-section {
+    margin-top: var(--space-8);
+    padding: var(--space-4);
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .disclaimer-text {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Responsive Adjustments for Mobile (< 640px) */
+  @media (max-width: 640px) {
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .adu-callout-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

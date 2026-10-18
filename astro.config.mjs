@@ -25,7 +25,10 @@ export default defineConfig({
     '/child-education-cost-calculator': '/calculator/child-education-cost-calculator',
     '/fat-fire-calculator': '/calculator/fat-fire-calculator',
     '/house-hacking-calculator': '/calculator/house-hacking-calculator',
-    '/minimum-payment-trap-calculator': '/calculator/minimum-payment-trap-calculator'
+    '/minimum-payment-trap-calculator': '/calculator/minimum-payment-trap-calculator',
+    '/coast-fire-number-calculator': '/calculator/coast-fire-number-calculator',
+    '/when-can-i-stop-saving-for-retirement-calculator': '/calculator/when-can-i-stop-saving-for-retirement-calculator',
+    '/brrrr-calculator': '/calculator/brrrr-calculator'
   },
   vite: {
     build: {

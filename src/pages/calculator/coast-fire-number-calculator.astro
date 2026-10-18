@@ -1,0 +1,837 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CoastFireNumberCalculator from '../../components/calculator/CoastFireNumberCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Coast FIRE Number Calculator', item: '/calculator/coast-fire-number-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a Coast FIRE number?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A Coast FIRE number is the exact dollar amount of invested assets you need today so that compound investment growth alone will grow your portfolio into your full retirement target by your target retirement age, with zero additional contributions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I calculate my Coast FIRE number?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To calculate your Coast FIRE number, divide your Full FIRE number (annual retirement expenses divided by your safe withdrawal rate) by (1 + real annual investment return) raised to the power of the number of years remaining until retirement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Coast FIRE and traditional FIRE?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Traditional FIRE means your invested assets can cover all your living expenses immediately, allowing you to stop working entirely. Coast FIRE means your existing investments will grow to fund your eventual traditional retirement, but you still need to earn enough income to pay your current living expenses today."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much money do I need to reach Coast FIRE?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The amount depends on your current age, planned retirement age, expected annual retirement living expenses, and real investment return. For example, a 30-year-old wanting to retire at age 65 on $50,000 per year with a 4% withdrawal rate and 5.37% real return needs approximately $200,638 invested today."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does reaching Coast FIRE mean I can stop working?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Reaching Coast FIRE means you can stop saving and investing for traditional retirement, but you still must earn enough money from employment, freelancing, or business to pay for your day-to-day living expenses until retirement age."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Coast FIRE assume zero future investment contributions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The fundamental definition of Coast FIRE is that your current nest egg compounds untouched without requiring another dollar of future contributions to reach your retirement target."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does inflation affect my Coast FIRE number?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Inflation reduces future purchasing power. To ensure your retirement spending remains accurate, the Coast FIRE calculation adjusts nominal investment returns for inflation using the exact Fisher equation, keeping all figures in today's purchasing power."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a 4% safe withdrawal rate guaranteed to work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The 4% rule is an empirical guideline based on the historical 1998 Trinity Study for a 30-year retirement period. Market downturns, high inflation, investment management fees, and longer retirement horizons can require a lower withdrawal rate such as 3.25% to 3.5%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I reach Coast FIRE with a low initial investment balance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, if you have a long time horizon. Compounding works exponentially over decades. For instance, a 22-year-old with 43 years until age 65 can reach Coast FIRE with a significantly smaller initial balance than a 45-year-old with only 20 years remaining."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if future investment returns are lower than expected?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If real returns fall short of your expectations, your portfolio will not reach your full retirement target through growth alone. To mitigate this risk, you can resume partial contributions, work additional years, or lower retirement spending."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Coast FIRE Number Calculator",
+  "url": "https://fincalclab.com/calculator/coast-fire-number-calculator",
+  "description": "Calculate your Coast FIRE target number. See if your current retirement investments can grow into your full retirement nest egg without saving another dollar.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Coast FIRE Number Calculator | Financial Independence Target"
+  description="Calculate your Coast FIRE number. See how much you need invested today for compound growth to fund your retirement with zero additional contributions."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <CoastFireNumberCalculator />
+
+    <!-- Featured Financial Independence Planning Callout -->
+    <section class="cf-callout-section" aria-labelledby="coast-insight-heading">
+      <Card elevation="sm" class="cf-callout-card">
+        <div class="cf-callout-header">
+          <div class="cf-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+          </div>
+          <div class="cf-callout-heading-wrap">
+            <span class="cf-callout-eyebrow">Financial Freedom Milestone</span>
+            <h2 id="coast-insight-heading" class="cf-callout-title">The Coast FIRE Advantage: Stop Aggressive Saving Early</h2>
+          </div>
+        </div>
+
+        <p class="cf-callout-desc">
+          Hitting your <strong>Coast FIRE number</strong> is one of the most liberating psychological milestones in personal finance. Once your current portfolio is large enough to compound into your full retirement nest egg by retirement age, you no longer need to funnel 30%, 40%, or 50% of your paycheck into retirement accounts. You can take a lower-stress job, switch careers, start a passion business, work part-time, or spend 100% of your earnings on current living expenses.
+        </p>
+
+        <div class="cf-callout-action">
+          <a href="/calculator/barista-fire-calculator" class="cf-callout-btn">
+            <span>Explore Barista FIRE Semi-Retirement</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Educational Guide -->
+    <article class="educational-guide prose">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is Coast FIRE?</h2>
+        <p>
+          <strong>Coast FIRE</strong> (Coast Financial Independence, Retire Early) is a milestone within the broader financial independence movement. It represents the point at which your existing invested assets have reached a critical mass such that compound interest alone will grow your portfolio to your full retirement goal by your desired retirement age, without requiring another cent of personal contributions.
+        </p>
+        <p>
+          Unlike traditional FIRE, where your investment portfolio must generate sufficient passive income to cover 100% of your living expenses immediately so you can retire tomorrow, Coast FIRE does not mean leaving the workforce right away. Instead, it means you can <strong>"coast"</strong> through the remainder of your working years. Because your future retirement is already mathematically funded through compound growth, you only need to earn enough active income to cover your day-to-day living expenses.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>What Is a Coast FIRE Number?</h2>
+        <p>
+          Your <strong>Coast FIRE number</strong> is the exact dollar amount of invested net worth you need today to guarantee that compound growth will carry your portfolio across the retirement finish line.
+        </p>
+        <p>
+          Think of your Coast FIRE number as the present value of your future retirement goal. If your Full FIRE target at age 65 is $1,250,000 in today's purchasing power, your Coast FIRE number at age 30 is not $1,250,000. Because your money has 35 full years to compound in broad index funds, your Coast FIRE number today might only be around $200,000. Once you cross that $200,000 threshold, time and compound interest do the heavy lifting for you.
+        </p>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How Does the Coast FIRE Number Calculator Work?</h2>
+        <p>
+          The <strong>Coast FIRE Number Calculator</strong> determines your exact financial readiness by evaluating your timeline, living expenses, and investment growth rate. Here is how the calculator computes your results in real time:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Core Calculation Mechanics</div>
+          <ol class="callout-steps">
+            <li><strong>Determines Your Investment Horizon:</strong> Calculates the exact compounding window by subtracting your current age from your target retirement age.</li>
+            <li><strong>Calculates Your Full FIRE Number:</strong> Divides your desired annual living expenses by your safe withdrawal rate (typically 4.0%).</li>
+            <li><strong>Derives Real Annual Investment Return:</strong> Uses the exact Fisher equation to strip inflation out of your nominal market return, ensuring every dollar is evaluated in constant purchasing power.</li>
+            <li><strong>Discounts the Full Target to Today:</strong> Uses compound present-value formulas to calculate how much principal you need invested today.</li>
+            <li><strong>Projects Your Existing Portfolio:</strong> Multiplies your current assets by the real compound growth factor to show where your portfolio will land at retirement with zero extra contributions.</li>
+            <li><strong>Assesses Surplus or Shortfall:</strong> Compares your current investments against the Coast FIRE target and highlights your progress.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>How to Calculate Your Coast FIRE Number</h2>
+        <p>
+          Calculating your Coast FIRE number manually involves three progressive mathematical stages: finding your full retirement target, adjusting your investment returns for inflation, and discounting that target back to the present day.
+        </p>
+        <p>
+          By framing your target in today's purchasing power, you avoid the distortion of long-term inflation. A retirement spending target of $50,000 per year means enjoying the exact goods, services, housing, and healthcare that $50,000 buys today, regardless of how many nominal dollars that equals decades into the future.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>Coast FIRE Formula Explained</h2>
+        <p>
+          The mathematical engine of the Coast FIRE calculation relies on classical present value and real interest rate formulas:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">The Coast FIRE Mathematical Equations</div>
+          <ol class="callout-steps">
+            <li>
+              <strong>Years to Retirement:</strong>
+              <br />
+              <code>Years = Retirement Age − Current Age</code>
+            </li>
+            <li>
+              <strong>Full FIRE Target:</strong>
+              <br />
+              <code>Full FIRE Number = Annual Retirement Expenses ÷ Safe Withdrawal Rate</code>
+            </li>
+            <li>
+              <strong>Exact Real Investment Return (Fisher Equation):</strong>
+              <br />
+              <code>Real Return = ((1 + Nominal Return) ÷ (1 + Inflation Rate)) − 1</code>
+            </li>
+            <li>
+              <strong>Compound Growth Factor:</strong>
+              <br />
+              <code>Growth Factor = (1 + Real Return) ^ Years</code>
+            </li>
+            <li>
+              <strong>Coast FIRE Number:</strong>
+              <br />
+              <code>Coast FIRE Number = Full FIRE Number ÷ Growth Factor</code>
+            </li>
+            <li>
+              <strong>Projected Portfolio at Retirement:</strong>
+              <br />
+              <code>Projected Portfolio = Current Investments × Growth Factor</code>
+            </li>
+          </ol>
+        </div>
+        <p>
+          Notice why the exact Fisher equation is superior to simple subtraction. While many casual bloggers calculate real return by simply subtracting inflation from nominal return (e.g. 8.0% − 2.5% = 5.5%), the rigorous economic formula yields <code>(1.08 / 1.025) − 1 = 5.366%</code>. Over a 30 to 40 year compounding horizon, this subtle difference avoids overestimating your investment growth by tens of thousands of dollars.
+        </p>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>A Worked Coast FIRE Calculation Example</h2>
+        <p>
+          To see the formula in action, walk through a realistic numerical scenario for a 30-year-old saver:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Worked Example: Sarah, Age 30</div>
+          <ol class="callout-steps">
+            <li><strong>Current Age:</strong> 30 years old</li>
+            <li><strong>Target Retirement Age:</strong> 65 years old (35 years until retirement)</li>
+            <li><strong>Desired Retirement Spending:</strong> $50,000 per year (in today's money)</li>
+            <li><strong>Safe Withdrawal Rate:</strong> 4.0% (0.04)</li>
+            <li><strong>Full FIRE Target:</strong> $50,000 ÷ 0.04 = <strong>$1,250,000</strong></li>
+            <li><strong>Nominal Return &amp; Inflation:</strong> 8.0% nominal return, 2.5% annual inflation</li>
+            <li><strong>Real Return:</strong> ((1 + 0.08) ÷ (1 + 0.025)) − 1 = <strong>5.36585%</strong></li>
+            <li><strong>Growth Factor:</strong> (1 + 0.0536585)^35 = <strong>6.23012</strong></li>
+            <li><strong>Coast FIRE Number:</strong> $1,250,000 ÷ 6.23012 = <strong>$200,638</strong></li>
+            <li><strong>Sarah's Current Portfolio:</strong> $100,000 invested in index funds</li>
+            <li><strong>Sarah's Trajectory:</strong> $100,000 × 6.23012 = <strong>$623,012</strong> projected at age 65. Her investment gap is $100,638. Once Sarah reaches $200,638, she can cease all future retirement savings!</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="guide-section">
+        <h2>How Inflation Affects Your Coast FIRE Target</h2>
+        <p>
+          Inflation is the silent erosion of purchasing power. A basket of groceries that costs $100 today might cost $237 in 35 years under a modest 2.5% annual inflation rate.
+        </p>
+        <p>
+          There are two ways to handle inflation in retirement modeling:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Nominal Modeling:</strong> You inflate your future expenses into giant future dollar amounts (e.g., $50,000 becomes $118,662/yr), and then use high nominal return rates (8.0%) to project compounding.</li>
+          <li><strong>Real (Constant-Dollar) Modeling:</strong> You keep your expenses fixed in today's purchasing power ($50,000/yr), and deflate your investment return down to its real purchasing power growth rate (5.37%).</li>
+        </ul>
+        <p>
+          Our <strong>Coast FIRE Number Calculator</strong> uses constant-dollar real modeling. This makes the numbers intuitive and actionable: when you see a Coast FIRE number of $200,638, you know that this exact sum in today's currency is sufficient to meet your lifestyle goal.
+        </p>
+      </section>
+
+      <!-- Section 8 -->
+      <section class="guide-section">
+        <h2>Coast FIRE vs Traditional FIRE</h2>
+        <p>
+          The financial independence landscape includes multiple variations tailored to different lifestyles and savings goals. The table below contrasts Coast FIRE against traditional early retirement frameworks:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">FIRE Strategy</th>
+                <th scope="col">Nest Egg Target</th>
+                <th scope="col">Can You Quit Work Today?</th>
+                <th scope="col">Ongoing Savings Required?</th>
+                <th scope="col">Typical Lifestyle &amp; Focus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Coast FIRE</strong></td>
+                <td>Present value of future nest egg ($150k – $400k)</td>
+                <td>No (must earn current expenses)</td>
+                <td><strong>$0 / month</strong> (optional)</td>
+                <td>Work low-stress job, spend 100% of income, enjoy youth</td>
+              </tr>
+              <tr>
+                <td><strong>Barista FIRE</strong></td>
+                <td>Partial nest egg ($500k – $1M)</td>
+                <td>Yes, from full-time grind</td>
+                <td>No</td>
+                <td>Work part-time or freelance to cover gap &amp; health insurance</td>
+              </tr>
+              <tr>
+                <td><strong>Lean FIRE</strong></td>
+                <td>Minimalist nest egg ($600k – $1M)</td>
+                <td>Yes, immediately</td>
+                <td>No</td>
+                <td>Frugal, low-cost living ($25k – $40k/yr annual budget)</td>
+              </tr>
+              <tr>
+                <td><strong>Traditional FIRE</strong></td>
+                <td>Full nest egg ($1.25M – $2.5M)</td>
+                <td>Yes, immediately</td>
+                <td>No</td>
+                <td>Standard middle-class living without active employment</td>
+              </tr>
+              <tr>
+                <td><strong>Fat FIRE</strong></td>
+                <td>Abundant nest egg ($3M – $10M+)</td>
+                <td>Yes, immediately</td>
+                <td>No</td>
+                <td>High-spending lifestyle, luxury travel, premium healthcare</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="guide-section">
+        <h2>How to Know If You Have Reached Coast FIRE</h2>
+        <p>
+          You have officially reached Coast FIRE when your current invested retirement assets equal or exceed your calculated Coast FIRE number. Here are the key indicators:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Surplus Balance:</strong> In the calculator above, your "Coast FIRE Gap" displays a positive green surplus.</li>
+          <li><strong>Funded Ratio Exceeds 100%:</strong> Your current portfolio represents 100% or more of the required present-value corpus.</li>
+          <li><strong>Projected Portfolio Meets Full FIRE:</strong> With $0 in additional contributions, your projected portfolio at retirement age meets or exceeds your Full FIRE target in today's dollars.</li>
+          <li><strong>Cash Flow Flexibility:</strong> You can redirect 100% of your current retirement savings toward paying off your mortgage, funding children's college, traveling, or downshifting your work hours.</li>
+        </ul>
+      </section>
+
+      <!-- Section 10 -->
+      <section class="guide-section">
+        <h2>Important Assumptions and Limitations</h2>
+        <p>
+          While Coast FIRE is a powerful planning framework, it is an analytical projection rather than a guaranteed contract. Keep these practical considerations in mind:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Key Risk Factors in Coast FIRE Planning</div>
+          <ol class="callout-steps">
+            <li><strong>Market Volatility &amp; Sequence of Returns:</strong> Equity returns do not occur in smooth annual increments. Severe bear markets early in your compounding period can temporarily depress portfolio growth.</li>
+            <li><strong>Unexpected Spending Shifts:</strong> Health events, family expansion, eldercare, or lifestyle creep can increase your annual living expenses above your original projection.</li>
+            <li><strong>Taxes and Investment Fees:</strong> Taxes on capital gains or dividends in taxable accounts, as well as expense ratios, drag on net returns. Using tax-advantaged accounts (401k, IRA, Roth IRA, superannuation) maximizes compounding efficiency.</li>
+            <li><strong>Safe Withdrawal Rate Variability:</strong> While the 4% rule is historically robust over 30-year spans, longer retirements (40+ years) or elevated market valuations may warrant a more conservative 3.25% to 3.5% withdrawal rate.</li>
+            <li><strong>You Must Still Cover Current Bills:</strong> Reaching Coast FIRE eliminates the need to save for the future, but it does not generate immediate income. You still require reliable cash flow to fund your life today.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 11: FAQs -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions</h2>
+        
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>What is a Coast FIRE number?</h3>
+            <p>
+              A Coast FIRE number is the exact dollar amount of invested assets you need today so that compound investment growth alone will grow your portfolio into your full retirement target by your target retirement age, with zero additional contributions.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How do I calculate my Coast FIRE number?</h3>
+            <p>
+              To calculate your Coast FIRE number, divide your Full FIRE number (annual retirement expenses divided by your safe withdrawal rate) by (1 + real annual investment return) raised to the power of the number of years remaining until retirement.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What is the difference between Coast FIRE and FIRE?</h3>
+            <p>
+              Traditional FIRE means your invested assets can cover all your living expenses immediately, allowing you to stop working entirely. Coast FIRE means your existing investments will grow to fund your eventual traditional retirement, but you still need to earn enough income to pay your current living expenses today.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How much money do I need to reach Coast FIRE?</h3>
+            <p>
+              The amount depends on your current age, planned retirement age, expected annual retirement living expenses, and real investment return. For example, a 30-year-old wanting to retire at age 65 on $50,000 per year with a 4% withdrawal rate and 5.37% real return needs approximately $200,638 invested today.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Does Coast FIRE mean I can stop working?</h3>
+            <p>
+              No. Reaching Coast FIRE means you can stop saving and investing for traditional retirement, but you still must earn enough money from employment, freelancing, or business to pay for your day-to-day living expenses until retirement age.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Does Coast FIRE assume future contributions?</h3>
+            <p>
+              Yes. The fundamental definition of Coast FIRE is that your current nest egg compounds untouched without requiring another dollar of future contributions to reach your retirement target.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How does inflation affect Coast FIRE?</h3>
+            <p>
+              Inflation reduces future purchasing power. To ensure your retirement spending remains accurate, the Coast FIRE calculation adjusts nominal investment returns for inflation using the exact Fisher equation, keeping all figures in today's purchasing power.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Is a 4% withdrawal rate guaranteed to work?</h3>
+            <p>
+              No. The 4% rule is an empirical guideline based on the historical 1998 Trinity Study for a 30-year retirement period. Market downturns, high inflation, investment management fees, and longer retirement horizons can require a lower withdrawal rate such as 3.25% to 3.5%.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Can I reach Coast FIRE with a low investment balance?</h3>
+            <p>
+              Yes, if you have a long time horizon. Compounding works exponentially over decades. For instance, a 22-year-old with 43 years until age 65 can reach Coast FIRE with a significantly smaller initial balance than a 45-year-old with only 20 years remaining.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What happens if investment returns are lower than expected?</h3>
+            <p>
+              If real returns fall short of your expectations, your portfolio will not reach your full retirement target through growth alone. To mitigate this risk, you can resume partial contributions, work additional years, or lower retirement spending.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Financial Tools Section -->
+      <section class="guide-section">
+        <h2>Explore Related Retirement &amp; Wealth Calculators</h2>
+        <p>
+          Complement your Coast FIRE planning with our suite of free, interactive financial calculators:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/barista-fire-calculator" class="related-tool-card">
+            <h3>Barista FIRE Calculator</h3>
+            <p>Calculate how part-time wages or side hustles slash your required retirement nest egg and accelerate your timeline.</p>
+          </a>
+          <a href="/calculator/fat-fire-calculator" class="related-tool-card">
+            <h3>Fat FIRE Calculator</h3>
+            <p>Project your target nest egg for an abundant, uncompromised retirement with travel, luxuries, and higher spending.</p>
+          </a>
+          <a href="/calculator/financial-independence-date-calculator" class="related-tool-card">
+            <h3>FI Date Calculator</h3>
+            <p>Determine the exact calendar year and month your investment portfolio will reach full financial independence.</p>
+          </a>
+          <a href="/calculator/wealth-projection-calculator" class="related-tool-card">
+            <h3>Wealth Projection Calculator</h3>
+            <p>Simulate long-term compound interest across diverse asset classes and ongoing monthly contributions.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Disclaimer Section -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Disclaimer:</strong> This Coast FIRE Number Calculator is provided solely for educational, illustrative, and informational purposes and does not constitute financial, investment, legal, or tax advice. Projected portfolio returns and inflation figures are mathematical simulations based on user assumptions and cannot guarantee future investment performance. Real-world market volatility, sequence of returns risk, changing tax laws, and unpredictable personal expenses will cause actual results to vary. Always consult a qualified, licensed financial advisor before making major retirement or career decisions.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-12);
+  }
+
+  /* Featured Callout Banner */
+  .cf-callout-section {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-8);
+  }
+
+  .cf-callout-card {
+    padding: var(--space-6);
+    background: linear-gradient(135deg, var(--color-surface) 0%, rgba(37, 99, 235, 0.03) 100%);
+    border: 1px solid var(--color-border);
+    border-left: 5px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .cf-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .cf-callout-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .cf-callout-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cf-callout-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .cf-callout-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .cf-callout-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .cf-callout-action {
+    display: flex;
+    padding-top: var(--space-1);
+  }
+
+  .cf-callout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background-color: var(--color-primary);
+    color: #ffffff !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+
+  .cf-callout-btn:hover {
+    background-color: var(--color-primary-dark, #1d4ed8);
+    transform: translateY(-1px);
+  }
+
+  /* Educational Content Section Styling */
+  .educational-guide {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: var(--space-4);
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .guide-section {
+    margin-bottom: var(--space-8);
+  }
+
+  .guide-section h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0 0 var(--space-3) 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .guide-section p {
+    font-size: 0.935rem;
+    margin-bottom: var(--space-3);
+    color: var(--color-text);
+    line-height: 1.65;
+  }
+
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+  }
+
+  .callout-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .callout-steps {
+    margin: 0;
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 0.92rem;
+  }
+
+  .bullet-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.92rem;
+  }
+
+  /* Table Responsive Styling */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .growth-comparison-table th {
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--color-border);
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  :global(.dark) .growth-comparison-table th {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .growth-comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .growth-comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* FAQ List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .related-tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .related-tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .related-tool-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Disclaimer Section */
+  .disclaimer-section {
+    padding: var(--space-4);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-6);
+  }
+
+  .disclaimer-text {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .cf-callout-card {
+      padding: var(--space-4);
+      gap: var(--space-3);
+    }
+
+    .cf-callout-header {
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .cf-callout-icon {
+      width: 38px;
+      height: 38px;
+    }
+
+    .cf-callout-title {
+      font-size: 1.05rem;
+    }
+
+    .cf-callout-desc {
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .cf-callout-action {
+      width: 100%;
+      padding-top: var(--space-2);
+    }
+
+    .cf-callout-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+    }
+
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .cf-callout-card {
+      padding: 12px;
+    }
+
+    .cf-callout-title {
+      font-size: 0.98rem;
+    }
+
+    .cf-callout-btn {
+      font-size: 0.82rem;
+      padding: 10px 12px;
+      gap: 6px;
+    }
+  }
+</style>

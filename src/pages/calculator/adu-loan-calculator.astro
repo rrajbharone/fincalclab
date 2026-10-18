@@ -1,0 +1,786 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AduLoanCalculator from '../../components/calculator/AduLoanCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'ADU Loan Calculator', item: '/calculator/adu-loan-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is an ADU loan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An ADU loan is a specialized financing structure used by homeowners to fund the design, permitting, site preparation, and construction of an Accessory Dwelling Unit (ADU)—such as a detached backyard cottage, garage conversion, basement apartment, or attached guest suite. Financing options commonly include home equity lines of credit (HELOCs), fixed-rate home equity loans, cash-out refinances, ground-up construction loans, and government-backed renovation mortgages like Fannie Mae HomeStyle or FHA 203(k)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What credit score and equity do I need to qualify for an ADU loan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most traditional lenders require a minimum credit score of 620 to 680 for home equity loans and cash-out refinancing, while specialized construction-to-permanent loans often look for 700 or higher. For equity-based financing like HELOCs, lenders generally cap your combined loan-to-value (CLTV) ratio at 80% to 85% of your home's current appraised value. However, renovation loans like Fannie Mae HomeStyle allow borrowing up to 95% of the property's future completed value."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does it typically cost to build an Accessory Dwelling Unit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nationwide, building an ADU typically costs between $100,000 and $350,000 depending on unit type, square footage, local labor rates, and finishes. Simple garage conversions and interior basement conversions often range from $80,000 to $150,000. In contrast, detached, ground-up standalone backyard cottages with dedicated utility trenching, full kitchens, and modern HVAC systems frequently cost $175,000 to $300,000 or more in high-cost metro markets."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use future ADU rental income to qualify for a construction loan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, under updated lending guidelines from Fannie Mae, Freddie Mac, and the Federal Housing Administration (FHA). Lenders can now consider up to 75% of the projected gross fair-market rental income of the planned ADU to offset your debt-to-income (DTI) ratio during underwriting. An appraisal must include an official comparable rent schedule (such as Fannie Mae Form 1007) documenting fair market rents for similar units in your area."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a HELOC, home equity loan, or construction loan best for an ADU?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The best financing vehicle depends on your current primary mortgage interest rate and equity position. If you already have substantial equity and a low first mortgage rate (e.g., 3%), a second-lien HELOC or fixed-rate home equity loan avoids disturbing your primary mortgage. If you have limited existing equity, a construction-to-permanent loan or renovation mortgage that bases borrowing power on the future appraised value of the property with the completed ADU is usually the superior option."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does a 15-year loan term compare to a 30-year term for an ADU?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A 15-year loan requires higher monthly payments but dramatically slashes total interest expenses. For a $120,000 loan at 7.0%, a 15-year term requires a monthly payment of $1,079 and totals $74,142 in interest. A 30-year term lowers the monthly payment to $798, improving short-term cash flow, but increases total lifetime interest to $167,411—more than double the interest cost."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will building an ADU increase my property taxes and insurance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. While building an ADU does not trigger a full reassessment of your existing primary home in most jurisdictions (such as California under Prop 13), local tax assessors perform a 'blended' or incremental reassessment based solely on the added value of the new construction. You will also need to adjust your homeowners insurance policy with an added structure endorsement or landlord policy rider to cover the replacement cost and liability of the new unit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a standalone construction loan and a renovation mortgage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A standalone construction loan is a short-term, interest-only line of credit (typically 12 months) that disburses funds in stages as construction milestones pass; upon project completion, the borrower must refinance the balance into a permanent mortgage or pay it off. A renovation mortgage (such as Fannie Mae HomeStyle or FHA 203k) wraps both the existing home mortgage and the ADU construction budget into a single long-term permanent loan with a single closing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I build an ADU with zero money down?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can effectively build an ADU with zero out-of-pocket cash if you have sufficient existing home equity to finance 100% of the project budget through a HELOC, home equity loan, or cash-out refinance. Alternatively, specialized renovation loans permit financing up to 95% or 96.5% of the combined after-completion value, requiring only a small 3.5% to 5% equity contribution."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does an ADU increase my primary property's market value?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Real estate appraisal studies indicate that an permitted, well-built ADU typically adds 20% to 35% to a property's overall market value depending on neighborhood demand, square footage, architectural quality, and rental income potential. In competitive urban rental markets, the added value often closely equals or exceeds the total cost of construction."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ADU Loan Calculator",
+  "url": "https://fincalclab.com/calculator/adu-loan-calculator",
+  "description": "Calculate monthly principal and interest payments, borrowing costs, down payment requirements, and total interest for financing an Accessory Dwelling Unit (ADU).",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="ADU Loan Calculator | Accessory Dwelling Unit Financing & Monthly Payments"
+  description="Estimate monthly principal & interest payments, loan amounts, and total interest for building an ADU. Compare construction loans, HELOCs, and loan terms."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <AduLoanCalculator />
+
+    <!-- Featured ADU Strategy Callout -->
+    <section class="adu-callout-section" aria-labelledby="adu-strategy-heading">
+      <Card elevation="sm" class="adu-callout-card">
+        <div class="adu-callout-header">
+          <div class="adu-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </div>
+          <div class="adu-callout-heading-wrap">
+            <span class="adu-callout-eyebrow">Residential Real Estate Strategy</span>
+            <h2 id="adu-strategy-heading" class="adu-callout-title">Unlocking Backyard Wealth: The Financial Power of Accessory Dwelling Units</h2>
+          </div>
+        </div>
+
+        <p class="adu-callout-desc">
+          Building an <strong>Accessory Dwelling Unit (ADU)</strong>—often referred to as a granny flat, in-law suite, garden cottage, or carriage house—is one of the most effective strategies for suburban and urban homeowners to generate recurring passive rental income, house multi-generational family members, and force substantial equity into their residential property. However, managing construction financing, interest rates, and loan terms is critical to ensuring your project yields positive monthly cash flow.
+        </p>
+
+        <div class="adu-callout-action">
+          <a href="/calculator/cap-rate-calculator" class="adu-callout-btn">
+            <span>Evaluate Rental Returns With Our Cap Rate Calculator</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Educational Guide -->
+    <article class="educational-guide prose">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is an ADU Loan and How Does ADU Financing Work?</h2>
+        <p>
+          An <strong>ADU loan</strong> is any residential financing structure secured to fund the planning, site preparation, utility trenching, foundation pouring, framing, interior finishing, and municipal inspection of an <strong>Accessory Dwelling Unit</strong>. Unlike purchasing an existing turnkey house where financing is governed by standardized 30-year conforming mortgages, financing an ADU is inherently a construction project. 
+        </p>
+        <p>
+          Homeowners must fund labor, materials, architectural drawings, and municipal permitting fees over a 6 to 18-month construction timeline before the unit is habitable. Depending on how much liquid cash you have and how much home equity is locked inside your primary residence, homeowners generally choose among several primary financing paths:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Home Equity Line of Credit (HELOC):</strong> A revolving second mortgage line secured by your current home equity. Borrowers draw funds incrementally as contractor invoices come due, paying interest only on the drawn balance during construction.</li>
+          <li><strong>Fixed-Rate Home Equity Loan:</strong> A lump-sum second mortgage with a fixed interest rate and fixed monthly payment, ideal when you have a guaranteed contractor bid and want predictable payments.</li>
+          <li><strong>Cash-Out Refinance:</strong> Replacing your current primary first mortgage with a brand-new, larger mortgage and taking the difference in cash to pay for construction.</li>
+          <li><strong>Construction-to-Permanent Loan:</strong> A two-phase loan that provides short-term financing during the building phase, which automatically converts into a long-term fixed mortgage once the final certificate of occupancy is issued.</li>
+          <li><strong>Government-Sponsored Renovation Mortgages:</strong> Specialized loan programs such as <strong>Fannie Mae HomeStyle Renovation</strong>, <strong>Freddie Mac CHOICERenovation</strong>, or <strong>FHA 203(k)</strong> that base borrowing limits on the <em>future completed value</em> of the home with the ADU.</li>
+        </ul>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>How ADU Monthly Payments Are Calculated</h2>
+        <p>
+          Once your ADU construction is complete and your financing settles into a permanent amortizing loan, your monthly debt service is calculated using the standard fixed-rate mortgage amortization formula:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">The Fixed-Rate Amortization Formula</div>
+          <p style="margin-bottom: 8px; font-family: monospace; font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+            M = P × [ r(1 + r)ⁿ ] / [ (1 + r)ⁿ − 1 ]
+          </p>
+          <ul class="bullet-list" style="margin-bottom: 0;">
+            <li><strong>M:</strong> Estimated Monthly Principal and Interest (P&amp;I) Payment</li>
+            <li><strong>P:</strong> Loan Amount Borrowed (Total ADU Project Cost − Down Payment)</li>
+            <li><strong>r:</strong> Monthly Interest Rate (Annual Rate ÷ 12 ÷ 100)</li>
+            <li><strong>n:</strong> Total Number of Monthly Payments (Loan Term in Years × 12)</li>
+          </ul>
+        </div>
+
+        <p>
+          To understand the numbers in practice, consider our default calculator scenario:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">Step-by-Step Calculation Example ($150,000 ADU Project)</div>
+          <ol class="callout-steps">
+            <li><strong>Total ADU Project Cost:</strong> $150,000</li>
+            <li><strong>Cash Down Payment (20%):</strong> $30,000 out-of-pocket cash</li>
+            <li><strong>Net Loan Amount Borrowed (P):</strong> $150,000 − $30,000 = <strong>$120,000</strong></li>
+            <li><strong>Annual Interest Rate:</strong> 7.0% per annum</li>
+            <li><strong>Monthly Interest Rate (r):</strong> 0.07 ÷ 12 = <strong>0.0058333</strong></li>
+            <li><strong>Loan Term (n):</strong> 20 Years = <strong>240 monthly payments</strong></li>
+            <li><strong>Compound Growth Factor (1 + r)ⁿ:</strong> (1.0058333)²⁴⁰ ≈ <strong>4.03874</strong></li>
+            <li><strong>Monthly Payment (M):</strong> $120,000 × [0.0058333 × 4.03874] ÷ [4.03874 − 1] = <strong>$930.36 per month</strong></li>
+            <li><strong>Total Loan Repayment:</strong> $930.36 × 240 payments = <strong>$223,286</strong></li>
+            <li><strong>Total Lifetime Interest Paid:</strong> $223,286 − $120,000 = <strong>$103,286</strong></li>
+            <li><strong>Total All-In Project Cost With Interest:</strong> $30,000 down + $223,286 loan payoff = <strong>$253,286</strong></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How Loan Terms and Down Payments Affect Your Borrowing Costs</h2>
+        <p>
+          Choosing the right loan term represents a trade-off between monthly cash flow and cumulative lifetime interest expenses. A shorter loan term (such as 10 or 15 years) significantly reduces the total interest paid to the lender but requires larger monthly payments. Conversely, a 30-year term minimizes your monthly payment obligation—maximizing monthly net cash flow if you plan to rent the ADU—but costs considerably more in total interest.
+        </p>
+        <p>
+          The table below demonstrates how borrowing a <strong>$120,000 loan balance at a 7.0% annual interest rate</strong> changes across standard amortization durations:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Loan Term</th>
+                <th scope="col">Monthly Payment (P&amp;I)</th>
+                <th scope="col">Total Months</th>
+                <th scope="col">Total Interest Paid</th>
+                <th scope="col">Total Loan Repayment</th>
+                <th scope="col">All-In Cost ($30k Down)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>10 Years (120 mos)</strong></td>
+                <td>$1,393 / mo</td>
+                <td>120</td>
+                <td style="color: var(--color-success); font-weight: 700;">$47,192</td>
+                <td>$167,192</td>
+                <td>$197,192</td>
+              </tr>
+              <tr>
+                <td><strong>15 Years (180 mos)</strong></td>
+                <td>$1,079 / mo</td>
+                <td>180</td>
+                <td style="color: var(--color-success); font-weight: 700;">$74,142</td>
+                <td>$194,142</td>
+                <td>$224,142</td>
+              </tr>
+              <tr>
+                <td><strong>20 Years (240 mos)</strong></td>
+                <td>$930 / mo</td>
+                <td>240</td>
+                <td style="font-weight: 700;">$103,286</td>
+                <td>$223,286</td>
+                <td>$253,286</td>
+              </tr>
+              <tr>
+                <td><strong>25 Years (300 mos)</strong></td>
+                <td>$848 / mo</td>
+                <td>300</td>
+                <td style="color: #ef4444; font-weight: 700;">$134,443</td>
+                <td>$254,443</td>
+                <td>$284,443</td>
+              </tr>
+              <tr>
+                <td><strong>30 Years (360 mos)</strong></td>
+                <td>$798 / mo</td>
+                <td>360</td>
+                <td style="color: #ef4444; font-weight: 700;">$167,411</td>
+                <td>$287,411</td>
+                <td>$317,411</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          *Figures assume a fixed 7.0% interest rate with a $120,000 principal loan balance. Monthly payments reflect principal and interest only.
+        </p>
+
+        <p>
+          Notice that stretching your loan term from 15 years to 30 years lowers your monthly obligation by <strong>$281 per month</strong> ($1,079 down to $798), but increases your total financing interest by <strong>$93,269</strong> ($167,411 vs. $74,142). If your ADU generates $1,800/month in rental income, taking a 20- or 30-year term creates healthy cash flow buffers during the initial leasing years, while allowing you to make voluntary principal prepayments when cash flow allows.
+        </p>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>Comparing Popular ADU Financing Options</h2>
+        <p>
+          Selecting the best financing mechanism depends on your existing mortgage terms, available home equity, and risk tolerance. Here is how the most common financing vehicles compare for building an Accessory Dwelling Unit:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Financing Option</th>
+                <th scope="col">Interest Rate Type</th>
+                <th scope="col">Typical Max LTV / CLTV</th>
+                <th scope="col">Best Suited For</th>
+                <th scope="col">Key Advantage</th>
+                <th scope="col">Key Drawback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>HELOC (Home Equity Line)</strong></td>
+                <td>Variable (Prime + margin)</td>
+                <td>80% – 85% current value</td>
+                <td>Homeowners with substantial equity</td>
+                <td>Draw funds as needed; pay interest only on drawn funds</td>
+                <td>Variable rates can rise; reset to full amortization after draw period</td>
+              </tr>
+              <tr>
+                <td><strong>Home Equity Loan</strong></td>
+                <td>Fixed rate</td>
+                <td>80% – 85% current value</td>
+                <td>Homeowners with low first mortgage rates</td>
+                <td>Predictable fixed monthly payment; keeps 1st mortgage untouched</td>
+                <td>Interest accrues on entire lump sum from day one</td>
+              </tr>
+              <tr>
+                <td><strong>Cash-Out Refinance</strong></td>
+                <td>Fixed or adjustable</td>
+                <td>80% current value</td>
+                <td>Homeowners with higher existing mortgage rates</td>
+                <td>Single consolidated loan; 30-year amortization available</td>
+                <td>Replaces your entire primary mortgage at current market interest rates</td>
+              </tr>
+              <tr>
+                <td><strong>Fannie Mae HomeStyle / FHA 203(k)</strong></td>
+                <td>Fixed rate</td>
+                <td>Up to 95% – 96.5% future completed value</td>
+                <td>Homeowners with limited existing equity</td>
+                <td>Borrows against post-renovation appraised value including ADU</td>
+                <td>Extensive documentation, contractor approval, and inspection draw fees</td>
+              </tr>
+              <tr>
+                <td><strong>Construction-to-Permanent Loan</strong></td>
+                <td>Variable during build, fixed permanent</td>
+                <td>75% – 85% future completed value</td>
+                <td>Ground-up custom detached standalone ADU builds</td>
+                <td>Covers ground-up complex engineering and converts automatically</td>
+                <td>Strict contractor oversight, milestone inspections, and higher closing costs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>What Costs Does the Monthly ADU Loan Payment Exclude?</h2>
+        <p>
+          This calculator models <strong>principal and interest (P&amp;I) debt service</strong>. When budgeting for an Accessory Dwelling Unit, homeowners must incorporate several ongoing and upfront expenses that are not included in the basic loan amortization calculation:
+        </p>
+
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>1. Upfront Soft &amp; Utility Costs</h3>
+            <ul class="bullet-list" style="padding-left: var(--space-3); margin-bottom: 0;">
+              <li><strong>Architectural &amp; Engineering Plans:</strong> Structural drawings, energy calculations (e.g., Title 24 in California), and soil reports ($5,000 – $15,000).</li>
+              <li><strong>Municipal Permit &amp; Impact Fees:</strong> Plan-check fees, building permits, school impact fees, and park impact charges ($3,000 – $12,000).</li>
+              <li><strong>Utility Connection &amp; Tap Fees:</strong> Separate electrical meters, sewer lateral trenching, water meter upgrades, and gas line runs ($5,000 – $20,000).</li>
+            </ul>
+          </div>
+
+          <div class="scenario-card">
+            <h3>2. Ongoing Operating Expenses</h3>
+            <ul class="bullet-list" style="padding-left: var(--space-3); margin-bottom: 0;">
+              <li><strong>Property Tax Reassessment:</strong> Adding square footage increases your property's assessed value, increasing annual ad valorem property taxes.</li>
+              <li><strong>Hazard &amp; Landlord Insurance:</strong> Adding coverage for the detached structure and tenant liability riders ($500 – $1,200/year).</li>
+              <li><strong>Maintenance &amp; Vacancy Reserves:</strong> Budgeting 5% to 10% of gross rents for tenant turnover, plumbing repairs, and appliance upkeep.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>Homeowner Checklist Before Choosing ADU Financing</h2>
+        <p>
+          Before committing to an ADU construction loan or signing a contractor agreement, complete these essential financial and logistical milestones:
+        </p>
+        <ol class="ordered-list">
+          <li><strong>Check Local Zoning and Setback Laws:</strong> Verify your jurisdiction's allowable unit size (e.g., up to 1,200 sq ft), height limits, fire clearance setbacks, and parking requirements.</li>
+          <li><strong>Obtain Detailed Contractor Bids:</strong> Request fixed-price, line-item construction contracts from at least three licensed general contractors with proven ADU experience.</li>
+          <li><strong>Review Your Combined Loan-to-Value (CLTV):</strong> Determine your primary property's current market value and existing mortgage balance to calculate your borrowing capacity.</li>
+          <li><strong>Evaluate Rental Demand &amp; Fair Market Rents:</strong> Research local rental rates for studio and one-bedroom units in your immediate neighborhood to estimate realistic future rental revenue. Use our <a href="/calculator/house-hacking-calculator">House Hacking Calculator</a> to model how rental income will offset your overall housing costs.</li>
+          <li><strong>Prepare for a Construction Draw Schedule:</strong> Construction lenders do not release funds upfront; ensure you have enough cash buffer to cover deposits before the lender's milestone inspection draws are approved.</li>
+          <li><strong>Plan for Cash-Out Refinancing or Long-Term Debt:</strong> If you are renovating an undervalued property with an ADU to build equity and recycle capital, model the long-term numbers with our <a href="/calculator/brrrr-calculator">BRRRR Calculator</a>.</li>
+        </ol>
+      </section>
+
+      <!-- Section 7: FAQ -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions About ADU Financing</h2>
+        <div class="faq-list">
+          {faqSchema.mainEntity.map((item) => (
+            <div class="faq-item">
+              <h3>{item.name}</h3>
+              <p>{item.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Section 8: Related Tools -->
+      <section class="guide-section">
+        <h2>Related Real Estate &amp; Housing Calculators</h2>
+        <p>
+          Explore companion tools on FinCalcLab to evaluate rental yields, mortgage payoffs, and real estate investment strategies:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/cap-rate-calculator" class="related-tool-card">
+            <h3>Cap Rate Calculator</h3>
+            <p>Calculate capitalization rates and net operating income (NOI) to evaluate the annual investment return of your rental properties.</p>
+          </a>
+          <a href="/calculator/house-hacking-calculator" class="related-tool-card">
+            <h3>House Hacking Calculator</h3>
+            <p>Model how rental income from an ADU, duplex, or spare room offsets your primary mortgage payment and builds long-term wealth.</p>
+          </a>
+          <a href="/calculator/brrrr-calculator" class="related-tool-card">
+            <h3>BRRRR Calculator</h3>
+            <p>Analyze Buy, Rehab, Rent, Refinance, Repeat strategies to estimate forced appreciation and cash-out refinance capital recovery.</p>
+          </a>
+          <a href="/calculator/mortgage-early-repayment-calculator" class="related-tool-card">
+            <h3>Mortgage Early Repayment Calculator</h3>
+            <p>See how making extra monthly or lump-sum principal payments on your loan reduces total interest and accelerates debt payoff.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Statutory Disclaimer -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Financial &amp; Mortgage Disclaimer:</strong> This ADU loan calculator is provided for educational and estimation purposes only. All calculations represent estimates of monthly principal and interest (P&amp;I) debt service based on user-provided inputs and standard loan amortization formulas. They do not constitute a formal loan offer, commitment to lend, or official mortgage pre-qualification. Actual mortgage interest rates, origination fees, closing costs, property tax assessments, and insurance premiums vary by lender, jurisdiction, credit profile, and market conditions. Consult a licensed mortgage loan officer (MLO), certified financial planner, or tax professional before making real estate financing commitments.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2,
+  .guide-section h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .guide-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .guide-section p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .guide-section ul, .guide-section ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .guide-section li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* Featured Callout Banner */
+  .adu-callout-section {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .adu-callout-card {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .adu-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .adu-callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  :global(.dark) .adu-callout-icon {
+    background: rgba(37, 99, 235, 0.18);
+  }
+
+  .adu-callout-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .adu-callout-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .adu-callout-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .adu-callout-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .adu-callout-action {
+    display: flex;
+    align-items: center;
+  }
+
+  .adu-callout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: gap var(--transition-fast), color var(--transition-fast);
+  }
+
+  .adu-callout-btn:hover {
+    gap: 12px;
+    text-decoration: underline;
+  }
+
+  /* Key Callout Box */
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin: var(--space-5) 0;
+  }
+
+  .callout-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-3);
+  }
+
+  .callout-steps {
+    padding-left: var(--space-5);
+    margin: 0;
+  }
+
+  .callout-steps li {
+    font-size: 0.925rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  /* Scenario Cards */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+
+  .scenario-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .scenario-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+  }
+
+  /* Comparison Tables */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    margin: var(--space-5) 0 var(--space-2) 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+    min-width: 600px;
+  }
+
+  .growth-comparison-table th {
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-weight: 700;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .growth-comparison-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .growth-comparison-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .growth-comparison-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.03);
+  }
+
+  :global(.dark) .growth-comparison-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.08);
+  }
+
+  .table-caption {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  /* FAQ Accordion List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+
+  .faq-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .faq-item h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.925rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-4) 0;
+  }
+
+  .related-tool-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-decoration: none;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .related-tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .related-tool-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Disclaimer Box */
+  .disclaimer-section {
+    margin-top: var(--space-8);
+    padding: var(--space-4);
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .disclaimer-text {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Responsive Adjustments for Mobile (< 640px) */
+  @media (max-width: 640px) {
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .adu-callout-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

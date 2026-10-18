@@ -1,0 +1,808 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WhenCanIStopSavingCalculator from '../../components/calculator/WhenCanIStopSavingCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'When Can I Stop Saving for Retirement Calculator', item: '/calculator/when-can-i-stop-saving-for-retirement-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "When can I stop saving for retirement?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can stop saving for retirement when your current invested balance has grown large enough that future compound interest alone will reach your required retirement target by your planned retirement age, without needing any additional contributions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I stop contributing to retirement if my investments keep growing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Once your investments reach their Coast FIRE threshold, exponential compounding does the heavy lifting. As long as your portfolio achieves its expected real rate of return, you can cease all future retirement contributions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Coast FIRE and retirement?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Full retirement means you stop working entirely and live off withdrawals from your portfolio. Coast FIRE means you stop contributing to retirement savings, but you still need to earn enough active income to cover your day-to-day living expenses."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much money should I have invested before stopping contributions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The exact balance depends on your current age, retirement age, annual expenses, and investment return. For example, a 30-year-old wanting $50,000 per year at age 65 with a 4% safe withdrawal rate needs approximately $358,000 by age 41 to stop contributing, or $200,638 if stopping at age 30."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does inflation affect when I can stop saving?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Inflation erodes purchasing power over time. The calculator accounts for inflation by using the exact Fisher equation to calculate your real annual return, ensuring all projections and stopping thresholds remain in today's purchasing power."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if my investments earn less than expected?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If real returns fall short of your expectations, your portfolio will not reach the target without extra help. You can counter this by resuming modest retirement contributions, working a few extra years, or trimming future retirement spending."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does stopping contributions mean I can retire early?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not necessarily. Stopping contributions frees up cash flow in the present, but your principal is still locked in the compounding phase until your target retirement age. If you want to retire early, you need to accumulate your full retirement target sooner."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I stop saving if my retirement portfolio already meets my target?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. If your current investments compounded to your retirement age already exceed your required target, you have already reached Coast FIRE and can stop making new contributions immediately."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I account for healthcare and unexpected expenses?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. When estimating your annual retirement living expenses, include buffer amounts for healthcare premiums, long-term care, home maintenance, and lifestyle changes to avoid underestimating your retirement nest egg target."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I do if my retirement savings are not on track?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If your current plan cannot achieve a feasible stopping age, you can increase annual contributions, reduce target retirement expenses, delay retirement by a few years, or optimize investment fees and tax efficiency."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "When Can I Stop Saving for Retirement Calculator",
+  "url": "https://fincalclab.com/calculator/when-can-i-stop-saving-for-retirement-calculator",
+  "description": "Calculate the exact age you can stop saving for retirement. See when your existing investments can compound to your full nest egg with zero additional contributions.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="When Can I Stop Saving for Retirement Calculator | FinCalcLab"
+  description="Find out at what age you can stop making new retirement contributions. Simulate month-by-month compounding to discover your contribution stop age."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <WhenCanIStopSavingCalculator />
+
+    <!-- Featured Financial Independence Planning Callout -->
+    <section class="cf-callout-section" aria-labelledby="stop-saving-insight-heading">
+      <Card elevation="sm" class="cf-callout-card">
+        <div class="cf-callout-header">
+          <div class="cf-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="cf-callout-heading-wrap">
+            <span class="cf-callout-eyebrow">Retirement Strategy Insight</span>
+            <h2 id="stop-saving-insight-heading" class="cf-callout-title">The Power of the Contribution Stop Age</h2>
+          </div>
+        </div>
+
+        <p class="cf-callout-desc">
+          Most conventional retirement planning assumes you must aggressively save a fixed percentage of your salary every month until the day you walk away from your career at age 65. In reality, compound interest does the majority of wealth building during the later decades. Finding your <strong>contribution stop age</strong> reveals the milestone where your existing assets can take over, giving you the freedom to eliminate aggressive saving years or even decades before you actually retire.
+        </p>
+
+        <div class="cf-callout-action">
+          <a href="/calculator/coast-fire-number-calculator" class="cf-callout-btn">
+            <span>Calculate Your Exact Coast FIRE Target</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Educational Guide -->
+    <article class="educational-guide prose">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>When Can You Stop Saving for Retirement?</h2>
+        <p>
+          Determining <strong>when you can stop saving for retirement</strong> is one of the most powerful questions in personal finance. Traditional financial advice often preaches that you must squirrel away 15% to 20% of your earnings continuously until the day you turn 65 or 67. However, mathematically, retirement wealth accumulation does not follow a linear path.
+        </p>
+        <p>
+          Because of the exponential nature of compound interest, there comes a specific turning point in your savings journey where your portfolio's annual investment returns begin to dwarf your annual contributions. When your portfolio reaches this critical mass, you reach what financial independence planners call the <strong>contribution stop age</strong>. From that age forward, even if you never contribute another single dollar, compound market growth alone is projected to expand your portfolio into your required retirement nest egg.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>What Does It Mean to Stop Contributing to Retirement?</h2>
+        <p>
+          It is essential to clarify what stopping retirement contributions actually means in practice. Stopping your retirement savings <strong>does not mean you can retire immediately</strong> or stop working tomorrow.
+        </p>
+        <p>
+          Instead, it means that your future retirement is already fully funded on paper through compound growth. You still need active income to pay for your groceries, housing, utilities, and daily lifestyle today. But you are officially liberated from the burden of saving for the future:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>100% Take-Home Cash Flow:</strong> You can spend every dollar you earn on current living expenses, travel, hobbies, or children's education without guilt.</li>
+          <li><strong>Career Flexibility &amp; Downshifting:</strong> You can transition from a high-stress, 60-hour workweek to a lower-paying, fulfilling job, similar to the philosophy behind the <a href="/calculator/barista-fire-calculator">Barista FIRE strategy</a>.</li>
+          <li><strong>Entrepreneurship &amp; Sabbaticals:</strong> You can take extended career breaks, start a business, or work part-time, knowing that your golden years remain secure.</li>
+        </ul>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How the Calculator Determines Your Contribution Stop Age</h2>
+        <p>
+          The <strong>When Can I Stop Saving for Retirement Calculator</strong> uses a rigorous, month-by-month financial simulation to pinpoint the earliest feasible month when new contributions become unnecessary. Here is how the calculation engine works:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">The Simulation Methodology</div>
+          <ol class="callout-steps">
+            <li><strong>Establishes Your Full Retirement Target:</strong> Divides your desired annual retirement expenses by your safe withdrawal rate (e.g. $50,000 ÷ 0.04 = $1,250,000 in today's purchasing power).</li>
+            <li><strong>Calculates Inflation-Adjusted Real Return:</strong> Uses the exact Fisher equation to derive your real monthly return rate: <code>r_real = ((1 + Nominal) / (1 + Inflation)) − 1</code>, converted to its monthly equivalent.</li>
+            <li><strong>Evaluates Month Zero (Today):</strong> Tests whether your current portfolio can already compound to the target with zero extra contributions. If yes, your stop saving age is your current age!</li>
+            <li><strong>Simulates Ongoing Contributions:</strong> Steps through each candidate month, adding your monthly contribution and compounding the balance.</li>
+            <li><strong>Projects Growth Post-Contribution:</strong> At each candidate stopping month, it models what happens if you stop contributing entirely and let the balance compound untouched until your target retirement age.</li>
+            <li><strong>Identifies the Earliest Feasible Age:</strong> Flags the very first month where the projected portfolio at retirement equals or exceeds your target.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>How Compound Growth Can Support Retirement Savings</h2>
+        <p>
+          The core engine behind stopping contributions early is compound growth. In the first decade of investing, your personal contributions make up the vast majority of your net worth growth. But as your balance expands, investment returns take over the heavy lifting.
+        </p>
+        <p>
+          For example, consider a portfolio compounding at a 5.37% real return:
+        </p>
+        <ul class="bullet-list">
+          <li>A $10,000 portfolio generates only ~$537 per year in real growth—far less than typical annual savings.</li>
+          <li>A $350,000 portfolio generates over ~$18,800 per year in real growth—surpassing many people's annual savings capacity!</li>
+          <li>Over 20 years, a $350,000 portfolio compounding at 5.37% real return expands into over <strong>$995,000</strong> without a single penny added.</li>
+        </ul>
+        <p>
+          Understanding this transition is critical. If you delay your savings, the <a href="/calculator/cost-of-delay-calculator">cost of delaying investment compounding</a> dramatically increases the number of years you must work and save.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>How Inflation Changes Your Retirement Target</h2>
+        <p>
+          A common mistake in retirement planning is looking at future dollar values without accounting for inflation. If you assume an annual living expense of $50,000 today, general price inflation over 35 years at 2.5% will increase that nominal price tag to approximately $118,662 per year.
+        </p>
+        <p>
+          To prevent distortion, this calculator performs all calculations in <strong>constant purchasing power (today's dollars)</strong>:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">The Exact Fisher Equation for Inflation Adjustment</div>
+          <ol class="callout-steps">
+            <li><strong>Nominal Return (i):</strong> The stated return before inflation (e.g. 8.0%).</li>
+            <li><strong>Inflation Rate (p):</strong> The annual rate of price increases (e.g. 2.5%).</li>
+            <li><strong>Real Return Formula:</strong> <code>r_real = ((1 + i) / (1 + p)) − 1</code></li>
+            <li><strong>Numerical Calculation:</strong> <code>(1.08 / 1.025) − 1 = 5.36585%</code> per year.</li>
+            <li><strong>Monthly Equivalent:</strong> <code>r_monthly = (1 + 0.0536585)^(1/12) − 1 = 0.4363%</code> per month.</li>
+          </ol>
+        </div>
+        <p>
+          By stripping inflation out of the return rate, the $1,250,000 retirement target remains constant throughout the entire simulation, making it easy to understand and track against your current lifestyle.
+        </p>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>A Worked Example of Stopping Retirement Contributions</h2>
+        <p>
+          To see how the month-by-month simulation works, examine this realistic scenario for a 30-year-old saver named Sarah:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">Worked Example: Sarah's Path to Stopping Savings</div>
+          <ol class="callout-steps">
+            <li><strong>Current Age:</strong> 30 years old</li>
+            <li><strong>Target Retirement Age:</strong> 65 years old (35-year total timeline)</li>
+            <li><strong>Current Invested Portfolio:</strong> $100,000</li>
+            <li><strong>Annual Contributions:</strong> $12,000 per year ($1,000 per month)</li>
+            <li><strong>Desired Retirement Spending:</strong> $50,000 per year in today's dollars</li>
+            <li><strong>Safe Withdrawal Rate:</strong> 4.0% (Retirement Target = $1,250,000)</li>
+            <li><strong>Investment Return &amp; Inflation:</strong> 8.0% nominal, 2.5% inflation (5.37% real return)</li>
+            <li><strong>Active Saving Period:</strong> Sarah contributes $1,000/month for <strong>11 years and 1 month</strong> (133 months).</li>
+            <li><strong>Portfolio at Age 41:</strong> By age 41, her balance reaches <strong>$358,267</strong>.</li>
+            <li><strong>The Coasting Phase:</strong> Sarah stops all contributions at age 41. For the remaining 23 years and 11 months, her $358,267 compounds with zero extra savings into <strong>$1,250,582</strong> at age 65, fully funding her retirement!</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="guide-section">
+        <h2>The Difference Between Coast FIRE and Fully Retiring</h2>
+        <p>
+          Many people confuse the concept of stopping contributions with retiring early. The table below compares how stopping contributions fits alongside other retirement milestones:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Milestone</th>
+                <th scope="col">What It Means</th>
+                <th scope="col">Do You Need a Job?</th>
+                <th scope="col">Do You Need to Save?</th>
+                <th scope="col">Related Calculator</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Contribution Stop Age</strong></td>
+                <td>Existing investments can compound to fund retirement at standard age</td>
+                <td>Yes (for current living costs)</td>
+                <td><strong>No</strong> (0% savings rate needed)</td>
+                <td>Current Calculator</td>
+              </tr>
+              <tr>
+                <td><strong>Coast FIRE</strong></td>
+                <td>Present-value threshold where no further retirement savings are required</td>
+                <td>Yes (cover day-to-day bills)</td>
+                <td><strong>No</strong></td>
+                <td><a href="/calculator/coast-fire-number-calculator">Coast FIRE Calculator</a></td>
+              </tr>
+              <tr>
+                <td><strong>Barista FIRE</strong></td>
+                <td>Semi-retirement using part-time work to cover partial expenses</td>
+                <td>Part-time or low-stress work</td>
+                <td>No</td>
+                <td><a href="/calculator/barista-fire-calculator">Barista FIRE Calculator</a></td>
+              </tr>
+              <tr>
+                <td><strong>Full Financial Independence</strong></td>
+                <td>Investments generate 100% of required living expenses today</td>
+                <td><strong>No</strong> (work is 100% optional)</td>
+                <td>No</td>
+                <td><a href="/calculator/financial-independence-date-calculator">FI Date Calculator</a></td>
+              </tr>
+              <tr>
+                <td><strong>Retirement Gap Analysis</strong></td>
+                <td>Measures shortfall between projected savings and retirement target</td>
+                <td>Yes</td>
+                <td>Yes (must close gap)</td>
+                <td><a href="/calculator/retirement-gap-calculator">Retirement Gap Calculator</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 8 -->
+      <section class="guide-section">
+        <h2>What to Do If Your Portfolio Is Not on Track</h2>
+        <p>
+          If the calculator returns <strong>"Your Current Plan Needs More Savings,"</strong> it means that even if you continue contributing your current amount all the way until retirement age, your portfolio is projected to fall short. To establish a viable contribution stop age, consider these strategic adjustments:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Boost Annual Contributions:</strong> Increasing your savings rate early in your career dramatically shortens your required saving years due to compounding leverage.</li>
+          <li><strong>Re-Evaluate Retirement Spending:</strong> A modest $5,000 reduction in annual living expenses lowers your required nest egg by $125,000 under a 4.0% withdrawal rate.</li>
+          <li><strong>Extend Your Target Retirement Age:</strong> Pushing your planned retirement from age 60 to 65 gives your investments five extra years to compound and reduces the length of your retirement drawdown.</li>
+          <li><strong>Minimize Investment Fees &amp; Taxes:</strong> Switching from high-fee active mutual funds (1.0% expense ratios) to low-cost broad index funds (0.05%) can boost your net real return by nearly 1% annually, shaving years off your savings timeline.</li>
+        </ul>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="guide-section">
+        <h2>Risks to Consider Before Stopping Contributions</h2>
+        <p>
+          While hitting your contribution stop age is exhilarating, stopping contributions carries real-world risks that require ongoing vigilance:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Critical Considerations Before Halting Contributions</div>
+          <ol class="callout-steps">
+            <li><strong>Sequence of Returns Risk:</strong> If the stock market experiences a prolonged bear market right after you stop contributing, your portfolio balance may fall behind the compounding curve.</li>
+            <li><strong>Healthcare and Insurance:</strong> If you downshift your job or switch to part-time work, ensure you maintain comprehensive health insurance coverage to protect against catastrophic medical costs.</li>
+            <li><strong>Lifestyle Inflation:</strong> Increasing your lifestyle spending after stopping savings can unintentionally inflate your retirement living expenses, moving your target post further away.</li>
+            <li><strong>The 4% Withdrawal Assumption:</strong> The 4% rule is an empirical guideline from historical US market data. For retirements lasting longer than 30 years, adopting a 3.25% to 3.5% withdrawal rate provides a greater margin of safety.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 10: FAQs -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions</h2>
+        
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>When can I stop saving for retirement?</h3>
+            <p>
+              You can stop saving for retirement when your current invested balance has grown large enough that future compound interest alone will reach your required retirement target by your planned retirement age, without needing any additional contributions.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Can I stop contributing to retirement if my investments keep growing?</h3>
+            <p>
+              Yes. Once your investments reach their Coast FIRE threshold, exponential compounding does the heavy lifting. As long as your portfolio achieves its expected real rate of return, you can cease all future retirement contributions.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What is the difference between Coast FIRE and retirement?</h3>
+            <p>
+              Full retirement means you stop working entirely and live off withdrawals from your portfolio. Coast FIRE means you stop contributing to retirement savings, but you still need to earn enough active income to cover your day-to-day living expenses.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>How much money should I have invested before stopping contributions?</h3>
+            <p>
+              The exact balance depends on your current age, retirement age, annual expenses, and investment return. For example, a 30-year-old wanting $50,000 per year at age 65 with a 4% safe withdrawal rate needs approximately $358,000 by age 41 to stop contributing, or $200,638 if stopping at age 30.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Does inflation affect when I can stop saving?</h3>
+            <p>
+              Yes. Inflation erodes purchasing power over time. The calculator accounts for inflation by using the exact Fisher equation to calculate your real annual return, ensuring all projections and stopping thresholds remain in today's purchasing power.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What if my investments earn less than expected?</h3>
+            <p>
+              If real returns fall short of your expectations, your portfolio will not reach the target without extra help. You can counter this by resuming modest retirement contributions, working a few extra years, or trimming future retirement spending.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Does stopping contributions mean I can retire early?</h3>
+            <p>
+              Not necessarily. Stopping contributions frees up cash flow in the present, but your principal is still locked in the compounding phase until your target retirement age. If you want to retire early, you need to accumulate your full retirement target sooner.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Can I stop saving if my retirement portfolio already meets my target?</h3>
+            <p>
+              Yes. If your current investments compounded to your retirement age already exceed your required target, you have already reached Coast FIRE and can stop making new contributions immediately.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Should I account for healthcare and unexpected expenses?</h3>
+            <p>
+              Yes. When estimating your annual retirement living expenses, include buffer amounts for healthcare premiums, long-term care, home maintenance, and lifestyle changes to avoid underestimating your retirement nest egg target.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3>What should I do if my retirement savings are not on track?</h3>
+            <p>
+              If your current plan cannot achieve a feasible stopping age, you can increase annual contributions, reduce target retirement expenses, delay retirement by a few years, or optimize investment fees and tax efficiency.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Financial Tools Section -->
+      <section class="guide-section">
+        <h2>Explore Related Retirement &amp; Financial Independence Calculators</h2>
+        <p>
+          Plan your complete path to financial independence with our specialized suite of interactive calculators:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/coast-fire-number-calculator" class="related-tool-card">
+            <h3>Coast FIRE Number Calculator</h3>
+            <p>Calculate the exact lump-sum portfolio you need today so compound growth funds your retirement with zero ongoing savings.</p>
+          </a>
+          <a href="/calculator/financial-independence-date-calculator" class="related-tool-card">
+            <h3>FI Date Calculator</h3>
+            <p>Discover the exact calendar year and month your investments will allow you to retire completely from full-time work.</p>
+          </a>
+          <a href="/calculator/retirement-gap-calculator" class="related-tool-card">
+            <h3>Retirement Gap Calculator</h3>
+            <p>Identify whether your current savings trajectory leaves a funding deficit and see how to close the shortfall.</p>
+          </a>
+          <a href="/calculator/barista-fire-calculator" class="related-tool-card">
+            <h3>Barista FIRE Calculator</h3>
+            <p>See how working a part-time job or low-stress side gig slashes your required retirement nest egg.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Disclaimer Section -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Disclaimer:</strong> This When Can I Stop Saving for Retirement Calculator is provided strictly for educational, informational, and illustrative purposes and does not constitute financial, investment, legal, or tax advice. Compound growth simulations are mathematical estimates based on user-entered assumptions and do not guarantee future investment returns. Real-world investment performance, inflation rates, market volatility, tax rates, and personal living expenses will vary over time. Always consult with a licensed, certified financial planner (CFP) before altering your retirement contribution schedule or employment status.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-12);
+  }
+
+  /* Featured Callout Banner */
+  .cf-callout-section {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-8);
+  }
+
+  .cf-callout-card {
+    padding: var(--space-6);
+    background: linear-gradient(135deg, var(--color-surface) 0%, rgba(37, 99, 235, 0.03) 100%);
+    border: 1px solid var(--color-border);
+    border-left: 5px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .cf-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .cf-callout-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .cf-callout-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cf-callout-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .cf-callout-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .cf-callout-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .cf-callout-action {
+    display: flex;
+    padding-top: var(--space-1);
+  }
+
+  .cf-callout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background-color: var(--color-primary);
+    color: #ffffff !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+
+  .cf-callout-btn:hover {
+    background-color: var(--color-primary-dark, #1d4ed8);
+    transform: translateY(-1px);
+  }
+
+  /* Educational Content Section Styling */
+  .educational-guide {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: var(--space-4);
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .guide-section {
+    margin-bottom: var(--space-8);
+  }
+
+  .guide-section h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0 0 var(--space-3) 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .guide-section p {
+    font-size: 0.935rem;
+    margin-bottom: var(--space-3);
+    color: var(--color-text);
+    line-height: 1.65;
+  }
+
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+  }
+
+  .callout-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .callout-steps {
+    margin: 0;
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 0.92rem;
+  }
+
+  .bullet-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.92rem;
+  }
+
+  /* Table Responsive Styling */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .growth-comparison-table th {
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--color-border);
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  :global(.dark) .growth-comparison-table th {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .growth-comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .growth-comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* FAQ List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .related-tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .related-tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .related-tool-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Disclaimer Section */
+  .disclaimer-section {
+    padding: var(--space-4);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-6);
+  }
+
+  .disclaimer-text {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .cf-callout-card {
+      padding: var(--space-4);
+      gap: var(--space-3);
+    }
+
+    .cf-callout-header {
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .cf-callout-icon {
+      width: 38px;
+      height: 38px;
+    }
+
+    .cf-callout-title {
+      font-size: 1.05rem;
+    }
+
+    .cf-callout-desc {
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .cf-callout-action {
+      width: 100%;
+      padding-top: var(--space-2);
+    }
+
+    .cf-callout-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+    }
+
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .cf-callout-card {
+      padding: 12px;
+    }
+
+    .cf-callout-title {
+      font-size: 0.98rem;
+    }
+
+    .cf-callout-btn {
+      font-size: 0.82rem;
+      padding: 10px 12px;
+      gap: 6px;
+    }
+  }
+</style>

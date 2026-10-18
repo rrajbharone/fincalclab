@@ -1,0 +1,31 @@
+---
+interface Props {
+  id?: string;
+  label: string;
+  hint?: string;
+  prefix?: string;
+  suffix?: string;
+  class?: string;
+}
+
+const {
+  id,
+  label,
+  hint,
+  prefix,
+  suffix,
+  class: className = ''
+} = Astro.props;
+---
+
+<div class={`input-group form-field-wrapper ${className}`}>
+  <div class="input-label-row form-field-header">
+    <label for={id} class="field-label-top form-field-label">{label}</label>
+  </div>
+  <div class="input-symbol-wrapper form-field-control">
+    {prefix && <span class="currency-symbol form-field-prefix">{prefix}</span>}
+    <slot />
+    {suffix && <span class="unit-symbol form-field-suffix">{suffix}</span>}
+  </div>
+  {hint && <span class="input-hint form-field-hint">{hint}</span>}
+</div>

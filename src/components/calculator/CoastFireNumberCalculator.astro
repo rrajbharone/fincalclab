@@ -1,0 +1,1177 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Coast FIRE Number Calculator"
+  description="Calculate your Coast FIRE number. See if your current retirement investments can grow into your full retirement nest egg without contributing another dollar."
+  category="Retirement &amp; Investing"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="coast-fire-calculator">
+    
+    <!-- Section 1: Retirement Timeline & Expenses -->
+    <h3 class="input-section-heading">1. Retirement Timeline &amp; Expenses</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <label for="cf-currency-select" class="field-label-top">Currency</label>
+      <select id="cf-currency-select" class="form-select-full" aria-label="Select Currency">
+        <option value="USD" selected>USD ($) - US Dollar</option>
+        <option value="EUR">EUR (€) - Euro</option>
+        <option value="GBP">GBP (£) - British Pound</option>
+        <option value="CAD">CAD (C$) - Canadian Dollar</option>
+        <option value="AUD">AUD (A$) - Australian Dollar</option>
+        <option value="INR">INR (₹) - Indian Rupee</option>
+        <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        <option value="JPY">JPY (¥) - Japanese Yen</option>
+        <option value="CHF">CHF (CHF) - Swiss Franc</option>
+      </select>
+    </div>
+
+    <!-- Current Age -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cf-current-age-input">Current Age</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="cf-current-age-input" 
+            min="18" 
+            max="80" 
+            step="1" 
+            value="30" 
+            aria-label="Current Age" 
+          />
+          <span class="unit-symbol">yrs</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="cf-current-age-slider" 
+        min="18" 
+        max="80" 
+        step="1" 
+        value="30" 
+        class="slider-range" 
+        aria-label="Current Age Slider" 
+      />
+      <span class="input-hint">Your current age today in years.</span>
+    </div>
+
+    <!-- Retirement Age -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cf-retire-age-input">Retirement Age</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="cf-retire-age-input" 
+            min="25" 
+            max="90" 
+            step="1" 
+            value="65" 
+            aria-label="Target Retirement Age" 
+          />
+          <span class="unit-symbol">yrs</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="cf-retire-age-slider" 
+        min="25" 
+        max="90" 
+        step="1" 
+        value="65" 
+        class="slider-range" 
+        aria-label="Retirement Age Slider" 
+      />
+      <span class="input-hint">The target age when you plan to stop working and draw from your investments.</span>
+    </div>
+
+    <!-- Annual Retirement Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="cf-expenses-input">Annual Retirement Expenses</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-exp">$</span>
+          <input 
+            type="number" 
+            id="cf-expenses-input" 
+            min="5000" 
+            max="500000" 
+            step="2500" 
+            value="50000" 
+            aria-label="Annual Retirement Expenses" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="cf-expenses-slider" 
+        min="10000" 
+        max="250000" 
+        step="2500" 
+        value="50000" 
+        class="slider-range" 
+        aria-label="Annual Expenses Slider" 
+      />
+      <span class="input-hint">Expected yearly retirement spending, expressed in today's purchasing power.</span>
+    </div>
+
+    <!-- Section 2: Investments & Economic Assumptions -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">2. Investments &amp; Economic Assumptions</h3>
+      
+      <!-- Current Retirement Investments -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cf-investments-input">Current Retirement Investments</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-inv">$</span>
+            <input 
+              type="number" 
+              id="cf-investments-input" 
+              min="0" 
+              max="5000000" 
+              step="5000" 
+              value="100000" 
+              aria-label="Current Retirement Investments" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="cf-investments-slider" 
+          min="0" 
+          max="1000000" 
+          step="5000" 
+          value="100000" 
+          class="slider-range" 
+          aria-label="Current Investments Slider" 
+        />
+        <span class="input-hint">Total current value of your invested retirement assets (stocks, index funds, 401k, IRA, super).</span>
+      </div>
+
+      <!-- Expected Annual Investment Return -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cf-return-input">Expected Annual Investment Return</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="cf-return-input" 
+              min="0.0" 
+              max="15.0" 
+              step="0.25" 
+              value="8.0" 
+              aria-label="Expected Annual Investment Return" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="cf-return-slider" 
+          min="1.0" 
+          max="14.0" 
+          step="0.25" 
+          value="8.0" 
+          class="slider-range" 
+          aria-label="Investment Return Slider" 
+        />
+        <span class="input-hint">Estimated annual return before inflation (historical broad equity returns average ~7%–10%).</span>
+      </div>
+
+      <!-- Expected Annual Inflation Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cf-inflation-input">Expected Annual Inflation Rate</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="cf-inflation-input" 
+              min="0.0" 
+              max="10.0" 
+              step="0.1" 
+              value="2.5" 
+              aria-label="Expected Annual Inflation Rate" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="cf-inflation-slider" 
+          min="0.0" 
+          max="7.0" 
+          step="0.1" 
+          value="2.5" 
+          class="slider-range" 
+          aria-label="Inflation Rate Slider" 
+        />
+        <span class="input-hint">Expected long-term inflation rate (central bank targets typically average 2%–3%).</span>
+      </div>
+
+      <!-- Safe Withdrawal Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="cf-swr-input">Safe Withdrawal Rate (SWR)</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="cf-swr-input" 
+              min="2.0" 
+              max="6.0" 
+              step="0.25" 
+              value="4.0" 
+              aria-label="Safe Withdrawal Rate" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="cf-swr-slider" 
+          min="2.5" 
+          max="5.5" 
+          step="0.25" 
+          value="4.0" 
+          class="slider-range" 
+          aria-label="SWR Slider" 
+        />
+        <span class="input-hint">Annual withdrawal rate in retirement (4.0% is standard baseline from the Trinity Study).</span>
+      </div>
+
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="cf-reset-btn" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Coast FIRE Target &amp; Portfolio Projection</h3>
+
+    <!-- Dynamic Alert Banner (Status Message) -->
+    <div id="res-alert-banner" class="alert-banner alert-info">
+      <div class="alert-icon" id="res-alert-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      </div>
+      <div class="alert-content">
+        <div class="alert-title" id="res-alert-title">Calculating Coast FIRE Target...</div>
+        <div class="alert-desc" id="res-alert-desc">
+          Enter your current age and retirement goals to view your projected compounding trajectory.
+        </div>
+      </div>
+    </div>
+
+    <!-- Primary Net Value Displays (Rule 15 Compliant) -->
+    <div class="net-value-container">
+      <!-- Card 1: Your Coast FIRE Number -->
+      <div class="net-value-box coast-target-box">
+        <span class="net-box-label">Your Coast FIRE Number</span>
+        <div id="res-coast-fire-num" class="net-box-amount text-primary">$200,638</div>
+        <span class="net-box-sub" id="lbl-coast-sub">Invested today in today's purchasing power</span>
+      </div>
+
+      <!-- Card 2: Surplus or Shortfall -->
+      <div class="net-value-box status-box" id="box-status-container">
+        <span class="net-box-label" id="lbl-surplus-title">Coast FIRE Gap</span>
+        <div id="res-surplus-shortfall" class="net-box-amount text-accent">-$100,638</div>
+        <span class="net-box-sub" id="lbl-status-sub">49.8% of Coast FIRE target funded</span>
+      </div>
+    </div>
+
+    <!-- Visual Progress Bar Card -->
+    <div class="funding-progress-card">
+      <div class="progress-label-row">
+        <span class="progress-title">Coast FIRE Funding Progress</span>
+        <span class="progress-pct" id="res-progress-pct">49.8%</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Percentage of Coast FIRE Target Funded" id="res-progress-track">
+        <div class="progress-fill" id="res-progress-fill" style="width: 49.8%;"></div>
+      </div>
+      <div class="progress-meta-row">
+        <span id="lbl-prog-current">Current: $100,000</span>
+        <span id="lbl-prog-target">Target: $200,638</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid (Rule 15 Compliant) -->
+    <h4 class="metrics-section-heading">Key Milestone &amp; Wealth Metrics</h4>
+    <div class="results-grid cf-metrics-grid">
+      <!-- 1. Your Coast FIRE Number -->
+      <div class="result-tile">
+        <span class="tile-label">1. Coast FIRE Target</span>
+        <div class="tile-value text-primary" id="tile-coast-num">$200,638</div>
+        <span class="tile-sub">Needed invested today</span>
+      </div>
+
+      <!-- 2. Your Full FIRE Number -->
+      <div class="result-tile">
+        <span class="tile-label">2. Full FIRE Number</span>
+        <div class="tile-value text-base" id="tile-full-fire">$1,250,000</div>
+        <span class="tile-sub" id="lbl-tile-full-sub">At 4.0% SWR ($50k/yr)</span>
+      </div>
+
+      <!-- 3. Your Current Retirement Investments -->
+      <div class="result-tile">
+        <span class="tile-label">3. Current Investments</span>
+        <div class="tile-value text-base" id="tile-current-inv">$100,000</div>
+        <span class="tile-sub" id="lbl-tile-curr-sub">Invested today</span>
+      </div>
+
+      <!-- 4. Projected Portfolio at Retirement -->
+      <div class="result-tile">
+        <span class="tile-label">4. Projected Portfolio</span>
+        <div class="tile-value text-base" id="tile-projected-port">$623,012</div>
+        <span class="tile-sub" id="lbl-tile-proj-sub">At age 65 with $0 extra saved</span>
+      </div>
+
+      <!-- 5. Amount Above or Below Target -->
+      <div class="result-tile">
+        <span class="tile-label">5. Above / Below Target</span>
+        <div class="tile-value" id="tile-gap-amount" style="color: #dc2626;">-$100,638</div>
+        <span class="tile-sub" id="lbl-tile-gap-sub">Shortfall to Coast FIRE</span>
+      </div>
+
+      <!-- 6. Years Remaining Until Retirement -->
+      <div class="result-tile">
+        <span class="tile-label">6. Years to Retirement</span>
+        <div class="tile-value text-base" id="tile-years-left">35 Years</div>
+        <span class="tile-sub" id="lbl-tile-years-sub">Age 30 to age 65</span>
+      </div>
+    </div>
+
+    <!-- Educational Compounding Context Callout -->
+    <div class="cf-context-card">
+      <div class="context-header">
+        <div class="context-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="context-title-wrap">
+          <span class="context-eyebrow">Compound Growth Dynamics</span>
+          <h5 class="context-title">Real Annual Return &amp; Growth Multiplier</h5>
+        </div>
+      </div>
+      <p class="context-desc" id="lbl-context-desc">
+        Under an 8.0% nominal return and 2.5% inflation, your exact inflation-adjusted real return is <strong>5.37% per year</strong> (via the Fisher equation). Over 35 years, every dollar invested today is projected to multiply by <strong>6.23x</strong> in purchasing power.
+      </p>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Setup Client-side Calculation Engine with Astro page lifecycle compatibility
+  document.addEventListener('DOMContentLoaded', initCoastFireCalc);
+  document.addEventListener('astro:page-load', initCoastFireCalc);
+
+  function initCoastFireCalc() {
+    const root = document.getElementById('coast-fire-calculator');
+    if (!root) return;
+
+    // Currency Definitions
+    const currencyConfigs = {
+      USD: { symbol: '$', code: 'USD', locale: 'en-US' },
+      EUR: { symbol: '€', code: 'EUR', locale: 'de-DE' },
+      GBP: { symbol: '£', code: 'GBP', locale: 'en-GB' },
+      CAD: { symbol: 'C$', code: 'CAD', locale: 'en-CA' },
+      AUD: { symbol: 'A$', code: 'AUD', locale: 'en-AU' },
+      INR: { symbol: '₹', code: 'INR', locale: 'en-IN' },
+      SGD: { symbol: 'S$', code: 'SGD', locale: 'en-SG' },
+      JPY: { symbol: '¥', code: 'JPY', locale: 'ja-JP' },
+      CHF: { symbol: 'CHF', code: 'CHF', locale: 'de-CH' }
+    };
+
+    let activeCurrency = 'USD';
+
+    // Core Input Elements
+    const curSelect = document.getElementById('cf-currency-select');
+    const currentAgeInput = document.getElementById('cf-current-age-input');
+    const currentAgeSlider = document.getElementById('cf-current-age-slider');
+
+    const retireAgeInput = document.getElementById('cf-retire-age-input');
+    const retireAgeSlider = document.getElementById('cf-retire-age-slider');
+
+    const expensesInput = document.getElementById('cf-expenses-input');
+    const expensesSlider = document.getElementById('cf-expenses-slider');
+
+    const investmentsInput = document.getElementById('cf-investments-input');
+    const investmentsSlider = document.getElementById('cf-investments-slider');
+
+    const returnInput = document.getElementById('cf-return-input');
+    const returnSlider = document.getElementById('cf-return-slider');
+
+    const inflationInput = document.getElementById('cf-inflation-input');
+    const inflationSlider = document.getElementById('cf-inflation-slider');
+
+    const swrInput = document.getElementById('cf-swr-input');
+    const swrSlider = document.getElementById('cf-swr-slider');
+
+    const resetBtn = document.getElementById('cf-reset-btn');
+
+    // Display Elements
+    const alertBanner = document.getElementById('res-alert-banner');
+    const alertIcon = document.getElementById('res-alert-icon');
+    const alertTitle = document.getElementById('res-alert-title');
+    const alertDesc = document.getElementById('res-alert-desc');
+
+    const resCoastFireNum = document.getElementById('res-coast-fire-num');
+    const lblCoastSub = document.getElementById('lbl-coast-sub');
+
+    const resSurplusShortfall = document.getElementById('res-surplus-shortfall');
+    const lblSurplusTitle = document.getElementById('lbl-surplus-title');
+    const lblStatusSub = document.getElementById('lbl-status-sub');
+
+    const resProgressPct = document.getElementById('res-progress-pct');
+    const resProgressTrack = document.getElementById('res-progress-track');
+    const resProgressFill = document.getElementById('res-progress-fill');
+    const lblProgCurrent = document.getElementById('lbl-prog-current');
+    const lblProgTarget = document.getElementById('lbl-prog-target');
+
+    // Key Metric Tiles
+    const tileCoastNum = document.getElementById('tile-coast-num');
+    const tileFullFire = document.getElementById('tile-full-fire');
+    const lblTileFullSub = document.getElementById('lbl-tile-full-sub');
+
+    const tileCurrentInv = document.getElementById('tile-current-inv');
+    const lblTileCurrSub = document.getElementById('lbl-tile-curr-sub');
+
+    const tileProjectedPort = document.getElementById('tile-projected-port');
+    const lblTileProjSub = document.getElementById('lbl-tile-proj-sub');
+
+    const tileGapAmount = document.getElementById('tile-gap-amount');
+    const lblTileGapSub = document.getElementById('lbl-tile-gap-sub');
+
+    const tileYearsLeft = document.getElementById('tile-years-left');
+    const lblTileYearsSub = document.getElementById('lbl-tile-years-sub');
+
+    const lblContextDesc = document.getElementById('lbl-context-desc');
+
+    // Formatting Helpers
+    function getSym() {
+      return currencyConfigs[activeCurrency]?.symbol || '$';
+    }
+
+    function formatCurrency(val) {
+      if (val === Infinity || val === null || isNaN(val)) return '—';
+      const cfg = currencyConfigs[activeCurrency] || currencyConfigs.USD;
+      return new Intl.NumberFormat(cfg.locale, {
+        style: 'currency',
+        currency: cfg.code,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(Math.round(val));
+    }
+
+    // Two-way synchronization between number input and range slider
+    function syncInput(inputEl, sliderEl) {
+      if (!inputEl || !sliderEl) return;
+      inputEl.addEventListener('input', () => {
+        sliderEl.value = inputEl.value;
+        recalculate();
+      });
+      sliderEl.addEventListener('input', () => {
+        inputEl.value = sliderEl.value;
+        recalculate();
+      });
+    }
+
+    syncInput(currentAgeInput, currentAgeSlider);
+    syncInput(retireAgeInput, retireAgeSlider);
+    syncInput(expensesInput, expensesSlider);
+    syncInput(investmentsInput, investmentsSlider);
+    syncInput(returnInput, returnSlider);
+    syncInput(inflationInput, inflationSlider);
+    syncInput(swrInput, swrSlider);
+
+    // Currency Switcher
+    if (curSelect) {
+      curSelect.addEventListener('change', (e) => {
+        activeCurrency = e.target.value;
+        const sym = getSym();
+        document.querySelectorAll('.currency-symbol').forEach(el => {
+          el.textContent = sym;
+        });
+        recalculate();
+      });
+    }
+
+    // Reset Button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currentAgeInput.value = '30';
+        currentAgeSlider.value = '30';
+        retireAgeInput.value = '65';
+        retireAgeSlider.value = '65';
+        expensesInput.value = '50000';
+        expensesSlider.value = '50000';
+        investmentsInput.value = '100000';
+        investmentsSlider.value = '100000';
+        returnInput.value = '8.0';
+        returnSlider.value = '8.0';
+        inflationInput.value = '2.5';
+        inflationSlider.value = '2.5';
+        swrInput.value = '4.0';
+        swrSlider.value = '4.0';
+        recalculate();
+      });
+    }
+
+    // Calculation Engine
+    function recalculate() {
+      const currentAge = parseInt(currentAgeInput?.value, 10) || 0;
+      const retireAge = parseInt(retireAgeInput?.value, 10) || 0;
+      const annualExpenses = Math.max(0, parseFloat(expensesInput?.value) || 0);
+      const currentInvestments = Math.max(0, parseFloat(investmentsInput?.value) || 0);
+      const expectedReturn = Math.max(0, parseFloat(returnInput?.value) || 0);
+      const expectedInflation = Math.max(0, parseFloat(inflationInput?.value) || 0);
+      const swr = Math.max(0.1, parseFloat(swrInput?.value) || 4.0);
+
+      const years = retireAge - currentAge;
+
+      // Validate inputs
+      if (years <= 0) {
+        alertBanner.className = 'alert-banner alert-warning';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+        alertTitle.textContent = '⚠️ Retirement Age Must Be Greater Than Current Age';
+        alertDesc.textContent = 'Please adjust your retirement age to be greater than your current age so your investments have time to compound.';
+        
+        resCoastFireNum.textContent = formatCurrency(annualExpenses / (swr / 100));
+        lblCoastSub.textContent = 'Equals Full FIRE Number (0 years to grow)';
+        resSurplusShortfall.textContent = '—';
+        lblSurplusTitle.textContent = 'Status';
+        lblStatusSub.textContent = 'Please update age inputs';
+        resProgressPct.textContent = '0%';
+        resProgressFill.style.width = '0%';
+        resProgressTrack.setAttribute('aria-valuenow', '0');
+        
+        tileCoastNum.textContent = '—';
+        tileFullFire.textContent = formatCurrency(annualExpenses / (swr / 100));
+        tileCurrentInv.textContent = formatCurrency(currentInvestments);
+        tileProjectedPort.textContent = formatCurrency(currentInvestments);
+        tileGapAmount.textContent = '—';
+        tileYearsLeft.textContent = '0 Years';
+        lblTileYearsSub.textContent = 'Retirement age reached or exceeded';
+        lblContextDesc.innerHTML = 'Investment compounding requires a positive time horizon between your current age and your planned retirement age.';
+        return;
+      }
+
+      // Step 2: Full FIRE Number
+      const swrDecimal = swr / 100;
+      const fullFireNumber = annualExpenses / swrDecimal;
+
+      // Step 3: Exact Fisher Real Investment Return
+      const nominalRate = expectedReturn / 100;
+      const inflationRate = expectedInflation / 100;
+      let realReturn = 0;
+      if (1 + inflationRate > 0) {
+        realReturn = ((1 + nominalRate) / (1 + inflationRate)) - 1;
+      } else {
+        realReturn = nominalRate - inflationRate;
+      }
+
+      // Step 4: Growth Factor & Coast FIRE Number
+      let growthFactor = 1;
+      if (Math.abs(realReturn) < 1e-9) {
+        growthFactor = 1;
+      } else {
+        growthFactor = Math.pow(1 + realReturn, years);
+      }
+
+      let coastFireNumber = 0;
+      if (growthFactor > 0) {
+        coastFireNumber = fullFireNumber / growthFactor;
+      } else {
+        coastFireNumber = fullFireNumber;
+      }
+
+      // Step 5: Projected Portfolio at Retirement (in today's dollars)
+      const projectedPortfolio = currentInvestments * growthFactor;
+
+      // Step 6: Surplus or Shortfall
+      const difference = currentInvestments - coastFireNumber;
+      const hasReached = difference >= 0;
+      const fundedRatio = coastFireNumber > 0 ? (currentInvestments / coastFireNumber) * 100 : 0;
+      const clampedFill = Math.min(100, Math.max(0, fundedRatio));
+
+      // Display Status Banner
+      if (hasReached) {
+        alertBanner.className = 'alert-banner alert-success';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+        alertTitle.textContent = "🎉 You've Reached Coast FIRE!";
+        alertDesc.textContent = `Your current investments of ${formatCurrency(currentInvestments)} exceed your Coast FIRE threshold of ${formatCurrency(coastFireNumber)} by ${formatCurrency(difference)}. At an estimated real return of ${(realReturn * 100).toFixed(2)}%, your existing balance is projected to grow to ${formatCurrency(projectedPortfolio)} by age ${retireAge} without saving another dollar!`;
+      } else {
+        alertBanner.className = 'alert-banner alert-info';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>';
+        alertTitle.textContent = "📈 You're Getting Closer to Coast FIRE";
+        const gap = Math.abs(difference);
+        alertDesc.textContent = `Your current investments of ${formatCurrency(currentInvestments)} are ${formatCurrency(gap)} away from your Coast FIRE target of ${formatCurrency(coastFireNumber)} (${fundedRatio.toFixed(1)}% funded). At a ${(realReturn * 100).toFixed(2)}% real return, your existing assets will compound to ${formatCurrency(projectedPortfolio)} by retirement.`;
+      }
+
+      // Populate Primary Cards
+      resCoastFireNum.textContent = formatCurrency(coastFireNumber);
+      lblCoastSub.textContent = `Invested today in today's purchasing power`;
+
+      if (hasReached) {
+        lblSurplusTitle.textContent = 'Coast FIRE Surplus';
+        resSurplusShortfall.textContent = `+${formatCurrency(difference)}`;
+        resSurplusShortfall.style.color = 'var(--color-success, #16a34a)';
+        lblStatusSub.textContent = `${fundedRatio.toFixed(1)}% of Coast FIRE target achieved!`;
+      } else {
+        lblSurplusTitle.textContent = 'Coast FIRE Shortfall';
+        resSurplusShortfall.textContent = `-${formatCurrency(Math.abs(difference))}`;
+        resSurplusShortfall.style.color = '#dc2626';
+        lblStatusSub.textContent = `${fundedRatio.toFixed(1)}% of Coast FIRE target funded`;
+      }
+
+      // Populate Progress Bar
+      resProgressPct.textContent = `${fundedRatio.toFixed(1)}%`;
+      resProgressFill.style.width = `${clampedFill}%`;
+      resProgressTrack.setAttribute('aria-valuenow', Math.round(clampedFill).toString());
+      lblProgCurrent.textContent = `Current: ${formatCurrency(currentInvestments)}`;
+      lblProgTarget.textContent = `Target: ${formatCurrency(coastFireNumber)}`;
+
+      // Populate Milestone Metrics Grid
+      tileCoastNum.textContent = formatCurrency(coastFireNumber);
+      tileFullFire.textContent = formatCurrency(fullFireNumber);
+      lblTileFullSub.textContent = `At ${swr.toFixed(1)}% SWR (${formatCurrency(annualExpenses)}/yr)`;
+
+      tileCurrentInv.textContent = formatCurrency(currentInvestments);
+      lblTileCurrSub.textContent = `Invested today at age ${currentAge}`;
+
+      tileProjectedPort.textContent = formatCurrency(projectedPortfolio);
+      lblTileProjSub.textContent = `At age ${retireAge} with $0 extra saved`;
+
+      if (hasReached) {
+        tileGapAmount.textContent = `+${formatCurrency(difference)}`;
+        tileGapAmount.style.color = 'var(--color-success, #16a34a)';
+        lblTileGapSub.textContent = 'Surplus beyond Coast target';
+      } else {
+        tileGapAmount.textContent = `-${formatCurrency(Math.abs(difference))}`;
+        tileGapAmount.style.color = '#dc2626';
+        lblTileGapSub.textContent = 'Investment gap to Coast FIRE';
+      }
+
+      tileYearsLeft.textContent = `${years} Year${years === 1 ? '' : 's'}`;
+      lblTileYearsSub.textContent = `Age ${currentAge} to age ${retireAge}`;
+
+      // Educational Compounding Context Note
+      lblContextDesc.innerHTML = `Under an <strong>${expectedReturn.toFixed(1)}%</strong> nominal return and <strong>${expectedInflation.toFixed(1)}%</strong> inflation, your exact inflation-adjusted real return is <strong>${(realReturn * 100).toFixed(2)}% per year</strong> (via the Fisher equation). Over <strong>${years} years</strong>, every dollar invested today is projected to multiply by <strong>${growthFactor.toFixed(2)}x</strong> in purchasing power.`;
+    }
+
+    // Initialize initial calculations
+    recalculate();
+
+    // Clipboard Copy Handler for Toolbar
+    window.addEventListener('copy-calculator-results', () => {
+      const curAgeVal = currentAgeInput.value;
+      const retAgeVal = retireAgeInput.value;
+      const expVal = expensesInput.value;
+      const invVal = investmentsInput.value;
+      const retVal = returnInput.value;
+      const infVal = inflationInput.value;
+      const swrVal = swrInput.value;
+
+      const coastVal = resCoastFireNum.textContent;
+      const fullFireVal = tileFullFire.textContent;
+      const projPortVal = tileProjectedPort.textContent;
+      const statusVal = resSurplusShortfall.textContent;
+      const statusTitle = lblSurplusTitle.textContent;
+      const fundedVal = resProgressPct.textContent;
+
+      const report = `Coast FIRE Number Calculator Report:\n` +
+                     `Current Age: ${curAgeVal} | Retirement Age: ${retAgeVal} (${parseInt(retAgeVal, 10) - parseInt(curAgeVal, 10)} Years to Grow)\n` +
+                     `Annual Living Expenses: ${formatCurrency(parseFloat(expVal))} | SWR: ${swrVal}%\n` +
+                     `Full FIRE Target: ${fullFireVal}\n` +
+                     `Coast FIRE Number: ${coastVal}\n` +
+                     `Current Retirement Investments: ${formatCurrency(parseFloat(invVal))}\n` +
+                     `Projected Portfolio at Retirement: ${projPortVal}\n` +
+                     `${statusTitle}: ${statusVal} (${fundedVal} Funded)\n` +
+                     `Nominal Return: ${retVal}% | Inflation: ${infVal}%\n` +
+                     `Generated by FinCalcLab.com Coast FIRE Number Calculator`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      }).catch(err => {
+        console.error('Clipboard copy failed:', err);
+      });
+    });
+  }
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .input-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-2) 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+    min-width: 0;
+  }
+
+  .field-label-top {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .form-select-full {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .form-select-full:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .input-label-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .input-label-row label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-text-base);
+    min-width: 0;
+    display: block;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    height: 42px;
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    height: 38px;
+    padding: 0 var(--space-3);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .unit-symbol {
+    position: absolute;
+    right: var(--space-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+    margin-top: var(--space-1);
+    accent-color: var(--color-primary);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-hint {
+    font-size: 0.775rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+
+  /* Results Section */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Alert / Warning Banner */
+  .alert-banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    line-height: 1.45;
+  }
+
+  .alert-banner.alert-success {
+    background: rgba(22, 163, 74, 0.08);
+    border-color: rgba(22, 163, 74, 0.25);
+    color: var(--color-text-base);
+  }
+
+  .alert-banner.alert-success .alert-icon {
+    color: #16a34a;
+  }
+
+  .alert-banner.alert-info {
+    background: rgba(37, 99, 235, 0.08);
+    border-color: rgba(37, 99, 235, 0.25);
+    color: var(--color-text-base);
+  }
+
+  .alert-banner.alert-info .alert-icon {
+    color: var(--color-primary);
+  }
+
+  .alert-banner.alert-warning {
+    background: rgba(234, 88, 12, 0.08);
+    border-color: rgba(234, 88, 12, 0.25);
+    color: var(--color-text-base);
+  }
+
+  .alert-banner.alert-warning .alert-icon {
+    color: #ea580c;
+  }
+
+  .alert-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .alert-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .alert-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .alert-desc {
+    font-size: 0.835rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Net Value Container */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .net-value-box {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .coast-target-box {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .status-box {
+    border-top: 4px solid #0284c7;
+  }
+
+  .net-box-label {
+    font-size: 0.775rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-amount {
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.15;
+    word-break: break-word;
+  }
+
+  .net-box-amount.text-primary {
+    color: var(--color-primary);
+  }
+
+  .net-box-amount.text-accent {
+    color: #0284c7;
+  }
+
+  .net-box-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Funding Progress Bar Card */
+  .funding-progress-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .progress-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .progress-title {
+    color: var(--color-text-base);
+  }
+
+  .progress-pct {
+    color: var(--color-primary);
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 10px;
+    background: var(--color-border);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary) 0%, #16a34a 100%);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Key Milestone Metrics Grid */
+  .metrics-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .results-grid.cf-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .result-tile {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .tile-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  .tile-sub {
+    font-size: 0.725rem;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  /* Compounding Context Card */
+  .cf-context-card {
+    background: var(--color-bg-base);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .context-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .context-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .context-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .context-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-primary);
+  }
+
+  .context-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .context-desc {
+    font-size: 0.835rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Mobile Responsiveness for Form Inputs */
+  @media (max-width: 600px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-label-row .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .net-value-container {
+      grid-template-columns: 1fr;
+    }
+
+    .results-grid.cf-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

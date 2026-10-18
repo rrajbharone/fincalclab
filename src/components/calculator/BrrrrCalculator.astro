@@ -1,0 +1,1704 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="BRRRR Calculator"
+  description="Analyze real estate BRRRR deals (Buy, Rehab, Rent, Refinance, Repeat). Estimate cash invested, refinance proceeds, cash left in deal, rental cash flow, and Cash-on-Cash return."
+  category="Real Estate &amp; Investing"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="brrrr-calculator">
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <label for="brrrr-currency-select" class="field-label-top">Currency</label>
+      <select id="brrrr-currency-select" class="form-select-full" aria-label="Select Currency">
+        <option value="USD" selected>USD ($) - US Dollar</option>
+        <option value="CAD">CAD (C$) - Canadian Dollar</option>
+        <option value="GBP">GBP (£) - British Pound</option>
+        <option value="EUR">EUR (€) - Euro</option>
+        <option value="AUD">AUD (A$) - Australian Dollar</option>
+        <option value="INR">INR (₹) - Indian Rupee</option>
+        <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        <option value="JPY">JPY (¥) - Japanese Yen</option>
+        <option value="CHF">CHF (CHF) - Swiss Franc</option>
+      </select>
+    </div>
+
+    <!-- Section 1: Buy & Rehab (Acquisition Phase) -->
+    <h3 class="input-section-heading">1. Buy &amp; Rehab (Acquisition Phase)</h3>
+    
+    <!-- Purchase Price -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="brrrr-purchase-price">Purchase Price</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-price">$</span>
+          <input 
+            type="number" 
+            id="brrrr-purchase-price" 
+            min="10000" 
+            max="3000000" 
+            step="5000" 
+            value="150000" 
+            aria-label="Property Purchase Price" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="brrrr-purchase-price-slider" 
+        min="30000" 
+        max="600000" 
+        step="5000" 
+        value="150000" 
+        class="slider-range" 
+        aria-label="Purchase Price Slider" 
+      />
+      <span class="input-hint">Agreed acquisition price for the distressed or undervalued property.</span>
+    </div>
+
+    <!-- Down Payment Row (% and Amount) -->
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="brrrr-down-pct">Down Payment (%)</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="brrrr-down-pct" 
+              min="0" 
+              max="100" 
+              step="1" 
+              value="20" 
+              aria-label="Down Payment Percentage" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="brrrr-down-pct-slider" 
+          min="0" 
+          max="100" 
+          step="5" 
+          value="20" 
+          class="slider-range" 
+          aria-label="Down Payment Percentage Slider" 
+        />
+        <span class="input-hint">Enter 100% for all-cash purchase.</span>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="brrrr-down-amt">Down Payment Amount</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-down">$</span>
+            <input 
+              type="number" 
+              id="brrrr-down-amt" 
+              min="0" 
+              max="3000000" 
+              step="1000" 
+              value="30000" 
+              aria-label="Down Payment Amount" 
+            />
+          </div>
+        </div>
+        <span class="input-hint">Auto-synced with down payment percentage.</span>
+      </div>
+    </div>
+
+    <!-- Rehab Budget & Purchase Closing Costs -->
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="brrrr-rehab-cost">Rehab Budget</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-rehab">$</span>
+            <input 
+              type="number" 
+              id="brrrr-rehab-cost" 
+              min="0" 
+              max="1000000" 
+              step="1000" 
+              value="40000" 
+              aria-label="Estimated Renovation / Rehab Cost" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="brrrr-rehab-cost-slider" 
+          min="0" 
+          max="150000" 
+          step="2500" 
+          value="40000" 
+          class="slider-range" 
+          aria-label="Rehab Cost Slider" 
+        />
+        <span class="input-hint">Materials, contractor labor, permits, contingencies.</span>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="brrrr-purchase-closing">Purchase Closing Costs</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-pclosing">$</span>
+            <input 
+              type="number" 
+              id="brrrr-purchase-closing" 
+              min="0" 
+              max="100000" 
+              step="500" 
+              value="4000" 
+              aria-label="Purchase Closing Costs" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="brrrr-purchase-closing-slider" 
+          min="0" 
+          max="15000" 
+          step="500" 
+          value="4000" 
+          class="slider-range" 
+          aria-label="Purchase Closing Costs Slider" 
+        />
+        <span class="input-hint">Title, escrow, attorney fees, inspection (~2%–4%).</span>
+      </div>
+    </div>
+
+    <!-- Monthly Holding Costs & Months to Refinance -->
+    <div class="input-row-grid">
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="brrrr-monthly-holding">Monthly Holding Costs</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-holding">$</span>
+            <input 
+              type="number" 
+              id="brrrr-monthly-holding" 
+              min="0" 
+              max="20000" 
+              step="50" 
+              value="1000" 
+              aria-label="Monthly Holding Costs" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="brrrr-monthly-holding-slider" 
+          min="0" 
+          max="4000" 
+          step="50" 
+          value="1000" 
+          class="slider-range" 
+          aria-label="Monthly Holding Costs Slider" 
+        />
+        <span class="input-hint">Loan payments, property taxes, insurance, utilities while vacant.</span>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="brrrr-refi-months">Holding Period (Seasoning)</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="brrrr-refi-months" 
+              min="1" 
+              max="36" 
+              step="1" 
+              value="6" 
+              aria-label="Months until Refinance" 
+            />
+            <span class="unit-symbol">mo</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="brrrr-refi-months-slider" 
+          min="1" 
+          max="24" 
+          step="1" 
+          value="6" 
+          class="slider-range" 
+          aria-label="Months to Refinance Slider" 
+        />
+        <span class="input-hint">Months until rehab is done and refinance closes (typically 6 mos).</span>
+      </div>
+    </div>
+
+    <!-- Section 2: Property Value & Rental Operations -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">2. After Repair Value &amp; Rental Operations</h3>
+      
+      <!-- After Repair Value (ARV) -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="brrrr-arv">After Repair Value (ARV)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-arv">$</span>
+            <input 
+              type="number" 
+              id="brrrr-arv" 
+              min="20000" 
+              max="5000000" 
+              step="5000" 
+              value="260000" 
+              aria-label="After Repair Value" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="brrrr-arv-slider" 
+          min="50000" 
+          max="800000" 
+          step="5000" 
+          value="260000" 
+          class="slider-range" 
+          aria-label="ARV Slider" 
+        />
+        <span class="input-hint">Expected appraised market value once property is fully renovated.</span>
+      </div>
+
+      <!-- Monthly Rent & Operating Expenses -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="brrrr-monthly-rent">Gross Monthly Rent</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-rent">$</span>
+              <input 
+                type="number" 
+                id="brrrr-monthly-rent" 
+                min="0" 
+                max="50000" 
+                step="50" 
+                value="2200" 
+                aria-label="Gross Monthly Rent" 
+              />
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="brrrr-monthly-rent-slider" 
+            min="500" 
+            max="6000" 
+            step="50" 
+            value="2200" 
+            class="slider-range" 
+            aria-label="Monthly Rent Slider" 
+          />
+          <span class="input-hint">Expected gross monthly rental income from tenants.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="brrrr-monthly-expenses">Monthly Operating Expenses</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-expenses">$</span>
+              <input 
+                type="number" 
+                id="brrrr-monthly-expenses" 
+                min="0" 
+                max="25000" 
+                step="25" 
+                value="600" 
+                aria-label="Monthly Operating Expenses" 
+              />
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="brrrr-monthly-expenses-slider" 
+            min="0" 
+            max="2500" 
+            step="25" 
+            value="600" 
+            class="slider-range" 
+            aria-label="Monthly Operating Expenses Slider" 
+          />
+          <span class="input-hint">Taxes, insurance, property management, vacancy, repairs reserve, CapEx.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Financing & Long-Term Refinance -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">3. Initial Financing &amp; Long-Term Refinance</h3>
+      
+      <!-- Initial Loan Interest Rate & Loan Type (if not 100% cash) -->
+      <div class="input-row-grid" id="row-initial-financing">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="brrrr-init-rate">Initial Loan Interest Rate (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="brrrr-init-rate" 
+                min="0" 
+                max="25" 
+                step="0.25" 
+                value="8.0" 
+                aria-label="Initial Loan Interest Rate" 
+              />
+              <span class="unit-symbol">%</span>
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="brrrr-init-rate-slider" 
+            min="0" 
+            max="18" 
+            step="0.25" 
+            value="8.0" 
+            class="slider-range" 
+            aria-label="Initial Rate Slider" 
+          />
+          <span class="input-hint">Hard money, private loan, or conventional purchase rate.</span>
+        </div>
+
+        <div class="input-group">
+          <label for="brrrr-init-loan-type" class="field-label-top">Initial Loan Structure</label>
+          <select id="brrrr-init-loan-type" class="form-select-full" aria-label="Initial Loan Structure">
+            <option value="amort30" selected>30-Year Amortizing</option>
+            <option value="interestOnly">Interest-Only / Bridge Loan</option>
+            <option value="amort15">15-Year Amortizing</option>
+          </select>
+          <span class="input-hint">Determines remaining balance paid off at refinance.</span>
+        </div>
+      </div>
+
+      <!-- Refinance LTV % & Closing Costs -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="brrrr-refi-ltv">Refinance LTV (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="brrrr-refi-ltv" 
+                min="50" 
+                max="90" 
+                step="1" 
+                value="75" 
+                aria-label="Refinance Loan to Value" 
+              />
+              <span class="unit-symbol">%</span>
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="brrrr-refi-ltv-slider" 
+            min="50" 
+            max="85" 
+            step="1" 
+            value="75" 
+            class="slider-range" 
+            aria-label="Refinance LTV Slider" 
+          />
+          <span class="input-hint">Standard cash-out refinance max is 70%–80% of ARV.</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="brrrr-refi-closing">Refinance Closing Costs</label>
+            <div class="input-symbol-wrapper">
+              <span class="currency-symbol" id="sym-rclosing">$</span>
+              <input 
+                type="number" 
+                id="brrrr-refi-closing" 
+                min="0" 
+                max="50000" 
+                step="250" 
+                value="4500" 
+                aria-label="Refinance Closing Costs" 
+              />
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="brrrr-refi-closing-slider" 
+            min="0" 
+            max="15000" 
+            step="250" 
+            value="4500" 
+            class="slider-range" 
+            aria-label="Refinance Closing Costs Slider" 
+          />
+          <span class="input-hint">Appraisal, lender origination, title, escrow (~1.5%–3%).</span>
+        </div>
+      </div>
+
+      <!-- Refinance Interest Rate & Loan Term -->
+      <div class="input-row-grid">
+        <div class="input-group">
+          <div class="input-label-row">
+            <label for="brrrr-refi-rate">New Mortgage Rate (%)</label>
+            <div class="input-symbol-wrapper">
+              <input 
+                type="number" 
+                id="brrrr-refi-rate" 
+                min="1.0" 
+                max="15.0" 
+                step="0.125" 
+                value="6.5" 
+                aria-label="Refinance Interest Rate" 
+              />
+              <span class="unit-symbol">%</span>
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="brrrr-refi-rate-slider" 
+            min="3.0" 
+            max="12.0" 
+            step="0.125" 
+            value="6.5" 
+            class="slider-range" 
+            aria-label="Refinance Rate Slider" 
+          />
+          <span class="input-hint">Long-term permanent mortgage or DSCR interest rate.</span>
+        </div>
+
+        <div class="input-group">
+          <label for="brrrr-refi-term" class="field-label-top">New Mortgage Term</label>
+          <select id="brrrr-refi-term" class="form-select-full" aria-label="New Mortgage Term">
+            <option value="30" selected>30 Years (Fixed)</option>
+            <option value="25">25 Years (Fixed)</option>
+            <option value="20">20 Years (Fixed)</option>
+            <option value="15">15 Years (Fixed)</option>
+          </select>
+          <span class="input-hint">Amortization duration for the permanent loan.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="brrrr-reset-btn" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset to Default Example
+      </Button>
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">BRRRR Strategy Investment Returns</h3>
+
+    <!-- Dynamic Strategy Assessment Banner -->
+    <div id="brrrr-alert-banner" class="alert-banner alert-success">
+      <div class="alert-icon" id="brrrr-alert-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <div class="alert-content">
+        <div class="alert-title" id="brrrr-alert-title">Calculating BRRRR Metrics...</div>
+        <div class="alert-desc" id="brrrr-alert-desc">
+          Analyzing cash invested, refinance payout, remaining equity, and rental yield.
+        </div>
+      </div>
+    </div>
+
+    <!-- Primary Net Value Displays (Rule 15 Compliant) -->
+    <div class="net-value-container">
+      <!-- Card 1: Cash Left in Deal -->
+      <div class="net-value-box cash-left-box">
+        <span class="net-box-label">Cash Left in Deal</span>
+        <div id="res-cash-left" class="net-box-amount text-primary">$9,009</div>
+        <span class="net-box-sub" id="lbl-cash-left-sub">89% of capital recouped at refi</span>
+      </div>
+
+      <!-- Card 2: Net Cash Returned at Refi -->
+      <div class="net-value-box cash-returned-box">
+        <span class="net-box-label">Net Cash Returned</span>
+        <div id="res-cash-returned" class="net-box-amount text-accent">$70,991</div>
+        <span class="net-box-sub" id="lbl-cash-returned-sub">From $195,000 Refinance Loan</span>
+      </div>
+    </div>
+
+    <!-- Step-by-Step BRRRR Financial Flow (Interactive Tracker) -->
+    <div class="brrrr-flow-card">
+      <div class="flow-header">
+        <span class="flow-title">BRRRR Deal Execution Breakdown</span>
+        <span class="flow-badge" id="res-flow-badge">Buy · Rehab · Rent · Refi · Repeat</span>
+      </div>
+      <div class="flow-steps-grid">
+        <div class="flow-step-item">
+          <span class="step-num">B</span>
+          <div class="step-details">
+            <span class="step-label">Buy &amp; Acquire</span>
+            <span class="step-value" id="flow-buy-val">$150,000</span>
+            <span class="step-sub" id="flow-buy-sub">Down: $30k | Loan: $120k</span>
+          </div>
+        </div>
+        <div class="flow-step-item">
+          <span class="step-num">R</span>
+          <div class="step-details">
+            <span class="step-label">Rehab &amp; Hold</span>
+            <span class="step-value" id="flow-rehab-val">$46,000</span>
+            <span class="step-sub" id="flow-rehab-sub">$40k work + $6k holding</span>
+          </div>
+        </div>
+        <div class="flow-step-item">
+          <span class="step-num">R</span>
+          <div class="step-details">
+            <span class="step-label">Rent &amp; Cash Flow</span>
+            <span class="step-value" id="flow-rent-val">$2,200/mo</span>
+            <span class="step-sub" id="flow-rent-sub">OpEx: $600/mo</span>
+          </div>
+        </div>
+        <div class="flow-step-item">
+          <span class="step-num">R</span>
+          <div class="step-details">
+            <span class="step-label">Refinance (75%)</span>
+            <span class="step-value" id="flow-refi-val">$195,000</span>
+            <span class="step-sub" id="flow-refi-sub">Payoff: $119.5k | Cash Out: $71.0k</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid (Rule 15 Compliant) -->
+    <h4 class="metrics-section-heading">Detailed Financial Metrics</h4>
+    <div class="results-grid brrrr-metrics-grid">
+      <!-- 1. Total Initial Cash Invested -->
+      <div class="result-tile">
+        <span class="tile-label">Total Initial Cash Invested</span>
+        <div class="tile-value text-base" id="tile-initial-cash">$80,000</div>
+        <span class="tile-sub" id="lbl-tile-initial-sub">Down + Rehab + Closing + Holding</span>
+      </div>
+
+      <!-- 2. New Refinance Loan Amount -->
+      <div class="result-tile">
+        <span class="tile-label">New Refinance Loan</span>
+        <div class="tile-value text-primary" id="tile-new-loan">$195,000</div>
+        <span class="tile-sub" id="lbl-tile-new-loan-sub">75% LTV on $260,000 ARV</span>
+      </div>
+
+      <!-- 3. Original Loan Payoff Amount -->
+      <div class="result-tile">
+        <span class="tile-label">Original Loan Payoff</span>
+        <div class="tile-value text-base" id="tile-loan-payoff">$119,509</div>
+        <span class="tile-sub" id="lbl-tile-payoff-sub">Principal balance after 6 months</span>
+      </div>
+
+      <!-- 4. New Monthly Mortgage Payment -->
+      <div class="result-tile">
+        <span class="tile-label">New Monthly Mortgage (P&amp;I)</span>
+        <div class="tile-value text-base" id="tile-new-mortgage">$1,233 / mo</div>
+        <span class="tile-sub" id="lbl-tile-mortgage-sub">6.50% Rate, 30-Yr Fixed</span>
+      </div>
+
+      <!-- 5. Monthly Net Cash Flow -->
+      <div class="result-tile">
+        <span class="tile-label">Monthly Net Cash Flow</span>
+        <div class="tile-value" id="tile-monthly-cf" style="color: var(--color-success, #16a34a);">$367 / mo</div>
+        <span class="tile-sub" id="lbl-tile-mcf-sub">Rent − OpEx − New Mortgage</span>
+      </div>
+
+      <!-- 6. Annual Net Cash Flow -->
+      <div class="result-tile">
+        <span class="tile-label">Annual Net Cash Flow</span>
+        <div class="tile-value" id="tile-annual-cf" style="color: var(--color-success, #16a34a);">$4,410 / yr</div>
+        <span class="tile-sub" id="lbl-tile-acf-sub">Passive pre-tax rental income</span>
+      </div>
+
+      <!-- 7. Post-Refi Cash-on-Cash Return -->
+      <div class="result-tile">
+        <span class="tile-label">Cash-on-Cash Return (CoC)</span>
+        <div class="tile-value text-primary" id="tile-coc-return">48.9%</div>
+        <span class="tile-sub" id="lbl-tile-coc-sub">Annual Cash Flow / Cash Left</span>
+      </div>
+
+      <!-- 8. Equity Retained in Property -->
+      <div class="result-tile">
+        <span class="tile-label">Retained Property Equity</span>
+        <div class="tile-value text-base" id="tile-equity-retained">$65,000</div>
+        <span class="tile-sub" id="lbl-tile-equity-sub">25% equity buffer ($260k ARV)</span>
+      </div>
+    </div>
+
+    <!-- Strategy Multiplier Card -->
+    <div class="brrrr-context-card">
+      <div class="context-header">
+        <div class="context-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        </div>
+        <div class="context-title-wrap">
+          <span class="context-eyebrow">The "Repeat" Multiplier</span>
+          <h4 class="context-title" id="lbl-repeat-title">Recycling Your Capital</h4>
+        </div>
+      </div>
+      <p class="context-desc" id="lbl-context-desc">
+        Because you recovered <strong>$70,991</strong> of your initial <strong>$80,000</strong>, you retain <strong>$65,000</strong> in real estate wealth and <strong>$367/month</strong> in cash flow, while having the liquidity ready to acquire your next BRRRR property!
+      </p>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initBrrrrCalculator() {
+    const currencyConfigs = {
+      USD: { symbol: '$', code: 'USD', locale: 'en-US' },
+      CAD: { symbol: 'C$', code: 'CAD', locale: 'en-CA' },
+      GBP: { symbol: '£', code: 'GBP', locale: 'en-GB' },
+      EUR: { symbol: '€', code: 'EUR', locale: 'de-DE' },
+      AUD: { symbol: 'A$', code: 'AUD', locale: 'en-AU' },
+      INR: { symbol: '₹', code: 'INR', locale: 'en-IN' },
+      SGD: { symbol: 'S$', code: 'SGD', locale: 'en-SG' },
+      JPY: { symbol: '¥', code: 'JPY', locale: 'ja-JP' },
+      CHF: { symbol: 'CHF', code: 'CHF', locale: 'de-CH' }
+    };
+
+    let activeCurrency = 'USD';
+
+    // Form DOM Elements
+    const curSelect = document.getElementById('brrrr-currency-select');
+    
+    // Acquisition inputs
+    const purchasePriceInput = document.getElementById('brrrr-purchase-price');
+    const purchasePriceSlider = document.getElementById('brrrr-purchase-price-slider');
+    const downPctInput = document.getElementById('brrrr-down-pct');
+    const downPctSlider = document.getElementById('brrrr-down-pct-slider');
+    const downAmtInput = document.getElementById('brrrr-down-amt');
+    const rehabCostInput = document.getElementById('brrrr-rehab-cost');
+    const rehabCostSlider = document.getElementById('brrrr-rehab-cost-slider');
+    const purchaseClosingInput = document.getElementById('brrrr-purchase-closing');
+    const purchaseClosingSlider = document.getElementById('brrrr-purchase-closing-slider');
+    const monthlyHoldingInput = document.getElementById('brrrr-monthly-holding');
+    const monthlyHoldingSlider = document.getElementById('brrrr-monthly-holding-slider');
+    const refiMonthsInput = document.getElementById('brrrr-refi-months');
+    const refiMonthsSlider = document.getElementById('brrrr-refi-months-slider');
+
+    // Section 2: ARV & Operations
+    const arvInput = document.getElementById('brrrr-arv');
+    const arvSlider = document.getElementById('brrrr-arv-slider');
+    const monthlyRentInput = document.getElementById('brrrr-monthly-rent');
+    const monthlyRentSlider = document.getElementById('brrrr-monthly-rent-slider');
+    const monthlyExpensesInput = document.getElementById('brrrr-monthly-expenses');
+    const monthlyExpensesSlider = document.getElementById('brrrr-monthly-expenses-slider');
+
+    // Section 3: Financing & Refinance
+    const initRateInput = document.getElementById('brrrr-init-rate');
+    const initRateSlider = document.getElementById('brrrr-init-rate-slider');
+    const initLoanTypeSelect = document.getElementById('brrrr-init-loan-type');
+    const refiLtvInput = document.getElementById('brrrr-refi-ltv');
+    const refiLtvSlider = document.getElementById('brrrr-refi-ltv-slider');
+    const refiClosingInput = document.getElementById('brrrr-refi-closing');
+    const refiClosingSlider = document.getElementById('brrrr-refi-closing-slider');
+    const refiRateInput = document.getElementById('brrrr-refi-rate');
+    const refiRateSlider = document.getElementById('brrrr-refi-rate-slider');
+    const refiTermSelect = document.getElementById('brrrr-refi-term');
+
+    const resetBtn = document.getElementById('brrrr-reset-btn');
+
+    // Results DOM Elements
+    const alertBanner = document.getElementById('brrrr-alert-banner');
+    const alertIcon = document.getElementById('brrrr-alert-icon');
+    const alertTitle = document.getElementById('brrrr-alert-title');
+    const alertDesc = document.getElementById('brrrr-alert-desc');
+
+    const resCashLeft = document.getElementById('res-cash-left');
+    const lblCashLeftSub = document.getElementById('lbl-cash-left-sub');
+    const resCashReturned = document.getElementById('res-cash-returned');
+    const lblCashReturnedSub = document.getElementById('lbl-cash-returned-sub');
+
+    // Flow items
+    const flowBuyVal = document.getElementById('flow-buy-val');
+    const flowBuySub = document.getElementById('flow-buy-sub');
+    const flowRehabVal = document.getElementById('flow-rehab-val');
+    const flowRehabSub = document.getElementById('flow-rehab-sub');
+    const flowRentVal = document.getElementById('flow-rent-val');
+    const flowRentSub = document.getElementById('flow-rent-sub');
+    const flowRefiVal = document.getElementById('flow-refi-val');
+    const flowRefiSub = document.getElementById('flow-refi-sub');
+    const resFlowBadge = document.getElementById('res-flow-badge');
+
+    // Metrics Tiles
+    const tileInitialCash = document.getElementById('tile-initial-cash');
+    const lblTileInitialSub = document.getElementById('lbl-tile-initial-sub');
+    const tileNewLoan = document.getElementById('tile-new-loan');
+    const lblTileNewLoanSub = document.getElementById('lbl-tile-new-loan-sub');
+    const tileLoanPayoff = document.getElementById('tile-loan-payoff');
+    const lblTilePayoffSub = document.getElementById('lbl-tile-payoff-sub');
+    const tileNewMortgage = document.getElementById('tile-new-mortgage');
+    const lblTileMortgageSub = document.getElementById('lbl-tile-mortgage-sub');
+    const tileMonthlyCf = document.getElementById('tile-monthly-cf');
+    const lblTileMcfSub = document.getElementById('lbl-tile-mcf-sub');
+    const tileAnnualCf = document.getElementById('tile-annual-cf');
+    const lblTileAcfSub = document.getElementById('lbl-tile-acf-sub');
+    const tileCocReturn = document.getElementById('tile-coc-return');
+    const lblTileCocSub = document.getElementById('lbl-tile-coc-sub');
+    const tileEquityRetained = document.getElementById('tile-equity-retained');
+    const lblTileEquitySub = document.getElementById('lbl-tile-equity-sub');
+
+    const lblRepeatTitle = document.getElementById('lbl-repeat-title');
+    const lblContextDesc = document.getElementById('lbl-context-desc');
+
+    // Formatting Helpers
+    function getSym() {
+      return currencyConfigs[activeCurrency]?.symbol || '$';
+    }
+
+    function formatCurrency(val) {
+      if (val === Infinity || val === null || isNaN(val)) return '—';
+      const cfg = currencyConfigs[activeCurrency] || currencyConfigs.USD;
+      return new Intl.NumberFormat(cfg.locale, {
+        style: 'currency',
+        currency: cfg.code,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(Math.round(val));
+    }
+
+    // Input Synchronization
+    function syncInput(inputEl, sliderEl) {
+      if (!inputEl || !sliderEl) return;
+      inputEl.addEventListener('input', () => {
+        sliderEl.value = inputEl.value;
+        recalculate();
+      });
+      sliderEl.addEventListener('input', () => {
+        inputEl.value = sliderEl.value;
+        recalculate();
+      });
+    }
+
+    syncInput(purchasePriceInput, purchasePriceSlider);
+    syncInput(rehabCostInput, rehabCostSlider);
+    syncInput(purchaseClosingInput, purchaseClosingSlider);
+    syncInput(monthlyHoldingInput, monthlyHoldingSlider);
+    syncInput(refiMonthsInput, refiMonthsSlider);
+    syncInput(arvInput, arvSlider);
+    syncInput(monthlyRentInput, monthlyRentSlider);
+    syncInput(monthlyExpensesInput, monthlyExpensesSlider);
+    syncInput(initRateInput, initRateSlider);
+    syncInput(refiLtvInput, refiLtvSlider);
+    syncInput(refiClosingInput, refiClosingSlider);
+    syncInput(refiRateInput, refiRateSlider);
+
+    // Down Payment % and $ sync
+    let isUpdatingDp = false;
+
+    if (downPctInput && downPctSlider && downAmtInput && purchasePriceInput) {
+      downPctInput.addEventListener('input', () => {
+        if (isUpdatingDp) return;
+        isUpdatingDp = true;
+        downPctSlider.value = downPctInput.value;
+        const price = Math.max(0, parseFloat(purchasePriceInput.value) || 0);
+        const pct = Math.max(0, Math.min(100, parseFloat(downPctInput.value) || 0));
+        downAmtInput.value = Math.round(price * (pct / 100));
+        isUpdatingDp = false;
+        recalculate();
+      });
+
+      downPctSlider.addEventListener('input', () => {
+        if (isUpdatingDp) return;
+        isUpdatingDp = true;
+        downPctInput.value = downPctSlider.value;
+        const price = Math.max(0, parseFloat(purchasePriceInput.value) || 0);
+        const pct = Math.max(0, Math.min(100, parseFloat(downPctSlider.value) || 0));
+        downAmtInput.value = Math.round(price * (pct / 100));
+        isUpdatingDp = false;
+        recalculate();
+      });
+
+      downAmtInput.addEventListener('input', () => {
+        if (isUpdatingDp) return;
+        isUpdatingDp = true;
+        const price = Math.max(1, parseFloat(purchasePriceInput.value) || 1);
+        const amt = Math.max(0, parseFloat(downAmtInput.value) || 0);
+        const pct = Math.min(100, (amt / price) * 100);
+        downPctInput.value = pct.toFixed(1);
+        downPctSlider.value = pct.toFixed(1);
+        isUpdatingDp = false;
+        recalculate();
+      });
+
+      purchasePriceInput.addEventListener('input', () => {
+        if (isUpdatingDp) return;
+        isUpdatingDp = true;
+        const price = Math.max(0, parseFloat(purchasePriceInput.value) || 0);
+        const pct = Math.max(0, Math.min(100, parseFloat(downPctInput.value) || 0));
+        downAmtInput.value = Math.round(price * (pct / 100));
+        isUpdatingDp = false;
+      });
+
+      purchasePriceSlider.addEventListener('input', () => {
+        if (isUpdatingDp) return;
+        isUpdatingDp = true;
+        const price = Math.max(0, parseFloat(purchasePriceSlider.value) || 0);
+        const pct = Math.max(0, Math.min(100, parseFloat(downPctInput.value) || 0));
+        downAmtInput.value = Math.round(price * (pct / 100));
+        isUpdatingDp = false;
+      });
+    }
+
+    if (initLoanTypeSelect) {
+      initLoanTypeSelect.addEventListener('change', recalculate);
+    }
+    if (refiTermSelect) {
+      refiTermSelect.addEventListener('change', recalculate);
+    }
+
+    // Currency Switcher
+    if (curSelect) {
+      curSelect.addEventListener('change', (e) => {
+        activeCurrency = e.target.value;
+        const sym = getSym();
+        document.querySelectorAll('.currency-symbol').forEach(el => {
+          el.textContent = sym;
+        });
+        recalculate();
+      });
+    }
+
+    // Reset Defaults
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        purchasePriceInput.value = '150000';
+        purchasePriceSlider.value = '150000';
+        downPctInput.value = '20';
+        downPctSlider.value = '20';
+        downAmtInput.value = '30000';
+        rehabCostInput.value = '40000';
+        rehabCostSlider.value = '40000';
+        purchaseClosingInput.value = '4000';
+        purchaseClosingSlider.value = '4000';
+        monthlyHoldingInput.value = '1000';
+        monthlyHoldingSlider.value = '1000';
+        refiMonthsInput.value = '6';
+        refiMonthsSlider.value = '6';
+
+        arvInput.value = '260000';
+        arvSlider.value = '260000';
+        monthlyRentInput.value = '2200';
+        monthlyRentSlider.value = '2200';
+        monthlyExpensesInput.value = '600';
+        monthlyExpensesSlider.value = '600';
+
+        initRateInput.value = '8.0';
+        initRateSlider.value = '8.0';
+        if (initLoanTypeSelect) initLoanTypeSelect.value = 'amort30';
+        refiLtvInput.value = '75';
+        refiLtvSlider.value = '75';
+        refiClosingInput.value = '4500';
+        refiClosingSlider.value = '4500';
+        refiRateInput.value = '6.5';
+        refiRateSlider.value = '6.5';
+        if (refiTermSelect) refiTermSelect.value = '30';
+
+        recalculate();
+      });
+    }
+
+    // Standard Monthly Amortization Payment Formula
+    function calcMonthlyPayment(principal, annualRatePct, termYears) {
+      if (principal <= 0) return 0;
+      if (annualRatePct <= 0) return principal / (termYears * 12);
+      const r = annualRatePct / 100 / 12;
+      const n = termYears * 12;
+      return (principal * (r * Math.pow(1 + r, n))) / (Math.pow(1 + r, n) - 1);
+    }
+
+    // Remaining Balance Formula after H months
+    function calcRemainingBalance(principal, annualRatePct, termYears, monthsElapsed, loanType) {
+      if (principal <= 0) return 0;
+      if (loanType === 'interestOnly') {
+        // Interest only loan principal does not amortize
+        return principal;
+      }
+      const totalMonths = termYears * 12;
+      if (monthsElapsed >= totalMonths) return 0;
+      if (annualRatePct <= 0) {
+        return Math.max(0, principal - (principal / totalMonths) * monthsElapsed);
+      }
+      const r = annualRatePct / 100 / 12;
+      const n = totalMonths;
+      const balance = (principal * (Math.pow(1 + r, n) - Math.pow(1 + r, monthsElapsed))) / (Math.pow(1 + r, n) - 1);
+      return Math.max(0, balance);
+    }
+
+    // Calculation Engine
+    function recalculate() {
+      const purchasePrice = Math.max(0, parseFloat(purchasePriceInput?.value) || 0);
+      const downPct = Math.max(0, Math.min(100, parseFloat(downPctInput?.value) || 0));
+      const downPayment = Math.max(0, parseFloat(downAmtInput?.value) || 0);
+      const rehabCost = Math.max(0, parseFloat(rehabCostInput?.value) || 0);
+      const purchaseClosing = Math.max(0, parseFloat(purchaseClosingInput?.value) || 0);
+      const monthlyHolding = Math.max(0, parseFloat(monthlyHoldingInput?.value) || 0);
+      const refiMonths = Math.max(1, parseInt(refiMonthsInput?.value, 10) || 6);
+
+      const arv = Math.max(0, parseFloat(arvInput?.value) || 0);
+      const monthlyRent = Math.max(0, parseFloat(monthlyRentInput?.value) || 0);
+      const monthlyExpenses = Math.max(0, parseFloat(monthlyExpensesInput?.value) || 0);
+
+      const initRate = Math.max(0, parseFloat(initRateInput?.value) || 0);
+      const initLoanType = initLoanTypeSelect?.value || 'amort30';
+      const refiLtvPct = Math.max(0, Math.min(100, parseFloat(refiLtvInput?.value) || 75));
+      const refiClosing = Math.max(0, parseFloat(refiClosingInput?.value) || 0);
+      const refiRate = Math.max(0, parseFloat(refiRateInput?.value) || 6.5);
+      const refiTermYears = parseInt(refiTermSelect?.value, 10) || 30;
+
+      // 1. Initial Investment & Acquisition Financing
+      const totalHoldingCosts = monthlyHolding * refiMonths;
+      const totalInitialCashInvested = downPayment + rehabCost + purchaseClosing + totalHoldingCosts;
+      
+      const initialPrincipal = Math.max(0, purchasePrice - downPayment);
+      let initTermYears = 30;
+      if (initLoanType === 'amort15') initTermYears = 15;
+      if (initLoanType === 'interestOnly') initTermYears = 1;
+
+      // Original Loan Payoff at Refinance Month
+      let originalLoanPayoff = 0;
+      if (initialPrincipal > 0) {
+        originalLoanPayoff = calcRemainingBalance(initialPrincipal, initRate, initTermYears, refiMonths, initLoanType);
+      }
+
+      // 2. Refinance Calculations
+      const newLoanAmount = arv * (refiLtvPct / 100);
+      // Net Cash Returned to investor = New Loan - Payoff Old Loan - Refinance Closing Costs
+      const netCashReturned = newLoanAmount - originalLoanPayoff - refiClosing;
+
+      // Cash Left in Deal = Initial Cash Invested - Net Cash Returned
+      const cashLeftInDeal = totalInitialCashInvested - netCashReturned;
+      const capitalRecoveryPct = totalInitialCashInvested > 0 ? (netCashReturned / totalInitialCashInvested) * 100 : 0;
+
+      // 3. New Monthly Mortgage Payment (P&I)
+      const newMonthlyMortgage = calcMonthlyPayment(newLoanAmount, refiRate, refiTermYears);
+
+      // 4. Monthly & Annual Rental Cash Flow
+      const monthlyNetCashFlow = monthlyRent - monthlyExpenses - newMonthlyMortgage;
+      const annualNetCashFlow = monthlyNetCashFlow * 12;
+
+      // 5. Cash-on-Cash Return
+      let cocReturn = 0;
+      let isInfiniteReturn = false;
+      if (cashLeftInDeal <= 0) {
+        if (annualNetCashFlow > 0) {
+          isInfiniteReturn = true;
+        } else {
+          cocReturn = 0;
+        }
+      } else {
+        cocReturn = (annualNetCashFlow / cashLeftInDeal) * 100;
+      }
+
+      // Retained Property Equity
+      const retainedEquity = Math.max(0, arv - newLoanAmount);
+
+      // Render Outputs
+      // 1. Primary Highlight Cards
+      if (cashLeftInDeal <= 0) {
+        resCashLeft.textContent = '$0 (All Cash Out)';
+        resCashLeft.className = 'net-box-amount text-success';
+        const surplus = Math.abs(cashLeftInDeal);
+        if (surplus > 0) {
+          lblCashLeftSub.textContent = `100% recovered + ${formatCurrency(surplus)} cash profit`;
+        } else {
+          lblCashLeftSub.textContent = '100% of all initial capital recovered';
+        }
+      } else {
+        resCashLeft.textContent = formatCurrency(cashLeftInDeal);
+        resCashLeft.className = 'net-box-amount text-primary';
+        lblCashLeftSub.textContent = `${capitalRecoveryPct.toFixed(0)}% of capital recouped at refi`;
+      }
+
+      resCashReturned.textContent = formatCurrency(Math.max(0, netCashReturned));
+      lblCashReturnedSub.textContent = `From ${formatCurrency(newLoanAmount)} Refinance Loan`;
+
+      // 2. Alert Banner Assessment
+      if (cashLeftInDeal <= 0 && monthlyNetCashFlow > 0) {
+        alertBanner.className = 'alert-banner alert-success';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+        alertTitle.textContent = '🎉 Perfect BRRRR: Infinite Cash-on-Cash Return!';
+        alertDesc.textContent = `You extracted 100% of your initial capital (${formatCurrency(totalInitialCashInvested)}) at refinance. You now own a ${formatCurrency(arv)} asset with ${formatCurrency(retainedEquity)} in equity and $0 cash left in the deal!`;
+      } else if (monthlyNetCashFlow <= 0) {
+        alertBanner.className = 'alert-banner alert-warning';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+        alertTitle.textContent = '⚠️ Negative or Neutral Cash Flow Warning';
+        alertDesc.textContent = `Operating expenses and new debt service (${formatCurrency(newMonthlyMortgage)}/mo) exceed or match gross rent. Consider higher rent, lower refinance LTV, or expense reductions.`;
+      } else if (capitalRecoveryPct >= 70) {
+        alertBanner.className = 'alert-banner alert-info';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+        alertTitle.textContent = `⚡ Partial Capital Recovery: ${capitalRecoveryPct.toFixed(0)}% Capital Returned`;
+        alertDesc.textContent = `You returned ${formatCurrency(netCashReturned)} of your ${formatCurrency(totalInitialCashInvested)} cash invested. Only ${formatCurrency(cashLeftInDeal)} remains tied up, yielding an outstanding ${cocReturn.toFixed(1)}% Cash-on-Cash return!`;
+      } else {
+        alertBanner.className = 'alert-banner alert-info';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+        alertTitle.textContent = `Deal Evaluation: ${capitalRecoveryPct.toFixed(0)}% Capital Returned at Refi`;
+        alertDesc.textContent = `${formatCurrency(cashLeftInDeal)} remains in the property after cash-out refinance. The asset generates ${formatCurrency(monthlyNetCashFlow)}/month in net passive cash flow.`;
+      }
+
+      // 3. Flow Tracker
+      flowBuyVal.textContent = formatCurrency(purchasePrice);
+      flowBuySub.textContent = `Down: ${formatCurrency(downPayment)} | Loan: ${formatCurrency(initialPrincipal)}`;
+      flowRehabVal.textContent = formatCurrency(rehabCost + totalHoldingCosts);
+      flowRehabSub.textContent = `${formatCurrency(rehabCost)} work + ${formatCurrency(totalHoldingCosts)} holding`;
+      flowRentVal.textContent = `${formatCurrency(monthlyRent)}/mo`;
+      flowRentSub.textContent = `OpEx: ${formatCurrency(monthlyExpenses)}/mo`;
+      flowRefiVal.textContent = formatCurrency(newLoanAmount);
+      flowRefiSub.textContent = `Payoff: ${formatCurrency(originalLoanPayoff)} | Cash Out: ${formatCurrency(netCashReturned)}`;
+
+      // 4. Metrics Grid Tiles
+      tileInitialCash.textContent = formatCurrency(totalInitialCashInvested);
+      lblTileInitialSub.textContent = `${formatCurrency(downPayment)} down + ${formatCurrency(rehabCost)} rehab + ${formatCurrency(purchaseClosing + totalHoldingCosts)} closing/holding`;
+
+      tileNewLoan.textContent = formatCurrency(newLoanAmount);
+      lblTileNewLoanSub.textContent = `${refiLtvPct}% LTV on ${formatCurrency(arv)} ARV`;
+
+      tileLoanPayoff.textContent = formatCurrency(originalLoanPayoff);
+      lblTilePayoffSub.textContent = initialPrincipal > 0 ? `Principal payoff after ${refiMonths} months` : 'All-cash purchase (no loan)';
+
+      tileNewMortgage.textContent = `${formatCurrency(newMonthlyMortgage)} / mo`;
+      lblTileMortgageSub.textContent = `${refiRate.toFixed(2)}% Rate, ${refiTermYears}-Yr Term`;
+
+      tileMonthlyCf.textContent = `${formatCurrency(monthlyNetCashFlow)} / mo`;
+      tileMonthlyCf.style.color = monthlyNetCashFlow >= 0 ? 'var(--color-success, #16a34a)' : '#ef4444';
+      lblTileMcfSub.textContent = `${formatCurrency(monthlyRent)} rent − ${formatCurrency(monthlyExpenses)} OpEx − ${formatCurrency(newMonthlyMortgage)} P&I`;
+
+      tileAnnualCf.textContent = `${formatCurrency(annualNetCashFlow)} / yr`;
+      tileAnnualCf.style.color = annualNetCashFlow >= 0 ? 'var(--color-success, #16a34a)' : '#ef4444';
+      lblTileAcfSub.textContent = 'Passive pre-tax rental income';
+
+      if (isInfiniteReturn) {
+        tileCocReturn.textContent = 'Infinite / 100%+';
+        tileCocReturn.className = 'tile-value text-success';
+        lblTileCocSub.textContent = '100% of cash invested was recovered!';
+      } else if (cashLeftInDeal <= 0) {
+        tileCocReturn.textContent = 'N/A';
+        tileCocReturn.className = 'tile-value text-base';
+        lblTileCocSub.textContent = 'Zero or negative net cash flow';
+      } else {
+        tileCocReturn.textContent = `${cocReturn.toFixed(1)}%`;
+        tileCocReturn.className = 'tile-value text-primary';
+        lblTileCocSub.textContent = `${formatCurrency(annualNetCashFlow)}/yr on ${formatCurrency(cashLeftInDeal)} remaining`;
+      }
+
+      tileEquityRetained.textContent = formatCurrency(retainedEquity);
+      lblTileEquitySub.textContent = `${(100 - refiLtvPct)}% equity in ${formatCurrency(arv)} property`;
+
+      // Context Card
+      if (cashLeftInDeal <= 0) {
+        lblRepeatTitle.textContent = 'Infinite Velocity of Capital';
+        lblContextDesc.innerHTML = `Because you extracted <strong>100% of your initial cash (${formatCurrency(totalInitialCashInvested)})</strong>, your effective basis is <strong>$0</strong>. You keep a <strong>${formatCurrency(arv)}</strong> real estate asset producing <strong>${formatCurrency(monthlyNetCashFlow)}/month</strong>, and your entire original capital is 100% free to repeat the process immediately!`;
+      } else {
+        lblRepeatTitle.textContent = 'Recycling Your Capital';
+        lblContextDesc.innerHTML = `Because you recovered <strong>${formatCurrency(netCashReturned)}</strong> of your initial <strong>${formatCurrency(totalInitialCashInvested)}</strong>, you retain <strong>${formatCurrency(retainedEquity)}</strong> in equity and <strong>${formatCurrency(monthlyNetCashFlow)}/month</strong> in cash flow, while having the liquidity ready to acquire your next BRRRR property!`;
+      }
+    }
+
+    // Initial Calculation
+    recalculate();
+
+    // Clipboard Copy Handler from CalculatorLayout toolbar
+    window.addEventListener('copy-calculator-results', async () => {
+      try {
+        const cashLeft = resCashLeft?.textContent || '—';
+        const cashReturned = resCashReturned?.textContent || '—';
+        const initialCash = tileInitialCash?.textContent || '—';
+        const newLoan = tileNewLoan?.textContent || '—';
+        const monthlyCf = tileMonthlyCf?.textContent || '—';
+        const annualCf = tileAnnualCf?.textContent || '—';
+        const coc = tileCocReturn?.textContent || '—';
+        const equity = tileEquityRetained?.textContent || '—';
+
+        const summaryText = `BRRRR Strategy Investment Analysis (FinCalcLab.com):
+• Total Initial Cash Invested: ${initialCash}
+• Cash Left in Deal: ${cashLeft}
+• Net Cash Returned at Refi: ${cashReturned}
+• New Refinance Loan: ${newLoan}
+• Monthly Net Cash Flow: ${monthlyCf}
+• Annual Net Cash Flow: ${annualCf}
+• Cash-on-Cash Return: ${coc}
+• Retained Property Equity: ${equity}
+Calculated at https://fincalclab.com/calculator/brrrr-calculator`;
+
+        await navigator.clipboard.writeText(summaryText);
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      } catch (err) {
+        console.error('Failed to copy results:', err);
+      }
+    });
+  }
+
+  // Run on page load and Astro view transitions
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBrrrrCalculator);
+  } else {
+    initBrrrrCalculator();
+  }
+  document.addEventListener('astro:page-load', initBrrrrCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .input-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-2) 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+    min-width: 0;
+  }
+
+  .field-label-top {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .form-select-full {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .form-select-full:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    min-width: 0;
+    align-items: start;
+    margin-bottom: var(--space-4);
+  }
+
+  .input-row-grid > .input-group {
+    margin-bottom: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 0;
+  }
+
+  .input-label-row label,
+  .field-label-top {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-text-base);
+    min-width: 0;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    height: 42px;
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  :global(.dark) .input-symbol-wrapper {
+    background: var(--color-bg-surface);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    pointer-events: none;
+    user-select: none;
+    z-index: 2;
+    line-height: 1;
+  }
+
+  .unit-symbol {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    pointer-events: none;
+    user-select: none;
+    z-index: 2;
+    line-height: 1;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    height: 100%;
+    padding: 0 12px;
+    border: none;
+    background: transparent;
+    color: var(--color-text-base);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    box-sizing: border-box;
+    min-width: 0;
+    outline: none;
+  }
+
+  .input-symbol-wrapper:has(.currency-symbol) input {
+    padding-left: 28px;
+  }
+
+  .input-symbol-wrapper:has(.unit-symbol) input {
+    padding-right: 36px;
+  }
+
+  .slider-range {
+    width: 100%;
+    max-width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 2px;
+    accent-color: var(--color-primary);
+    box-sizing: border-box;
+  }
+
+  .input-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    margin-top: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Results Styling */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .results-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Dynamic Alert Banner */
+  .alert-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border-left: 4px solid transparent;
+  }
+
+  .alert-info {
+    background: rgba(37, 99, 235, 0.08);
+    border-left-color: var(--color-primary);
+    color: var(--color-text-base);
+  }
+
+  .alert-success {
+    background: rgba(22, 163, 74, 0.08);
+    border-left-color: #16a34a;
+    color: var(--color-text-base);
+  }
+
+  .alert-warning {
+    background: rgba(217, 119, 6, 0.08);
+    border-left-color: #d97706;
+    color: var(--color-text-base);
+  }
+
+  .alert-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .alert-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .alert-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .alert-desc {
+    font-size: 0.835rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
+
+  /* Net Value Container */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .net-value-box {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .cash-left-box {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .cash-returned-box {
+    border-top: 4px solid #0284c7;
+  }
+
+  .net-box-label {
+    font-size: 0.775rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-amount {
+    font-size: 1.65rem;
+    font-weight: 800;
+    line-height: 1.15;
+    word-break: break-word;
+  }
+
+  .net-box-amount.text-primary {
+    color: var(--color-primary);
+  }
+
+  .net-box-amount.text-accent {
+    color: #0284c7;
+  }
+
+  .net-box-amount.text-success {
+    color: #16a34a;
+  }
+
+  .net-box-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* BRRRR Flow Tracker Card */
+  .brrrr-flow-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .flow-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .flow-title {
+    color: var(--color-text-base);
+  }
+
+  .flow-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+  }
+
+  .flow-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .flow-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+
+  :global(.dark) .flow-step-item {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .step-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .step-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .step-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+  }
+
+  .step-sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  /* Metrics Grid */
+  .metrics-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .results-grid.brrrr-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .result-tile {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .tile-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  .tile-value.text-primary {
+    color: var(--color-primary);
+  }
+
+  .tile-value.text-success {
+    color: #16a34a;
+  }
+
+  .tile-sub {
+    font-size: 0.725rem;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  /* Context Card */
+  .brrrr-context-card {
+    background: var(--color-bg-base);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .context-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .context-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .context-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .context-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-primary);
+  }
+
+  .context-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .context-desc {
+    font-size: 0.835rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Mobile Responsiveness (Rules 1, 2, 15) */
+  @media (max-width: 600px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-label-row .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .net-value-container {
+      grid-template-columns: 1fr;
+    }
+
+    .flow-steps-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .results-grid.brrrr-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

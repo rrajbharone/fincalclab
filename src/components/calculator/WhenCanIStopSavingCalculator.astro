@@ -1,0 +1,1338 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="When Can I Stop Saving for Retirement Calculator"
+  description="Find out at what age you can stop making new retirement contributions and let your existing investments compound until retirement."
+  category="Retirement &amp; Investing"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="when-can-i-stop-calculator">
+    
+    <!-- Section 1: Retirement Horizon & Living Expenses -->
+    <h3 class="input-section-heading">1. Retirement Horizon &amp; Expenses</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <label for="wss-currency-select" class="field-label-top">Currency</label>
+      <select id="wss-currency-select" class="form-select-full" aria-label="Select Currency">
+        <option value="USD" selected>USD ($) - US Dollar</option>
+        <option value="EUR">EUR (€) - Euro</option>
+        <option value="GBP">GBP (£) - British Pound</option>
+        <option value="CAD">CAD (C$) - Canadian Dollar</option>
+        <option value="AUD">AUD (A$) - Australian Dollar</option>
+        <option value="INR">INR (₹) - Indian Rupee</option>
+        <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        <option value="JPY">JPY (¥) - Japanese Yen</option>
+        <option value="CHF">CHF (CHF) - Swiss Franc</option>
+      </select>
+    </div>
+
+    <!-- Current Age -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="wss-current-age-input">Current Age</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="wss-current-age-input" 
+            min="18" 
+            max="80" 
+            step="1" 
+            value="30" 
+            aria-label="Current Age" 
+          />
+          <span class="unit-symbol">yrs</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="wss-current-age-slider" 
+        min="18" 
+        max="80" 
+        step="1" 
+        value="30" 
+        class="slider-range" 
+        aria-label="Current Age Slider" 
+      />
+      <span class="input-hint">Your current age today in years.</span>
+    </div>
+
+    <!-- Target Retirement Age -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="wss-retire-age-input">Target Retirement Age</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="wss-retire-age-input" 
+            min="25" 
+            max="90" 
+            step="1" 
+            value="65" 
+            aria-label="Target Retirement Age" 
+          />
+          <span class="unit-symbol">yrs</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="wss-retire-age-slider" 
+        min="25" 
+        max="90" 
+        step="1" 
+        value="65" 
+        class="slider-range" 
+        aria-label="Target Retirement Age Slider" 
+      />
+      <span class="input-hint">The age when you plan to fully retire and begin withdrawing portfolio funds.</span>
+    </div>
+
+    <!-- Annual Retirement Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="wss-expenses-input">Annual Retirement Expenses</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-exp">$</span>
+          <input 
+            type="number" 
+            id="wss-expenses-input" 
+            min="5000" 
+            max="500000" 
+            step="2500" 
+            value="50000" 
+            aria-label="Annual Retirement Expenses" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="wss-expenses-slider" 
+        min="10000" 
+        max="250000" 
+        step="2500" 
+        value="50000" 
+        class="slider-range" 
+        aria-label="Annual Retirement Expenses Slider" 
+      />
+      <span class="input-hint">Expected annual retirement living spending, expressed in today's purchasing power.</span>
+    </div>
+
+    <!-- Section 2: Portfolio & Growth Assumptions -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">2. Portfolio &amp; Growth Assumptions</h3>
+      
+      <!-- Current Retirement Investments -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="wss-investments-input">Current Retirement Investments</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-inv">$</span>
+            <input 
+              type="number" 
+              id="wss-investments-input" 
+              min="0" 
+              max="5000000" 
+              step="5000" 
+              value="100000" 
+              aria-label="Current Retirement Investments" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="wss-investments-slider" 
+          min="0" 
+          max="1000000" 
+          step="5000" 
+          value="100000" 
+          class="slider-range" 
+          aria-label="Current Investments Slider" 
+        />
+        <span class="input-hint">Total invested assets currently dedicated to your retirement (401k, IRA, brokerage, super).</span>
+      </div>
+
+      <!-- Current Annual Retirement Contributions -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="wss-contrib-input">Annual Retirement Contributions</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-contrib">$</span>
+            <input 
+              type="number" 
+              id="wss-contrib-input" 
+              min="0" 
+              max="150000" 
+              step="500" 
+              value="12000" 
+              aria-label="Current Annual Retirement Contributions" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="wss-contrib-slider" 
+          min="0" 
+          max="60000" 
+          step="500" 
+          value="12000" 
+          class="slider-range" 
+          aria-label="Annual Contributions Slider" 
+        />
+        <span class="input-hint">Total ongoing amount you invest per year (e.g. $1,000/mo = $12,000/yr).</span>
+      </div>
+
+      <!-- Expected Annual Investment Return -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="wss-return-input">Expected Annual Investment Return</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="wss-return-input" 
+              min="0.0" 
+              max="15.0" 
+              step="0.25" 
+              value="8.0" 
+              aria-label="Expected Annual Investment Return" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="wss-return-slider" 
+          min="1.0" 
+          max="14.0" 
+          step="0.25" 
+          value="8.0" 
+          class="slider-range" 
+          aria-label="Investment Return Slider" 
+        />
+        <span class="input-hint">Estimated annual nominal market return before inflation (broad equities average ~7%–10%).</span>
+      </div>
+
+      <!-- Expected Annual Inflation Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="wss-inflation-input">Expected Annual Inflation Rate</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="wss-inflation-input" 
+              min="0.0" 
+              max="10.0" 
+              step="0.1" 
+              value="2.5" 
+              aria-label="Expected Annual Inflation Rate" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="wss-inflation-slider" 
+          min="0.0" 
+          max="7.0" 
+          step="0.1" 
+          value="2.5" 
+          class="slider-range" 
+          aria-label="Inflation Rate Slider" 
+        />
+        <span class="input-hint">Estimated long-term inflation rate (central bank targets generally average 2%–3%).</span>
+      </div>
+
+      <!-- Safe Withdrawal Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="wss-swr-input">Safe Withdrawal Rate (SWR)</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="wss-swr-input" 
+              min="2.0" 
+              max="6.0" 
+              step="0.25" 
+              value="4.0" 
+              aria-label="Safe Withdrawal Rate" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="wss-swr-slider" 
+          min="2.5" 
+          max="5.5" 
+          step="0.25" 
+          value="4.0" 
+          class="slider-range" 
+          aria-label="SWR Slider" 
+        />
+        <span class="input-hint">Standard 4.0% baseline rule from the Trinity Study to calculate required retirement nest egg.</span>
+      </div>
+
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="wss-reset-btn" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Retirement Contribution Stop Age &amp; Growth Projection</h3>
+
+    <!-- Dynamic Alert Banner (Status Message) -->
+    <div id="res-alert-banner" class="alert-banner alert-info">
+      <div class="alert-icon" id="res-alert-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      </div>
+      <div class="alert-content">
+        <div class="alert-title" id="res-alert-title">Calculating Stop Saving Age...</div>
+        <div class="alert-desc" id="res-alert-desc">
+          Simulating month-by-month compound growth trajectory to find your earliest contribution stopping threshold.
+        </div>
+      </div>
+    </div>
+
+    <!-- Primary Net Value Displays (Rule 15 Compliant) -->
+    <div class="net-value-container">
+      <!-- Card 1: Estimated Stop Saving Age -->
+      <div class="net-value-box stop-age-box">
+        <span class="net-box-label">Estimated Stop Saving Age</span>
+        <div id="res-stop-age" class="net-box-amount text-primary">Age 41</div>
+        <span class="net-box-sub" id="lbl-stop-time-sub">11 Years, 1 Month from now</span>
+      </div>
+
+      <!-- Card 2: Projected Portfolio at Retirement -->
+      <div class="net-value-box projected-box">
+        <span class="net-box-label">Projected at Retirement</span>
+        <div id="res-projected-port" class="net-box-amount text-accent">$1,250,582</div>
+        <span class="net-box-sub" id="lbl-surplus-sub">Surplus: +$582 above target</span>
+      </div>
+    </div>
+
+    <!-- Visual Timeline Phase Card -->
+    <div class="timeline-phase-card">
+      <div class="timeline-header-row">
+        <span class="timeline-title">Savings &amp; Growth Lifecycle</span>
+        <span class="timeline-badge" id="res-timeline-badge">11 Yrs Saving · 24 Yrs Coasting</span>
+      </div>
+      <div class="timeline-bar-track">
+        <div class="timeline-bar-saving" id="res-timeline-saving-bar" style="width: 31.7%;" title="Active Saving Phase"></div>
+        <div class="timeline-bar-coasting" id="res-timeline-coasting-bar" style="width: 68.3%;" title="Compound Growth Phase (No Contributions)"></div>
+      </div>
+      <div class="timeline-milestones-row">
+        <div class="milestone-item">
+          <span class="milestone-dot dot-start"></span>
+          <span class="milestone-label" id="lbl-milestone-now">Age 30 (Now)</span>
+        </div>
+        <div class="milestone-item milestone-middle">
+          <span class="milestone-dot dot-stop"></span>
+          <span class="milestone-label" id="lbl-milestone-stop">Age 41 (Stop Saving)</span>
+        </div>
+        <div class="milestone-item milestone-end">
+          <span class="milestone-dot dot-retire"></span>
+          <span class="milestone-label" id="lbl-milestone-retire">Age 65 (Retire)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid (Rule 15 Compliant) -->
+    <h4 class="metrics-section-heading">Detailed Milestone Breakdown</h4>
+    <div class="results-grid wss-metrics-grid">
+      <!-- 1. Required Retirement Portfolio Target -->
+      <div class="result-tile">
+        <span class="tile-label">Required Retirement Target</span>
+        <div class="tile-value text-base" id="tile-target-port">$1,250,000</div>
+        <span class="tile-sub" id="lbl-tile-target-sub">At 4.0% SWR ($50k/yr)</span>
+      </div>
+
+      <!-- 2. Time Until You Can Stop Saving -->
+      <div class="result-tile">
+        <span class="tile-label">Time Remaining to Save</span>
+        <div class="tile-value text-primary" id="tile-time-to-stop">11 Yrs, 1 Mo</div>
+        <span class="tile-sub" id="lbl-tile-stop-months">133 monthly contributions</span>
+      </div>
+
+      <!-- 3. Portfolio Balance at Stop Age -->
+      <div class="result-tile">
+        <span class="tile-label">Balance at Stop Age</span>
+        <div class="tile-value text-base" id="tile-balance-at-stop">$358,267</div>
+        <span class="tile-sub" id="lbl-tile-stop-sub">Amount needed to coast</span>
+      </div>
+
+      <!-- 4. Retirement Funding Surplus / Shortfall -->
+      <div class="result-tile">
+        <span class="tile-label">Retirement Surplus / Gap</span>
+        <div class="tile-value" id="tile-surplus-gap" style="color: var(--color-success, #16a34a);">+$582</div>
+        <span class="tile-sub" id="lbl-tile-gap-sub">Surplus at retirement</span>
+      </div>
+
+      <!-- 5. Current Annual Contribution -->
+      <div class="result-tile">
+        <span class="tile-label">Annual Contribution</span>
+        <div class="tile-value text-base" id="tile-annual-contrib">$12,000</div>
+        <span class="tile-sub" id="lbl-tile-contrib-sub">$1,000 per month</span>
+      </div>
+
+      <!-- 6. Real Annual Investment Return -->
+      <div class="result-tile">
+        <span class="tile-label">Real Investment Return</span>
+        <div class="tile-value text-base" id="tile-real-return">5.37% / yr</div>
+        <span class="tile-sub" id="lbl-tile-return-sub">Exact Fisher equation</span>
+      </div>
+    </div>
+
+    <!-- Educational Compounding Context Callout -->
+    <div class="wss-context-card">
+      <div class="context-header">
+        <div class="context-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="context-title-wrap">
+          <span class="context-eyebrow">Financial Freedom Milestone</span>
+          <h5 class="context-title">What Happens After You Stop Contributing?</h5>
+        </div>
+      </div>
+      <p class="context-desc" id="lbl-context-desc">
+        After reaching your contribution stop age, you do not need to save another cent for retirement. You can spend 100% of your earnings on lifestyle, downshift to a lower-stress job, or transition into part-time work while your existing portfolio compounds in the background until age 65.
+      </p>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Setup Client-side Calculation Engine with Astro page lifecycle compatibility
+  document.addEventListener('DOMContentLoaded', initWhenCanIStopCalc);
+  document.addEventListener('astro:page-load', initWhenCanIStopCalc);
+
+  function initWhenCanIStopCalc() {
+    const root = document.getElementById('when-can-i-stop-calculator');
+    if (!root) return;
+
+    // Currency Definitions
+    const currencyConfigs = {
+      USD: { symbol: '$', code: 'USD', locale: 'en-US' },
+      EUR: { symbol: '€', code: 'EUR', locale: 'de-DE' },
+      GBP: { symbol: '£', code: 'GBP', locale: 'en-GB' },
+      CAD: { symbol: 'C$', code: 'CAD', locale: 'en-CA' },
+      AUD: { symbol: 'A$', code: 'AUD', locale: 'en-AU' },
+      INR: { symbol: '₹', code: 'INR', locale: 'en-IN' },
+      SGD: { symbol: 'S$', code: 'SGD', locale: 'en-SG' },
+      JPY: { symbol: '¥', code: 'JPY', locale: 'ja-JP' },
+      CHF: { symbol: 'CHF', code: 'CHF', locale: 'de-CH' }
+    };
+
+    let activeCurrency = 'USD';
+
+    // Core Input Elements
+    const curSelect = document.getElementById('wss-currency-select');
+    const currentAgeInput = document.getElementById('wss-current-age-input');
+    const currentAgeSlider = document.getElementById('wss-current-age-slider');
+
+    const retireAgeInput = document.getElementById('wss-retire-age-input');
+    const retireAgeSlider = document.getElementById('wss-retire-age-slider');
+
+    const expensesInput = document.getElementById('wss-expenses-input');
+    const expensesSlider = document.getElementById('wss-expenses-slider');
+
+    const investmentsInput = document.getElementById('wss-investments-input');
+    const investmentsSlider = document.getElementById('wss-investments-slider');
+
+    const contribInput = document.getElementById('wss-contrib-input');
+    const contribSlider = document.getElementById('wss-contrib-slider');
+
+    const returnInput = document.getElementById('wss-return-input');
+    const returnSlider = document.getElementById('wss-return-slider');
+
+    const inflationInput = document.getElementById('wss-inflation-input');
+    const inflationSlider = document.getElementById('wss-inflation-slider');
+
+    const swrInput = document.getElementById('wss-swr-input');
+    const swrSlider = document.getElementById('wss-swr-slider');
+
+    const resetBtn = document.getElementById('wss-reset-btn');
+
+    // Display Elements
+    const alertBanner = document.getElementById('res-alert-banner');
+    const alertIcon = document.getElementById('res-alert-icon');
+    const alertTitle = document.getElementById('res-alert-title');
+    const alertDesc = document.getElementById('res-alert-desc');
+
+    const resStopAge = document.getElementById('res-stop-age');
+    const lblStopTimeSub = document.getElementById('lbl-stop-time-sub');
+
+    const resProjectedPort = document.getElementById('res-projected-port');
+    const lblSurplusSub = document.getElementById('lbl-surplus-sub');
+
+    // Timeline Elements
+    const resTimelineBadge = document.getElementById('res-timeline-badge');
+    const resTimelineSavingBar = document.getElementById('res-timeline-saving-bar');
+    const resTimelineCoastingBar = document.getElementById('res-timeline-coasting-bar');
+    const lblMilestoneNow = document.getElementById('lbl-milestone-now');
+    const lblMilestoneStop = document.getElementById('lbl-milestone-stop');
+    const lblMilestoneRetire = document.getElementById('lbl-milestone-retire');
+
+    // Key Metric Tiles
+    const tileTargetPort = document.getElementById('tile-target-port');
+    const lblTileTargetSub = document.getElementById('lbl-tile-target-sub');
+
+    const tileTimeToStop = document.getElementById('tile-time-to-stop');
+    const lblTileStopMonths = document.getElementById('lbl-tile-stop-months');
+
+    const tileBalanceAtStop = document.getElementById('tile-balance-at-stop');
+    const lblTileStopSub = document.getElementById('lbl-tile-stop-sub');
+
+    const tileSurplusGap = document.getElementById('tile-surplus-gap');
+    const lblTileGapSub = document.getElementById('lbl-tile-gap-sub');
+
+    const tileAnnualContrib = document.getElementById('tile-annual-contrib');
+    const lblTileContribSub = document.getElementById('lbl-tile-contrib-sub');
+
+    const tileRealReturn = document.getElementById('tile-real-return');
+    const lblTileReturnSub = document.getElementById('lbl-tile-return-sub');
+
+    const lblContextDesc = document.getElementById('lbl-context-desc');
+
+    // Formatting Helpers
+    function getSym() {
+      return currencyConfigs[activeCurrency]?.symbol || '$';
+    }
+
+    function formatCurrency(val) {
+      if (val === Infinity || val === null || isNaN(val)) return '—';
+      const cfg = currencyConfigs[activeCurrency] || currencyConfigs.USD;
+      return new Intl.NumberFormat(cfg.locale, {
+        style: 'currency',
+        currency: cfg.code,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(Math.round(val));
+    }
+
+    function formatMonths(m) {
+      if (m <= 0) return '0 Months (Goal Met)';
+      const yrs = Math.floor(m / 12);
+      const rem = m % 12;
+      if (yrs === 0) return `${rem} Mo${rem === 1 ? '' : 's'}`;
+      if (rem === 0) return `${yrs} Yr${yrs === 1 ? '' : 's'}`;
+      return `${yrs} Yr${yrs === 1 ? '' : 's'}, ${rem} Mo${rem === 1 ? '' : 's'}`;
+    }
+
+    // Two-way synchronization between number input and range slider
+    function syncInput(inputEl, sliderEl) {
+      if (!inputEl || !sliderEl) return;
+      inputEl.addEventListener('input', () => {
+        sliderEl.value = inputEl.value;
+        recalculate();
+      });
+      sliderEl.addEventListener('input', () => {
+        inputEl.value = sliderEl.value;
+        recalculate();
+      });
+    }
+
+    syncInput(currentAgeInput, currentAgeSlider);
+    syncInput(retireAgeInput, retireAgeSlider);
+    syncInput(expensesInput, expensesSlider);
+    syncInput(investmentsInput, investmentsSlider);
+    syncInput(contribInput, contribSlider);
+    syncInput(returnInput, returnSlider);
+    syncInput(inflationInput, inflationSlider);
+    syncInput(swrInput, swrSlider);
+
+    // Currency Switcher
+    if (curSelect) {
+      curSelect.addEventListener('change', (e) => {
+        activeCurrency = e.target.value;
+        const sym = getSym();
+        document.querySelectorAll('.currency-symbol').forEach(el => {
+          el.textContent = sym;
+        });
+        recalculate();
+      });
+    }
+
+    // Reset Button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currentAgeInput.value = '30';
+        currentAgeSlider.value = '30';
+        retireAgeInput.value = '65';
+        retireAgeSlider.value = '65';
+        expensesInput.value = '50000';
+        expensesSlider.value = '50000';
+        investmentsInput.value = '100000';
+        investmentsSlider.value = '100000';
+        contribInput.value = '12000';
+        contribSlider.value = '12000';
+        returnInput.value = '8.0';
+        returnSlider.value = '8.0';
+        inflationInput.value = '2.5';
+        inflationSlider.value = '2.5';
+        swrInput.value = '4.0';
+        swrSlider.value = '4.0';
+        recalculate();
+      });
+    }
+
+    // Calculation Engine
+    function recalculate() {
+      const currentAge = parseInt(currentAgeInput?.value, 10) || 0;
+      const retireAge = parseInt(retireAgeInput?.value, 10) || 0;
+      const annualExpenses = Math.max(0, parseFloat(expensesInput?.value) || 0);
+      const currentInvestments = Math.max(0, parseFloat(investmentsInput?.value) || 0);
+      const annualContributions = Math.max(0, parseFloat(contribInput?.value) || 0);
+      const expectedReturn = Math.max(0, parseFloat(returnInput?.value) || 0);
+      const expectedInflation = Math.max(0, parseFloat(inflationInput?.value) || 0);
+      const swr = Math.max(0.1, parseFloat(swrInput?.value) || 4.0);
+
+      const yearsTotal = retireAge - currentAge;
+
+      // Validate age horizon
+      if (yearsTotal <= 0) {
+        alertBanner.className = 'alert-banner alert-warning';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+        alertTitle.textContent = '⚠️ Retirement Age Must Be Greater Than Current Age';
+        alertDesc.textContent = 'Please adjust your target retirement age to be greater than your current age to simulate compound retirement growth.';
+
+        resStopAge.textContent = '—';
+        lblStopTimeSub.textContent = 'Please update age inputs';
+        resProjectedPort.textContent = formatCurrency(currentInvestments);
+        lblSurplusSub.textContent = 'Target: ' + formatCurrency(annualExpenses / (swr / 100));
+
+        tileTargetPort.textContent = formatCurrency(annualExpenses / (swr / 100));
+        tileTimeToStop.textContent = '—';
+        tileBalanceAtStop.textContent = '—';
+        tileSurplusGap.textContent = '—';
+        tileAnnualContrib.textContent = formatCurrency(annualContributions);
+        tileRealReturn.textContent = '—';
+
+        resTimelineBadge.textContent = 'Invalid Age Horizon';
+        resTimelineSavingBar.style.width = '0%';
+        resTimelineCoastingBar.style.width = '0%';
+        lblMilestoneNow.textContent = `Age ${currentAge}`;
+        lblMilestoneStop.textContent = '—';
+        lblMilestoneRetire.textContent = `Age ${retireAge}`;
+        lblContextDesc.textContent = 'Adjust your retirement age above your current age to see your personalized stopping timeline.';
+        return;
+      }
+
+      const totalMonths = yearsTotal * 12;
+      const swrDecimal = swr / 100;
+      const targetPortfolio = annualExpenses / swrDecimal;
+
+      // Exact Fisher real return
+      const rNom = expectedReturn / 100;
+      const rInf = expectedInflation / 100;
+      let rRealAnnual = 0;
+      if (1 + rInf > 0) {
+        rRealAnnual = ((1 + rNom) / (1 + rInf)) - 1;
+      } else {
+        rRealAnnual = rNom - rInf;
+      }
+
+      // Monthly equivalent real rate
+      let rMonthly = 0;
+      if (rRealAnnual > -1) {
+        rMonthly = Math.pow(1 + rRealAnnual, 1 / 12) - 1;
+      }
+
+      const monthlyContrib = annualContributions / 12;
+
+      // Check Month 0: Can user stop saving right now?
+      const projIfStopNow = currentInvestments * Math.pow(1 + rMonthly, totalMonths);
+
+      if (projIfStopNow >= targetPortfolio) {
+        // Status: CAN_STOP_NOW
+        const surplus = projIfStopNow - targetPortfolio;
+        alertBanner.className = 'alert-banner alert-success';
+        alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+        alertTitle.textContent = "🎉 You May Be Able to Stop Saving Now!";
+        alertDesc.textContent = `Your current investments of ${formatCurrency(currentInvestments)} are projected to compound into ${formatCurrency(projIfStopNow)} by age ${retireAge} at an estimated real return of ${(rRealAnnual * 100).toFixed(2)}%, exceeding your target of ${formatCurrency(targetPortfolio)} with $0 in further contributions!`;
+
+        resStopAge.textContent = `Now (Age ${currentAge})`;
+        lblStopTimeSub.textContent = '0 Months remaining — Target already funded!';
+
+        resProjectedPort.textContent = formatCurrency(projIfStopNow);
+        lblSurplusSub.textContent = `Surplus: +${formatCurrency(surplus)} above target`;
+
+        tileTargetPort.textContent = formatCurrency(targetPortfolio);
+        lblTileTargetSub.textContent = `At ${swr.toFixed(1)}% SWR (${formatCurrency(annualExpenses)}/yr)`;
+
+        tileTimeToStop.textContent = '0 Months';
+        lblTileStopMonths.textContent = 'No more contributions required';
+
+        tileBalanceAtStop.textContent = formatCurrency(currentInvestments);
+        lblTileStopSub.textContent = 'Current portfolio is sufficient';
+
+        tileSurplusGap.textContent = `+${formatCurrency(surplus)}`;
+        tileSurplusGap.style.color = 'var(--color-success, #16a34a)';
+        lblTileGapSub.textContent = 'Surplus portfolio at retirement';
+
+        tileAnnualContrib.textContent = formatCurrency(annualContributions);
+        lblTileContribSub.textContent = `${formatCurrency(monthlyContrib)}/mo can be repurposed`;
+
+        tileRealReturn.textContent = `${(rRealAnnual * 100).toFixed(2)}% / yr`;
+        lblTileReturnSub.textContent = 'Exact Fisher inflation adjustment';
+
+        // Timeline: 0% saving, 100% coasting
+        resTimelineBadge.textContent = `0 Yrs Saving · ${yearsTotal} Yrs Coasting`;
+        resTimelineSavingBar.style.width = '0%';
+        resTimelineCoastingBar.style.width = '100%';
+        lblMilestoneNow.textContent = `Age ${currentAge} (Now)`;
+        lblMilestoneStop.textContent = `Age ${currentAge} (Stop Saving)`;
+        lblMilestoneRetire.textContent = `Age ${retireAge} (Retire)`;
+
+        lblContextDesc.innerHTML = `Your portfolio has already reached its <strong>Coast FIRE threshold</strong>! Because compound growth on your existing <strong>${formatCurrency(currentInvestments)}</strong> can fund your entire <strong>${formatCurrency(targetPortfolio)}</strong> retirement goal, you can immediately redirect your <strong>${formatCurrency(annualContributions)}/year</strong> toward present lifestyle, debt elimination, or career flexibility.`;
+        return;
+      }
+
+      // Month-by-month numerical simulation
+      let runningBalance = currentInvestments;
+      let foundMonth = null;
+
+      for (let m = 1; m <= totalMonths; m++) {
+        runningBalance = runningBalance * (1 + rMonthly) + monthlyContrib;
+        const remainingMonths = totalMonths - m;
+        const finalProjected = runningBalance * Math.pow(1 + rMonthly, remainingMonths);
+
+        if (finalProjected >= targetPortfolio) {
+          foundMonth = m;
+          const stopAgeYears = currentAge + Math.floor(m / 12);
+          const stopAgeMonths = m % 12;
+          const surplus = finalProjected - targetPortfolio;
+
+          alertBanner.className = 'alert-banner alert-info';
+          alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+          alertTitle.textContent = `🎯 Estimated Contribution Stop Age: Age ${stopAgeYears}${stopAgeMonths > 0 ? ` & ${stopAgeMonths} Mo` : ''}`;
+          alertDesc.textContent = `By contributing ${formatCurrency(annualContributions)}/year (${formatCurrency(monthlyContrib)}/mo) for the next ${formatMonths(m)}, your portfolio is projected to reach ${formatCurrency(runningBalance)}. From that point, compound growth alone can carry it to ${formatCurrency(finalProjected)} by age ${retireAge}.`;
+
+          resStopAge.textContent = `Age ${stopAgeYears}${stopAgeMonths > 0 ? ` & ${stopAgeMonths}m` : ''}`;
+          lblStopTimeSub.textContent = `${formatMonths(m)} of savings remaining`;
+
+          resProjectedPort.textContent = formatCurrency(finalProjected);
+          lblSurplusSub.textContent = `Surplus: +${formatCurrency(surplus)} above target`;
+
+          tileTargetPort.textContent = formatCurrency(targetPortfolio);
+          lblTileTargetSub.textContent = `At ${swr.toFixed(1)}% SWR (${formatCurrency(annualExpenses)}/yr)`;
+
+          tileTimeToStop.textContent = formatMonths(m);
+          lblTileStopMonths.textContent = `${m} monthly contributions needed`;
+
+          tileBalanceAtStop.textContent = formatCurrency(runningBalance);
+          lblTileStopSub.textContent = `Needed at age ${stopAgeYears} to coast`;
+
+          tileSurplusGap.textContent = `+${formatCurrency(surplus)}`;
+          tileSurplusGap.style.color = 'var(--color-success, #16a34a)';
+          lblTileGapSub.textContent = 'Surplus portfolio at retirement';
+
+          tileAnnualContrib.textContent = formatCurrency(annualContributions);
+          lblTileContribSub.textContent = `${formatCurrency(monthlyContrib)} per month`;
+
+          tileRealReturn.textContent = `${(rRealAnnual * 100).toFixed(2)}% / yr`;
+          lblTileReturnSub.textContent = 'Exact Fisher inflation adjustment';
+
+          // Timeline calculations
+          const savingPct = (m / totalMonths) * 100;
+          const coastingPct = 100 - savingPct;
+          const savingYrs = (m / 12).toFixed(1);
+          const coastingYrs = ((totalMonths - m) / 12).toFixed(1);
+
+          resTimelineBadge.textContent = `${savingYrs} Yrs Saving · ${coastingYrs} Yrs Coasting`;
+          resTimelineSavingBar.style.width = `${savingPct}%`;
+          resTimelineCoastingBar.style.width = `${coastingPct}%`;
+          lblMilestoneNow.textContent = `Age ${currentAge} (Now)`;
+          lblMilestoneStop.textContent = `Age ${stopAgeYears} (Stop Saving)`;
+          lblMilestoneRetire.textContent = `Age ${retireAge} (Retire)`;
+
+          lblContextDesc.innerHTML = `You only need to actively save for <strong>${formatMonths(m)}</strong>! Once your portfolio reaches <strong>${formatCurrency(runningBalance)}</strong> at age <strong>${stopAgeYears}</strong>, compound interest at a <strong>${(rRealAnnual * 100).toFixed(2)}%</strong> real return does 100% of the remaining work for the next <strong>${coastingYrs} years</strong>.`;
+          return;
+        }
+      }
+
+      // If even saving until retirement age does not hit target:
+      const finalProjectedAtRetire = runningBalance;
+      const shortfall = targetPortfolio - finalProjectedAtRetire;
+
+      alertBanner.className = 'alert-banner alert-warning';
+      alertIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+      alertTitle.textContent = "⚠️ Your Current Plan Needs More Savings";
+      alertDesc.textContent = `Even contributing ${formatCurrency(annualContributions)}/year until age ${retireAge}, your projected retirement portfolio of ${formatCurrency(finalProjectedAtRetire)} falls short of your ${formatCurrency(targetPortfolio)} target by ${formatCurrency(shortfall)}. Increase your contributions or adjust your timeline to establish a viable stopping age.`;
+
+      resStopAge.textContent = 'Not Yet Feasible';
+      lblStopTimeSub.textContent = `Shortfall of ${formatCurrency(shortfall)} at retirement`;
+
+      resProjectedPort.textContent = formatCurrency(finalProjectedAtRetire);
+      lblSurplusSub.textContent = `Shortfall: -${formatCurrency(shortfall)} below target`;
+
+      tileTargetPort.textContent = formatCurrency(targetPortfolio);
+      lblTileTargetSub.textContent = `At ${swr.toFixed(1)}% SWR (${formatCurrency(annualExpenses)}/yr)`;
+
+      tileTimeToStop.textContent = `>${yearsTotal} Years`;
+      lblTileStopMonths.textContent = 'Contributions needed through retirement';
+
+      tileBalanceAtStop.textContent = '—';
+      lblTileStopSub.textContent = 'Higher savings rate needed';
+
+      tileSurplusGap.textContent = `-${formatCurrency(shortfall)}`;
+      tileSurplusGap.style.color = '#dc2626';
+      lblTileGapSub.textContent = 'Funding shortfall at retirement';
+
+      tileAnnualContrib.textContent = formatCurrency(annualContributions);
+      lblTileContribSub.textContent = `${formatCurrency(monthlyContrib)} per month`;
+
+      tileRealReturn.textContent = `${(rRealAnnual * 100).toFixed(2)}% / yr`;
+      lblTileReturnSub.textContent = 'Exact Fisher inflation adjustment';
+
+      resTimelineBadge.textContent = `${yearsTotal} Yrs Saving · Plan Needs Adjustment`;
+      resTimelineSavingBar.style.width = '100%';
+      resTimelineCoastingBar.style.width = '0%';
+      lblMilestoneNow.textContent = `Age ${currentAge} (Now)`;
+      lblMilestoneStop.textContent = 'Needs More Savings';
+      lblMilestoneRetire.textContent = `Age ${retireAge} (Retire)`;
+
+      lblContextDesc.innerHTML = `Under current assumptions, your savings cannot yet coast to your <strong>${formatCurrency(targetPortfolio)}</strong> goal. Consider boosting your annual savings, exploring lower retirement living expenses, or extending your working years to reach your retirement milestone sooner.`;
+    }
+
+    // Initialize initial calculations
+    recalculate();
+
+    // Clipboard Copy Handler for Toolbar
+    window.addEventListener('copy-calculator-results', () => {
+      const curAgeVal = currentAgeInput.value;
+      const retAgeVal = retireAgeInput.value;
+      const expVal = expensesInput.value;
+      const invVal = investmentsInput.value;
+      const contribVal = contribInput.value;
+      const retVal = returnInput.value;
+      const infVal = inflationInput.value;
+      const swrVal = swrInput.value;
+
+      const stopAgeVal = resStopAge.textContent;
+      const timeToStopVal = lblStopTimeSub.textContent;
+      const targetVal = tileTargetPort.textContent;
+      const projPortVal = resProjectedPort.textContent;
+      const surplusGapVal = tileSurplusGap.textContent;
+      const bannerTitle = alertTitle.textContent;
+
+      const report = `When Can I Stop Saving for Retirement Report:\n` +
+                     `Current Age: ${curAgeVal} | Target Retirement Age: ${retAgeVal}\n` +
+                     `Annual Living Expenses: ${formatCurrency(parseFloat(expVal))} | SWR: ${swrVal}%\n` +
+                     `Annual Contributions: ${formatCurrency(parseFloat(contribVal))} | Current Portfolio: ${formatCurrency(parseFloat(invVal))}\n` +
+                     `Estimated Contribution Stop Age: ${stopAgeVal}\n` +
+                     `Time Until Stop: ${timeToStopVal}\n` +
+                     `Required Retirement Target: ${targetVal}\n` +
+                     `Projected Portfolio at Retirement: ${projPortVal}\n` +
+                     `Funding Surplus / Gap: ${surplusGapVal}\n` +
+                     `Status Assessment: ${bannerTitle}\n` +
+                     `Generated by FinCalcLab.com When Can I Stop Saving for Retirement Calculator`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      }).catch(err => {
+        console.error('Clipboard copy failed:', err);
+      });
+    });
+  }
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .input-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-2) 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+    min-width: 0;
+  }
+
+  .field-label-top {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .form-select-full {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .form-select-full:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .input-label-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .input-label-row label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-text-base);
+    min-width: 0;
+    display: block;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    height: 42px;
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    height: 38px;
+    padding: 0 var(--space-3);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .unit-symbol {
+    position: absolute;
+    right: var(--space-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+    margin-top: var(--space-1);
+    accent-color: var(--color-primary);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-hint {
+    font-size: 0.775rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+
+  /* Results Section */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Alert / Warning Banner */
+  .alert-banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    line-height: 1.45;
+  }
+
+  .alert-banner.alert-success {
+    background: rgba(22, 163, 74, 0.08);
+    border-color: rgba(22, 163, 74, 0.25);
+    color: var(--color-text-base);
+  }
+
+  .alert-banner.alert-success .alert-icon {
+    color: #16a34a;
+  }
+
+  .alert-banner.alert-info {
+    background: rgba(37, 99, 235, 0.08);
+    border-color: rgba(37, 99, 235, 0.25);
+    color: var(--color-text-base);
+  }
+
+  .alert-banner.alert-info .alert-icon {
+    color: var(--color-primary);
+  }
+
+  .alert-banner.alert-warning {
+    background: rgba(234, 88, 12, 0.08);
+    border-color: rgba(234, 88, 12, 0.25);
+    color: var(--color-text-base);
+  }
+
+  .alert-banner.alert-warning .alert-icon {
+    color: #ea580c;
+  }
+
+  .alert-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .alert-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .alert-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .alert-desc {
+    font-size: 0.835rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Net Value Container */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .net-value-box {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .stop-age-box {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .projected-box {
+    border-top: 4px solid #0284c7;
+  }
+
+  .net-box-label {
+    font-size: 0.775rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-amount {
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.15;
+    word-break: break-word;
+  }
+
+  .net-box-amount.text-primary {
+    color: var(--color-primary);
+  }
+
+  .net-box-amount.text-accent {
+    color: #0284c7;
+  }
+
+  .net-box-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Timeline Phase Card */
+  .timeline-phase-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .timeline-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .timeline-title {
+    color: var(--color-text-base);
+  }
+
+  .timeline-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+  }
+
+  .timeline-bar-track {
+    width: 100%;
+    height: 12px;
+    background: var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .timeline-bar-saving {
+    background: var(--color-primary);
+    transition: width 0.3s ease;
+  }
+
+  .timeline-bar-coasting {
+    background: #16a34a;
+    transition: width 0.3s ease;
+  }
+
+  .timeline-milestones-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .milestone-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot-start { background: var(--color-primary); }
+  .dot-stop { background: #0284c7; }
+  .dot-retire { background: #16a34a; }
+
+  /* Key Milestone Metrics Grid */
+  .metrics-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .results-grid.wss-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .result-tile {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .tile-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+  }
+
+  .tile-value {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  .tile-sub {
+    font-size: 0.725rem;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  /* Compounding Context Card */
+  .wss-context-card {
+    background: var(--color-bg-base);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .context-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .context-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .context-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .context-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-primary);
+  }
+
+  .context-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .context-desc {
+    font-size: 0.835rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Mobile Responsiveness for Form Inputs */
+  @media (max-width: 600px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-label-row .input-symbol-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .net-value-container {
+      grid-template-columns: 1fr;
+    }
+
+    .results-grid.wss-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

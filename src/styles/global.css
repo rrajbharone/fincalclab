@@ -223,28 +223,242 @@ img {
   .grid-cols-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
-/* Currency Selector Styling */
-.currency-select {
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-text-base);
-  background-color: var(--color-bg-base);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 0 12px;
-  width: 100%;
-  max-width: 280px;
-  height: 42px;
-  outline: none;
-  cursor: pointer;
-  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+/* ==========================================================================
+   FINCALCLAB STANDARDIZED FORM FIELD SYSTEM (GLOBAL)
+   Rule: Every label MUST appear clearly ABOVE its corresponding input, select,
+   or dropdown with clean vertical spacing.
+   Zero overlapping text, zero clipping, fully responsive from 320px to 1920px.
+   ========================================================================== */
+
+/* Input Groups */
+.input-group,
+.calc-inputs-wrapper .input-group,
+.calculator-inputs-column .input-group,
+.form-field-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-bottom: var(--space-4) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
 }
 
-.currency-select:focus {
-  border-color: var(--color-primary);
+/* Row Grid (side-by-side fields on desktop/tablet) */
+.input-row-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: var(--space-4) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-bottom: var(--space-4) !important;
+  align-items: start !important;
 }
 
-html.dark .currency-select {
-  background-color: var(--color-bg-surface);
+.input-row-grid > .input-group,
+.input-row-grid > .form-field-wrapper {
+  margin-bottom: 0 !important;
 }
+
+/* Label & Input Row: ALWAYS Stacked Vertically */
+.input-label-row,
+.calc-inputs-wrapper .input-label-row,
+.calculator-inputs-column .input-label-row,
+.form-field-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* All Labels: Positioned Above, Full Width, Natural Multi-line Wrapping */
+.input-label-row label,
+.field-label-top,
+.input-group > label,
+.calc-inputs-wrapper label,
+.form-field-label {
+  display: block !important;
+  width: 100% !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: var(--color-text-base) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto;
+  min-width: 0 !important;
+}
+
+/* Input Symbol Wrapper & Form Field Controls: 100% Width Below Label */
+.input-symbol-wrapper,
+.calc-inputs-wrapper .input-symbol-wrapper,
+.calculator-inputs-column .input-symbol-wrapper,
+.form-field-control {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  background-color: var(--color-bg-base) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast) !important;
+}
+
+html.dark .input-symbol-wrapper,
+html.dark .form-field-control {
+  background-color: var(--color-bg-surface) !important;
+}
+
+.input-symbol-wrapper:focus-within,
+.form-field-control:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Inputs Inside Wrapper */
+.input-symbol-wrapper input,
+.form-field-control input {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 12px !important;
+  border: none !important;
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: var(--color-text-base) !important;
+  text-align: right !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  min-width: 0 !important;
+}
+
+.input-symbol-wrapper:has(.currency-symbol) input,
+.form-field-control:has(.form-field-prefix) input {
+  padding-left: 28px !important;
+}
+
+.input-symbol-wrapper:has(.unit-symbol, .percent-symbol, .years-symbol) input,
+.form-field-control:has(.form-field-suffix) input {
+  padding-right: 36px !important;
+}
+
+/* Prefix & Suffix Symbols */
+.input-symbol-wrapper .currency-symbol,
+.form-field-control .form-field-prefix {
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  color: var(--color-text-muted) !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  z-index: 2 !important;
+  line-height: 1 !important;
+}
+
+.input-symbol-wrapper .unit-symbol,
+.input-symbol-wrapper .percent-symbol,
+.input-symbol-wrapper .years-symbol,
+.form-field-control .form-field-suffix {
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: var(--color-text-muted) !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  z-index: 2 !important;
+  line-height: 1 !important;
+}
+
+/* Dropdowns & Select Boxes */
+.form-select-full,
+.currency-select,
+.input-group select,
+.calc-inputs-wrapper select,
+.form-field-control select {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 42px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  background-color: var(--color-bg-base) !important;
+  color: var(--color-text-base) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast) !important;
+}
+
+html.dark .form-select-full,
+html.dark .currency-select,
+html.dark .input-group select,
+html.dark .calc-inputs-wrapper select,
+html.dark .form-field-control select {
+  background-color: var(--color-bg-surface) !important;
+}
+
+.form-select-full:focus,
+.currency-select:focus,
+.input-group select:focus,
+.form-field-control select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Sliders */
+.slider-range {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--color-border) !important;
+  outline: none !important;
+  cursor: pointer !important;
+  margin-top: 8px !important;
+  margin-bottom: 2px !important;
+  accent-color: var(--color-primary) !important;
+  box-sizing: border-box !important;
+}
+
+/* Helper Hints */
+.input-hint,
+.form-field-hint {
+  display: block !important;
+  font-size: 0.75rem !important;
+  color: var(--color-text-muted) !important;
+  line-height: 1.4 !important;
+  margin-top: 4px !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Responsive Grid Stacking for Small Mobile Viewports (< 540px) */
+@media (max-width: 540px) {
+  .input-row-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4) !important;
+  }
+}
+

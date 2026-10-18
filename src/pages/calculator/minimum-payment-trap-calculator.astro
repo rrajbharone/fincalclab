@@ -1,0 +1,853 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MinimumPaymentTrapCalculator from '../../components/calculator/MinimumPaymentTrapCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'Minimum Payment Trap Calculator', item: '/calculator/minimum-payment-trap-calculator' }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the credit card minimum payment trap?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The minimum payment trap occurs when a credit cardholder pays only the minimum amount required by the bank each billing cycle. Because minimum payment formulas are designed to decline as your balance decreases, the vast majority of each payment goes toward finance charges and interest fees rather than reducing your principal. This stretches a modest debt across decades and forces you to pay many times the original balance in compound interest."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does it take to pay off credit card debt with minimum payments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "At typical credit card interest rates of 21% to 25% APR, paying only the minimum payment can take anywhere from 15 to 30 years to repay a $5,000 balance, depending on whether your issuer calculates minimums as 1% of principal plus interest or 2% of the total balance. Under older formulas with low fixed percentage minimums, a balance may take upwards of 40 to 80 years to fully repay."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much interest will I pay if I only make minimum payments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You will frequently pay more than 100% to 200% of your initial balance in interest alone. For example, carrying a $5,000 balance at 21.99% APR on a standard 1% plus interest formula generates approximately $5,658 in total interest fees over 19 years. Under a flat 2% balance formula, total interest can exceed $43,000 across 80 years."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it better to pay the minimum or a fixed monthly amount?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is vastly superior to pay a fixed dollar amount each month rather than a declining minimum payment. When you pay a fixed amount, such as $200 every month on a $5,000 debt at 21.99% APR, as your balance declines, a progressively larger percentage of your payment attacks the principal. This pays off the debt in under 3 years (34 months) and saves over $3,900 in interest."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much extra should I pay toward my credit card each month?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Even adding an extra $50 to $100 per month above your required minimum payment produces dramatic savings. On a $5,000 balance at 21.99% APR, adding just $50 each month slashes your repayment timeline from 19 years down to approximately 6 to 7 years, saving thousands of dollars in interest charges."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if my credit card payment only covers interest?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If your payment only equals or is less than the monthly interest charged by the issuer, you enter negative or zero amortization. Your principal balance will never decline, and if the payment is less than interest, the unpaid finance charge is added to your balance, causing your debt to compound and spiral upward indefinitely."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the 36-month credit card payoff rule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Under the Credit CARD Act of 2009, U.S. credit card issuers are legally mandated to disclose on your monthly billing statement the exact fixed monthly payment required to pay off your current balance in 36 months (3 years), as well as the total savings compared to paying the minimum."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does paying more than the minimum hurt my credit score?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Paying more than the minimum significantly improves your credit score. Reducing your balance lowers your credit utilization ratio (which accounts for 30% of your FICO score). Lenders prefer to see utilization under 10% to 30%, and faster debt repayment demonstrates strong creditworthiness."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do credit card companies calculate monthly interest?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Credit card companies calculate interest using an Average Daily Balance (ADB) method. Your Annual Percentage Rate (APR) is divided by 365 (or 360) to determine your Daily Periodic Rate (DPR). Each day, your closing balance is multiplied by the DPR, and the daily finance charges are summed at the end of the billing cycle to produce your monthly interest fee."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are minimum payment calculator results exact guarantees?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The calculator provides a reliable simulation based on standard financial amortization rules and entered card parameters. However, actual card statements may differ slightly due to leap years, fluctuating variable prime rates, daily compounding balance methods, late fees, annual card fees, or new transactions made during the billing cycle."
+      }
+    }
+  ]
+};
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Minimum Payment Trap Calculator",
+  "url": "https://fincalclab.com/calculator/minimum-payment-trap-calculator",
+  "description": "Calculate how long it takes to pay off credit card debt by paying only the minimum. Compare interest costs against accelerated payoff plans and see how much time and money you save.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="Minimum Payment Trap Calculator | Credit Card Debt Payoff"
+  description="Calculate how long it takes to repay credit card debt with minimum payments. See total interest paid, avoid the minimum payment trap, and compare accelerated payoff plans."
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} slot="head" />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <MinimumPaymentTrapCalculator />
+
+    <!-- Featured Regulatory Planning Callout -->
+    <section class="au-callout-section" aria-labelledby="card-act-heading">
+      <Card elevation="sm" class="au-callout-card">
+        <div class="au-callout-header">
+          <div class="au-callout-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="au-callout-heading-wrap">
+            <span class="au-callout-eyebrow">Consumer Protection Insight</span>
+            <h2 id="card-act-heading" class="au-callout-title">The CARD Act 36-Month Disclosure Mandate</h2>
+          </div>
+        </div>
+
+        <p class="au-callout-desc">
+          Under the <strong>Credit Card Accountability Responsibility and Disclosure (CARD) Act of 2009</strong>, credit card issuers in the United States are legally required to print a "Minimum Payment Warning" on every monthly billing statement. This disclosure reveals the true lifetime cost of making only minimum payments and specifies the exact fixed monthly payment needed to eliminate your balance in <strong>36 months (3 years)</strong>.
+        </p>
+
+        <div class="au-callout-action">
+          <a href="/calculator/debt-reduction-planner-calculator" class="au-callout-btn">
+            <span>Build a Multi-Card Debt Reduction Plan</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Comprehensive Educational Guide -->
+    <article class="educational-guide prose">
+      
+      <!-- Section 1 -->
+      <section class="guide-section">
+        <h2>What Is the Minimum Payment Trap?</h2>
+        <p>
+          The <strong>minimum payment trap</strong> is a financial phenomenon where credit card borrowers stay locked in high-interest revolving debt for decades by paying only the minimum billing requirement set by their card issuer. While making minimum payments protects your credit report from late marks and avoids penalty fees, it is engineered to maximize interest revenue for the lending institution while slowing your principal repayment to a crawl.
+        </p>
+        <p>
+          Because card minimum payment formulas are dynamically pegged to a percentage of your outstanding balance, your required payment shrinks every time your balance dips. In the early months, as much as <strong>70% to 90%</strong> of your minimum payment is consumed by finance charges, leaving only pennies on the dollar to reduce the actual debt. This diminishing payment schedule prevents meaningful amortization, turning a short-term purchase into a multi-decade financial anchor.
+        </p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="guide-section">
+        <h2>How Does the Minimum Payment Trap Calculator Work?</h2>
+        <p>
+          The <strong>Minimum Payment Trap Calculator</strong> uses a month-by-month mathematical simulation engine rather than a simplistic static estimate. Because credit card minimum payments fluctuate each billing cycle as your balance changes, accurate forecasting requires simulating each individual month's interest accrual, minimum payment calculation, and ending balance.
+        </p>
+        <p>
+          By entering your current credit card balance, your Annual Percentage Rate (APR), your card's calculation method, and your optional accelerated repayment budget, the calculator simulates your financial journey across three distinct scenarios:
+        </p>
+        <ul class="bullet-list">
+          <li><strong>Scenario A (Minimum Payments Only):</strong> Follows your card issuer's exact formula down to the minimum dollar floor (e.g. $25 or $35).</li>
+          <li><strong>Scenario B (Minimum Payment Plus Extra):</strong> Adds a steady extra cash amount (e.g. +$50/month) directly on top of each month's required minimum.</li>
+          <li><strong>Scenario C (Fixed Monthly Payment):</strong> Replaces the declining minimum payment with a disciplined, consistent monthly budget (e.g. $200/month).</li>
+        </ul>
+        <p>
+          The engine tracks cumulative interest, counts total monthly cycles, identifies the date of final debt elimination, and calculates your exact net interest savings.
+        </p>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="guide-section">
+        <h2>How Credit Card Minimum Payments Are Calculated</h2>
+        <p>
+          Credit card issuers do not use a single universal formula. Instead, each bank defines its minimum payment policy in the cardmember agreement. Most major financial institutions (including JPMorgan Chase, Citibank, Bank of America, Capital One, and Discover) employ one of three primary calculation methods:
+        </p>
+
+        <div class="key-callout-box">
+          <div class="callout-title">Three Common Minimum Payment Formulas</div>
+          <ol class="callout-steps">
+            <li>
+              <strong>Method A — Percentage of Outstanding Balance:</strong>
+              The payment is calculated as a flat percentage of your statement balance (typically <strong>2.0% to 3.0%</strong>), or a dollar floor (usually $25 to $35), whichever is greater. Under this model, if your interest rate is high and your percentage is low (e.g. 2.0% on a 24% APR card), monthly interest can swallow virtually the entire payment.
+            </li>
+            <li>
+              <strong>Method B — Percentage of Balance Plus Monthly Interest:</strong>
+              Adopted by major issuers following federal regulatory guidance, this formula calculates the minimum as <strong>1.0% of the principal balance plus all accrued monthly finance charges and late fees</strong>, subject to a dollar floor. This ensures that every payment reduces the principal by at least 1.0%, preventing negative amortization.
+            </li>
+            <li>
+              <strong>Method C — Monthly Interest Plus Percentage of Principal:</strong>
+              Similar to Method B, this structure isolates the monthly interest charge and adds an agreed percentage of principal (often 1.0% to 1.5%), or the minimum dollar threshold ($25), whichever is higher.
+            </li>
+          </ol>
+        </div>
+        <p>
+          Regardless of the formula, once your balance drops to where the calculated amount is less than the minimum dollar floor (such as $25), the payment locks at $25 until the remaining balance and interest are paid off completely.
+        </p>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="guide-section">
+        <h2>Why Minimum Payments Can Keep You in Debt Longer</h2>
+        <p>
+          The fundamental reason minimum payments prolong debt is the <strong>declining payment structure</strong>. In traditional installment loans (such as fixed mortgages or auto loans), your monthly payment remains flat throughout the entire term. As the balance decreases, interest charges fall and principal reduction accelerates.
+        </p>
+        <p>
+          With credit cards, the opposite occurs. Because your payment is recalculated each month as a percentage of a shrinking balance, your payment decreases alongside your balance:
+        </p>
+        <ul class="bullet-list">
+          <li>On a $5,000 balance at 21.99% APR, your initial minimum payment is approximately <strong>$141.63</strong>.</li>
+          <li>After 5 years of uninterrupted payments, your balance has only dropped to ~$2,700, and your minimum payment has declined to <strong>$78.00</strong>.</li>
+          <li>After 10 years, your balance is still ~$1,500, and your payment has shriveled to just <strong>$42.00</strong>.</li>
+        </ul>
+        <p>
+          By continually allowing your payments to shrink, you remove the compounding acceleration that pays off debt. You effectively stretch out the tail of the loan for decades, guaranteeing maximum interest payments to the card issuer.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="guide-section">
+        <h2>How to Calculate Credit Card Interest</h2>
+        <p>
+          Credit card issuers do not simply divide your annual APR by 12 and multiply it by your statement ending balance. They use the <strong>Average Daily Balance (ADB)</strong> method, compounding interest on a daily basis:
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">The Daily Periodic Rate (DPR) Formula</div>
+          <ol class="callout-steps">
+            <li><strong>Calculate Daily Periodic Rate (DPR):</strong> DPR = APR / 365 (e.g., 21.99% / 365 = 0.060246% per day).</li>
+            <li><strong>Calculate Average Daily Balance:</strong> Sum the closing balance of your account on each day of the billing cycle, and divide by the number of days in the cycle (typically 30 or 31 days).</li>
+            <li><strong>Calculate Monthly Finance Charge:</strong> Monthly Interest = Average Daily Balance × DPR × Days in Billing Cycle.</li>
+            <li><strong>Amortization Simulation:</strong> For monthly projection models without new charges, the monthly rate approximates r = APR / 12 / 100. Monthly Interest = Opening Balance × r.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="guide-section">
+        <h2>Minimum Payments vs. Paying More Each Month</h2>
+        <p>
+          To illustrate the massive difference between passive minimum payments and active repayment strategies, examine how three different approaches tackle an identical <strong>$5,000 credit card balance at 21.99% APR</strong> with a 1% + interest ($25 floor) calculation rule:
+        </p>
+
+        <div class="table-responsive-wrapper">
+          <table class="growth-comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Repayment Strategy</th>
+                <th scope="col">Monthly Commitment</th>
+                <th scope="col">Payoff Time</th>
+                <th scope="col">Total Interest Paid</th>
+                <th scope="col">Total Out of Pocket</th>
+                <th scope="col">Interest Saved</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Scenario A: Minimum Payment Only</strong></td>
+                <td>Declining ($142 down to $25)</td>
+                <td>19 Years, 2 Months</td>
+                <td>$5,658.24</td>
+                <td>$10,658.24</td>
+                <td>$0.00 (Baseline)</td>
+              </tr>
+              <tr>
+                <td><strong>Scenario B: Minimum + $25 Extra</strong></td>
+                <td>Declining ($167 down to $50)</td>
+                <td>10 Years, 4 Months</td>
+                <td>$2,761.40</td>
+                <td>$7,761.40</td>
+                <td style="color: var(--color-success); font-weight: 600;">Saves $2,896.84</td>
+              </tr>
+              <tr>
+                <td><strong>Scenario C: Minimum + $50 Extra</strong></td>
+                <td>Declining ($192 down to $75)</td>
+                <td>6 Years, 1 Month</td>
+                <td>$1,842.10</td>
+                <td>$6,842.10</td>
+                <td style="color: var(--color-success); font-weight: 600;">Saves $3,816.14</td>
+              </tr>
+              <tr>
+                <td><strong>Scenario D: Fixed $200 Payment</strong></td>
+                <td>Constant $200.00 / month</td>
+                <td>2 Years, 10 Months</td>
+                <td>$1,748.69</td>
+                <td>$6,748.69</td>
+                <td style="color: var(--color-success); font-weight: 600;">Saves $3,909.55</td>
+              </tr>
+              <tr>
+                <td><strong>Scenario E: 36-Month Payoff Plan</strong></td>
+                <td>Constant $190.93 / month</td>
+                <td>3 Years, 0 Months</td>
+                <td>$1,873.30</td>
+                <td>$6,873.30</td>
+                <td style="color: var(--color-success); font-weight: 600;">Saves $3,784.94</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-caption">
+          Assumes a constant 21.99% APR with no additional transactions, late fees, or rate modifications during the repayment term.
+        </p>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="guide-section">
+        <h2>A Worked Example of the Minimum Payment Trap</h2>
+        <p>
+          Let us trace the exact numbers for a borrower named Alex who owes <strong>$5,000 at 21.99% APR</strong> under a common bank formula: <strong>1% of principal balance + monthly interest, or $25 minimum floor</strong>.
+        </p>
+        <div class="key-callout-box">
+          <div class="callout-title">Month-by-Month Mechanics (First 6 Months)</div>
+          <ul class="bullet-list" style="margin-top: 6px;">
+            <li><strong>Month 1:</strong> Balance is $5,000.00. Monthly interest = $5,000 × (0.2199 / 12) = <strong>$91.63</strong>. Minimum payment = 1% ($50.00) + $91.63 = <strong>$141.63</strong>. Principal reduced = $50.00. Ending balance = <strong>$4,950.00</strong>. Notice that 64.7% of Alex's payment was lost to interest!</li>
+            <li><strong>Month 2:</strong> Balance is $4,950.00. Monthly interest = $90.71. Payment = 1% ($49.50) + $90.71 = <strong>$140.21</strong>. Principal reduced = $49.50. Ending balance = <strong>$4,900.50</strong>.</li>
+            <li><strong>Month 3:</strong> Balance is $4,900.50. Monthly interest = $89.80. Payment = 1% ($49.01) + $89.80 = <strong>$138.81</strong>. Principal reduced = $49.01. Ending balance = <strong>$4,851.49</strong>.</li>
+            <li><strong>Month 6:</strong> Balance is $4,707.40. Interest = $86.27. Payment = <strong>$133.34</strong>. Ending balance = <strong>$4,660.33</strong>. In half a year, Alex has paid $825.26 in cash, but his balance has only dropped by $339.67.</li>
+            <li><strong>Long-Term Result:</strong> Alex will make payments for <strong>230 months (19 years and 2 months)</strong>. Over that span, Alex will hand the credit card company <strong>$5,658.24 in pure interest</strong>, paying a staggering total of <strong>$10,658.24</strong> for a $5,000 purchase.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 8 -->
+      <section class="guide-section">
+        <h2>How Much Can You Save by Paying Extra?</h2>
+        <p>
+          The fastest way to break free from the minimum payment trap is to decouple your payment from the issuer's declining formula. By paying an extra fixed amount each month, 100% of the extra dollars bypass finance charges and go directly toward retiring principal:
+        </p>
+        <div class="scenario-grid">
+          <div class="scenario-card">
+            <h3>Paying an Extra $25/Month</h3>
+            <p><strong>Timeline:</strong> Slashes debt from 19.2 years down to 10.3 years.</p>
+            <p><strong>Interest Saved:</strong> Eliminates <strong>$2,896.84</strong> in finance charges.</p>
+            <p><strong>Impact:</strong> Cuts repayment duration by nearly half with the cost of a couple of takeout lunches.</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Paying an Extra $50/Month</h3>
+            <p><strong>Timeline:</strong> Slashes debt from 19.2 years down to 6.1 years.</p>
+            <p><strong>Interest Saved:</strong> Eliminates <strong>$3,816.14</strong> in finance charges.</p>
+            <p><strong>Impact:</strong> Erases 13 years of debt burden and saves 67% of total interest costs.</p>
+          </div>
+
+          <div class="scenario-card">
+            <h3>Paying a Fixed $200/Month</h3>
+            <p><strong>Timeline:</strong> Eradicates the entire debt in just <strong>2 years and 10 months</strong>.</p>
+            <p><strong>Interest Saved:</strong> Saves <strong>$3,909.55</strong> in finance charges.</p>
+            <p><strong>Impact:</strong> Gives you full debt freedom in less than 3 years with zero residual drag on your cash flow.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9 -->
+      <section class="guide-section">
+        <h2>Actionable Strategies to Pay Off Credit Card Debt Faster</h2>
+        <p>
+          If you currently carry revolving credit card debt, use these proven, non-judgmental debt payoff strategies to escape the interest trap:
+        </p>
+        <ol class="ordered-list">
+          <li>
+            <strong>Implement the 36-Month Fixed Payment Rule:</strong> Look at your monthly statement's CARD Act disclosure box or use our calculator to find your 36-month payment ($190.93/mo for a $5,000 debt at 21.99%). Set up an automated recurring payment for that exact amount in your bank's bill pay system.
+          </li>
+          <li>
+            <strong>Use the Debt Avalanche Strategy:</strong> If you carry balances across multiple credit cards, make the required minimum payments on all accounts except the one with the highest APR. Direct every surplus dollar toward the highest-interest card until it reaches zero. This mathematically minimizes total interest paid.
+          </li>
+          <li>
+            <strong>Use the Debt Snowball Strategy:</strong> If you need psychological momentum, target your account with the smallest dollar balance first while maintaining minimums on others. Clearing an entire account quickly eliminates a monthly bill and delivers motivating psychological wins.
+          </li>
+          <li>
+            <strong>Consider a 0% Intro APR Balance Transfer:</strong> Borrowers with good credit (typically 670+ FICO) can apply for a balance transfer credit card offering a 0% promotional APR for 12 to 21 months. A standard 3% to 5% transfer fee applies, but eliminating 21%+ APR allows 100% of your payments to attack the principal during the introductory window.
+          </li>
+          <li>
+            <strong>Lock Away the Card:</strong> Continuing to make new purchases on a card carrying a revolving balance forfeits your interest-free grace period. Every new charge immediately begins accruing interest from the day of purchase, accelerating the debt spiral.
+          </li>
+        </ol>
+      </section>
+
+      <!-- Section 10: FAQs -->
+      <section class="guide-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          {faqSchema.mainEntity.map((item) => (
+            <div class="faq-item">
+              <h3>{item.name}</h3>
+              <p>{item.acceptedAnswer.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Section 11: Related Tools -->
+      <section class="guide-section">
+        <h2>Related Financial Calculators</h2>
+        <p>
+          Explore companion tools on FinCalcLab to eliminate debt, plan savings, and optimize your personal finances:
+        </p>
+        <div class="related-tools-grid">
+          <a href="/calculator/debt-avalanche-calculator" class="related-tool-card">
+            <h3>Debt Avalanche Calculator</h3>
+            <p>Target your highest-interest debts first to mathematically minimize total interest and accelerate your debt-free date.</p>
+          </a>
+          <a href="/calculator/debt-reduction-planner-calculator" class="related-tool-card">
+            <h3>Debt Reduction Planner Calculator</h3>
+            <p>Compare Snowball vs. Avalanche payoff roadmaps across multiple cards and loans with custom monthly extra payments.</p>
+          </a>
+          <a href="/calculator/debt-snowball-calculator" class="related-tool-card">
+            <h3>Debt Snowball Calculator</h3>
+            <p>Pay off your smallest balances first to generate fast psychological momentum and eliminate monthly bill clutter.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Statutory Disclaimer -->
+      <div class="disclaimer-section">
+        <p class="disclaimer-text">
+          <strong>Credit Card Repayment &amp; Educational Disclaimer:</strong> This calculator is provided solely for educational and financial illustration purposes based on user-supplied numbers, standard credit card amortization formulas, and typical card issuer practices. Actual minimum payments, finance charges, compounding schedules, and repayment terms are dictated by your specific credit card agreement, card issuer policies, variable prime rates, daily balance fluctuations, and applicable fees. This tool does not constitute formal legal, credit, or financial advice. For personalized guidance on debt relief or restructuring, consult an accredited non-profit credit counseling agency or licensed financial professional.
+        </p>
+      </div>
+
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .prose h2,
+  .guide-section h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3,
+  .guide-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p,
+  .guide-section p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose ul, .prose ol,
+  .guide-section ul, .guide-section ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li,
+  .guide-section li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* Featured Callout Banner (Matching Reference) */
+  .au-callout-section {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .au-callout-card {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .au-callout-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .au-callout-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  :global(.dark) .au-callout-icon {
+    background: rgba(37, 99, 235, 0.18);
+  }
+
+  .au-callout-heading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .au-callout-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+  }
+
+  .au-callout-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .au-callout-desc {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 860px;
+  }
+
+  .au-callout-action {
+    display: flex;
+    align-items: center;
+    padding-top: var(--space-1);
+  }
+
+  .au-callout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 11px 22px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .au-callout-btn:hover {
+    background-color: var(--color-primary-hover, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+
+  .au-callout-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Educational Guide Styling */
+  .educational-guide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+
+  .key-callout-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-3) 0;
+  }
+
+  .callout-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .callout-steps {
+    margin: 0;
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 0.92rem;
+  }
+
+  .bullet-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.92rem;
+  }
+
+  .ordered-list {
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    font-size: 0.92rem;
+  }
+
+  /* Table Responsive Styling */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-3) 0;
+  }
+
+  .growth-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .growth-comparison-table th {
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--color-border);
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  :global(.dark) .growth-comparison-table th {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .growth-comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .growth-comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table-caption {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Scenario Grid */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-3) 0;
+  }
+
+  .scenario-card {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .scenario-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .scenario-card p {
+    font-size: 0.85rem;
+    margin: 0 0 6px 0;
+    line-height: 1.45;
+  }
+
+  /* FAQ List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    padding: var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* Related Tools Grid */
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .related-tool-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .related-tool-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .related-tool-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .related-tool-card p {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Disclaimer Section */
+  .disclaimer-section {
+    padding: var(--space-4);
+    background-color: var(--color-surface-hover, rgba(0,0,0,0.02));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+  }
+
+  .disclaimer-text {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .au-callout-card {
+      padding: var(--space-4);
+      gap: var(--space-3);
+    }
+
+    .au-callout-header {
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .au-callout-icon {
+      width: 38px;
+      height: 38px;
+    }
+
+    .au-callout-title {
+      font-size: 1.05rem;
+    }
+
+    .au-callout-desc {
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .au-callout-action {
+      width: 100%;
+      padding-top: var(--space-2);
+    }
+
+    .au-callout-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+    }
+
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .au-callout-card {
+      padding: 12px;
+    }
+
+    .au-callout-title {
+      font-size: 0.98rem;
+    }
+
+    .au-callout-btn {
+      font-size: 0.82rem;
+      padding: 10px 12px;
+      gap: 6px;
+    }
+  }
+</style>

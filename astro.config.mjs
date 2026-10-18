@@ -24,7 +24,8 @@ export default defineConfig({
     '/capital-gains-tax-calculator': '/calculator/capital-gains-tax-calculator',
     '/child-education-cost-calculator': '/calculator/child-education-cost-calculator',
     '/fat-fire-calculator': '/calculator/fat-fire-calculator',
-    '/house-hacking-calculator': '/calculator/house-hacking-calculator'
+    '/house-hacking-calculator': '/calculator/house-hacking-calculator',
+    '/minimum-payment-trap-calculator': '/calculator/minimum-payment-trap-calculator'
   },
   vite: {
     build: {

@@ -1,0 +1,1579 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="Minimum Payment Trap Calculator"
+  description="See how long it takes to repay credit card debt paying only the minimum, how much interest you pay, and how much time and money you save by paying more."
+  category="Debt & Credit"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="minimum-payment-calculator">
+    
+    <!-- Section 1: Credit Card Balance & APR -->
+    <h3 class="input-section-heading">1. Credit Card Balance &amp; Interest Rate</h3>
+    
+    <!-- Currency Selector -->
+    <div class="input-group">
+      <label for="mpt-currency-select" class="field-label-top">Currency</label>
+      <select id="mpt-currency-select" class="form-select-full" aria-label="Select Currency">
+        <option value="USD" selected>USD ($) - US Dollar</option>
+        <option value="CAD">CAD (C$) - Canadian Dollar</option>
+        <option value="GBP">GBP (£) - British Pound</option>
+        <option value="EUR">EUR (€) - Euro</option>
+        <option value="AUD">AUD (A$) - Australian Dollar</option>
+        <option value="INR">INR (₹) - Indian Rupee</option>
+        <option value="SGD">SGD (S$) - Singapore Dollar</option>
+        <option value="JPY">JPY (¥) - Japanese Yen</option>
+        <option value="CHF">CHF (CHF) - Swiss Franc</option>
+      </select>
+    </div>
+
+    <!-- Outstanding Balance -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="mpt-balance-input">Current Credit Card Balance</label>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol" id="sym-balance">$</span>
+          <input 
+            type="number" 
+            id="mpt-balance-input" 
+            min="100" 
+            max="100000" 
+            step="100" 
+            value="5000" 
+            aria-label="Current Credit Card Balance" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="mpt-balance-slider" 
+        min="500" 
+        max="30000" 
+        step="250" 
+        value="5000" 
+        class="slider-range" 
+        aria-label="Balance Slider" 
+      />
+      <span class="input-hint">Your current statement balance or total revolving credit card balance.</span>
+    </div>
+
+    <!-- Annual Percentage Rate (APR) -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="mpt-apr-input">Annual Percentage Rate (APR)</label>
+        <div class="input-symbol-wrapper">
+          <input 
+            type="number" 
+            id="mpt-apr-input" 
+            min="0.0" 
+            max="45.0" 
+            step="0.25" 
+            value="21.99" 
+            aria-label="Annual Percentage Rate (APR)" 
+          />
+          <span class="unit-symbol">%</span>
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="mpt-apr-slider" 
+        min="0.0" 
+        max="36.0" 
+        step="0.25" 
+        value="21.99" 
+        class="slider-range" 
+        aria-label="APR Slider" 
+      />
+      <span class="input-hint">The purchase APR listed on your monthly credit card statement (U.S. average is ~21%–25%).</span>
+    </div>
+
+    <!-- Section 2: Minimum Payment Formula -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">2. Minimum Payment Formula Settings</h3>
+      
+      <!-- Calculation Method -->
+      <div class="input-group">
+        <label for="mpt-method-select" class="field-label-top">Calculation Method</label>
+        <select id="mpt-method-select" class="form-select-full" aria-label="Select Minimum Payment Formula Method">
+          <option value="B" selected>Standard: 1% of Balance + Monthly Interest (Most Cards)</option>
+          <option value="A">Percentage of Balance Only (e.g. 2% or 3%)</option>
+        </select>
+        <span class="input-hint" id="mpt-method-hint">Standard bank rule (Chase, Citi, Capital One, Discover): 1% of balance plus monthly interest.</span>
+      </div>
+
+      <!-- Minimum Payment Rate -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mpt-minpct-input">Minimum Payment Rate</label>
+          <div class="input-symbol-wrapper">
+            <input 
+              type="number" 
+              id="mpt-minpct-input" 
+              min="0.5" 
+              max="5.0" 
+              step="0.25" 
+              value="1.0" 
+              aria-label="Minimum Payment Percentage" 
+            />
+            <span class="unit-symbol">%</span>
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="mpt-minpct-slider" 
+          min="0.5" 
+          max="5.0" 
+          step="0.25" 
+          value="1.0" 
+          class="slider-range" 
+          aria-label="Minimum Payment Rate Slider" 
+        />
+        <span class="input-hint">Typically 1.0% with monthly interest, or 2.0%–3.0% under balance-only rules.</span>
+      </div>
+
+      <!-- Minimum Dollar Floor -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mpt-mindollar-input">Minimum Dollar Floor</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-floor">$</span>
+            <input 
+              type="number" 
+              id="mpt-mindollar-input" 
+              min="15" 
+              max="50" 
+              step="5" 
+              value="25" 
+              aria-label="Minimum Dollar Floor Payment" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="mpt-mindollar-slider" 
+          min="15" 
+          max="50" 
+          step="5" 
+          value="25" 
+          class="slider-range" 
+          aria-label="Minimum Dollar Floor Slider" 
+        />
+        <span class="input-hint">The minimum dollar payment required if the percentage formula falls below this amount (typically $25, $35, or $40).</span>
+      </div>
+    </div>
+
+    <!-- Section 3: Accelerated Repayment Scenarios (Comparison) -->
+    <div style="margin-top: var(--space-6);">
+      <h3 class="input-section-heading">3. Accelerated Payoff Comparison (Optional)</h3>
+      
+      <!-- Extra Payment on Top of Minimum -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mpt-extra-input">Extra Monthly Payment (Scenario B)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-extra">$</span>
+            <input 
+              type="number" 
+              id="mpt-extra-input" 
+              min="0" 
+              max="2000" 
+              step="10" 
+              value="50" 
+              aria-label="Extra Monthly Payment" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="mpt-extra-slider" 
+          min="0" 
+          max="300" 
+          step="10" 
+          value="50" 
+          class="slider-range" 
+          aria-label="Extra Payment Slider" 
+        />
+        <span class="input-hint">Fixed additional dollar amount added on top of each calculated minimum payment.</span>
+      </div>
+
+      <!-- Fixed Monthly Payment -->
+      <div class="input-group">
+        <div class="input-label-row">
+          <label for="mpt-fixed-input">Fixed Monthly Payment (Scenario C)</label>
+          <div class="input-symbol-wrapper">
+            <span class="currency-symbol" id="sym-fixed">$</span>
+            <input 
+              type="number" 
+              id="mpt-fixed-input" 
+              min="25" 
+              max="3000" 
+              step="10" 
+              value="200" 
+              aria-label="Fixed Monthly Payment" 
+            />
+          </div>
+        </div>
+        <input 
+          type="range" 
+          id="mpt-fixed-slider" 
+          min="50" 
+          max="600" 
+          step="10" 
+          value="200" 
+          class="slider-range" 
+          aria-label="Fixed Payment Slider" 
+        />
+        <span class="input-hint">A constant budget amount paid every month until your card balance reaches zero.</span>
+      </div>
+    </div>
+
+    <!-- Reset Trigger -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="mpt-reset-btn" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset Calculator Inputs
+      </Button>
+    </div>
+
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <h3 class="results-heading">Credit Card Payoff &amp; Interest Projection</h3>
+
+    <!-- Dynamic Alert Banner (Interest Cost & Trap Warning) -->
+    <div id="res-alert-banner" class="alert-banner alert-warning">
+      <div class="alert-icon" id="res-alert-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      </div>
+      <div class="alert-content">
+        <div class="alert-title" id="res-alert-title">Minimum Payment Trap Alert</div>
+        <div class="alert-desc" id="res-alert-desc">
+          Calculating interest exposure and payoff horizon...
+        </div>
+      </div>
+    </div>
+
+    <!-- Primary Net Value Displays (Rule 15 Compliant) -->
+    <div class="net-value-container">
+      <!-- Card 1: Estimated Payoff Time -->
+      <div class="net-value-box payoff-time-box">
+        <span class="net-box-label">Estimated Time to Debt Freedom</span>
+        <div id="res-payoff-time" class="net-box-amount text-danger">19 Yrs, 2 Mos</div>
+        <span class="net-box-sub" id="lbl-payoff-months">230 Total Monthly Payments</span>
+      </div>
+
+      <!-- Card 2: Total Interest Paid -->
+      <div class="net-value-box interest-box">
+        <span class="net-box-label">Total Interest Paid</span>
+        <div id="res-total-interest" class="net-box-amount text-primary">$5,658.24</div>
+        <span class="net-box-sub" id="lbl-interest-pct">113.2% of original balance paid in interest</span>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-label">Total Amount Paid</span>
+        <span id="res-total-paid" class="metric-val">$10,658.24</span>
+        <span class="metric-sub">Principal + Total Interest</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">First Minimum Payment</span>
+        <span id="res-first-payment" class="metric-val">$141.63</span>
+        <span class="metric-sub" id="lbl-first-interest-share">64.7% interest ($91.63)</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Final Payment Amount</span>
+        <span id="res-final-payment" class="metric-val">$22.37</span>
+        <span class="metric-sub">Settles remaining debt in full</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">36-Month Payoff Payment</span>
+        <span id="res-36m-payment" class="metric-val text-success">$190.93/mo</span>
+        <span class="metric-sub" id="lbl-36m-savings">Saves $3,784.94 in interest</span>
+      </div>
+    </div>
+
+    <!-- Core Comparison Cards (Scenario A vs B vs C) -->
+    <div class="comparison-section">
+      <h4 class="comparison-heading">Repayment Scenario Comparison</h4>
+      <div class="scenario-comparison-cards">
+        
+        <!-- Scenario A: Minimum Payments Only -->
+        <div class="scenario-tile scenario-tile-min" id="tile-scenario-a">
+          <div class="scenario-tile-badge">Scenario A</div>
+          <h5 class="scenario-tile-title">Minimum Payments Only</h5>
+          <div class="scenario-tile-time" id="scen-a-time">19 Yrs, 2 Mos</div>
+          <div class="scenario-tile-stat">
+            <span class="stat-lbl">Total Interest:</span>
+            <span class="stat-val" id="scen-a-interest">$5,658.24</span>
+          </div>
+          <div class="scenario-tile-stat">
+            <span class="stat-lbl">Total Paid:</span>
+            <span class="stat-val" id="scen-a-total">$10,658.24</span>
+          </div>
+          <p class="scenario-tile-desc">Payments decline each month as balance shrinks, prolonging debt repayment.</p>
+        </div>
+
+        <!-- Scenario B: Minimum + Extra -->
+        <div class="scenario-tile scenario-tile-extra" id="tile-scenario-b">
+          <div class="scenario-tile-badge bg-accent">Scenario B</div>
+          <h5 class="scenario-tile-title">Minimum + Extra (<span id="scen-b-extra-lbl">+$50</span>)</h5>
+          <div class="scenario-tile-time" id="scen-b-time">7 Yrs, 4 Mos</div>
+          <div class="scenario-tile-stat">
+            <span class="stat-lbl">Total Interest:</span>
+            <span class="stat-val" id="scen-b-interest">$4,134.15</span>
+          </div>
+          <div class="scenario-tile-savings">
+            <span class="savings-tag">Saves <strong id="scen-b-saved-interest">$1,524.09</strong></span>
+            <span class="savings-sub"><strong id="scen-b-saved-time">11 Yrs, 10 Mos</strong> faster!</span>
+          </div>
+          <p class="scenario-tile-desc">Adding a modest extra payment accelerates principal reduction significantly.</p>
+        </div>
+
+        <!-- Scenario C: Fixed Monthly Payment -->
+        <div class="scenario-tile scenario-tile-fixed" id="tile-scenario-c">
+          <div class="scenario-tile-badge bg-success">Scenario C</div>
+          <h5 class="scenario-tile-title">Fixed Payment (<span id="scen-c-fixed-lbl">$200/mo</span>)</h5>
+          <div class="scenario-tile-time" id="scen-c-time">2 Yrs, 10 Mos</div>
+          <div class="scenario-tile-stat">
+            <span class="stat-lbl">Total Interest:</span>
+            <span class="stat-val" id="scen-c-interest">$1,748.69</span>
+          </div>
+          <div class="scenario-tile-savings">
+            <span class="savings-tag">Saves <strong id="scen-c-saved-interest">$3,909.55</strong></span>
+            <span class="savings-sub"><strong id="scen-c-saved-time">16 Yrs, 4 Mos</strong> faster!</span>
+          </div>
+          <p class="scenario-tile-desc">Maintaining a steady payment crushes high-APR debt in record time.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 36-Month Payoff Target Card -->
+    <div class="plan36-card">
+      <div class="plan36-header">
+        <div class="plan36-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="plan36-title-wrap">
+          <span class="plan36-eyebrow">CARD Act Benchmark</span>
+          <h4 class="plan36-title">Target 36-Month Payoff Plan (3 Years to Debt Freedom)</h4>
+        </div>
+      </div>
+      <p class="plan36-desc">
+        Under federal credit card statement rules, card issuers must display the monthly payment required to pay off your balance within 36 months. Paying <strong id="plan36-target-pay">$190.93 per month</strong> clears this balance in exactly 3 years and avoids <strong id="plan36-interest-saved">$3,784.94</strong> in compound interest fees!
+      </p>
+    </div>
+
+    <!-- Milestone Amortization Table -->
+    <div class="schedule-section">
+      <div class="schedule-header">
+        <h4 class="schedule-heading">Repayment Milestone Schedule (Scenario A)</h4>
+        <span class="schedule-sub">Selected monthly snapshots tracking balance and interest erosion</span>
+      </div>
+      <div class="table-responsive-wrapper">
+        <table class="schedule-table" id="mpt-milestones-table">
+          <thead>
+            <tr>
+              <th scope="col">Month</th>
+              <th scope="col">Opening Balance</th>
+              <th scope="col">Payment</th>
+              <th scope="col">Interest</th>
+              <th scope="col">Principal Paid</th>
+              <th scope="col">Remaining Balance</th>
+            </tr>
+          </thead>
+          <tbody id="mpt-milestones-body">
+            <!-- Dynamically populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  // Setup Client-side Calculation Engine with Astro page lifecycle compatibility
+  document.addEventListener('DOMContentLoaded', initMinimumPaymentCalc);
+  document.addEventListener('astro:page-load', initMinimumPaymentCalc);
+
+  function initMinimumPaymentCalc() {
+    const root = document.getElementById('minimum-payment-calculator');
+    if (!root) return;
+
+    // Currency Definitions
+    const currencyConfigs = {
+      USD: { symbol: '$', code: 'USD', locale: 'en-US' },
+      CAD: { symbol: 'C$', code: 'CAD', locale: 'en-CA' },
+      GBP: { symbol: '£', code: 'GBP', locale: 'en-GB' },
+      EUR: { symbol: '€', code: 'EUR', locale: 'de-DE' },
+      AUD: { symbol: 'A$', code: 'AUD', locale: 'en-AU' },
+      INR: { symbol: '₹', code: 'INR', locale: 'en-IN' },
+      SGD: { symbol: 'S$', code: 'SGD', locale: 'en-SG' },
+      JPY: { symbol: '¥', code: 'JPY', locale: 'ja-JP' },
+      CHF: { symbol: 'CHF', code: 'CHF', locale: 'de-CH' }
+    };
+
+    let activeCurrency = 'USD';
+
+    // Core Input Elements
+    const curSelect = document.getElementById('mpt-currency-select');
+    const balanceInput = document.getElementById('mpt-balance-input');
+    const balanceSlider = document.getElementById('mpt-balance-slider');
+
+    const aprInput = document.getElementById('mpt-apr-input');
+    const aprSlider = document.getElementById('mpt-apr-slider');
+
+    const methodSelect = document.getElementById('mpt-method-select');
+    const methodHint = document.getElementById('mpt-method-hint');
+    const minPctInput = document.getElementById('mpt-minpct-input');
+    const minPctSlider = document.getElementById('mpt-minpct-slider');
+    const minDollarInput = document.getElementById('mpt-mindollar-input');
+    const minDollarSlider = document.getElementById('mpt-mindollar-slider');
+
+    const extraInput = document.getElementById('mpt-extra-input');
+    const extraSlider = document.getElementById('mpt-extra-slider');
+
+    const fixedInput = document.getElementById('mpt-fixed-input');
+    const fixedSlider = document.getElementById('mpt-fixed-slider');
+
+    const resetBtn = document.getElementById('mpt-reset-btn');
+
+    // Display Elements
+    const alertBanner = document.getElementById('res-alert-banner');
+    const alertTitle = document.getElementById('res-alert-title');
+    const alertDesc = document.getElementById('res-alert-desc');
+
+    const resPayoffTime = document.getElementById('res-payoff-time');
+    const lblPayoffMonths = document.getElementById('lbl-payoff-months');
+    const resTotalInterest = document.getElementById('res-total-interest');
+    const lblInterestPct = document.getElementById('lbl-interest-pct');
+
+    const resTotalPaid = document.getElementById('res-total-paid');
+    const resFirstPayment = document.getElementById('res-first-payment');
+    const lblFirstInterestShare = document.getElementById('lbl-first-interest-share');
+    const resFinalPayment = document.getElementById('res-final-payment');
+    const res36mPayment = document.getElementById('res-36m-payment');
+    const lbl36mSavings = document.getElementById('lbl-36m-savings');
+
+    // Scenario A Elements
+    const scenATime = document.getElementById('scen-a-time');
+    const scenAInterest = document.getElementById('scen-a-interest');
+    const scenATotal = document.getElementById('scen-a-total');
+
+    // Scenario B Elements
+    const scenBExtraLbl = document.getElementById('scen-b-extra-lbl');
+    const scenBTime = document.getElementById('scen-b-time');
+    const scenBInterest = document.getElementById('scen-b-interest');
+    const scenBSavedInterest = document.getElementById('scen-b-saved-interest');
+    const scenBSavedTime = document.getElementById('scen-b-saved-time');
+
+    // Scenario C Elements
+    const scenCFixedLbl = document.getElementById('scen-c-fixed-lbl');
+    const scenCTime = document.getElementById('scen-c-time');
+    const scenCInterest = document.getElementById('scen-c-interest');
+    const scenCSavedInterest = document.getElementById('scen-c-saved-interest');
+    const scenCSavedTime = document.getElementById('scen-c-saved-time');
+
+    // 36-Month Plan Elements
+    const plan36TargetPay = document.getElementById('plan36-target-pay');
+    const plan36InterestSaved = document.getElementById('plan36-interest-saved');
+
+    // Milestone Table Body
+    const milestonesBody = document.getElementById('mpt-milestones-body');
+
+    // Formatting Helpers
+    function getSym() {
+      return currencyConfigs[activeCurrency]?.symbol || '$';
+    }
+
+    function formatCurrency(val) {
+      if (val === Infinity || val === null || isNaN(val)) return '—';
+      const cfg = currencyConfigs[activeCurrency] || currencyConfigs.USD;
+      return new Intl.NumberFormat(cfg.locale, {
+        style: 'currency',
+        currency: cfg.code,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(val);
+    }
+
+    function formatTime(months) {
+      if (months === Infinity || isNaN(months)) return 'Never (Trap)';
+      if (months <= 0) return '0 Months';
+      const yrs = Math.floor(months / 12);
+      const rem = months % 12;
+      if (yrs === 0) return `${rem} Mo${rem === 1 ? '' : 's'}`;
+      if (rem === 0) return `${yrs} Yr${yrs === 1 ? '' : 's'}`;
+      return `${yrs} Yr${yrs === 1 ? '' : 's'}, ${rem} Mo${rem === 1 ? '' : 's'}`;
+    }
+
+    // Two-way synchronization between number input and range slider
+    function syncInput(inputEl, sliderEl) {
+      if (!inputEl || !sliderEl) return;
+      inputEl.addEventListener('input', () => {
+        sliderEl.value = inputEl.value;
+        recalculate();
+      });
+      sliderEl.addEventListener('input', () => {
+        inputEl.value = sliderEl.value;
+        recalculate();
+      });
+    }
+
+    syncInput(balanceInput, balanceSlider);
+    syncInput(aprInput, aprSlider);
+    syncInput(minPctInput, minPctSlider);
+    syncInput(minDollarInput, minDollarSlider);
+    syncInput(extraInput, extraSlider);
+    syncInput(fixedInput, fixedSlider);
+
+    // Method selection change handler
+    if (methodSelect) {
+      methodSelect.addEventListener('change', () => {
+        const val = methodSelect.value;
+        if (val === 'A') {
+          methodHint.textContent = 'Calculates as a percentage of your balance only (e.g. 2% or 3%), subject to the dollar floor.';
+          if (parseFloat(minPctInput.value) <= 1.0) {
+            minPctInput.value = '2.0';
+            if (minPctSlider) minPctSlider.value = '2.0';
+          }
+        } else {
+          methodHint.textContent = 'Standard bank rule (Chase, Citi, Capital One, Discover): 1% of balance plus monthly interest.';
+          minPctInput.value = '1.0';
+          if (minPctSlider) minPctSlider.value = '1.0';
+        }
+        recalculate();
+      });
+    }
+
+    // Currency Switcher
+    if (curSelect) {
+      curSelect.addEventListener('change', (e) => {
+        activeCurrency = e.target.value;
+        const sym = getSym();
+        document.querySelectorAll('.currency-symbol').forEach(el => {
+          el.textContent = sym;
+        });
+        recalculate();
+      });
+    }
+
+    // Reset Button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        balanceInput.value = '5000';
+        balanceSlider.value = '5000';
+        aprInput.value = '21.99';
+        aprSlider.value = '21.99';
+        methodSelect.value = 'B';
+        methodHint.textContent = 'Standard bank rule (Chase, Citi, Capital One, Discover): 1% of balance plus monthly interest.';
+        minPctInput.value = '1.0';
+        if (minPctSlider) minPctSlider.value = '1.0';
+        minDollarInput.value = '25';
+        if (minDollarSlider) minDollarSlider.value = '25';
+        extraInput.value = '50';
+        extraSlider.value = '50';
+        fixedInput.value = '200';
+        fixedSlider.value = '200';
+        recalculate();
+      });
+    }
+
+    // Core Simulation Engine
+    function runAmortization({
+      balance,
+      apr,
+      method,
+      minPctDecimal,
+      minDollar,
+      extraPayment = 0,
+      fixedPayment = null,
+      maxMonths = 1200
+    }) {
+      if (balance <= 0) {
+        return {
+          success: true,
+          neverRepaid: false,
+          months: 0,
+          totalInterest: 0,
+          totalPaid: 0,
+          firstPayment: 0,
+          finalPayment: 0,
+          firstInterest: 0,
+          milestones: []
+        };
+      }
+
+      const r = apr / 100 / 12;
+      let curBalance = balance;
+      let totalInterest = 0;
+      let totalPaid = 0;
+      let months = 0;
+      let firstPayment = 0;
+      let firstInterest = 0;
+      let finalPayment = 0;
+      const milestones = [];
+
+      while (curBalance > 0.005 && months < maxMonths) {
+        months++;
+        const opening = curBalance;
+        const monthlyInterest = r > 0 ? opening * r : 0;
+        const withInterest = opening + monthlyInterest;
+
+        if (months === 1) {
+          firstInterest = monthlyInterest;
+        }
+
+        let targetPayment;
+        if (fixedPayment !== null) {
+          targetPayment = fixedPayment;
+        } else {
+          let minPay;
+          if (method === 'A') {
+            minPay = Math.max(opening * minPctDecimal, minDollar);
+          } else if (method === 'B') {
+            minPay = Math.max(opening * minPctDecimal + monthlyInterest, minDollar);
+          } else { // 'C'
+            minPay = Math.max(monthlyInterest + opening * minPctDecimal, minDollar);
+          }
+          targetPayment = minPay + extraPayment;
+        }
+
+        // Safety trap check: payment must exceed monthly interest
+        if (targetPayment <= monthlyInterest && withInterest > minDollar) {
+          return {
+            success: false,
+            neverRepaid: true,
+            months: Infinity,
+            firstPayment: targetPayment,
+            firstInterest,
+            totalInterest: Infinity,
+            totalPaid: Infinity,
+            finalPayment: 0,
+            milestones: []
+          };
+        }
+
+        const actualPayment = Math.min(targetPayment, withInterest);
+        if (months === 1) {
+          firstPayment = actualPayment;
+        }
+
+        const principalPaid = actualPayment - monthlyInterest;
+        curBalance = withInterest - actualPayment;
+        totalInterest += monthlyInterest;
+        totalPaid += actualPayment;
+
+        if (curBalance < 0.005) {
+          curBalance = 0;
+          finalPayment = actualPayment;
+        }
+
+        // Record Milestone Snapshots
+        if (
+          months === 1 ||
+          months === 2 ||
+          months === 3 ||
+          months === 6 ||
+          months === 12 ||
+          months === 24 ||
+          months === 36 ||
+          months === 60 ||
+          months === 120 ||
+          curBalance === 0
+        ) {
+          milestones.push({
+            month: months,
+            opening: Math.round(opening * 100) / 100,
+            payment: Math.round(actualPayment * 100) / 100,
+            interest: Math.round(monthlyInterest * 100) / 100,
+            principal: Math.round(principalPaid * 100) / 100,
+            balance: Math.round(curBalance * 100) / 100
+          });
+        }
+      }
+
+      if (months >= maxMonths && curBalance > 0.005) {
+        return {
+          success: false,
+          neverRepaid: true,
+          months: Infinity,
+          firstPayment,
+          firstInterest,
+          totalInterest,
+          totalPaid,
+          finalPayment: 0,
+          milestones: []
+        };
+      }
+
+      return {
+        success: true,
+        neverRepaid: false,
+        months,
+        totalInterest: Math.round(totalInterest * 100) / 100,
+        totalPaid: Math.round(totalPaid * 100) / 100,
+        firstPayment: Math.round(firstPayment * 100) / 100,
+        finalPayment: Math.round(finalPayment * 100) / 100,
+        firstInterest: Math.round(firstInterest * 100) / 100,
+        milestones
+      };
+    }
+
+    // 36-Month Fixed Payment Calculator
+    function calc36MonthPayment(bal, aprVal) {
+      if (bal <= 0) return 0;
+      const r = aprVal / 100 / 12;
+      const n = 36;
+      if (r === 0) return bal / n;
+      return bal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }
+
+    function recalculate() {
+      const balance = Math.max(0, parseFloat(balanceInput?.value) || 0);
+      const apr = Math.max(0, parseFloat(aprInput?.value) || 0);
+      const method = methodSelect?.value || 'B';
+      const minPct = Math.max(0.1, parseFloat(minPctInput?.value) || 1.0) / 100;
+      const minDollar = Math.max(5, parseFloat(minDollarInput?.value) || 25);
+      const extraPay = Math.max(0, parseFloat(extraInput?.value) || 0);
+      const fixedPay = Math.max(0, parseFloat(fixedInput?.value) || 0);
+
+      // Update Labels for Scenarios
+      if (scenBExtraLbl) scenBExtraLbl.textContent = `+${formatCurrency(extraPay)}`;
+      if (scenCFixedLbl) scenCFixedLbl.textContent = `${formatCurrency(fixedPay)}/mo`;
+
+      // 1. Run Scenario A (Minimum Payments Only)
+      const resA = runAmortization({
+        balance,
+        apr,
+        method,
+        minPctDecimal: minPct,
+        minDollar,
+        extraPayment: 0,
+        fixedPayment: null
+      });
+
+      // 2. Run Scenario B (Minimum + Extra)
+      const resB = runAmortization({
+        balance,
+        apr,
+        method,
+        minPctDecimal: minPct,
+        minDollar,
+        extraPayment: extraPay,
+        fixedPayment: null
+      });
+
+      // 3. Run Scenario C (Fixed Payment)
+      const resC = runAmortization({
+        balance,
+        apr,
+        method,
+        minPctDecimal: minPct,
+        minDollar,
+        extraPayment: 0,
+        fixedPayment: fixedPay
+      });
+
+      // 4. Calculate 36-Month Plan
+      const pmt36 = calc36MonthPayment(balance, apr);
+      const res36 = runAmortization({
+        balance,
+        apr,
+        method,
+        minPctDecimal: minPct,
+        minDollar,
+        extraPayment: 0,
+        fixedPayment: Math.ceil(pmt36 * 100) / 100
+      });
+
+      // Display Alert Banner & Warning Status
+      if (resA.neverRepaid) {
+        alertBanner.className = 'alert-banner alert-danger';
+        alertTitle.textContent = '⚠️ Critical Warning: Debt Will Never Be Repaid!';
+        alertDesc.textContent = `Your initial monthly interest is ${formatCurrency(balance * (apr / 100 / 12))}, which exceeds your minimum payment of ${formatCurrency(resA.firstPayment)}. Without increasing your monthly payment, the unpaid interest will compound and your balance will grow indefinitely!`;
+      } else {
+        const firstInterestShare = resA.firstPayment > 0 ? (resA.firstInterest / resA.firstPayment) * 100 : 0;
+        if (firstInterestShare >= 50) {
+          alertBanner.className = 'alert-banner alert-warning';
+          alertTitle.textContent = `🚨 High Interest Cost Alert: ${firstInterestShare.toFixed(1)}% Goes to Interest!`;
+          alertDesc.textContent = `Of your first payment of ${formatCurrency(resA.firstPayment)}, exactly ${formatCurrency(resA.firstInterest)} is consumed by interest charges alone. Only ${formatCurrency(resA.firstPayment - resA.firstInterest)} goes toward paying down your actual credit card balance.`;
+        } else {
+          alertBanner.className = 'alert-banner alert-info';
+          alertTitle.textContent = 'ℹ️ Minimum Payment Repayment Projection';
+          alertDesc.textContent = `At ${apr.toFixed(2)}% APR, making minimum payments will require ${formatTime(resA.months)} to pay off. Review the accelerated payment options below to save money and get debt-free sooner.`;
+        }
+      }
+
+      // Populate Main Result Cards
+      if (resA.neverRepaid) {
+        resPayoffTime.textContent = 'Never (Debt Trap)';
+        lblPayoffMonths.textContent = 'Balance grows faster than payments';
+        resTotalInterest.textContent = 'Infinite (Growing)';
+        lblInterestPct.textContent = 'Principal cannot be retired';
+        resTotalPaid.textContent = '—';
+        resFirstPayment.textContent = formatCurrency(resA.firstPayment);
+        lblFirstInterestShare.textContent = 'Below interest charges';
+        resFinalPayment.textContent = '—';
+      } else {
+        resPayoffTime.textContent = formatTime(resA.months);
+        lblPayoffMonths.textContent = `${resA.months} Total Monthly Payments`;
+        resTotalInterest.textContent = formatCurrency(resA.totalInterest);
+        const intPct = balance > 0 ? (resA.totalInterest / balance) * 100 : 0;
+        lblInterestPct.textContent = `${intPct.toFixed(1)}% of original balance paid in interest`;
+        resTotalPaid.textContent = formatCurrency(resA.totalPaid);
+        resFirstPayment.textContent = formatCurrency(resA.firstPayment);
+        const firstInterestShare = resA.firstPayment > 0 ? (resA.firstInterest / resA.firstPayment) * 100 : 0;
+        lblFirstInterestShare.textContent = `${firstInterestShare.toFixed(1)}% interest (${formatCurrency(resA.firstInterest)})`;
+        resFinalPayment.textContent = formatCurrency(resA.finalPayment);
+      }
+
+      // Populate 36-Month Benchmark Card
+      if (pmt36 > 0) {
+        res36mPayment.textContent = `${formatCurrency(pmt36)}/mo`;
+        plan36TargetPay.textContent = `${formatCurrency(pmt36)} per month`;
+        if (resA.success) {
+          const savings36 = Math.max(0, resA.totalInterest - res36.totalInterest);
+          lbl36mSavings.textContent = `Saves ${formatCurrency(savings36)} in interest`;
+          plan36InterestSaved.textContent = formatCurrency(savings36);
+        } else {
+          lbl36mSavings.textContent = 'Guarantees debt payoff in 3 years';
+          plan36InterestSaved.textContent = 'an infinite amount';
+        }
+      }
+
+      // Populate Scenario Comparison Cards
+      // Scenario A
+      scenATime.textContent = formatTime(resA.months);
+      scenAInterest.textContent = formatCurrency(resA.totalInterest);
+      scenATotal.textContent = formatCurrency(resA.totalPaid);
+
+      // Scenario B
+      scenBTime.textContent = formatTime(resB.months);
+      scenBInterest.textContent = formatCurrency(resB.totalInterest);
+      if (resA.success && resB.success) {
+        const intSavedB = Math.max(0, resA.totalInterest - resB.totalInterest);
+        const timeSavedB = Math.max(0, resA.months - resB.months);
+        scenBSavedInterest.textContent = formatCurrency(intSavedB);
+        scenBSavedTime.textContent = formatTime(timeSavedB);
+      } else if (resB.success) {
+        scenBSavedInterest.textContent = 'Enables debt freedom!';
+        scenBSavedTime.textContent = 'Eliminates endless debt';
+      } else {
+        scenBSavedInterest.textContent = '—';
+        scenBSavedTime.textContent = '—';
+      }
+
+      // Scenario C
+      scenCTime.textContent = formatTime(resC.months);
+      scenCInterest.textContent = formatCurrency(resC.totalInterest);
+      if (resA.success && resC.success) {
+        const intSavedC = Math.max(0, resA.totalInterest - resC.totalInterest);
+        const timeSavedC = Math.max(0, resA.months - resC.months);
+        scenCSavedInterest.textContent = formatCurrency(intSavedC);
+        scenCSavedTime.textContent = formatTime(timeSavedC);
+      } else if (resC.success) {
+        scenCSavedInterest.textContent = 'Enables debt freedom!';
+        scenCSavedTime.textContent = 'Eliminates endless debt';
+      } else {
+        scenCSavedInterest.textContent = '—';
+        scenCSavedTime.textContent = 'Payment too low to cover interest';
+      }
+
+      // Populate Milestone Schedule Table
+      if (milestonesBody) {
+        milestonesBody.innerHTML = '';
+        if (resA.neverRepaid || resA.milestones.length === 0) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="6" style="text-align:center; padding: var(--space-4); color: var(--color-danger);">
+            <strong>Warning:</strong> Amortization table cannot be generated because minimum payments do not reduce the principal.
+          </td>`;
+          milestonesBody.appendChild(tr);
+        } else {
+          resA.milestones.forEach((m, idx) => {
+            const tr = document.createElement('tr');
+            const isFinal = m.balance === 0;
+            tr.innerHTML = `
+              <td><strong>Month ${m.month}${isFinal ? ' (Final)' : ''}</strong></td>
+              <td>${formatCurrency(m.opening)}</td>
+              <td>${formatCurrency(m.payment)}</td>
+              <td style="color: var(--color-danger);">${formatCurrency(m.interest)}</td>
+              <td style="color: var(--color-success); font-weight: 600;">${formatCurrency(m.principal)}</td>
+              <td><strong>${formatCurrency(m.balance)}</strong></td>
+            `;
+            milestonesBody.appendChild(tr);
+          });
+        }
+      }
+    }
+
+    // Initialize initial calculations
+    recalculate();
+
+    // Clipboard Copy Handler for Toolbar
+    window.addEventListener('copy-calculator-results', () => {
+      const balanceVal = balanceInput.value;
+      const aprVal = aprInput.value;
+      const timeVal = resPayoffTime.textContent;
+      const interestVal = resTotalInterest.textContent;
+      const totalPaidVal = resTotalPaid.textContent;
+      const firstPayVal = resFirstPayment.textContent;
+      const pay36Val = res36mPayment.textContent;
+
+      const report = `Minimum Payment Trap Payoff Report:\n` +
+                     `Current Balance: ${formatCurrency(parseFloat(balanceVal))} | APR: ${aprVal}%\n` +
+                     `Estimated Payoff Time: ${timeVal}\n` +
+                     `Total Interest Paid: ${interestVal}\n` +
+                     `Total Amount Paid: ${totalPaidVal}\n` +
+                     `First Minimum Payment: ${firstPayVal}\n` +
+                     `Target 36-Month Payoff Payment: ${pay36Val}\n` +
+                     `Generated by FinCalcLab.com Minimum Payment Trap Calculator`;
+
+      navigator.clipboard.writeText(report).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      }).catch(err => {
+        console.error('Clipboard copy failed:', err);
+      });
+    });
+  }
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+  }
+
+  .input-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0 0 var(--space-2) 0;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+    min-width: 0;
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .input-label-row label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    min-width: 0;
+  }
+
+  .field-label-top {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .form-select-full {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .form-select-full:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    height: 38px;
+    padding: 0 var(--space-3);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .input-symbol-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-alpha-20, rgba(37, 99, 235, 0.2));
+  }
+
+  .currency-symbol {
+    position: absolute;
+    left: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .unit-symbol {
+    position: absolute;
+    right: var(--space-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .currency-select {
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    color: var(--color-text-base);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    width: auto;
+    min-width: 180px;
+    max-width: 240px;
+    flex-shrink: 0;
+  }
+
+  .currency-select.method-select {
+    max-width: 340px;
+  }
+
+  .currency-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .slider-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+    margin-top: var(--space-1);
+    accent-color: var(--color-primary);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-hint {
+    font-size: 0.775rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+
+  .input-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  @media (max-width: 600px) {
+    .input-row-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Results Section */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+  }
+
+  .results-heading {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  /* Alert / Warning Banner */
+  .alert-banner {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .alert-danger {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.4);
+    border-left: 4px solid #ef4444;
+  }
+
+  .alert-warning {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.4);
+    border-left: 4px solid #f59e0b;
+  }
+
+  .alert-info {
+    background: rgba(37, 99, 235, 0.08);
+    border-color: rgba(37, 99, 235, 0.4);
+    border-left: 4px solid var(--color-primary);
+  }
+
+  .alert-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .alert-danger .alert-icon { color: #ef4444; }
+  .alert-warning .alert-icon { color: #d97706; }
+  .alert-info .alert-icon { color: var(--color-primary); }
+
+  .alert-content {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .alert-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+    color: var(--color-text-base);
+  }
+
+  .alert-desc {
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+  }
+
+  /* Net Value Container */
+  .net-value-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  @media (max-width: 640px) {
+    .net-value-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .net-value-box {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    box-shadow: var(--shadow-sm);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .payoff-time-box {
+    border-top: 4px solid #ef4444;
+  }
+
+  .interest-box {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .net-box-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .net-box-amount {
+    font-size: 1.85rem;
+    font-weight: 900;
+    line-height: 1.15;
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .net-box-sub {
+    font-size: 0.825rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .text-danger { color: #dc2626; }
+  .text-primary { color: var(--color-primary); }
+  .text-success { color: #16a34a; }
+
+  /* Metrics Grid (Rule 15 Compliant) */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  @media (max-width: 480px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .metric-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .metric-label {
+    font-size: 0.775rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .metric-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metric-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+  }
+
+  /* Comparison Cards Section */
+  .comparison-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .comparison-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .scenario-comparison-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .scenario-comparison-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .scenario-tile {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+    position: relative;
+    min-width: 0;
+  }
+
+  .scenario-tile-min {
+    border-top: 3px solid #ef4444;
+  }
+
+  .scenario-tile-extra {
+    border-top: 3px solid #0284c7;
+    background: linear-gradient(180deg, var(--color-bg-base) 0%, rgba(2, 132, 199, 0.02) 100%);
+  }
+
+  .scenario-tile-fixed {
+    border-top: 3px solid #16a34a;
+    background: linear-gradient(180deg, var(--color-bg-base) 0%, rgba(22, 163, 74, 0.02) 100%);
+  }
+
+  .scenario-tile-badge {
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+
+  .scenario-tile-badge.bg-accent {
+    background: rgba(2, 132, 199, 0.1);
+    color: #0284c7;
+  }
+
+  .scenario-tile-badge.bg-success {
+    background: rgba(22, 163, 74, 0.1);
+    color: #16a34a;
+  }
+
+  .scenario-tile-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .scenario-tile-time {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    line-height: 1.2;
+  }
+
+  .scenario-tile-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: 3px;
+  }
+
+  .stat-lbl { color: var(--color-text-muted); }
+  .stat-val { font-weight: 600; color: var(--color-text-base); }
+
+  .scenario-tile-savings {
+    background: rgba(22, 163, 74, 0.07);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+    border-radius: var(--radius-sm, 4px);
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .savings-tag {
+    font-size: 0.8rem;
+    color: #16a34a;
+  }
+
+  .savings-sub {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .scenario-tile-desc {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.35;
+    margin: 4px 0 0 0;
+  }
+
+  /* 36-Month Card */
+  .plan36-card {
+    background: var(--color-bg-base);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .plan36-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .plan36-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .plan36-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .plan36-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-primary);
+  }
+
+  .plan36-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .plan36-desc {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Schedule Section */
+  .schedule-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .schedule-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .schedule-heading {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .schedule-sub {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-base);
+    max-width: 100%;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.825rem;
+    min-width: 480px;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-base);
+  }
+
+  .schedule-table th {
+    background: var(--color-bg-subtle, rgba(0,0,0,0.03));
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .schedule-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Mobile Responsiveness for Form Inputs */
+  @media (max-width: 600px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-2);
+    }
+
+    .input-label-row .input-symbol-wrapper,
+    .input-label-row .currency-select,
+    .input-label-row select {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+</style>

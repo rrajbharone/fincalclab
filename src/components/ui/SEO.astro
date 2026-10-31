@@ -1,8 +1,7 @@
 ---
-interface SchemaBreadcrumb {
-  name: string;
-  item: string;
-}
+import { generateBreadcrumbSchema, type BreadcrumbItem } from '../../utils/breadcrumbSchema';
+
+export type SchemaBreadcrumb = BreadcrumbItem;
 
 interface SchemaFAQ {
   question: string;
@@ -15,7 +14,7 @@ interface Props {
   canonicalUrl?: string;
   ogType?: 'website' | 'article';
   ogImage?: string;
-  breadcrumbs?: SchemaBreadcrumb[];
+  breadcrumbs?: BreadcrumbItem[];
   faqs?: SchemaFAQ[];
   noindex?: boolean;
 }
@@ -55,17 +54,13 @@ const orgSchema = {
   ]
 };
 
-// Conditional Schemas
-const breadcrumbSchema = breadcrumbs.length > 0 ? {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  'itemListElement': breadcrumbs.map((crumb, idx) => ({
-    '@type': 'ListItem',
-    'position': idx + 1,
-    'name': crumb.name,
-    'item': crumb.item
-  }))
-} : null;
+// Centralized dynamic BreadcrumbList schema generation
+const breadcrumbSchema = generateBreadcrumbSchema({
+  pathname: Astro.url.pathname,
+  title,
+  canonicalUrl,
+  customBreadcrumbs: breadcrumbs
+});
 
 const faqSchema = faqs.length > 0 ? {
   '@context': 'https://schema.org',

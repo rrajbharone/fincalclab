@@ -1,0 +1,719 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DscrCalculator from '../../components/calculator/DscrCalculator.astro';
+import Card from '../../components/ui/Card.astro';
+
+const breadcrumbs = [
+  { name: 'Home', item: '/' },
+  { name: 'Calculators', item: '/all-calculators' },
+  { name: 'DSCR Calculator', item: '/calculator/dscr-calculator' }
+];
+
+const faqs = [
+  {
+    question: "What does a DSCR of 1.25 mean?",
+    answer: "A Debt Service Coverage Ratio (DSCR) of 1.25 means that the property generates $1.25 in Net Operating Income (NOI) for every $1.00 of required debt service (principal, interest, and required loan payments). This leaves a 25% financial cushion above debt obligations to absorb unexpected vacancies, maintenance surges, or temporary rental market dips. A 1.25x ratio is the standard minimum benchmark required by most commercial banks, life insurance companies, and non-QM real estate lenders."
+  },
+  {
+    question: "Can you get a DSCR loan with no personal income verification?",
+    answer: "Yes. Specialized non-QM (non-qualified mortgage) DSCR loans do not require personal tax returns, W-2 forms, pay stubs, or personal debt-to-income (DTI) calculations. Instead, lenders qualify the loan based strictly on the investment property's cash flow potential. If the property's gross rental income covers its debt service and operating expenses to satisfy the lender's required DSCR threshold (typically 1.20x to 1.25x), the loan can be approved based solely on the asset's performance and the borrower's credit score."
+  },
+  {
+    question: "What happens if a property's DSCR falls below 1.0?",
+    answer: "When a DSCR is below 1.0 (for example, 0.85x), the property is experiencing negative cash flow, meaning its Net Operating Income is insufficient to cover its total debt service obligations. The property owner must contribute personal cash out of pocket each month to pay the mortgage. For commercial mortgages, dropping below a specified DSCR covenant (commonly 1.15x to 1.20x) can trigger a technical default, requiring the borrower to post cash reserves, pay down the loan balance, or face accelerated loan maturity."
+  },
+  {
+    question: "Why must mortgage payments be excluded from operating expenses when calculating NOI?",
+    answer: "Mortgage principal and interest must be strictly excluded from operating expenses when calculating Net Operating Income (NOI) because NOI measures the unleveraged operational profitability of the property itself. Debt service is the denominator of the DSCR formula. If you subtract mortgage payments when calculating NOI, you would be double-counting debt, resulting in an artificially low and mathematically invalid coverage ratio."
+  },
+  {
+    question: "How do lenders verify rental income for a DSCR loan on a vacant property?",
+    answer: "For vacant properties or newly acquired rentals without existing leases, lenders order an independent appraisal that includes a Single-Family Comparable Rent Schedule (Fannie Mae Form 1007) or commercial market rent analysis. The certified appraiser evaluates current market rents of similar nearby properties to establish an estimated market rent, which the lender then uses as the gross income baseline to calculate the prospective DSCR."
+  },
+  {
+    question: "Is property management fee included in operating expenses for DSCR?",
+    answer: "Yes. Even if an investor plans to manage the property personally, professional underwriters almost universally impute a standard property management fee (typically 8% to 10% of gross rents for residential properties, or 3% to 5% for commercial buildings) into the operating expenses. Lenders do this to ensure that if the lender ever has to foreclose or take over operations, the asset can sustain third-party professional management."
+  },
+  {
+    question: "How does an interest rate increase impact the debt service coverage ratio?",
+    answer: "An interest rate increase raises the annual debt service obligation (the denominator in the DSCR formula), which directly depresses the DSCR ratio unless rental income increases proportionately. For example, on a $500,000 loan, an interest rate jump from 5.5% to 7.5% increases annual debt payments by roughly $8,000 to $9,000. If NOI remains constant at $50,000, the DSCR drops significantly, potentially pushing a qualifying deal below the lender's 1.20x minimum approval threshold."
+  },
+  {
+    question: "What is the difference between DSCR and Debt Yield?",
+    answer: "DSCR measures how comfortably operating earnings cover debt payments (NOI divided by Debt Service) and is highly sensitive to interest rates and amortization terms. Debt Yield, by contrast, measures the lender's raw unleveraged return in the event of default, calculated as NOI divided by the Total Loan Amount multiplied by 100%. Debt Yield ignores interest rates and loan terms entirely, giving commercial lenders a fixed benchmark for asset risk."
+  },
+  {
+    question: "Can DSCR change over time after purchasing a property?",
+    answer: "Yes. DSCR fluctuates dynamically throughout the ownership lifecycle. DSCR expands when property managers raise tenant rents, lower operating costs, or refinance into lower interest rates. Conversely, DSCR compresses when municipalities reassess property taxes upward, insurance premiums surge, tenant vacancy rises, or variable-rate loans adjust upward."
+  },
+  {
+    question: "Do personal living expenses affect a DSCR loan application?",
+    answer: "No. Unlike conventional residential mortgages that scrutinize your personal debt-to-income (DTI) ratio—including credit card bills, auto loans, student loans, and child care costs—pure DSCR loans isolate the underwriting exclusively to the investment property. Personal liabilities do not impact the DSCR calculation, though lenders will still verify borrower credit history and ensure adequate liquid cash reserves."
+  }
+];
+
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "DSCR Calculator",
+  "url": "https://fincalclab.com/calculator/dscr-calculator",
+  "description": "Calculate your Debt Service Coverage Ratio (DSCR), Net Operating Income (NOI), and annual cash flow cushion for rental properties and commercial real estate financing.",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+---
+
+<Layout
+  title="DSCR Calculator – Calculate Debt Service Coverage Ratio"
+  description="Use our free DSCR Calculator to calculate your debt service coverage ratio. Enter property income, operating expenses and debt payments to understand your DSCR."
+  breadcrumbs={breadcrumbs}
+  faqs={faqs}
+>
+  <!-- Schema Injections -->
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
+
+  <div class="calculator-page-container container">
+    <!-- Interactive Calculator Component -->
+    <DscrCalculator />
+
+    <!-- Guide Content Section -->
+    <div class="calculator-guide-section" style="margin-top: var(--space-12);">
+
+      <!-- Real Estate Interlinking Highlights Card -->
+      <div style="margin-bottom: var(--space-8);">
+        <Card elevation="sm" style="border: 1.5px solid var(--color-primary); background-color: var(--color-bg-base); padding: var(--space-5);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em;">Related Real Estate Underwriting Tools</span>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--color-text-base);">Complement Your DSCR Analysis with Unleveraged Yield & Renovation Metrics</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.55;">
+              While the DSCR measures how reliably cash flows cover loan obligations, savvy real estate investors pair coverage metrics with unleveraged asset yield via our <a href="/calculator/cap-rate-calculator" style="font-weight: 700; color: var(--color-primary); text-decoration: underline;">Cap Rate Calculator</a>, evaluate refinance cash-out equity using the <a href="/calculator/brrrr-calculator" style="font-weight: 700; color: var(--color-primary); text-decoration: underline;">BRRRR Calculator</a>, or project rental expansion cash flow with the <a href="/calculator/adu-roi-calculator" style="font-weight: 700; color: var(--color-primary); text-decoration: underline;">ADU ROI Calculator</a>.
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div class="prose">
+        <h2>What Is a DSCR Calculator?</h2>
+        <p>
+          A <strong>DSCR Calculator</strong> (Debt Service Coverage Ratio Calculator) is an essential financial modeling tool used by real estate investors, commercial underwriters, mortgage brokers, and corporate lenders to determine whether an income-generating property produces sufficient cash flow to cover its mandatory debt obligations.
+        </p>
+        <p>
+          The <strong>Debt Service Coverage Ratio</strong> quantifies the relationship between a property's annual <strong>Net Operating Income (NOI)</strong> and its total annual debt burden. In simple terms, DSCR answers the most fundamental question a lender or investor can ask: <em>Does this property generate enough money from rents to pay its operating bills and its mortgage, with safety margin left over?</em>
+        </p>
+        <p>
+          In modern commercial lending and residential investor financing (such as non-QM DSCR loans), this single metric often dictates whether a loan is approved, what interest rate is charged, how much down payment is required, and what maximum leverage (Loan-to-Value) the lender will permit.
+        </p>
+
+        <h2>How to Calculate DSCR (Formula & Mathematical Mechanics)</h2>
+        <p>
+          The core Debt Service Coverage Ratio formula is straightforward, dividing the property's annual operating profit by its required annual financing payments:
+        </p>
+        
+        <div class="formula-callout-box">
+          <div class="formula-line">
+            {"\\(\\text{DSCR} = \\frac{\\text{Net Operating Income (NOI)}}{\\text{Total Annual Debt Service}}\\)"}
+          </div>
+          <p class="formula-caption">
+            Where <strong>NOI</strong> equals total gross income minus operating expenses, and <strong>Total Debt Service</strong> includes all mandatory principal, interest, and junior lien payments.
+          </p>
+        </div>
+
+        <p>
+          To interpret the resulting quotient:
+        </p>
+        <ul>
+          <li><strong>DSCR &gt; 1.00:</strong> The property generates more income than needed to pay its debt obligations, producing positive cash flow.</li>
+          <li><strong>DSCR = 1.00:</strong> The property is operating at exact break-even. Every dollar of net operating income goes directly to debt service, leaving zero safety cushion for unexpected repairs or vacancy.</li>
+          <li><strong>DSCR &lt; 1.00:</strong> The property generates insufficient operating income to satisfy its debt obligations. The property owner must feed the property cash from personal savings each month to avoid mortgage default.</li>
+        </ul>
+
+        <h2>Calculating Net Operating Income (NOI): Inclusions & Exclusions</h2>
+        <p>
+          Net Operating Income is the numerator in the DSCR formula, representing the cash generated by property operations before financing costs and income taxes are considered:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Net Operating Income (NOI)} = \\text{Annual Rental Income} - \\text{Annual Operating Expenses}\\)"}
+        </p>
+        <p>
+          Understanding which line items belong in Operating Expenses—and which must be rigorously excluded—is critical for accurate financial analysis:
+        </p>
+
+        <h3>What to Include in Operating Expenses</h3>
+        <ul>
+          <li><strong>Property Taxes:</strong> Real estate property taxes, special assessments, and municipal levies.</li>
+          <li><strong>Property Insurance:</strong> Hazard insurance, flood insurance, liability coverage, and landlord insurance policies.</li>
+          <li><strong>Routine Repairs & Maintenance:</strong> Plumbing repairs, HVAC servicing, landscaping, pest control, snow removal, and routine turnover painting.</li>
+          <li><strong>Professional Property Management:</strong> Management fees (typically 8% to 10% of gross rents for residential properties, or 3% to 6% for commercial assets).</li>
+          <li><strong>Owner-Paid Utilities:</strong> Common area lighting, water, sewer, and trash removal if not separately metered to tenants.</li>
+          <li><strong>Advertising & Leasing Commissions:</strong> Marketing vacant units, tenant screening fees, and broker placement commissions.</li>
+        </ul>
+
+        <h3>What to Exclude from Operating Expenses (Critical Separation)</h3>
+        <p>
+          <strong>Mortgage principal and interest must never be included in Operating Expenses.</strong> Because mortgage payments represent the denominator (Debt Service) of the DSCR calculation, including them in operating expenses would subtract them twice, producing an invalid and severely depressed ratio.
+        </p>
+        <p>
+          Additionally, exclude the following items when computing NOI:
+        </p>
+        <ul>
+          <li><strong>Mortgage Principal & Interest Payments:</strong> Tracked exclusively in Annual Debt Service.</li>
+          <li><strong>Depreciation & Amortization:</strong> Non-cash accounting deductions that do not consume physical operating cash flow.</li>
+          <li><strong>Major Capital Expenditures (CapEx):</strong> Large one-time structural improvements (such as a full roof replacement or parking lot repaving) are capitalized over time rather than expensed as day-to-day operations.</li>
+          <li><strong>Owner's Personal Income Taxes:</strong> Federal and state personal income taxes depend on individual investor tax brackets, not property operations.</li>
+        </ul>
+
+        <h2>Annual Debt Service Breakdown</h2>
+        <p>
+          The denominator of the DSCR formula is <strong>Total Annual Debt Service</strong>, which represents the aggregate sum of all mandatory loan payments required by your lenders over a 12-month period:
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; margin: var(--space-4) 0; font-weight: 700; color: var(--color-text-base);">
+          {"\\(\\text{Total Annual Debt Service} = \\text{Annual Principal Payments} + \\text{Annual Interest Payments}\\)"}
+        </p>
+        <p>
+          Key components include:
+        </p>
+        <ul>
+          <li><strong>Principal Amortization:</strong> The portion of each monthly payment that pays down the principal balance of the loan.</li>
+          <li><strong>Interest Payments:</strong> The finance charge paid to the lender based on the note's interest rate.</li>
+          <li><strong>Interest-Only Loans:</strong> If your mortgage features an interest-only period, annual debt service consists purely of 12 months of interest. While this lowers debt service during the IO period, prudent investors also model the future amortizing payment to prepare for payment increases. To evaluate how accelerated debt payoffs impact amortization schedules, test our <a href="/calculator/mortgage-early-repayment-calculator">Mortgage Early Repayment Calculator</a>.</li>
+        </ul>
+
+        <h2>Two In-Depth Real-World Worked Examples</h2>
+        <p>
+          To illustrate how DSCR operates in real estate underwriting, consider two distinct investment scenarios: a residential turnkey duplex and a commercial 8-unit multi-family property.
+        </p>
+
+        <h3>Example 1: Residential Turnkey Duplex</h3>
+        <p>
+          An investor acquires a fully leased two-unit residential property. Each unit rents for $1,800 per month, generating $43,200 per year in total rental income. The investor secures a 30-year fixed DSCR loan requiring principal payments of $7,200/year and interest payments of $16,800/year ($2,000/month total debt service).
+        </p>
+        <div class="example-breakdown-card">
+          <table class="example-table">
+            <tbody>
+              <tr>
+                <td><strong>Annual Rental Income</strong></td>
+                <td>{"\\(\\$1,800 \\times 2 \\times 12\\)"}</td>
+                <td class="text-right"><strong>$43,200.00</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Annual Operating Expenses</strong></td>
+                <td>Taxes ($4,200), Insurance ($1,800), Repairs ($3,000), Mgmt ($3,456)</td>
+                <td class="text-right text-danger">-$12,456.00</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Net Operating Income (NOI)</strong></td>
+                <td>$43,200 − $12,456</td>
+                <td class="text-right text-success"><strong>$30,744.00</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Annual Principal Payments</strong></td>
+                <td>Loan principal amortization</td>
+                <td class="text-right">$7,200.00</td>
+              </tr>
+              <tr>
+                <td><strong>Annual Interest Payments</strong></td>
+                <td>Mortgage interest charges</td>
+                <td class="text-right">$16,800.00</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Total Annual Debt Service</strong></td>
+                <td>Principal ($7,200) + Interest ($16,800)</td>
+                <td class="text-right text-primary"><strong>$24,000.00</strong></td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Debt Service Coverage Ratio (DSCR)</strong></td>
+                <td>{"\\(\\$30,744.00 \\div \\$24,000.00\\)"}</td>
+                <td class="text-right text-success"><strong>1.28x</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Annual Net Cash Flow After Debt</strong></td>
+                <td>NOI − Debt Service</td>
+                <td class="text-right text-success"><strong>+$6,744.00 / yr</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Monthly Net Cash Flow</strong></td>
+                <td>{"\\(\\$6,744.00 \\div 12\\)"}</td>
+                <td class="text-right text-success"><strong>+$562.00 / mo</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>Underwriter Assessment:</strong> With a DSCR of <strong>1.28x</strong>, the duplex generates 28% more income than required to service the mortgage. This satisfies the standard 1.25x minimum threshold for most non-QM DSCR lenders, qualifying the borrower for competitive interest rates and standard 75%–80% LTV financing.
+        </p>
+
+        <h3>Example 2: Small Multi-Family / Commercial Building (8 Units)</h3>
+        <p>
+          A commercial investor evaluates an 8-unit apartment complex generating $150,000 in gross annual rental income. Annual operating expenses (taxes, insurance, professional management, utilities, maintenance) total $60,000. The commercial bank offers a 25-year amortizing loan with annual payments of $75,000 ($28,000 principal + $47,000 interest).
+        </p>
+        <div class="example-breakdown-card">
+          <table class="example-table">
+            <tbody>
+              <tr>
+                <td><strong>Annual Rental Income</strong></td>
+                <td>8 units @ $1,562.50/mo avg</td>
+                <td class="text-right"><strong>$150,000.00</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Annual Operating Expenses</strong></td>
+                <td>Taxes ($22k), Insurance ($9.5k), Mgmt ($12k), Repairs ($12k), Utilities ($4.5k)</td>
+                <td class="text-right text-danger">-$60,000.00</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Net Operating Income (NOI)</strong></td>
+                <td>$150,000 − $60,000</td>
+                <td class="text-right text-success"><strong>$90,000.00</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Annual Principal Payments</strong></td>
+                <td>Principal reduction portion</td>
+                <td class="text-right">$28,000.00</td>
+              </tr>
+              <tr>
+                <td><strong>Annual Interest Payments</strong></td>
+                <td>Commercial interest charges</td>
+                <td class="text-right">$47,000.00</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Total Annual Debt Service</strong></td>
+                <td>Principal ($28,000) + Interest ($47,000)</td>
+                <td class="text-right text-primary"><strong>$75,000.00</strong></td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Debt Service Coverage Ratio (DSCR)</strong></td>
+                <td>{"\\(\\$90,000.00 \\div \\$75,000.00\\)"}</td>
+                <td class="text-right text-success"><strong>1.20x</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Annual Net Cash Flow After Debt</strong></td>
+                <td>$90,000 − $75,000</td>
+                <td class="text-right text-success"><strong>+$15,000.00 / yr</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Monthly Net Cash Flow</strong></td>
+                <td>{"\\(\\$15,000.00 \\div 12\\)"}</td>
+                <td class="text-right text-success"><strong>+$1,250.00 / mo</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>Underwriter Assessment:</strong> The DSCR is exactly <strong>1.20x</strong>. While this meets the minimum commercial underwriting guideline, the lender may require the borrower to maintain 6 months of debt service in liquid cash reserves ($37,500) to protect against economic downturns or tenant turnover. For owners considering adding an accessory unit or detached structure to expand multi-unit cash flow, compare construction debt options using our <a href="/calculator/adu-loan-calculator">ADU Loan Calculator</a>.
+        </p>
+
+        <h2>Interpreting DSCR Results (&lt; 1.0, 1.0, 1.20, 1.25+)</h2>
+        <p>
+          Understanding where your property falls on the DSCR spectrum helps you anticipate lender decisions and assess cash flow safety:
+        </p>
+        
+        <div class="interpretation-grid">
+          <div class="tier-card tier-danger">
+            <span class="tier-badge">DSCR &lt; 1.00x</span>
+            <h4>Cash Flow Deficit (Negative Leverage)</h4>
+            <p>
+              Operating income is insufficient to cover debt payments. The owner must inject personal funds monthly. Most conventional and commercial lenders reject loans in this tier, although specialized hard money lenders may lend at low LTV (50%–60%) if the borrower plans extensive value-add renovations.
+            </p>
+          </div>
+
+          <div class="tier-card tier-warning">
+            <span class="tier-badge">DSCR 1.00x – 1.19x</span>
+            <h4>Break-Even to Marginal Cushion</h4>
+            <p>
+              The property covers its debt, but with an uncomfortably slim safety margin. A single month of vacancy or a broken water heater can push the property into immediate negative cash flow. Lenders frequently require higher interest rate premiums (50 to 150 basis points) or lower maximum LTV (65% to 70%).
+            </p>
+          </div>
+
+          <div class="tier-card tier-primary">
+            <span class="tier-badge">DSCR 1.20x – 1.25x</span>
+            <h4>Standard Qualifying Benchmark</h4>
+            <p>
+              The industry gold standard for residential DSCR loans and commercial mortgages. Generating 20% to 25% surplus operating cash flow above debt obligations provides an adequate buffer against economic cyclicality while maximizing borrowing leverage (typically 75% to 80% LTV).
+            </p>
+          </div>
+
+          <div class="tier-card tier-success">
+            <span class="tier-badge">DSCR &gt; 1.25x</span>
+            <h4>Strong Coverage &amp; Low Default Risk</h4>
+            <p>
+              Properties in this tier generate substantial surplus cash flow (30% to 50%+ above debt service). Underwriters view these loans as low risk, offering the lowest available interest rates, flexible loan covenants, and streamlined underwriting approval.
+            </p>
+          </div>
+        </div>
+
+        <h2>What Is a Good DSCR Ratio? (Lender Variations &amp; Non-QM Loans)</h2>
+        <p>
+          There is no universal single threshold for what constitutes a "good" DSCR because lender expectations vary based on property type, loan program, and asset stability:
+        </p>
+        <ul>
+          <li><strong>Non-QM Residential DSCR Loans (1–4 Units):</strong> Typically require <strong>1.15x to 1.25x</strong>. Some aggressive lenders offer "no-ratio" or sub-1.00x loans for experienced investors with high credit scores and large down payments (30% to 40%).</li>
+          <li><strong>Multifamily Commercial Loans (Fannie Mae / Freddie Mac):</strong> Generally mandate a minimum DSCR of <strong>1.25x</strong>, and up to <strong>1.30x</strong> in secondary or tertiary real estate markets.</li>
+          <li><strong>Office and Retail Commercial Real Estate:</strong> Typically require <strong>1.30x to 1.40x</strong> due to higher tenant turnover costs, lengthy lease-up periods, and substantial tenant improvement (TI) allowances.</li>
+          <li><strong>Hospitality &amp; Hotels:</strong> Require <strong>1.40x to 1.60x</strong> or higher because hotel revenue fluctuates daily rather than being locked into annual lease agreements.</li>
+        </ul>
+        <p>
+          <em>Important: While a strong DSCR is necessary, no single coverage ratio guarantees loan approval. Lenders also evaluate loan-to-value (LTV), borrower FICO credit score, liquid post-closing reserves, property condition, and environmental site assessments.</em> To understand the complete picture of property holding costs beyond mortgage payments, consult our <a href="/calculator/true-cost-of-home-ownership-calculator">True Cost of Home Ownership Calculator</a>.
+        </p>
+
+        <h2>Residential Rental vs Commercial Real Estate DSCR Underwriting</h2>
+        <p>
+          While the mathematical formula remains identical, residential and commercial lenders apply different underwriting standards when calculating DSCR:
+        </p>
+        <div class="comparison-table-wrapper">
+          <table class="styled-comparison-table">
+            <thead>
+              <tr>
+                <th>Underwriting Feature</th>
+                <th>Residential DSCR Loans (1–4 Units)</th>
+                <th>Commercial Real Estate Loans (5+ Units &amp; CRE)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Income Source</strong></td>
+                <td>Standard residential lease agreements or Fannie Mae Form 1007 market rent schedules.</td>
+                <td>Historical 2–3 year profit &amp; loss statements, certified rent rolls, and trailing-12 (T12) operating statements.</td>
+              </tr>
+              <tr>
+                <td><strong>Vacancy Allowance</strong></td>
+                <td>Often built directly into the appraisal or standardized at 5% to 8%.</td>
+                <td>Underwriters apply market vacancy rates (typically 5% to 10%), even if the building is currently 100% occupied.</td>
+              </tr>
+              <tr>
+                <td><strong>Replacement Reserves</strong></td>
+                <td>Frequently handled through general cash reserve requirements at closing (e.g. 6 months P&amp;I).</td>
+                <td>Mandatory replacement reserve escrows ($250 to $500 per unit per year) subtracted directly from NOI before DSCR calculation.</td>
+              </tr>
+              <tr>
+                <td><strong>Ongoing Covenants</strong></td>
+                <td>Underwritten at origination; rarely audited annually as long as monthly payments are made on time.</td>
+                <td>Annual covenant testing. Borrowers must submit annual financial statements to prove the property maintains its required DSCR.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>5 Costly DSCR Calculation Mistakes to Avoid</h2>
+        <p>
+          Miscalculating your debt service coverage ratio can lead to loan declines, inaccurate cash flow projections, or financial distress. Avoid these five common pitfalls:
+        </p>
+        <ol>
+          <li>
+            <strong>Including Mortgage Payments in Operating Expenses:</strong> As emphasized above, including mortgage principal and interest in operating expenses subtracts debt twice. Always keep operational property expenses separate from loan debt service.
+          </li>
+          <li>
+            <strong>Assuming Zero Vacancy and 100% Collections:</strong> Even the most popular rental markets experience turnover, lease transitions, and occasional tenant non-payment. Always factor in a realistic vacancy and credit loss reserve (typically 5% to 10% of gross rents).
+          </li>
+          <li>
+            <strong>Omitting Property Management Fees When Self-Managing:</strong> Even if you plan to manage the property yourself, lenders will adjust your pro-forma expenses by imputing an 8% to 10% property management fee. Failing to budget for management will cause your calculated DSCR to be substantially higher than the lender's underwritten ratio.
+          </li>
+          <li>
+            <strong>Overlooking Future Property Tax Reassessments:</strong> Purchasing an investment property frequently triggers a municipal tax reassessment based on the new, higher purchase price. Calculating DSCR using the seller's historical property tax rate rather than the post-sale reassessed tax burden can quickly erode your expected cash flow cushion.
+          </li>
+          <li>
+            <strong>Ignoring Variable-Rate Payment Adjustments:</strong> If your mortgage features an adjustable interest rate (ARM) or balloon maturity, calculating DSCR solely on current initial terms leaves you vulnerable to payment spikes when interest rates rise.
+          </li>
+        </ol>
+
+        <h2>DSCR vs. Cash Flow vs. Cap Rate vs. Debt Yield</h2>
+        <p>
+          Real estate investors utilize several complementary metrics to analyze asset quality, leverage, and returns. Here is how DSCR compares to related key performance indicators:
+        </p>
+        <div class="comparison-table-wrapper">
+          <table class="styled-comparison-table">
+            <thead>
+              <tr>
+                <th>Financial Metric</th>
+                <th>Formula</th>
+                <th>Primary Purpose</th>
+                <th>Who Uses It?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>DSCR</strong></td>
+                <td>{"\\(\\frac{\\text{NOI}}{\\text{Annual Debt Service}}\\)"}</td>
+                <td>Measures cash flow adequacy to service debt.</td>
+                <td>Mortgage lenders, underwriters, levered investors.</td>
+              </tr>
+              <tr>
+                <td><strong>Capitalization Rate (Cap Rate)</strong></td>
+                <td>{"\\(\\frac{\\text{NOI}}{\\text{Property Value}} \\times 100\\%\\)"}</td>
+                <td>Measures unleveraged property yield independent of financing.</td>
+                <td>Acquisitions teams, appraisers, cash buyers. Compare via our <a href="/calculator/cap-rate-calculator">Cap Rate Calculator</a>.</td>
+              </tr>
+              <tr>
+                <td><strong>Cash-on-Cash Return</strong></td>
+                <td>{"\\(\\frac{\\text{Annual Pre-Tax Cash Flow}}{\\text{Total Cash Invested}} \\times 100\\%\\)"}</td>
+                <td>Measures annual return on the investor's actual out-of-pocket cash equity.</td>
+                <td>Equity partners and private investors. Modeled in our <a href="/calculator/brrrr-calculator">BRRRR Calculator</a>.</td>
+              </tr>
+              <tr>
+                <td><strong>Debt Yield</strong></td>
+                <td>{"\\(\\frac{\\text{NOI}}{\\text{Total Loan Amount}} \\times 100\\%\\)"}</td>
+                <td>Measures lender return independent of interest rate or amortization.</td>
+                <td>Commercial banks and CMBS bond underwriters.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="calculator-faq-section" style="margin-top: var(--space-10); border-top: 1px solid var(--color-border); padding-top: var(--space-8);">
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: var(--space-6); color: var(--color-text-base);">Frequently Asked Questions About DSCR</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          {faqs.map((item, index) => (
+            <details style="background: var(--color-bg-base); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);" open={index === 0}>
+              <summary style="font-weight: 700; cursor: pointer; outline: none; user-select: none; color: var(--color-text-base); font-size: 1.05rem;">
+                {item.question}
+              </summary>
+              <p style="margin-top: var(--space-3); font-size: 0.95rem; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 0;">
+                {item.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .calculator-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-4);
+  }
+
+  /* Educational Prose Styling */
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-base);
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+    color: var(--color-text-base);
+  }
+
+  .prose p {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .prose p strong {
+    color: var(--color-text-base);
+  }
+
+  .prose ul, .prose ol {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .prose li {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .prose li strong {
+    color: var(--color-text-base);
+  }
+
+  .prose a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  /* Formula Callout Box */
+  .formula-callout-box {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin: var(--space-5) 0;
+    text-align: center;
+  }
+
+  .formula-line {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin-bottom: var(--space-2);
+  }
+
+  .formula-caption {
+    font-size: 0.85rem !important;
+    color: var(--color-text-muted) !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Example Table Card */
+  .example-breakdown-card {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-4) 0 var(--space-5) 0;
+    overflow-x: auto;
+  }
+
+  .example-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .example-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+
+  .example-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .example-table td strong {
+    color: var(--color-text-base);
+  }
+
+  .highlight-row {
+    background: var(--color-bg-surface);
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .text-success {
+    color: var(--color-success) !important;
+  }
+
+  .text-danger {
+    color: var(--color-danger) !important;
+  }
+
+  .text-primary {
+    color: var(--color-primary) !important;
+  }
+
+  /* Interpretation Grid */
+  .interpretation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+
+  .tier-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-bg-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .tier-danger {
+    border-top: 4px solid var(--color-danger);
+  }
+
+  .tier-warning {
+    border-top: 4px solid var(--color-warning);
+  }
+
+  .tier-primary {
+    border-top: 4px solid var(--color-primary);
+  }
+
+  .tier-success {
+    border-top: 4px solid var(--color-success);
+  }
+
+  .tier-badge {
+    font-size: 0.725rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-light);
+  }
+
+  .tier-card h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .tier-card p {
+    font-size: 0.875rem !important;
+    line-height: 1.55 !important;
+    color: var(--color-text-muted) !important;
+    margin: 0 !important;
+  }
+
+  /* Styled Comparison Tables */
+  .comparison-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: var(--space-5) 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .styled-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+    background: var(--color-bg-base);
+  }
+
+  .styled-comparison-table th {
+    padding: 10px 12px;
+    background: var(--color-bg-surface);
+    border-bottom: 2px solid var(--color-border);
+    font-weight: 700;
+    color: var(--color-text-base);
+  }
+
+  .styled-comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .styled-comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .styled-comparison-table td strong {
+    color: var(--color-text-base);
+  }
+
+  @media (max-width: 680px) {
+    .interpretation-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

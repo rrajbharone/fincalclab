@@ -1,0 +1,1247 @@
+---
+import CalculatorLayout from './CalculatorLayout.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+---
+
+<CalculatorLayout
+  title="DSCR Calculator"
+  description="Calculate your Debt Service Coverage Ratio (DSCR) for rental properties and commercial real estate. Compare Net Operating Income (NOI) against total debt payments to assess cash flow and lending qualification."
+  category="Real Estate & Mortgages"
+>
+  <!-- Inputs Section -->
+  <div slot="inputs" class="calc-inputs-wrapper" id="dscr-calculator">
+    
+    <!-- 1. Currency & Global Settings -->
+    <div class="input-section-header">
+      <h3 class="input-section-title">Calculator Settings</h3>
+    </div>
+    
+    <div class="input-group">
+      <div class="input-label-row">
+        <label for="dscr-currency-select">Currency</label>
+        <select id="dscr-currency-select" class="currency-select" aria-label="Select Currency">
+          <option value="USD" selected>USD ($) - US Dollar</option>
+          <option value="EUR">EUR (€) - Euro</option>
+          <option value="GBP">GBP (£) - British Pound</option>
+          <option value="CAD">CAD (C$) - Canadian Dollar</option>
+          <option value="AUD">AUD (A$) - Australian Dollar</option>
+          <option value="INR">INR (₹) - Indian Rupee</option>
+          <option value="JPY">JPY (¥) - Japanese Yen</option>
+          <option value="SGD">SGD (S$) - Singapore Dollar</option>
+          <option value="CHF">CHF (CHF) - Swiss Franc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 2. Income and Operating Expenses -->
+    <div class="input-section-header" style="margin-top: var(--space-4);">
+      <h3 class="input-section-title">1. Property Income &amp; Operating Expenses</h3>
+    </div>
+
+    <!-- Annual Rental Income -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <div class="label-with-subtext">
+          <label for="dscr-gross-rent-input">Annual Rental / Property Income</label>
+          <span class="field-subtext">Total tenant rents collected over 12 months</span>
+        </div>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input 
+            type="number" 
+            id="dscr-gross-rent-input" 
+            min="0" 
+            step="1000" 
+            value="150000" 
+            aria-label="Annual Rental Property Income" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="dscr-gross-rent-slider" 
+        min="0" 
+        max="500000" 
+        step="2500" 
+        value="150000" 
+        class="slider-range" 
+        aria-label="Annual Rental Income Slider" 
+      />
+    </div>
+
+    <!-- Annual Operating Expenses -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <div class="label-with-subtext">
+          <label for="dscr-expenses-input">Annual Operating Expenses</label>
+          <span class="field-subtext">Property taxes, insurance, repairs, and management (<strong>excl. mortgage</strong>)</span>
+        </div>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input 
+            type="number" 
+            id="dscr-expenses-input" 
+            min="0" 
+            step="1000" 
+            value="30000" 
+            aria-label="Annual Operating Expenses" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="dscr-expenses-slider" 
+        min="0" 
+        max="200000" 
+        step="1000" 
+        value="30000" 
+        class="slider-range" 
+        aria-label="Annual Operating Expenses Slider" 
+      />
+    </div>
+
+    <!-- NOI Live Subtotal Badge -->
+    <div class="subtotal-strip">
+      <span class="subtotal-label">Net Operating Income (NOI):</span>
+      <span class="subtotal-val" id="subtotal-noi-val">$120,000.00</span>
+    </div>
+
+    <!-- 3. Annual Debt Service Obligations -->
+    <div class="input-section-header" style="margin-top: var(--space-4);">
+      <h3 class="input-section-title">2. Annual Loan Payments (Debt Service)</h3>
+    </div>
+
+    <!-- Annual Principal Payments -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <div class="label-with-subtext">
+          <label for="dscr-principal-input">Annual Principal Payments</label>
+          <span class="field-subtext">Portion of 12-month loan payments reducing loan balance</span>
+        </div>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input 
+            type="number" 
+            id="dscr-principal-input" 
+            min="0" 
+            step="500" 
+            value="35000" 
+            aria-label="Annual Principal Payments" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="dscr-principal-slider" 
+        min="0" 
+        max="150000" 
+        step="1000" 
+        value="35000" 
+        class="slider-range" 
+        aria-label="Annual Principal Slider" 
+      />
+    </div>
+
+    <!-- Annual Interest Payments -->
+    <div class="input-group">
+      <div class="input-label-row">
+        <div class="label-with-subtext">
+          <label for="dscr-interest-input">Annual Interest Payments</label>
+          <span class="field-subtext">Total mortgage interest charges paid across 12 months</span>
+        </div>
+        <div class="input-symbol-wrapper">
+          <span class="currency-symbol">$</span>
+          <input 
+            type="number" 
+            id="dscr-interest-input" 
+            min="0" 
+            step="500" 
+            value="45000" 
+            aria-label="Annual Interest Payments" 
+          />
+        </div>
+      </div>
+      <input 
+        type="range" 
+        id="dscr-interest-slider" 
+        min="0" 
+        max="150000" 
+        step="1000" 
+        value="45000" 
+        class="slider-range" 
+        aria-label="Annual Interest Slider" 
+      />
+    </div>
+
+    <!-- Debt Service Live Subtotal Badge -->
+    <div class="subtotal-strip debt-strip">
+      <span class="subtotal-label">Total Annual Debt Service:</span>
+      <span class="subtotal-val debt-text" id="subtotal-debt-val">$80,000.00</span>
+    </div>
+
+    <!-- Reset Action -->
+    <div class="inputs-actions" style="margin-top: var(--space-6);">
+      <Button id="dscr-reset-btn" variant="outline" size="sm" style="width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+        Reset to Default Example
+      </Button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div slot="results" class="calc-results-wrapper">
+    <div class="results-header">
+      <h2 class="results-title">DSCR Calculation Results</h2>
+      <span class="results-subtitle">Coverage evaluation and net cash flow analysis</span>
+    </div>
+
+    <!-- Hero Result Card: Primary DSCR Metric -->
+    <div class="dscr-hero-card" id="dscr-hero-card">
+      <div class="hero-top-row">
+        <span class="hero-label">Debt Service Coverage Ratio</span>
+        <span class="status-badge badge-success" id="dscr-status-badge">Strong Coverage</span>
+      </div>
+      <div class="hero-main-row">
+        <div class="hero-ratio-display" id="res-dscr-val">1.50x</div>
+        <div class="hero-equation" id="lbl-dscr-equation">
+          <span class="eq-item">NOI: <strong id="eq-noi-val">$120,000</strong></span>
+          <span class="eq-divider">÷</span>
+          <span class="eq-item">Debt: <strong id="eq-debt-val">$80,000</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4-Tile Organized Summary Grid -->
+    <div class="summary-tiles-grid">
+      <!-- 1. Net Operating Income (NOI) -->
+      <div class="summary-tile">
+        <span class="tile-label">Net Operating Income (NOI)</span>
+        <div class="tile-amount text-positive" id="tile-noi">$120,000</div>
+        <span class="tile-caption" id="tile-noi-caption">Income ($150k) − Expenses ($30k)</span>
+      </div>
+
+      <!-- 2. Total Annual Debt Service -->
+      <div class="summary-tile">
+        <span class="tile-label">Total Annual Debt Service</span>
+        <div class="tile-amount text-primary" id="tile-debt">$80,000</div>
+        <span class="tile-caption" id="tile-debt-caption">Principal ($35k) + Interest ($45k)</span>
+      </div>
+
+      <!-- 3. Annual Cash Flow After Debt -->
+      <div class="summary-tile">
+        <span class="tile-label">Annual Cash Flow After Debt</span>
+        <div class="tile-amount text-positive" id="tile-annual-flow">+$40,000</div>
+        <span class="tile-caption">Net pre-tax cash surplus per year</span>
+      </div>
+
+      <!-- 4. Monthly Cash Flow After Debt -->
+      <div class="summary-tile">
+        <span class="tile-label">Monthly Cash Flow After Debt</span>
+        <div class="tile-amount text-positive" id="tile-monthly-flow">+$3,333</div>
+        <span class="tile-caption">Estimated take-home cash per month</span>
+      </div>
+    </div>
+
+    <!-- Diagnostic Verdict Card -->
+    <div class="diagnostic-card" id="dscr-diagnostic-card">
+      <div class="diagnostic-header">
+        <svg class="diagnostic-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span class="diagnostic-title">What This Means For You</span>
+      </div>
+      <p id="res-dscr-verdict-text" class="diagnostic-text">
+        With an annual Net Operating Income (NOI) of <strong>$120,000.00</strong> and total annual Debt Service of <strong>$80,000.00</strong>, your DSCR is <strong>1.50x</strong>. The property generates <strong>50.0%</strong> more operating income than needed to cover debt payments, leaving an annual surplus cash cushion of <strong>+$40,000.00</strong> (+$3,333.33/month). This comfortably meets standard commercial and DSCR lender guidelines (typically 1.20x–1.25x).
+      </p>
+      <p class="diagnostic-disclaimer">
+        <em>Note: Underwriting guidelines vary by lender. While 1.20x–1.25x is a standard qualifying benchmark, loan approval also depends on credit score, down payment (LTV), liquid cash reserves, and appraisal value.</em>
+      </p>
+    </div>
+
+    <!-- Clear Benchmark Matrix Table -->
+    <div class="benchmark-container">
+      <h3 class="benchmark-heading">Lender DSCR Underwriting Guidelines</h3>
+      <div class="benchmark-table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>DSCR Ratio</th>
+              <th>Cash Flow Status</th>
+              <th>Typical Lender Assessment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="row-ref-deficit">
+              <td><strong>&lt; 1.00x</strong></td>
+              <td><span class="status-pill pill-danger">Deficit</span></td>
+              <td>Negative cash flow; generally declined unless backed by significant personal reserves.</td>
+            </tr>
+            <tr id="row-ref-tight">
+              <td><strong>1.00x – 1.19x</strong></td>
+              <td><span class="status-pill pill-warning">Marginal</span></td>
+              <td>Narrow cushion; lenders often require higher interest rates or lower leverage (65%–70% LTV).</td>
+            </tr>
+            <tr id="row-ref-benchmark">
+              <td><strong>1.20x – 1.25x</strong></td>
+              <td><span class="status-pill pill-primary">Standard</span></td>
+              <td>Standard qualifying benchmark for most residential DSCR and commercial mortgages.</td>
+            </tr>
+            <tr id="row-ref-strong">
+              <td><strong>&gt; 1.25x</strong></td>
+              <td><span class="status-pill pill-success">Strong</span></td>
+              <td>Healthy financial cushion; qualifies for competitive interest rates and favorable terms.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</CalculatorLayout>
+
+<script>
+  function initDscrCalculator() {
+    const root = document.getElementById('dscr-calculator');
+    if (!root) return;
+
+    // Currency selector
+    const currencySelect = document.getElementById('dscr-currency-select') as HTMLSelectElement | null;
+    const currencySymbols = document.querySelectorAll('.currency-symbol');
+
+    // Inputs & Sliders
+    const grossRentInput = document.getElementById('dscr-gross-rent-input') as HTMLInputElement | null;
+    const grossRentSlider = document.getElementById('dscr-gross-rent-slider') as HTMLInputElement | null;
+
+    const expensesInput = document.getElementById('dscr-expenses-input') as HTMLInputElement | null;
+    const expensesSlider = document.getElementById('dscr-expenses-slider') as HTMLInputElement | null;
+
+    const principalInput = document.getElementById('dscr-principal-input') as HTMLInputElement | null;
+    const principalSlider = document.getElementById('dscr-principal-slider') as HTMLInputElement | null;
+
+    const interestInput = document.getElementById('dscr-interest-input') as HTMLInputElement | null;
+    const interestSlider = document.getElementById('dscr-interest-slider') as HTMLInputElement | null;
+
+    // Subtotal elements
+    const subtotalNoiVal = document.getElementById('subtotal-noi-val');
+    const subtotalDebtVal = document.getElementById('subtotal-debt-val');
+
+    // Result Hero elements
+    const dscrHeroCard = document.getElementById('dscr-hero-card');
+    const resDscrVal = document.getElementById('res-dscr-val');
+    const dscrStatusBadge = document.getElementById('dscr-status-badge');
+    const eqNoiVal = document.getElementById('eq-noi-val');
+    const eqDebtVal = document.getElementById('eq-debt-val');
+
+    // Summary Tiles elements
+    const tileNoi = document.getElementById('tile-noi');
+    const tileNoiCaption = document.getElementById('tile-noi-caption');
+    const tileDebt = document.getElementById('tile-debt');
+    const tileDebtCaption = document.getElementById('tile-debt-caption');
+    const tileAnnualFlow = document.getElementById('tile-annual-flow');
+    const tileMonthlyFlow = document.getElementById('tile-monthly-flow');
+
+    // Diagnostic Card elements
+    const dscrDiagnosticCard = document.getElementById('dscr-diagnostic-card');
+    const resDscrVerdictText = document.getElementById('res-dscr-verdict-text');
+
+    // Benchmark Table Rows
+    const rowRefDeficit = document.getElementById('row-ref-deficit');
+    const rowRefTight = document.getElementById('row-ref-tight');
+    const rowRefBenchmark = document.getElementById('row-ref-benchmark');
+    const rowRefStrong = document.getElementById('row-ref-strong');
+
+    // Reset button
+    const resetBtn = document.getElementById('dscr-reset-btn');
+
+    // Active Currency
+    let currentCurrency = currencySelect ? currencySelect.value : 'USD';
+
+    const currencyMap: Record<string, { symbol: string; decimals: number }> = {
+      USD: { symbol: '$', decimals: 2 },
+      EUR: { symbol: '€', decimals: 2 },
+      GBP: { symbol: '£', decimals: 2 },
+      CAD: { symbol: 'C$', decimals: 2 },
+      AUD: { symbol: 'A$', decimals: 2 },
+      INR: { symbol: '₹', decimals: 2 },
+      JPY: { symbol: '¥', decimals: 0 },
+      SGD: { symbol: 'S$', decimals: 2 },
+      CHF: { symbol: 'CHF ', decimals: 2 }
+    };
+
+    function formatMoney(amount: number, forceDecimals: boolean = true): string {
+      const config = currencyMap[currentCurrency] || { symbol: '$', decimals: 2 };
+      const decimals = config.decimals === 0 || !forceDecimals ? 0 : config.decimals;
+      const isNeg = amount < 0;
+      const absVal = Math.abs(amount);
+
+      const numStr = absVal.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+
+      return `${isNeg ? '-' : ''}${config.symbol}${numStr}`;
+    }
+
+    function formatSignedMoney(amount: number, forceDecimals: boolean = true): string {
+      const config = currencyMap[currentCurrency] || { symbol: '$', decimals: 2 };
+      const decimals = config.decimals === 0 || !forceDecimals ? 0 : config.decimals;
+      const absVal = Math.abs(amount);
+      const numStr = absVal.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+
+      if (amount > 0) {
+        return `+${config.symbol}${numStr}`;
+      } else if (amount < 0) {
+        return `-${config.symbol}${numStr}`;
+      } else {
+        return `${config.symbol}${numStr}`;
+      }
+    }
+
+    function formatShortMoney(amount: number): string {
+      const config = currencyMap[currentCurrency] || { symbol: '$', decimals: 2 };
+      const abs = Math.abs(amount);
+      if (abs >= 1000) {
+        const kVal = (abs / 1000).toFixed(abs % 1000 === 0 ? 0 : 1);
+        return `${amount < 0 ? '-' : ''}${config.symbol}${kVal}k`;
+      }
+      return `${amount < 0 ? '-' : ''}${config.symbol}${abs}`;
+    }
+
+    // Helper to link input and slider
+    function syncInputPair(input: HTMLInputElement | null, slider: HTMLInputElement | null) {
+      if (!input || !slider) return;
+
+      input.addEventListener('input', () => {
+        const val = parseFloat(input.value) || 0;
+        slider.value = String(val);
+        calculateDSCR();
+      });
+
+      slider.addEventListener('input', () => {
+        input.value = slider.value;
+        calculateDSCR();
+      });
+    }
+
+    syncInputPair(grossRentInput, grossRentSlider);
+    syncInputPair(expensesInput, expensesSlider);
+    syncInputPair(principalInput, principalSlider);
+    syncInputPair(interestInput, interestSlider);
+
+    // Currency Change Listener
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        currentCurrency = currencySelect.value;
+        const sym = currencyMap[currentCurrency]?.symbol || '$';
+        currencySymbols.forEach((el) => {
+          el.textContent = sym;
+        });
+        calculateDSCR();
+      });
+    }
+
+    // Reset button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (grossRentInput) grossRentInput.value = '150000';
+        if (grossRentSlider) grossRentSlider.value = '150000';
+
+        if (expensesInput) expensesInput.value = '30000';
+        if (expensesSlider) expensesSlider.value = '30000';
+
+        if (principalInput) principalInput.value = '35000';
+        if (principalSlider) principalSlider.value = '35000';
+
+        if (interestInput) interestInput.value = '45000';
+        if (interestSlider) interestSlider.value = '45000';
+
+        calculateDSCR();
+      });
+    }
+
+    // Core Calculation Logic
+    function calculateDSCR() {
+      const grossRent = Math.max(0, parseFloat(grossRentInput?.value || '0') || 0);
+      const expenses = Math.max(0, parseFloat(expensesInput?.value || '0') || 0);
+
+      const principal = Math.max(0, parseFloat(principalInput?.value || '0') || 0);
+      const interest = Math.max(0, parseFloat(interestInput?.value || '0') || 0);
+
+      // 1. Net Operating Income (NOI)
+      const noi = grossRent - expenses;
+
+      // 2. Total Annual Debt Service
+      const totalDebtService = principal + interest;
+
+      // 3. Cash Flow
+      const annualCashFlow = noi - totalDebtService;
+      const monthlyCashFlow = annualCashFlow / 12;
+
+      // Subtotals in inputs panel
+      if (subtotalNoiVal) subtotalNoiVal.textContent = formatMoney(noi);
+      if (subtotalDebtVal) subtotalDebtVal.textContent = formatMoney(totalDebtService);
+
+      // Safe zero debt handling
+      const isZeroDebt = totalDebtService === 0;
+      let dscr = 0;
+
+      if (!isZeroDebt) {
+        dscr = noi / totalDebtService;
+      }
+
+      // 4. Update Hero Card
+      if (eqNoiVal) eqNoiVal.textContent = formatMoney(noi, false);
+      if (eqDebtVal) eqDebtVal.textContent = formatMoney(totalDebtService, false);
+
+      // Reset benchmark table highlights
+      [rowRefDeficit, rowRefTight, rowRefBenchmark, rowRefStrong].forEach(r => r?.classList.remove('active-row'));
+
+      if (isZeroDebt) {
+        // Safe Zero Debt Case
+        if (resDscrVal) resDscrVal.textContent = 'N/A';
+        if (dscrStatusBadge) {
+          dscrStatusBadge.textContent = 'Debt-Free Property';
+          dscrStatusBadge.className = 'status-badge badge-neutral';
+        }
+        if (dscrHeroCard) {
+          dscrHeroCard.className = 'dscr-hero-card hero-neutral';
+        }
+      } else {
+        const dscrFormatted = `${dscr.toFixed(2)}x`;
+        if (resDscrVal) resDscrVal.textContent = dscrFormatted;
+
+        if (dscr < 1.0) {
+          if (dscrStatusBadge) {
+            dscrStatusBadge.textContent = 'Cash Flow Deficit';
+            dscrStatusBadge.className = 'status-badge badge-danger';
+          }
+          if (dscrHeroCard) dscrHeroCard.className = 'dscr-hero-card hero-danger';
+          if (rowRefDeficit) rowRefDeficit.classList.add('active-row');
+        } else if (dscr < 1.20) {
+          if (dscrStatusBadge) {
+            dscrStatusBadge.textContent = 'Marginal Coverage';
+            dscrStatusBadge.className = 'status-badge badge-warning';
+          }
+          if (dscrHeroCard) dscrHeroCard.className = 'dscr-hero-card hero-warning';
+          if (rowRefTight) rowRefTight.classList.add('active-row');
+        } else if (dscr <= 1.35) {
+          if (dscrStatusBadge) {
+            dscrStatusBadge.textContent = 'Standard Benchmark Met';
+            dscrStatusBadge.className = 'status-badge badge-primary';
+          }
+          if (dscrHeroCard) dscrHeroCard.className = 'dscr-hero-card hero-primary';
+          if (rowRefBenchmark) rowRefBenchmark.classList.add('active-row');
+        } else {
+          if (dscrStatusBadge) {
+            dscrStatusBadge.textContent = 'Strong Coverage';
+            dscrStatusBadge.className = 'status-badge badge-success';
+          }
+          if (dscrHeroCard) dscrHeroCard.className = 'dscr-hero-card hero-success';
+          if (rowRefStrong) rowRefStrong.classList.add('active-row');
+        }
+      }
+
+      // 5. Update 4 Summary Tiles
+      if (tileNoi) {
+        tileNoi.textContent = formatMoney(noi, false);
+        tileNoi.className = noi >= 0 ? 'tile-amount text-positive' : 'tile-amount text-negative';
+      }
+      if (tileNoiCaption) {
+        tileNoiCaption.textContent = `Income (${formatShortMoney(grossRent)}) − Expenses (${formatShortMoney(expenses)})`;
+      }
+
+      if (tileDebt) {
+        tileDebt.textContent = formatMoney(totalDebtService, false);
+      }
+      if (tileDebtCaption) {
+        tileDebtCaption.textContent = `Principal (${formatShortMoney(principal)}) + Interest (${formatShortMoney(interest)})`;
+      }
+
+      if (tileAnnualFlow) {
+        tileAnnualFlow.textContent = formatSignedMoney(annualCashFlow, false);
+        tileAnnualFlow.className = annualCashFlow >= 0 ? 'tile-amount text-positive' : 'tile-amount text-negative';
+      }
+
+      if (tileMonthlyFlow) {
+        tileMonthlyFlow.textContent = formatSignedMoney(monthlyCashFlow, false);
+        tileMonthlyFlow.className = monthlyCashFlow >= 0 ? 'tile-amount text-positive' : 'tile-amount text-negative';
+      }
+
+      // 6. Update Diagnostic Narrative Card
+      if (resDscrVerdictText && dscrDiagnosticCard) {
+        if (isZeroDebt) {
+          dscrDiagnosticCard.className = 'diagnostic-card card-neutral';
+          resDscrVerdictText.innerHTML = `Total annual debt service is <strong>${formatMoney(0)}</strong>. DSCR measures how income covers loan obligations, so it is not applicable for a property without debt. With no loan payments to make, 100% of your Net Operating Income (<strong>${formatMoney(noi)}/year</strong>) is retained as cash flow.`;
+        } else if (dscr < 1.0) {
+          const deficit = Math.abs(annualCashFlow);
+          const monthlyDef = deficit / 12;
+          dscrDiagnosticCard.className = 'diagnostic-card card-danger';
+          resDscrVerdictText.innerHTML = `With an annual Net Operating Income (NOI) of <strong>${formatMoney(noi)}</strong> and total debt payments of <strong>${formatMoney(totalDebtService)}</strong>, your DSCR is <strong>${dscr.toFixed(2)}x</strong>. The property operates at an annual cash flow deficit of <strong>-${formatMoney(deficit)}/year</strong> (-${formatMoney(monthlyDef)}/month), covering only <strong>${(dscr * 100).toFixed(1)}%</strong> of required debt. The owner must inject personal funds monthly to satisfy mortgage payments.`;
+        } else if (dscr < 1.20) {
+          const surplus = annualCashFlow;
+          const monthlySurp = surplus / 12;
+          dscrDiagnosticCard.className = 'diagnostic-card card-warning';
+          resDscrVerdictText.innerHTML = `With an annual Net Operating Income (NOI) of <strong>${formatMoney(noi)}</strong> and total debt payments of <strong>${formatMoney(totalDebtService)}</strong>, your DSCR is <strong>${dscr.toFixed(2)}x</strong>. While cash flow is positive with an annual surplus of <strong>+${formatMoney(surplus)}/year</strong> (+${formatMoney(monthlySurp)}/month), this falls below the typical <strong>1.20x–1.25x</strong> safety cushion required by most commercial and DSCR mortgage lenders.`;
+        } else {
+          const surplus = annualCashFlow;
+          const monthlySurp = surplus / 12;
+          const excessPercent = ((dscr - 1.0) * 100).toFixed(1);
+          dscrDiagnosticCard.className = 'diagnostic-card card-success';
+          resDscrVerdictText.innerHTML = `With an annual Net Operating Income (NOI) of <strong>${formatMoney(noi)}</strong> and total annual Debt Service of <strong>${formatMoney(totalDebtService)}</strong>, your DSCR is <strong>${dscr.toFixed(2)}x</strong>. The property generates <strong>${excessPercent}%</strong> more operating income than needed to service debt, leaving an annual surplus cash cushion of <strong>+${formatMoney(surplus)}</strong> (+${formatMoney(monthlySurp)}/month). This comfortably meets standard commercial and DSCR lender guidelines (typically 1.20x–1.25x).`;
+        }
+      }
+    }
+
+    // Initial calculation
+    calculateDSCR();
+
+    // Clipboard Copy Handler for Toolbar
+    window.addEventListener('copy-calculator-results', () => {
+      const grossRent = grossRentInput?.value || '0';
+      const expenses = expensesInput?.value || '0';
+      const noiText = subtotalNoiVal?.textContent || '$0';
+      const debtText = subtotalDebtVal?.textContent || '$0';
+      const dscrText = resDscrVal?.textContent || '0.00x';
+      const cashflowText = tileAnnualFlow?.textContent || '$0';
+      const monthlyText = tileMonthlyFlow?.textContent || '$0';
+      const diagnosisText = resDscrVerdictText?.textContent || '';
+
+      const summary = `DSCR Calculator Results (FinCalcLab):\n` +
+        `• Annual Rental Income: ${formatMoney(parseFloat(grossRent) || 0)}\n` +
+        `• Annual Operating Expenses: ${formatMoney(parseFloat(expenses) || 0)}\n` +
+        `• Net Operating Income (NOI): ${noiText}\n` +
+        `• Total Annual Debt Service: ${debtText}\n` +
+        `• Debt Service Coverage Ratio (DSCR): ${dscrText}\n` +
+        `• Annual Cash Flow After Debt: ${cashflowText}\n` +
+        `• Monthly Cash Flow: ${monthlyText}\n` +
+        `• Evaluation: ${diagnosisText}\n` +
+        `Calculated at: https://fincalclab.com/calculator/dscr-calculator`;
+
+      navigator.clipboard.writeText(summary).then(() => {
+        window.dispatchEvent(new CustomEvent('calculator-copied-success'));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initDscrCalculator);
+  document.addEventListener('astro:after-swap', initDscrCalculator);
+</script>
+
+<style>
+  .calc-inputs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .input-section-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+    margin-bottom: var(--space-2);
+  }
+
+  .input-section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    margin: 0;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .input-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .label-with-subtext {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .input-label-row label {
+    font-size: 0.925rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    display: block;
+    line-height: 1.3;
+  }
+
+  .field-subtext {
+    display: block;
+    font-size: 0.775rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+    line-height: 1.35;
+  }
+
+  .field-subtext strong {
+    color: var(--color-text-base);
+  }
+
+  /* Currency selector dropdown */
+  .currency-select {
+    width: 100%;
+    max-width: 260px;
+    height: 38px;
+    padding: 0 10px;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-base);
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+  }
+
+  .currency-select:focus {
+    border-color: var(--color-primary);
+  }
+
+  /* Numeric Input Box with separated Prefix */
+  .input-symbol-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 8px;
+    width: 140px;
+    height: 38px;
+    flex-shrink: 0;
+    transition: border-color var(--transition-fast);
+  }
+
+  .input-symbol-wrapper:focus-within {
+    border-color: var(--color-primary);
+  }
+
+  .currency-symbol {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    margin-right: 6px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .input-symbol-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-base);
+    text-align: left;
+    outline: none;
+    padding: 0;
+  }
+
+  .input-symbol-wrapper input::-webkit-outer-spin-button,
+  .input-symbol-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Sliders */
+  .slider-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    outline: none;
+    margin: 4px 0 0 0;
+    cursor: pointer;
+  }
+
+  .slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+  }
+
+  .slider-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: var(--color-primary-hover);
+  }
+
+  /* Subtotal Strip */
+  .subtotal-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-bg-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    margin-top: 2px;
+  }
+
+  .subtotal-strip.debt-strip {
+    background: var(--color-bg-surface);
+  }
+
+  .subtotal-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .subtotal-val {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--color-success);
+  }
+
+  .subtotal-val.debt-text {
+    color: var(--color-primary);
+  }
+
+  /* ============================================================
+     RESULTS SECTION (World-Class Clean & Responsive Layout)
+     ============================================================ */
+  .calc-results-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .results-header {
+    margin-bottom: var(--space-1);
+  }
+
+  .results-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    margin: 0 0 2px 0;
+  }
+
+  .results-subtitle {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Primary Hero Card */
+  .dscr-hero-card {
+    background: var(--color-bg-surface);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    transition: border-color var(--transition-fast);
+  }
+
+  .hero-success {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, var(--color-bg-surface) 100%);
+  }
+
+  :global(.dark) .hero-success {
+    border-color: rgba(16, 185, 129, 0.35);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, var(--color-bg-surface) 100%);
+  }
+
+  .hero-primary {
+    border-color: rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, var(--color-bg-surface) 100%);
+  }
+
+  :global(.dark) .hero-primary {
+    border-color: rgba(37, 99, 235, 0.35);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, var(--color-bg-surface) 100%);
+  }
+
+  .hero-warning {
+    border-color: rgba(245, 158, 11, 0.4);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, var(--color-bg-surface) 100%);
+  }
+
+  :global(.dark) .hero-warning {
+    border-color: rgba(245, 158, 11, 0.35);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, var(--color-bg-surface) 100%);
+  }
+
+  .hero-danger {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, var(--color-bg-surface) 100%);
+  }
+
+  :global(.dark) .hero-danger {
+    border-color: rgba(239, 68, 68, 0.35);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, var(--color-bg-surface) 100%);
+  }
+
+  .hero-neutral {
+    border-color: var(--color-border);
+    background: var(--color-bg-surface);
+  }
+
+  .hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .hero-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .status-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .badge-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+  }
+
+  .badge-primary {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+  }
+
+  .badge-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+  }
+
+  :global(.dark) .badge-warning {
+    color: #fbbf24;
+  }
+
+  .badge-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .badge-neutral {
+    background: rgba(148, 163, 184, 0.2);
+    color: var(--color-text-muted);
+  }
+
+  .hero-main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .hero-ratio-display {
+    font-size: clamp(2rem, 6vw, 2.75rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--color-text-base);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-equation {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 0.825rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .hero-equation strong {
+    color: var(--color-text-base);
+  }
+
+  .eq-divider {
+    font-weight: 700;
+    color: var(--color-text-light);
+  }
+
+  /* 4-Tile Organized Summary Grid */
+  .summary-tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .summary-tile {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tile-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+    line-height: 1.25;
+  }
+
+  .tile-amount {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-text-base);
+    line-height: 1.2;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  .text-positive {
+    color: var(--color-success) !important;
+  }
+
+  .text-negative {
+    color: var(--color-error) !important;
+  }
+
+  .text-primary {
+    color: var(--color-primary) !important;
+  }
+
+  .tile-caption {
+    font-size: 0.725rem;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  /* Diagnostic Verdict Card */
+  .diagnostic-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .card-success {
+    border-left: 4px solid var(--color-success) !important;
+  }
+
+  .card-primary {
+    border-left: 4px solid var(--color-primary) !important;
+  }
+
+  .card-warning {
+    border-left: 4px solid var(--color-warning) !important;
+  }
+
+  .card-danger {
+    border-left: 4px solid var(--color-error) !important;
+  }
+
+  .card-neutral {
+    border-left: 4px solid var(--color-text-light) !important;
+  }
+
+  .diagnostic-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .diagnostic-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .diagnostic-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-light);
+  }
+
+  .diagnostic-text {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .diagnostic-text strong {
+    color: var(--color-text-base);
+  }
+
+  .diagnostic-disclaimer {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    line-height: 1.45;
+    margin: var(--space-1) 0 0 0;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Benchmark Reference Table */
+  .benchmark-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-bg-surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .benchmark-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-light);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .benchmark-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.825rem;
+    text-align: left;
+  }
+
+  .benchmark-table th {
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--color-border);
+    font-weight: 700;
+    color: var(--color-text-base);
+    background: var(--color-bg-base);
+    white-space: nowrap;
+  }
+
+  .benchmark-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    vertical-align: middle;
+    line-height: 1.4;
+  }
+
+  .benchmark-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .benchmark-table tr.active-row {
+    background: rgba(37, 99, 235, 0.06);
+  }
+
+  :global(.dark) .benchmark-table tr.active-row {
+    background: rgba(37, 99, 235, 0.15);
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .pill-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .pill-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+  }
+
+  :global(.dark) .pill-warning {
+    color: #fbbf24;
+  }
+
+  .pill-primary {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+  }
+
+  .pill-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+  }
+
+  /* Responsive Rules */
+  @media (max-width: 560px) {
+    .summary-tiles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-main-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2);
+    }
+
+    .hero-equation {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  @media (max-width: 440px) {
+    .input-label-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .input-symbol-wrapper {
+      width: 100%;
+    }
+
+    .currency-select {
+      max-width: 100%;
+    }
+  }
+</style>
